@@ -26,6 +26,10 @@ jobs:
         working-directory: mobile
         run: flutter create --org com.geekdream --platforms=android .
 
+      - name: Remove the generated counter test
+        working-directory: mobile
+        run: rm -f test/widget_test.dart
+
       - name: Add Android permissions
         working-directory: mobile
         shell: python
@@ -47,6 +51,10 @@ jobs:
       - name: Run tests
         working-directory: mobile
         run: flutter test
+
+      - name: Analyze app source
+        working-directory: mobile
+        run: flutter analyze --no-fatal-infos --no-fatal-warnings
 
       - name: Build APK
         working-directory: mobile

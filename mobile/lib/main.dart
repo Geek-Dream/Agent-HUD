@@ -28,7 +28,7 @@ class AgentHudApp extends StatelessWidget {
         useMaterial3: true,
         colorScheme: scheme,
         scaffoldBackgroundColor: const Color(0xFF0B1120),
-        cardTheme: CardTheme(
+        cardTheme: CardThemeData(
           color: const Color(0xFF17202D),
           elevation: 0,
           margin: const EdgeInsets.symmetric(vertical: 5),

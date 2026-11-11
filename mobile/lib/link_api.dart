@@ -80,7 +80,7 @@ class LinkApi {
     String? fingerprint,
     Map<String, dynamic> body,
   ) {
-    return _tryAddresses(addresses, port, fingerprint, (client, uri) async {
+    return _tryAddresses(addresses, port, path, fingerprint, (client, uri) async {
       final request = await client.postUrl(uri);
       request.headers.contentType = ContentType.json;
       request.write(jsonEncode(body));
@@ -89,7 +89,7 @@ class LinkApi {
   }
 
   Future<Map<String, dynamic>> _getOnAllAddresses(LinkedDevice device, String path) {
-    return _tryAddresses(device.addresses, device.port, device.fingerprint, (client, uri) async {
+    return _tryAddresses(device.addresses, device.port, path, device.fingerprint, (client, uri) async {
       final request = await client.getUrl(uri);
       request.headers.set(HttpHeaders.authorizationHeader, 'Bearer ${device.authorization}');
       return _readResponse(request);
@@ -99,6 +99,7 @@ class LinkApi {
   Future<Map<String, dynamic>> _tryAddresses(
     List<String> addresses,
     int port,
+    String path,
     String? fingerprint,
     Future<Map<String, dynamic>> Function(HttpClient client, Uri uri) action,
   ) async {
