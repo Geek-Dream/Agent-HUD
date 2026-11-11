@@ -27,8 +27,31 @@ function Test-DotnetAvailable {
     return ($LASTEXITCODE -eq 0 -and ($runtimes -match "Microsoft\.NETCore\.App 8\."))
 }
 
+function Test-BuildCurrent {
+    param(
+        [System.IO.FileInfo]$Executable
+    )
+
+    if ($null -eq $Executable) {
+        return $false
+    }
+
+    $newestSource = Get-ChildItem "$root\src" -Recurse -File |
+        Where-Object {
+            $_.FullName -notmatch "\\(bin|obj)\\" -and
+            $_.Extension -in ".cs", ".xaml", ".csproj", ".manifest"
+        } |
+        Sort-Object LastWriteTimeUtc -Descending |
+        Select-Object -First 1
+
+    return $null -eq $newestSource -or
+        $Executable.LastWriteTimeUtc -ge $newestSource.LastWriteTimeUtc
+}
+
 $exe = if ($Rebuild) { $null } else { Find-Executable }
-if ($null -eq $exe -or -not (Test-DotnetAvailable)) {
+if ($null -eq $exe -or
+    -not (Test-DotnetAvailable) -or
+    -not (Test-BuildCurrent $exe)) {
     & "$root\build.ps1" -Configuration Release
     if ($LASTEXITCODE -ne 0) {
         throw "AgentHUD build failed."

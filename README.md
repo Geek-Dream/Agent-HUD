@@ -75,6 +75,7 @@ Windows\start-agent-hud.cmd
 首次启动会自动准备 .NET 8 SDK、构建应用并打开 AgentHUD。
 `start-agent-hud.cmd` 启动应用时不会保留控制台窗口。若需要手动构建，也可以安装
 .NET 8 SDK 后运行 `Windows\build.ps1`。
+更新源码后再次启动时，如果构建产物早于源码，启动器会自动重新构建。
 
 如果应用启动后立即退出，启动器会显示退出码，并打印
 `%LOCALAPPDATA%\AgentHUD\startup-error.log` 中的启动错误。
