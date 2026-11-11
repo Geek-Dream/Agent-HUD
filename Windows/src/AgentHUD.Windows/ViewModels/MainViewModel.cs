@@ -980,7 +980,7 @@ public sealed class SessionRowViewModel : INotifyPropertyChanged
         {
             return brush;
         }
-        return new SolidColorBrush(Windows.UI.Color.FromArgb(255, 128, 138, 152));
+        return new SolidColorBrush(global::Windows.UI.Color.FromArgb(255, 128, 138, 152));
     }
 
     private static string RelativeTime(DateTimeOffset value)

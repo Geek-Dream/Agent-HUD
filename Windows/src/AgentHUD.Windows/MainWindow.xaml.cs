@@ -7,6 +7,7 @@ using Microsoft.UI.Composition.SystemBackdrops;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Animation;
@@ -280,7 +281,7 @@ public sealed partial class MainWindow : Window
             transform = new CompositeTransform();
             element.RenderTransform = transform;
         }
-        element.RenderTransformOrigin = new Windows.Foundation.Point(0.5, 0.5);
+        element.RenderTransformOrigin = new global::Windows.Foundation.Point(0.5, 0.5);
 
         var completion = new TaskCompletionSource<bool>(
             TaskCreationOptions.RunContinuationsAsynchronously);
@@ -470,12 +471,12 @@ public sealed partial class MainWindow : Window
         {
             return;
         }
-        if (e.Key == Windows.System.VirtualKey.Enter)
+        if (e.Key == global::Windows.System.VirtualKey.Enter)
         {
             _viewModel.SaveTitleEdit(row);
             e.Handled = true;
         }
-        else if (e.Key == Windows.System.VirtualKey.Escape)
+        else if (e.Key == global::Windows.System.VirtualKey.Escape)
         {
             _viewModel.CancelTitleEdit(row);
             e.Handled = true;
@@ -602,8 +603,8 @@ public sealed partial class MainWindow : Window
         var color = highContrast
             ? new UISettings().GetColorValue(UIColorType.Background)
             : RootBorder.ActualTheme == ElementTheme.Dark
-                ? Windows.UI.Color.FromArgb(255, 16, 23, 34)
-                : Windows.UI.Color.FromArgb(255, 242, 245, 249);
+                ? global::Windows.UI.Color.FromArgb(255, 16, 23, 34)
+                : global::Windows.UI.Color.FromArgb(255, 242, 245, 249);
         RootBorder.Background = new SolidColorBrush(color);
     }
 
