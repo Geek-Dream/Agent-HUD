@@ -35,6 +35,14 @@ jobs:
               $failed = $true
             }
           }
+
+          [xml]$appXaml = Get-Content Windows/src/AgentHUD.Windows/App.xaml -Raw
+          $mergedDictionaries = $appXaml.Application.Resources.ResourceDictionary.MergedDictionaries
+          if ($null -eq $mergedDictionaries -or $null -eq $mergedDictionaries.XamlControlsResources) {
+            Write-Host "App.xaml is missing XamlControlsResources."
+            $failed = $true
+          }
+
           if ($failed) { exit 1 }
 
       - name: Restore
@@ -45,6 +53,26 @@ jobs:
 
       - name: Build WinUI
         run: dotnet build Windows/AgentHUD.Windows.sln -c Release -p:Platform=x64 --no-restore
+
+      - name: Smoke test WinUI startup
+        shell: powershell
+        run: |
+          $exe = Get-ChildItem Windows/src/AgentHUD.Windows/bin/x64/Release `
+            -Filter AgentHUD.Windows.exe `
+            -Recurse |
+            Select-Object -First 1
+          if ($null -eq $exe) { throw "AgentHUD.Windows.exe was not found." }
+
+          $process = Start-Process `
+            -FilePath $exe.FullName `
+            -WorkingDirectory $exe.DirectoryName `
+            -PassThru
+          Start-Sleep -Seconds 8
+          $process.Refresh()
+          if ($process.HasExited) {
+            throw ("AgentHUD exited during startup. Exit code: 0x{0:X8}." -f $process.ExitCode)
+          }
+          Stop-Process -Id $process.Id -Force
 
       - name: Upload Windows build
         uses: actions/upload-artifact@v4

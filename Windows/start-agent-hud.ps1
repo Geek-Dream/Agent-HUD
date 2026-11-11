@@ -45,4 +45,25 @@ if (Test-Path "$root\.dotnet\dotnet.exe") {
     $env:PATH = "$root\.dotnet;$env:PATH"
 }
 
-Start-Process -FilePath $exe.FullName
+$startupLog = Join-Path $env:LOCALAPPDATA "AgentHUD\startup-error.log"
+if (Test-Path $startupLog) {
+    Remove-Item $startupLog -Force -ErrorAction SilentlyContinue
+}
+
+$process = Start-Process `
+    -FilePath $exe.FullName `
+    -WorkingDirectory $exe.DirectoryName `
+    -PassThru
+
+Start-Sleep -Seconds 4
+$process.Refresh()
+if ($process.HasExited) {
+    if (Test-Path $startupLog) {
+        Write-Host ""
+        Write-Host "AgentHUD startup error:" -ForegroundColor Red
+        Get-Content $startupLog -Tail 40
+        Write-Host ""
+        Write-Host "Full log: $startupLog"
+    }
+    throw ("AgentHUD exited during startup. Exit code: 0x{0:X8}." -f $process.ExitCode)
+}

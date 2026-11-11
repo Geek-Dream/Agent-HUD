@@ -13,7 +13,16 @@ public partial class App : XamlApplication
 
     public App()
     {
-        InitializeComponent();
+        try
+        {
+            InitializeComponent();
+        }
+        catch (Exception exception)
+        {
+            WriteStartupFailure(exception);
+            throw;
+        }
+
         UnhandledException += (_, args) =>
         {
             System.Diagnostics.Debug.WriteLine(args.Exception);
@@ -26,5 +35,23 @@ public partial class App : XamlApplication
         Credentials = new CredentialStore();
         _window = new MainWindow();
         _window.Activate();
+    }
+
+    private static void WriteStartupFailure(Exception exception)
+    {
+        try
+        {
+            var directory = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                "AgentHUD");
+            Directory.CreateDirectory(directory);
+            File.WriteAllText(
+                Path.Combine(directory, "startup-error.log"),
+                $"{DateTimeOffset.Now:O}{Environment.NewLine}{exception}");
+        }
+        catch
+        {
+            // Preserve the original startup exception if diagnostics cannot be written.
+        }
     }
 }

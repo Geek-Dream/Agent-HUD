@@ -76,6 +76,9 @@ Windows\start-agent-hud.cmd
 `start-agent-hud.cmd` 启动应用时不会保留控制台窗口。若需要手动构建，也可以安装
 .NET 8 SDK 后运行 `Windows\build.ps1`。
 
+如果应用启动后立即退出，启动器会显示退出码，并打印
+`%LOCALAPPDATA%\AgentHUD\startup-error.log` 中的启动错误。
+
 ## 数据来源
 
 - Codex：`~/.codex/sessions/**/*.jsonl`
