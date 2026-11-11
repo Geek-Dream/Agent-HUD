@@ -1,0 +1,24 @@
+#!/bin/zsh
+
+set -euo pipefail
+
+ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+BINARY="$ROOT_DIR/.build/adapter-self-test"
+
+cd "$ROOT_DIR"
+
+swiftc \
+    Sources/AgentHUD/AIConfiguration.swift \
+    Sources/AgentHUD/KeychainAISecretStore.swift \
+    Sources/AgentHUD/AITitleService.swift \
+    Sources/AgentHUD/Models.swift \
+    Sources/AgentHUD/Utilities.swift \
+    Sources/AgentHUD/SessionTitleStore.swift \
+    Sources/AgentHUD/SessionImportanceStore.swift \
+    Sources/AgentHUD/CodexAdapter.swift \
+    Sources/AgentHUD/ClaudeAdapter.swift \
+    Sources/AgentHUD/OrcaSessionSource.swift \
+    Tests/main.swift \
+    -o "$BINARY"
+
+"$BINARY"

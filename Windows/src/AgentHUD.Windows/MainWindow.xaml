@@ -1,0 +1,1279 @@
+<Window
+    x:Class="AgentHUD.Windows.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:AgentHUD.Windows">
+
+    <Border
+        x:Name="RootBorder"
+        Background="Transparent"
+        BorderBrush="{ThemeResource HudBorderStrongBrush}"
+        BorderThickness="1"
+        CornerRadius="14"
+        ActualThemeChanged="RootBorder_ActualThemeChanged">
+        <Grid x:Name="RootGrid">
+            <Grid
+                x:Name="CollapsedPanel"
+                Visibility="{Binding CollapsedVisibility}">
+                <Grid
+                    x:Name="CollapsedDragSurface"
+                    Padding="10,0"
+                    Background="Transparent"
+                    PointerPressed="DragSurface_PointerPressed">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <Button
+                        x:Name="ExpandButton"
+                        Grid.Column="0"
+                        Width="34"
+                        Height="34"
+                        Margin="0,0,9,0"
+                        Padding="0"
+                        Click="ExpandButton_Click"
+                        CornerRadius="9"
+                        ToolTipService.ToolTip="展开 AgentHUD">
+                        <FontIcon
+                            FontFamily="Segoe Fluent Icons"
+                            FontSize="12"
+                            Glyph="&#xE70D;" />
+                    </Button>
+
+                    <StackPanel
+                        Grid.Column="1"
+                        VerticalAlignment="Center"
+                        Spacing="5">
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <StackPanel Orientation="Horizontal" Spacing="4">
+                                <Ellipse
+                                    Width="6"
+                                    Height="6"
+                                    VerticalAlignment="Center"
+                                    Fill="{ThemeResource HudWorkingBrush}" />
+                                <TextBlock
+                                    FontSize="11"
+                                    FontWeight="SemiBold"
+                                    Text="{Binding WorkingCount}" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Spacing="4">
+                                <Ellipse
+                                    Width="6"
+                                    Height="6"
+                                    VerticalAlignment="Center"
+                                    Fill="{ThemeResource HudWaitingBrush}" />
+                                <TextBlock
+                                    FontSize="11"
+                                    FontWeight="SemiBold"
+                                    Text="{Binding WaitingCount}" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Spacing="4">
+                                <Ellipse
+                                    Width="6"
+                                    Height="6"
+                                    VerticalAlignment="Center"
+                                    Fill="{ThemeResource HudCompletedBrush}" />
+                                <TextBlock
+                                    FontSize="11"
+                                    FontWeight="SemiBold"
+                                    Text="{Binding CompletedCount}" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Spacing="4">
+                                <Ellipse
+                                    Width="6"
+                                    Height="6"
+                                    VerticalAlignment="Center"
+                                    Fill="{ThemeResource HudFailedBrush}" />
+                                <TextBlock
+                                    FontSize="11"
+                                    FontWeight="SemiBold"
+                                    Text="{Binding FailedCount}" />
+                            </StackPanel>
+                        </StackPanel>
+                        <TextBlock
+                            FontSize="11.5"
+                            Foreground="{ThemeResource HudTextSecondaryBrush}"
+                            MaxLines="1"
+                            Text="{Binding CompactDisplayText}"
+                            TextTrimming="CharacterEllipsis" />
+                    </StackPanel>
+
+                    <StackPanel
+                        Grid.Column="2"
+                        Orientation="Horizontal"
+                        Spacing="3">
+                        <Button
+                            Click="PinButton_Click"
+                            Style="{StaticResource HudIconButtonStyle}"
+                            ToolTipService.ToolTip="锁定或解锁位置">
+                            <FontIcon
+                                FontFamily="Segoe Fluent Icons"
+                                FontSize="12"
+                                Glyph="{Binding PinGlyph}" />
+                        </Button>
+                        <Button
+                            Click="PrivacyButton_Click"
+                            Style="{StaticResource HudIconButtonStyle}"
+                            ToolTipService.ToolTip="切换隐私模式">
+                            <FontIcon
+                                FontFamily="Segoe Fluent Icons"
+                                FontSize="12"
+                                Glyph="{Binding PrivacyGlyph}" />
+                        </Button>
+                        <Button
+                            Click="SettingsButton_Click"
+                            Style="{StaticResource HudIconButtonStyle}"
+                            ToolTipService.ToolTip="AI 标题设置">
+                            <FontIcon
+                                FontFamily="Segoe Fluent Icons"
+                                FontSize="12"
+                                Glyph="&#xE713;" />
+                        </Button>
+                        <Button
+                            Click="HideButton_Click"
+                            Style="{StaticResource HudIconButtonStyle}"
+                            ToolTipService.ToolTip="隐藏到系统托盘">
+                            <FontIcon
+                                FontFamily="Segoe Fluent Icons"
+                                FontSize="12"
+                                Glyph="&#xE711;" />
+                        </Button>
+                    </StackPanel>
+                </Grid>
+            </Grid>
+
+            <Grid
+                x:Name="ExpandedPanel"
+                Visibility="{Binding ExpandedVisibility}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="56" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="28" />
+                </Grid.RowDefinitions>
+
+                <Grid
+                    x:Name="ExpandedDragSurface"
+                    Grid.Row="0"
+                    Padding="13,9,11,7"
+                    Background="Transparent"
+                    PointerPressed="DragSurface_PointerPressed">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel
+                        Grid.Column="0"
+                        Orientation="Horizontal"
+                        Spacing="8">
+                        <Button
+                            Width="34"
+                            Height="34"
+                            Padding="0"
+                            Click="CollapseButton_Click"
+                            CornerRadius="9"
+                            ToolTipService.ToolTip="收起 AgentHUD">
+                            <FontIcon
+                                FontFamily="Segoe Fluent Icons"
+                                FontSize="12"
+                                Glyph="&#xE70E;" />
+                        </Button>
+                        <StackPanel
+                            VerticalAlignment="Center"
+                            Spacing="1">
+                            <TextBlock
+                                CharacterSpacing="70"
+                                FontFamily="Consolas"
+                                FontSize="11"
+                                FontWeight="Bold"
+                                Text="AGENT HUD" />
+                            <TextBlock
+                                FontSize="10.5"
+                                Foreground="{ThemeResource HudTextSecondaryBrush}"
+                                Text="{Binding ActiveSummary}" />
+                        </StackPanel>
+                    </StackPanel>
+
+                    <StackPanel
+                        Grid.Column="2"
+                        Orientation="Horizontal"
+                        Spacing="3">
+                        <Grid Width="28" Height="28">
+                            <Button
+                                x:Name="RefreshButton"
+                                Click="RefreshButton_Click"
+                                Style="{StaticResource HudIconButtonStyle}"
+                                ToolTipService.ToolTip="立即刷新">
+                                <FontIcon
+                                    FontFamily="Segoe Fluent Icons"
+                                    FontSize="12"
+                                    Glyph="{Binding RefreshGlyph}" />
+                            </Button>
+                            <ProgressRing
+                                Width="16"
+                                Height="16"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                IsActive="{Binding IsLoading}"
+                                IsHitTestVisible="False"
+                                Visibility="{Binding LoadingVisibility}" />
+                        </Grid>
+                        <Button
+                            Click="PinButton_Click"
+                            Style="{StaticResource HudIconButtonStyle}"
+                            ToolTipService.ToolTip="锁定或解锁位置">
+                            <FontIcon
+                                FontFamily="Segoe Fluent Icons"
+                                FontSize="12"
+                                Glyph="{Binding PinGlyph}" />
+                        </Button>
+                        <Button
+                            Click="PrivacyButton_Click"
+                            Style="{StaticResource HudIconButtonStyle}"
+                            ToolTipService.ToolTip="切换隐私模式">
+                            <FontIcon
+                                FontFamily="Segoe Fluent Icons"
+                                FontSize="12"
+                                Glyph="{Binding PrivacyGlyph}" />
+                        </Button>
+                        <Button
+                            Click="SettingsButton_Click"
+                            Style="{StaticResource HudIconButtonStyle}"
+                            ToolTipService.ToolTip="AI 标题设置">
+                            <FontIcon
+                                FontFamily="Segoe Fluent Icons"
+                                FontSize="12"
+                                Glyph="&#xE713;" />
+                        </Button>
+                        <Button
+                            Click="HideButton_Click"
+                            Style="{StaticResource HudIconButtonStyle}"
+                            ToolTipService.ToolTip="隐藏到系统托盘">
+                            <FontIcon
+                                FontFamily="Segoe Fluent Icons"
+                                FontSize="12"
+                                Glyph="&#xE711;" />
+                        </Button>
+                    </StackPanel>
+                </Grid>
+
+                <Grid
+                    Grid.Row="1"
+                    Background="{ThemeResource HudSurfaceBrush}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="45" />
+                        <RowDefinition Height="43" />
+                    </Grid.RowDefinitions>
+
+                    <Grid
+                        x:Name="StatusFilterStrip"
+                        Grid.Row="0"
+                        Padding="9,6"
+                        ColumnSpacing="3"
+                        PointerPressed="DragSurface_PointerPressed">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Button
+                            x:Name="StatusAllButton"
+                            Grid.Column="0"
+                            Click="StatusFilter_Click"
+                            Style="{StaticResource HudFilterButtonStyle}"
+                            Tag="All">
+                            <StackPanel Orientation="Horizontal" Spacing="5">
+                                <TextBlock Text="全部" />
+                                <TextBlock
+                                    x:Name="StatusAllCount"
+                                    Opacity="0.62"
+                                    Text="0" />
+                            </StackPanel>
+                        </Button>
+                        <Button
+                            x:Name="StatusWorkingButton"
+                            Grid.Column="1"
+                            Click="StatusFilter_Click"
+                            Style="{StaticResource HudFilterButtonStyle}"
+                            Tag="Working">
+                            <StackPanel Orientation="Horizontal" Spacing="5">
+                                <TextBlock Text="工作" />
+                                <TextBlock
+                                    x:Name="StatusWorkingCount"
+                                    Opacity="0.62"
+                                    Text="0" />
+                            </StackPanel>
+                        </Button>
+                        <Button
+                            x:Name="StatusWaitingButton"
+                            Grid.Column="2"
+                            Click="StatusFilter_Click"
+                            Style="{StaticResource HudFilterButtonStyle}"
+                            Tag="Waiting">
+                            <StackPanel Orientation="Horizontal" Spacing="5">
+                                <TextBlock Text="等待" />
+                                <TextBlock
+                                    x:Name="StatusWaitingCount"
+                                    Opacity="0.62"
+                                    Text="0" />
+                            </StackPanel>
+                        </Button>
+                        <Button
+                            x:Name="StatusCompletedButton"
+                            Grid.Column="3"
+                            Click="StatusFilter_Click"
+                            Style="{StaticResource HudFilterButtonStyle}"
+                            Tag="Completed">
+                            <StackPanel Orientation="Horizontal" Spacing="5">
+                                <TextBlock Text="完成" />
+                                <TextBlock
+                                    x:Name="StatusCompletedCount"
+                                    Opacity="0.62"
+                                    Text="0" />
+                            </StackPanel>
+                        </Button>
+                        <Button
+                            x:Name="StatusFailedButton"
+                            Grid.Column="4"
+                            Click="StatusFilter_Click"
+                            Style="{StaticResource HudFilterButtonStyle}"
+                            Tag="Failed">
+                            <StackPanel Orientation="Horizontal" Spacing="5">
+                                <TextBlock Text="错误" />
+                                <TextBlock
+                                    x:Name="StatusFailedCount"
+                                    Opacity="0.62"
+                                    Text="0" />
+                            </StackPanel>
+                        </Button>
+                    </Grid>
+
+                    <Grid
+                        Grid.Row="1"
+                        Padding="12,4,12,7"
+                        Background="{ThemeResource HudControlFillBrush}"
+                        PointerPressed="DragSurface_PointerPressed">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Grid
+                            x:Name="ProviderFilterStrip"
+                            Grid.Column="0"
+                            ColumnSpacing="3">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Button
+                                x:Name="ProviderAllButton"
+                                Grid.Column="0"
+                                Click="ProviderFilter_Click"
+                                Style="{StaticResource HudFilterButtonStyle}"
+                                Tag="All">
+                                <StackPanel Orientation="Horizontal" Spacing="5">
+                                    <TextBlock Text="全部" />
+                                    <TextBlock
+                                        x:Name="ProviderAllCount"
+                                        Opacity="0.62"
+                                        Text="0" />
+                                </StackPanel>
+                            </Button>
+                            <Button
+                                x:Name="ProviderCodexButton"
+                                Grid.Column="1"
+                                Click="ProviderFilter_Click"
+                                Style="{StaticResource HudFilterButtonStyle}"
+                                Tag="Codex">
+                                <StackPanel Orientation="Horizontal" Spacing="5">
+                                    <TextBlock Text="Codex" />
+                                    <TextBlock
+                                        x:Name="ProviderCodexCount"
+                                        Opacity="0.62"
+                                        Text="0" />
+                                </StackPanel>
+                            </Button>
+                            <Button
+                                x:Name="ProviderClaudeButton"
+                                Grid.Column="2"
+                                Click="ProviderFilter_Click"
+                                Style="{StaticResource HudFilterButtonStyle}"
+                                Tag="Claude">
+                                <StackPanel Orientation="Horizontal" Spacing="5">
+                                    <TextBlock Text="Claude" />
+                                    <TextBlock
+                                        x:Name="ProviderClaudeCount"
+                                        Opacity="0.62"
+                                        Text="0" />
+                                </StackPanel>
+                            </Button>
+                            <Button
+                                x:Name="ProviderPiButton"
+                                Grid.Column="3"
+                                Click="ProviderFilter_Click"
+                                Style="{StaticResource HudFilterButtonStyle}"
+                                Tag="Pi">
+                                <StackPanel Orientation="Horizontal" Spacing="5">
+                                    <TextBlock Text="Pi" />
+                                    <TextBlock
+                                        x:Name="ProviderPiCount"
+                                        Opacity="0.62"
+                                        Text="0" />
+                                </StackPanel>
+                            </Button>
+                        </Grid>
+                        <TextBlock
+                            Grid.Column="1"
+                            Margin="9,0,2,0"
+                            VerticalAlignment="Center"
+                            FontSize="10"
+                            Foreground="{ThemeResource HudTextTertiaryBrush}"
+                            Text="{Binding VisibleSessions.Count}" />
+                    </Grid>
+
+                    <Border
+                        Grid.RowSpan="2"
+                        Margin="9,42,9,0"
+                        Padding="12,9,9,9"
+                        VerticalAlignment="Top"
+                        Background="{ThemeResource HudRaisedBrush}"
+                        BorderBrush="{ThemeResource HudCompletedBrush}"
+                        BorderThickness="1"
+                        Canvas.ZIndex="20"
+                        CornerRadius="9"
+                        Visibility="{Binding ImportantNoticeVisibility}">
+                        <Grid ColumnSpacing="9">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <FontIcon
+                                Grid.Column="0"
+                                VerticalAlignment="Top"
+                                FontFamily="Segoe Fluent Icons"
+                                FontSize="13"
+                                Foreground="{ThemeResource HudCompletedBrush}"
+                                Glyph="&#xE7BA;" />
+                            <TextBlock
+                                Grid.Column="1"
+                                FontSize="11.5"
+                                Foreground="{ThemeResource HudTextPrimaryBrush}"
+                                MaxLines="2"
+                                Text="{Binding ImportantNoticeText}"
+                                TextWrapping="Wrap" />
+                            <Button
+                                Grid.Column="2"
+                                Padding="8,4"
+                                Click="ImportantRevealButton_Click"
+                                Content="查看"
+                                CornerRadius="6"
+                                FontSize="10.5" />
+                            <Button
+                                Grid.Column="3"
+                                Click="ImportantDismissButton_Click"
+                                Style="{StaticResource HudTinyButtonStyle}">
+                                <FontIcon
+                                    FontFamily="Segoe Fluent Icons"
+                                    FontSize="9"
+                                    Glyph="&#xE711;" />
+                            </Button>
+                        </Grid>
+                    </Border>
+                </Grid>
+
+                <Grid Grid.Row="2">
+                    <Grid
+                        x:Name="ListPanel"
+                        Visibility="{Binding ListVisibility}">
+                        <ListView
+                            x:Name="SessionList"
+                            HorizontalContentAlignment="Stretch"
+                            IsItemClickEnabled="True"
+                            ItemContainerStyle="{StaticResource SessionListViewItemStyle}"
+                            ItemClick="SessionList_ItemClick"
+                            ItemsSource="{Binding VisibleSessions}"
+                            SelectionMode="None"
+                            ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                            ScrollViewer.VerticalScrollBarVisibility="Auto">
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid
+                                        x:Name="RowHoverSurface"
+                                        Background="Transparent"
+                                        PointerEntered="RowHoverSurface_PointerEntered"
+                                        PointerExited="RowHoverSurface_PointerExited">
+                                        <Border
+                                            Background="{ThemeResource HudSurfaceBrush}"
+                                            BorderBrush="{ThemeResource HudDividerBrush}"
+                                            BorderThickness="0,0,0,1" />
+                                        <Border
+                                            Margin="7,6"
+                                            Background="{ThemeResource HudCompletedTintBrush}"
+                                            BorderBrush="{ThemeResource HudCompletedBrush}"
+                                            BorderThickness="1"
+                                            CornerRadius="9"
+                                            Opacity="0.92"
+                                            Visibility="{Binding CompletedOutlineVisibility}" />
+                                        <Border
+                                            Width="2"
+                                            Margin="3,13,0,13"
+                                            HorizontalAlignment="Left"
+                                            Background="{ThemeResource HudImportantBrush}"
+                                            CornerRadius="1"
+                                            Visibility="{Binding ImportantAccentVisibility}" />
+                                        <Grid
+                                            Margin="13,11,11,10"
+                                            ColumnSpacing="10">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="36" />
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+                                            <Border
+                                                Grid.Column="0"
+                                                Width="34"
+                                                Height="34"
+                                                VerticalAlignment="Top"
+                                                Background="{Binding StatusTintBrush}"
+                                                CornerRadius="8">
+                                                <TextBlock
+                                                    HorizontalAlignment="Center"
+                                                    VerticalAlignment="Center"
+                                                    FontFamily="Consolas"
+                                                    FontSize="12"
+                                                    FontWeight="Bold"
+                                                    Foreground="{Binding ProviderBrush}"
+                                                    Text="{Binding ProviderInitials}" />
+                                            </Border>
+                                            <Grid
+                                                Grid.Column="1"
+                                                RowSpacing="4">
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="Auto" />
+                                                    <RowDefinition Height="Auto" />
+                                                    <RowDefinition Height="Auto" />
+                                                </Grid.RowDefinitions>
+                                                <Grid
+                                                    Grid.Row="0"
+                                                    ColumnSpacing="6">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*" />
+                                                        <ColumnDefinition Width="Auto" />
+                                                        <ColumnDefinition Width="Auto" />
+                                                    </Grid.ColumnDefinitions>
+                                                    <Grid
+                                                        Grid.Column="0"
+                                                        Visibility="{Binding TitleVisibility}">
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="*" />
+                                                            <ColumnDefinition Width="Auto" />
+                                                        </Grid.ColumnDefinitions>
+                                                        <TextBlock
+                                                            VerticalAlignment="Center"
+                                                            FontSize="13"
+                                                            FontWeight="SemiBold"
+                                                            MaxLines="1"
+                                                            Text="{Binding DisplayTitle}"
+                                                            TextTrimming="CharacterEllipsis" />
+                                                        <Button
+                                                            x:Name="InlineEditButton"
+                                                            Grid.Column="1"
+                                                            Width="20"
+                                                            Height="20"
+                                                            Margin="5,0,0,0"
+                                                            Padding="0"
+                                                            Click="InlineEditButton_Click"
+                                                            IsHitTestVisible="False"
+                                                            Opacity="0"
+                                                            Tag="{Binding}"
+                                                            ToolTipService.ToolTip="编辑标题备注">
+                                                            <FontIcon
+                                                                FontFamily="Segoe Fluent Icons"
+                                                                FontSize="9"
+                                                                Glyph="&#xE70F;" />
+                                                        </Button>
+                                                    </Grid>
+                                                    <Grid
+                                                        Grid.ColumnSpan="3"
+                                                        ColumnSpacing="5"
+                                                        Visibility="{Binding EditorVisibility}">
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="*" />
+                                                            <ColumnDefinition Width="Auto" />
+                                                            <ColumnDefinition Width="Auto" />
+                                                        </Grid.ColumnDefinitions>
+                                                        <TextBox
+                                                            Grid.Column="0"
+                                                            Height="28"
+                                                            KeyDown="TitleEditor_KeyDown"
+                                                            Text="{Binding EditDraft, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                                        <Button
+                                                            Grid.Column="1"
+                                                            Click="CommitTitleButton_Click"
+                                                            Style="{StaticResource HudTinyButtonStyle}"
+                                                            Tag="{Binding}"
+                                                            ToolTipService.ToolTip="保存标题">
+                                                            <FontIcon
+                                                                FontFamily="Segoe Fluent Icons"
+                                                                FontSize="9"
+                                                                Glyph="&#xE73E;" />
+                                                        </Button>
+                                                        <Button
+                                                            Grid.Column="2"
+                                                            Click="CancelTitleButton_Click"
+                                                            Style="{StaticResource HudTinyButtonStyle}"
+                                                            Tag="{Binding}"
+                                                            ToolTipService.ToolTip="取消编辑">
+                                                            <FontIcon
+                                                                FontFamily="Segoe Fluent Icons"
+                                                                FontSize="9"
+                                                                Glyph="&#xE711;" />
+                                                        </Button>
+                                                    </Grid>
+                                                    <Button
+                                                        Grid.Column="1"
+                                                        Width="23"
+                                                        Height="23"
+                                                        Padding="0"
+                                                        Click="StarButton_Click"
+                                                        CornerRadius="6"
+                                                        Tag="{Binding}"
+                                                        ToolTipService.ToolTip="标记重要">
+                                                        <FontIcon
+                                                            FontFamily="Segoe Fluent Icons"
+                                                            FontSize="10"
+                                                            Foreground="{ThemeResource HudImportantBrush}"
+                                                            Glyph="{Binding StarGlyph}" />
+                                                    </Button>
+                                                    <Border
+                                                        Grid.Column="2"
+                                                        Padding="7,3"
+                                                        VerticalAlignment="Center"
+                                                        Background="{Binding StatusTintBrush}"
+                                                        CornerRadius="6">
+                                                        <TextBlock
+                                                            FontSize="9.5"
+                                                            FontWeight="SemiBold"
+                                                            Foreground="{Binding StatusBrush}"
+                                                            Text="{Binding StatusLabel}" />
+                                                    </Border>
+                                                </Grid>
+                                                <StackPanel
+                                                    Grid.Row="1"
+                                                    Orientation="Horizontal"
+                                                    Spacing="5">
+                                                    <TextBlock
+                                                        FontFamily="Consolas"
+                                                        FontSize="9"
+                                                        FontWeight="Bold"
+                                                        Foreground="{Binding ProviderBrush}"
+                                                        Text="{Binding ProviderShortName}" />
+                                                    <TextBlock
+                                                        FontSize="10.5"
+                                                        Foreground="{ThemeResource HudTextSecondaryBrush}"
+                                                        Text="·" />
+                                                    <TextBlock
+                                                        FontSize="10.5"
+                                                        Foreground="{ThemeResource HudTextSecondaryBrush}"
+                                                        MaxLines="1"
+                                                        Text="{Binding ProjectName}"
+                                                        TextTrimming="CharacterEllipsis" />
+                                                    <TextBlock
+                                                        FontSize="10.5"
+                                                        Foreground="{ThemeResource HudTextSecondaryBrush}"
+                                                        Text="·" />
+                                                    <TextBlock
+                                                        FontSize="10.5"
+                                                        Foreground="{ThemeResource HudTextSecondaryBrush}"
+                                                        MaxLines="1"
+                                                        Text="{Binding GitText}"
+                                                        TextTrimming="CharacterEllipsis" />
+                                                </StackPanel>
+                                                <Grid Grid.Row="2" ColumnSpacing="6">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="Auto" />
+                                                        <ColumnDefinition Width="*" />
+                                                        <ColumnDefinition Width="Auto" />
+                                                    </Grid.ColumnDefinitions>
+                                                    <Ellipse
+                                                        Grid.Column="0"
+                                                        Width="5"
+                                                        Height="5"
+                                                        VerticalAlignment="Center"
+                                                        Fill="{Binding StatusBrush}" />
+                                                    <TextBlock
+                                                        Grid.Column="1"
+                                                        FontSize="10.5"
+                                                        Foreground="{ThemeResource HudTextSecondaryBrush}"
+                                                        MaxLines="1"
+                                                        Text="{Binding CurrentAction}"
+                                                        TextTrimming="CharacterEllipsis" />
+                                                    <TextBlock
+                                                        Grid.Column="2"
+                                                        FontSize="10"
+                                                        Foreground="{ThemeResource HudTextTertiaryBrush}"
+                                                        Text="{Binding ActivityAge}" />
+                                                </Grid>
+                                            </Grid>
+                                            <FontIcon
+                                                Grid.Column="2"
+                                                Margin="0,10,0,0"
+                                                VerticalAlignment="Top"
+                                                FontFamily="Segoe Fluent Icons"
+                                                FontSize="9"
+                                                Foreground="{ThemeResource HudTextTertiaryBrush}"
+                                                Glyph="&#xE76C;" />
+                                        </Grid>
+                                    </Grid>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+
+                        <StackPanel
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Spacing="9"
+                            Visibility="{Binding EmptyVisibility}">
+                            <FontIcon
+                                HorizontalAlignment="Center"
+                                FontFamily="Segoe Fluent Icons"
+                                FontSize="23"
+                                Foreground="{ThemeResource HudTextTertiaryBrush}"
+                                Glyph="&#xE9D9;" />
+                            <TextBlock
+                                HorizontalAlignment="Center"
+                                FontSize="12.5"
+                                FontWeight="SemiBold"
+                                Text="当前筛选没有会话" />
+                            <TextBlock
+                                HorizontalAlignment="Center"
+                                FontSize="10.5"
+                                Foreground="{ThemeResource HudTextSecondaryBrush}"
+                                Text="本地 Codex 与 Claude 日志会在这里出现" />
+                        </StackPanel>
+
+                        <StackPanel
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Spacing="10"
+                            Visibility="{Binding LoadingVisibility}">
+                            <ProgressRing
+                                Width="22"
+                                Height="22"
+                                IsActive="True" />
+                            <TextBlock
+                                FontSize="10.5"
+                                Foreground="{ThemeResource HudTextSecondaryBrush}"
+                                Text="正在读取本地会话" />
+                        </StackPanel>
+                    </Grid>
+
+                    <Grid
+                        x:Name="DetailPanel"
+                        Visibility="{Binding DetailVisibility}">
+                        <Grid DataContext="{Binding SelectedRow}">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="55" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="28" />
+                            </Grid.RowDefinitions>
+
+                            <Grid
+                                Grid.Row="0"
+                                Padding="10,8,11,7"
+                                ColumnSpacing="8"
+                                PointerPressed="DragSurface_PointerPressed">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <Button
+                                    Grid.Column="0"
+                                    Click="DetailBackButton_Click"
+                                    Style="{StaticResource HudIconButtonStyle}"
+                                    ToolTipService.ToolTip="返回列表">
+                                    <FontIcon
+                                        FontFamily="Segoe Fluent Icons"
+                                        FontSize="11"
+                                        Glyph="&#xE72B;" />
+                                </Button>
+                                <Grid
+                                    Grid.Column="1"
+                                    VerticalAlignment="Center">
+                                    <StackPanel
+                                        Spacing="2"
+                                        Visibility="{Binding TitleVisibility}">
+                                        <TextBlock
+                                            FontSize="12.5"
+                                            FontWeight="SemiBold"
+                                            MaxLines="1"
+                                            Text="{Binding DisplayTitle}"
+                                            TextTrimming="CharacterEllipsis" />
+                                        <StackPanel Orientation="Horizontal" Spacing="5">
+                                            <TextBlock
+                                                FontFamily="Consolas"
+                                                FontSize="9"
+                                                FontWeight="Bold"
+                                                Foreground="{Binding ProviderBrush}"
+                                                Text="{Binding ProviderShortName}" />
+                                            <TextBlock
+                                                FontSize="9.5"
+                                                Foreground="{ThemeResource HudTextTertiaryBrush}"
+                                                Text="{Binding TitleSourceText}" />
+                                        </StackPanel>
+                                    </StackPanel>
+                                    <Grid
+                                        ColumnSpacing="4"
+                                        Visibility="{Binding EditorVisibility}">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBox
+                                            Grid.Column="0"
+                                            Height="30"
+                                            KeyDown="TitleEditor_KeyDown"
+                                            PlaceholderText="例如：日志查询"
+                                            Text="{Binding EditDraft, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                        <Button
+                                            Grid.Column="1"
+                                            Click="CommitTitleButton_Click"
+                                            Style="{StaticResource HudTinyButtonStyle}"
+                                            Tag="{Binding}"
+                                            ToolTipService.ToolTip="保存标题">
+                                            <FontIcon
+                                                FontFamily="Segoe Fluent Icons"
+                                                FontSize="9"
+                                                Glyph="&#xE73E;" />
+                                        </Button>
+                                        <Button
+                                            Grid.Column="2"
+                                            Click="CancelTitleButton_Click"
+                                            Style="{StaticResource HudTinyButtonStyle}"
+                                            Tag="{Binding}"
+                                            ToolTipService.ToolTip="取消编辑">
+                                            <FontIcon
+                                                FontFamily="Segoe Fluent Icons"
+                                                FontSize="9"
+                                                Glyph="&#xE711;" />
+                                        </Button>
+                                    </Grid>
+                                </Grid>
+                                <Button
+                                    Grid.Column="2"
+                                    Click="DetailEditTitleButton_Click"
+                                    Style="{StaticResource HudIconButtonStyle}"
+                                    Tag="{Binding}"
+                                    ToolTipService.ToolTip="编辑标题备注">
+                                    <FontIcon
+                                        FontFamily="Segoe Fluent Icons"
+                                        FontSize="10"
+                                        Glyph="&#xE70F;" />
+                                </Button>
+                                <Button
+                                    Grid.Column="3"
+                                    Click="StarButton_Click"
+                                    Style="{StaticResource HudIconButtonStyle}"
+                                    Tag="{Binding}"
+                                    ToolTipService.ToolTip="标记重要">
+                                    <FontIcon
+                                        FontFamily="Segoe Fluent Icons"
+                                        FontSize="10"
+                                        Foreground="{ThemeResource HudImportantBrush}"
+                                        Glyph="{Binding StarGlyph}" />
+                                </Button>
+                            </Grid>
+
+                            <ScrollViewer
+                                Grid.Row="1"
+                                HorizontalScrollBarVisibility="Disabled"
+                                VerticalScrollBarVisibility="Auto">
+                                <StackPanel>
+                                    <Grid
+                                        Padding="15,14"
+                                        ColumnSpacing="10">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="40" />
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <Border
+                                            Grid.Column="0"
+                                            Width="38"
+                                            Height="38"
+                                            Background="{Binding StatusTintBrush}"
+                                            CornerRadius="9">
+                                            <TextBlock
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                FontFamily="Consolas"
+                                                FontSize="12"
+                                                FontWeight="Bold"
+                                                Foreground="{Binding ProviderBrush}"
+                                                Text="{Binding ProviderInitials}" />
+                                        </Border>
+                                        <StackPanel
+                                            Grid.Column="1"
+                                            Spacing="3">
+                                            <TextBlock
+                                                FontSize="10.5"
+                                                Foreground="{ThemeResource HudTextSecondaryBrush}"
+                                                Text="{Binding ProjectName}" />
+                                            <TextBlock
+                                                FontFamily="Consolas"
+                                                FontSize="9.5"
+                                                Foreground="{ThemeResource HudTextTertiaryBrush}"
+                                                MaxLines="1"
+                                                Text="{Binding ProjectPath}"
+                                                TextTrimming="CharacterEllipsis" />
+                                            <StackPanel Orientation="Horizontal" Spacing="7">
+                                                <TextBlock
+                                                    FontSize="9.5"
+                                                    Foreground="{ThemeResource HudTextTertiaryBrush}"
+                                                    Text="{Binding GitText}" />
+                                                <TextBlock
+                                                    FontSize="9.5"
+                                                    Foreground="{ThemeResource HudTextTertiaryBrush}"
+                                                    Text="{Binding DurationText}" />
+                                            </StackPanel>
+                                        </StackPanel>
+                                        <Button
+                                            Grid.Column="2"
+                                            Padding="9,5"
+                                            VerticalAlignment="Top"
+                                            Click="OpenProjectButton_Click"
+                                            Content="打开目录"
+                                            CornerRadius="7"
+                                            FontSize="10" />
+                                    </Grid>
+
+                                    <Border
+                                        Height="1"
+                                        Margin="15,0"
+                                        Background="{ThemeResource HudDividerBrush}" />
+
+                                    <StackPanel
+                                        Padding="15,14"
+                                        Spacing="9">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+                                            <StackPanel Orientation="Horizontal" Spacing="7">
+                                                <FontIcon
+                                                    FontFamily="Segoe Fluent Icons"
+                                                    FontSize="11"
+                                                    Foreground="{Binding StatusBrush}"
+                                                    Glyph="&#xE9D9;" />
+                                                <TextBlock
+                                                    FontSize="11"
+                                                    FontWeight="SemiBold"
+                                                    Text="当前进度" />
+                                            </StackPanel>
+                                            <TextBlock
+                                                Grid.Column="1"
+                                                FontSize="9.5"
+                                                Foreground="{ThemeResource HudTextTertiaryBrush}"
+                                                Text="{Binding ConfidenceLabel}" />
+                                        </Grid>
+                                        <TextBlock
+                                            FontSize="13"
+                                            FontWeight="Medium"
+                                            Text="{Binding CurrentAction}"
+                                            TextWrapping="Wrap" />
+                                        <TextBlock
+                                            FontFamily="Consolas"
+                                            FontSize="9.5"
+                                            Foreground="{ThemeResource HudTextSecondaryBrush}"
+                                            Text="{Binding CurrentFilesText}"
+                                            TextWrapping="Wrap"
+                                            Visibility="{Binding CurrentFilesVisibility}" />
+                                    </StackPanel>
+
+                                    <Border
+                                        Height="1"
+                                        Margin="15,0"
+                                        Background="{ThemeResource HudDividerBrush}" />
+
+                                    <StackPanel
+                                        Padding="15,13"
+                                        Spacing="9">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+                                            <StackPanel Orientation="Horizontal" Spacing="7">
+                                                <FontIcon
+                                                    FontFamily="Segoe Fluent Icons"
+                                                    FontSize="11"
+                                                    Glyph="&#xE8BD;" />
+                                                <TextBlock
+                                                    FontSize="11"
+                                                    FontWeight="SemiBold"
+                                                    Text="用户原始输入" />
+                                            </StackPanel>
+                                            <TextBlock
+                                                Grid.Column="1"
+                                                FontSize="9.5"
+                                                Foreground="{ThemeResource HudTextTertiaryBrush}"
+                                                Text="{Binding PromptDateText}" />
+                                        </Grid>
+                                        <Border
+                                            Padding="11"
+                                            Background="{ThemeResource HudControlFillBrush}"
+                                            CornerRadius="7">
+                                            <TextBlock
+                                                FontSize="11.5"
+                                                IsTextSelectionEnabled="True"
+                                                LineHeight="18"
+                                                Text="{Binding PromptText}"
+                                                TextWrapping="Wrap" />
+                                        </Border>
+                                        <ItemsControl
+                                            ItemsSource="{Binding PromptImages}"
+                                            Visibility="{Binding PromptImagesVisibility}">
+                                            <ItemsControl.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <StackPanel
+                                                        Orientation="Horizontal"
+                                                        Spacing="8" />
+                                                </ItemsPanelTemplate>
+                                            </ItemsControl.ItemsPanel>
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Button
+                                                        Padding="5"
+                                                        Click="PromptImageButton_Click"
+                                                        CornerRadius="8"
+                                                        Tag="{Binding}">
+                                                        <StackPanel Spacing="4">
+                                                            <Border
+                                                                Width="104"
+                                                                Height="66"
+                                                                Background="{ThemeResource HudControlFillBrush}"
+                                                                CornerRadius="6">
+                                                                <Image
+                                                                    Stretch="UniformToFill"
+                                                                    Source="{Binding ImageSource}" />
+                                                            </Border>
+                                                            <TextBlock
+                                                                HorizontalAlignment="Center"
+                                                                FontSize="9.5"
+                                                                Text="{Binding Label}" />
+                                                        </StackPanel>
+                                                    </Button>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </StackPanel>
+
+                                    <Border
+                                        Height="1"
+                                        Margin="15,0"
+                                        Background="{ThemeResource HudDividerBrush}" />
+
+                                    <StackPanel Padding="15,13,15,8">
+                                        <Grid Margin="0,0,0,5">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+                                            <StackPanel Orientation="Horizontal" Spacing="7">
+                                                <FontIcon
+                                                    FontFamily="Segoe Fluent Icons"
+                                                    FontSize="11"
+                                                    Glyph="&#xE9D5;" />
+                                                <TextBlock
+                                                    FontSize="11"
+                                                    FontWeight="SemiBold"
+                                                    Text="完成记录" />
+                                            </StackPanel>
+                                            <TextBlock
+                                                Grid.Column="1"
+                                                FontSize="9.5"
+                                                Foreground="{ThemeResource HudTextTertiaryBrush}">
+                                                <Run Text="{Binding TotalRunCount}" />
+                                                <Run Text=" 轮" />
+                                            </TextBlock>
+                                        </Grid>
+
+                                        <StackPanel
+                                            Padding="0,18"
+                                            Spacing="6"
+                                            Visibility="{Binding EmptyRunsVisibility}">
+                                            <FontIcon
+                                                FontFamily="Segoe Fluent Icons"
+                                                FontSize="20"
+                                                Foreground="{ThemeResource HudTextTertiaryBrush}"
+                                                Glyph="&#xE823;" />
+                                            <TextBlock
+                                                FontSize="12.5"
+                                                FontWeight="Medium"
+                                                Text="还没有完成记录" />
+                                            <TextBlock
+                                                FontSize="10.5"
+                                                Foreground="{ThemeResource HudTextSecondaryBrush}"
+                                                Text="当前任务结束后，本地摘要会出现在这里。" />
+                                        </StackPanel>
+
+                                        <ItemsControl
+                                            ItemsSource="{Binding Runs}"
+                                            Visibility="{Binding RunsVisibility}">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <StackPanel Padding="0,11" Spacing="6">
+                                                        <Grid>
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="*" />
+                                                                <ColumnDefinition Width="Auto" />
+                                                            </Grid.ColumnDefinitions>
+                                                            <TextBlock
+                                                                FontSize="11.5"
+                                                                FontWeight="SemiBold"
+                                                                Text="{Binding Objective}"
+                                                                TextWrapping="Wrap" />
+                                                            <TextBlock
+                                                                Grid.Column="1"
+                                                                Margin="8,0,0,0"
+                                                                FontSize="9"
+                                                                Foreground="{ThemeResource HudTextTertiaryBrush}"
+                                                                Text="{Binding DateText}" />
+                                                        </Grid>
+                                                        <TextBlock
+                                                            FontSize="11"
+                                                            Foreground="{ThemeResource HudTextSecondaryBrush}"
+                                                            LineHeight="17"
+                                                            Text="{Binding Summary}"
+                                                            TextWrapping="Wrap" />
+                                                        <TextBlock
+                                                            FontFamily="Consolas"
+                                                            FontSize="9.5"
+                                                            Foreground="{ThemeResource HudTextTertiaryBrush}"
+                                                            Text="{Binding Files}"
+                                                            TextWrapping="Wrap"
+                                                            Visibility="{Binding FilesVisibility}" />
+                                                        <Border
+                                                            Height="1"
+                                                            Margin="0,5,0,0"
+                                                            Background="{ThemeResource HudDividerBrush}" />
+                                                    </StackPanel>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+
+                                        <Button
+                                            Height="34"
+                                            Margin="0,2,0,8"
+                                            HorizontalAlignment="Stretch"
+                                            Click="LoadMoreButton_Click"
+                                            CornerRadius="7"
+                                            Visibility="{Binding LoadMoreVisibility}">
+                                            <Grid ColumnSpacing="8">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*" />
+                                                    <ColumnDefinition Width="Auto" />
+                                                    <ColumnDefinition Width="*" />
+                                                </Grid.ColumnDefinitions>
+                                                <Rectangle
+                                                    Grid.Column="0"
+                                                    Height="1"
+                                                    VerticalAlignment="Center"
+                                                    Fill="{ThemeResource HudBorderBrush}" />
+                                                <StackPanel
+                                                    Grid.Column="1"
+                                                    Orientation="Horizontal"
+                                                    Spacing="5">
+                                                    <FontIcon
+                                                        FontFamily="Segoe Fluent Icons"
+                                                        FontSize="9"
+                                                        Glyph="&#xE70D;" />
+                                                    <TextBlock
+                                                        FontSize="10"
+                                                        Text="加载 5 条" />
+                                                </StackPanel>
+                                                <Rectangle
+                                                    Grid.Column="2"
+                                                    Height="1"
+                                                    VerticalAlignment="Center"
+                                                    Fill="{ThemeResource HudBorderBrush}" />
+                                            </Grid>
+                                        </Button>
+                                    </StackPanel>
+                                </StackPanel>
+                            </ScrollViewer>
+
+                            <Grid
+                                Grid.Row="2"
+                                Padding="14,0"
+                                Background="{ThemeResource HudSurfaceBrush}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock
+                                    VerticalAlignment="Center"
+                                    FontSize="9.5"
+                                    Foreground="{ThemeResource HudTextSecondaryBrush}"
+                                    Text="本地规则摘要 · 未修改 Agent 数据" />
+                                <Button
+                                    Grid.Column="1"
+                                    Padding="7,2"
+                                    Click="ClearManualTitleButton_Click"
+                                    Content="恢复自动标题"
+                                    CornerRadius="5"
+                                    FontSize="9"
+                                    Visibility="{Binding ManualTitleActionVisibility}" />
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                </Grid>
+
+                <Grid
+                    Grid.Row="3"
+                    Padding="13,0"
+                    Background="{ThemeResource HudSurfaceBrush}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <FontIcon
+                        Grid.Column="0"
+                        Margin="0,0,5,0"
+                        VerticalAlignment="Center"
+                        FontFamily="Segoe Fluent Icons"
+                        FontSize="9"
+                        Foreground="{ThemeResource HudTextSecondaryBrush}"
+                        Glyph="&#xE72E;" />
+                    <TextBlock
+                        Grid.Column="1"
+                        VerticalAlignment="Center"
+                        FontSize="9.5"
+                        Foreground="{ThemeResource HudTextSecondaryBrush}"
+                        Text="只读监视" />
+                    <TextBlock
+                        Grid.Column="2"
+                        VerticalAlignment="Center"
+                        FontSize="9.5"
+                        Foreground="{ThemeResource HudTextSecondaryBrush}"
+                        Text="{Binding FooterText}" />
+                </Grid>
+            </Grid>
+        </Grid>
+    </Border>
+</Window>

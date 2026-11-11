@@ -1,0 +1,22 @@
+.DS_Store
+
+# Swift
+.build/
+.swiftpm/
+build/
+DerivedData/
+*.app/
+
+# .NET / WinUI
+Windows/**/bin/
+Windows/**/obj/
+Windows/artifacts/
+*.user
+*.suo
+
+# Local secrets and signing material
+.env
+.env.*
+*.pfx
+*.p12
+*.cer
