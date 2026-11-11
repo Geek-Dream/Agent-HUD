@@ -1,4 +1,5 @@
 using AgentHUD.Core;
+using Microsoft.UI.Xaml;
 using XamlApplication = Microsoft.UI.Xaml.Application;
 
 namespace AgentHUD.Windows;
