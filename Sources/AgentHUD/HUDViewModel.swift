@@ -2,7 +2,7 @@ import AppKit
 import Foundation
 
 @MainActor
-final class HUDViewModel: ObservableObject {
+final class HUDViewModel: ObservableObject, LinkSnapshotProviding {
     @Published private(set) var sessions: [AgentSession] = []
     @Published private(set) var isLoading = false
     @Published private(set) var lastScannedAt: Date?
@@ -62,6 +62,7 @@ final class HUDViewModel: ObservableObject {
     private var aiRefreshTask: Task<Void, Never>?
     private var aiTitleKeys: [String: String] = [:]
     private var isRefreshing = false
+    private var monitoringRevision = 0
     private var departingSessions: [String: AgentSession] = [:]
     private var completionTransitionTasks: [String: Task<Void, Never>] = [:]
 
@@ -190,6 +191,38 @@ final class HUDViewModel: ObservableObject {
         resolvedTitle(for: session).value
     }
 
+    func monitoringSnapshot() async -> LinkMonitoringSnapshot {
+        let privacy = privacyMode
+        let current = sessions.map { session in
+            let git = privacy ? nil : session.git
+            return LinkMonitoringSession(
+                id: session.id,
+                provider: session.provider.rawValue.capitalized,
+                status: session.status.rawValue.capitalized,
+                confidence: session.confidence.rawValue.capitalized,
+                title: privacy ? "隐私模式已开启" : displayTitle(for: session),
+                projectName: privacy ? "已隐藏" : session.projectName,
+                currentAction: privacy ? "隐私模式已开启" : session.currentAction,
+                currentFiles: privacy ? [] : session.currentFiles,
+                startedAt: session.startedAt,
+                lastActivityAt: session.lastActivityAt,
+                completedAt: session.completedAt,
+                isLive: session.isLive,
+                gitBranch: git?.branch,
+                gitChangedFiles: git?.changedFiles,
+                gitInsertions: git?.insertions,
+                gitDeletions: git?.deletions,
+                summary: privacy ? nil : session.lastRun?.summary
+            )
+        }
+        return LinkMonitoringSnapshot(
+            revision: monitoringRevision,
+            scannedAt: lastScannedAt,
+            privacyMode: privacy,
+            sessions: current
+        )
+    }
+
     func titleSource(for session: AgentSession) -> TaskTitleSource {
         resolvedTitle(for: session).source
     }
@@ -291,6 +324,7 @@ final class HUDViewModel: ObservableObject {
         }
 
         sessions = snapshot.sessions
+        monitoringRevision += 1
         presentImportantCompletionNoticeIfNeeded(
             completionIDs: runningCompletionIDs,
             previousSessions: previousSessions,

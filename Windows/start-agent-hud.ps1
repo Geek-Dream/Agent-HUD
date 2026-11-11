@@ -24,7 +24,9 @@ function Test-DotnetAvailable {
         return $false
     }
     $runtimes = & $installed.Source --list-runtimes 2>$null
-    return ($LASTEXITCODE -eq 0 -and ($runtimes -match "Microsoft\.NETCore\.App 8\."))
+    return ($LASTEXITCODE -eq 0 -and
+        ($runtimes -match "Microsoft\.NETCore\.App 8\.") -and
+        ($runtimes -match "Microsoft\.AspNetCore\.App 8\."))
 }
 
 function Test-BuildCurrent {

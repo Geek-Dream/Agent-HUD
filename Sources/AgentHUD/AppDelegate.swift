@@ -20,6 +20,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     let model = HUDViewModel()
     private var panel: FloatingPanel?
     private var subscriptions: Set<AnyCancellable> = []
+    private var linkServer: LinkServer?
+    private var linkSettingsWindowController: LinkSettingsWindowController?
     private lazy var aiSettingsWindowController = AISettingsWindowController {
         [weak self] in
         self?.model.reloadAIConfiguration()
@@ -37,6 +39,20 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             self?.showAISettings()
         }
         model.start()
+        do {
+            let server = try LinkServer()
+            linkServer = server
+            linkSettingsWindowController = LinkSettingsWindowController(server: server)
+            Task {
+                do {
+                    try await server.start(provider: model)
+                } catch {
+                    NSLog("AgentHUD LAN service failed: %@", error.localizedDescription)
+                }
+            }
+        } catch {
+            NSLog("AgentHUD LAN initialization failed: %@", error.localizedDescription)
+        }
 
         DispatchQueue.main.async { [weak self] in
             self?.showPanel(activate: false)
@@ -44,6 +60,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     func applicationWillTerminate(_ notification: Notification) {
+        linkServer?.stop()
         model.stop()
     }
 
@@ -228,6 +245,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         aiSettingsWindowController.present()
     }
 
+    func showLinkSettings() {
+        linkSettingsWindowController?.present()
+    }
+
     func quit() {
         NSApp.terminate(nil)
     }
@@ -266,6 +287,10 @@ private struct AgentHUDStatusMenu: View {
             appDelegate.refresh()
         }
         .keyboardShortcut("r")
+
+        Button("手机关联…") {
+            appDelegate.showLinkSettings()
+        }
 
         Button("AI 标题设置…") {
             appDelegate.showAISettings()

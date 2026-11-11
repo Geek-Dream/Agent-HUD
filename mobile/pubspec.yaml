@@ -1,0 +1,24 @@
+name: agent_hud_mobile
+description: AgentHUD LAN monitoring client for Android and iOS.
+publish_to: "none"
+version: 0.1.0+1
+
+environment:
+  sdk: ^3.5.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+  provider: ^6.1.2
+  crypto: ^3.0.5
+  flutter_secure_storage: ^9.2.2
+  mobile_scanner: ^6.0.2
+  intl: ^0.19.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true

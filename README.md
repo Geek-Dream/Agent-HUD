@@ -80,6 +80,17 @@ Windows\start-agent-hud.cmd
 如果应用启动后立即退出，启动器会显示退出码，并打印
 `%LOCALAPPDATA%\AgentHUD\startup-error.log` 中的启动错误。
 
+## 手机只读监控
+
+Windows 标题栏或托盘菜单中的“手机关联”会生成两分钟有效的二维码和六位验证码。
+手机与电脑位于同一局域网时，可以通过 `mobile/` 中的 Flutter App 关联设备并查看会话状态。
+每台设备使用独立、可撤销的只读令牌，连接层需要 .NET 8 的 ASP.NET Core 运行时；
+启动器已同步检查该运行时。
+
+首版不开放任何控制接口，也不会发送 API Key、完整路径、原始日志或图片。
+协议见 `docs/lan-monitoring.md`，手机构建说明见 `mobile/README.md`。
+macOS 菜单栏同样提供“手机关联”，对应 Swift 实现见 `docs/macos-lan.md`。
+
 ## 数据来源
 
 - Codex：`~/.codex/sessions/**/*.jsonl`

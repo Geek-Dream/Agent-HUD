@@ -150,6 +150,15 @@
                                 Glyph="{Binding PrivacyGlyph}" />
                         </Button>
                         <Button
+                            Click="LinkButton_Click"
+                            Style="{StaticResource HudIconButtonStyle}"
+                            ToolTipService.ToolTip="手机关联">
+                            <FontIcon
+                                FontFamily="Segoe Fluent Icons"
+                                FontSize="12"
+                                Glyph="&#xE8EA;" />
+                        </Button>
+                        <Button
                             Click="SettingsButton_Click"
                             Style="{StaticResource HudIconButtonStyle}"
                             ToolTipService.ToolTip="AI 标题设置">
@@ -266,6 +275,15 @@
                                 FontFamily="Segoe Fluent Icons"
                                 FontSize="12"
                                 Glyph="{Binding PrivacyGlyph}" />
+                        </Button>
+                        <Button
+                            Click="LinkButton_Click"
+                            Style="{StaticResource HudIconButtonStyle}"
+                            ToolTipService.ToolTip="手机关联">
+                            <FontIcon
+                                FontFamily="Segoe Fluent Icons"
+                                FontSize="12"
+                                Glyph="&#xE8EA;" />
                         </Button>
                         <Button
                             Click="SettingsButton_Click"

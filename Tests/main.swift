@@ -1244,7 +1244,8 @@ do {
     try await testAICacheAndFailureBackoff()
     try testAIConfiguration()
     try testAISecretEnvironmentFallback()
-    print("18 tests passed (adapter, AI title and session priority smoke tests)")
+    try await testLinkPairing()
+    print("19 tests passed (adapter, AI title, session priority and LAN pairing smoke tests)")
 } catch {
     fputs("Adapter smoke tests failed: \(error)\n", stderr)
     exit(1)

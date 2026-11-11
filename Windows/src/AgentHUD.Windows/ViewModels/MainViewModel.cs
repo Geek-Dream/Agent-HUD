@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using AgentHUD.Core;
+using AgentHUD.Link;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
@@ -22,7 +23,7 @@ public sealed class CompletionTransitionEventArgs : EventArgs
     public bool IsArrival { get; }
 }
 
-public sealed class MainViewModel : INotifyPropertyChanged
+public sealed class MainViewModel : INotifyPropertyChanged, IMonitoringSnapshotSource
 {
     private readonly AppStateStore _store;
     private readonly CredentialStore _credentials;
@@ -43,6 +44,7 @@ public sealed class MainViewModel : INotifyPropertyChanged
     private bool _positionLocked;
     private int _runVisibleCount = 5;
     private string _lastFingerprint = string.Empty;
+    private long _monitoringRevision;
 
     public MainViewModel()
     {
@@ -297,6 +299,7 @@ public sealed class MainViewModel : INotifyPropertyChanged
             }
 
             _sessions = snapshot.Sessions;
+            _monitoringRevision++;
             LastScannedAt = snapshot.ScannedAt;
             PresentImportantCompletionIfNeeded(previous, snapshot.Sessions, completionIds);
             RebuildRows(force: animatedIds.Length > 0);
@@ -537,6 +540,34 @@ public sealed class MainViewModel : INotifyPropertyChanged
         _store.State.ExpandedWidth = width;
         _store.State.ExpandedHeight = height;
         _store.Save();
+    }
+
+    public MonitoringSnapshot GetMonitoringSnapshot()
+    {
+        var privacy = PrivacyMode;
+        var sessions = _sessions.Select(session =>
+        {
+            var git = privacy ? null : session.Git;
+            return new MonitoringSessionSnapshot(
+                session.Id,
+                session.Provider.ToString(),
+                session.Status.ToString(),
+                session.Confidence.ToString(),
+                privacy ? "隐私模式已开启" : DisplayTitle(session),
+                privacy ? "已隐藏" : session.ProjectName,
+                privacy ? "隐私模式已开启" : session.CurrentAction,
+                privacy ? Array.Empty<string>() : session.CurrentFiles,
+                session.StartedAt,
+                session.LastActivityAt,
+                session.CompletedAt,
+                session.IsLive,
+                git?.Branch,
+                git?.ChangedFiles,
+                git?.Insertions,
+                git?.Deletions,
+                privacy ? null : session.Runs.LastOrDefault()?.Summary);
+        }).ToArray();
+        return new MonitoringSnapshot(_monitoringRevision, LastScannedAt, privacy, sessions);
     }
 
     private async Task RefreshLoopAsync(CancellationToken cancellationToken)

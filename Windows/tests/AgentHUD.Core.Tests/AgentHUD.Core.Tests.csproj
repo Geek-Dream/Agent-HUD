@@ -19,5 +19,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\AgentHUD.Core\AgentHUD.Core.csproj" />
+    <ProjectReference Include="..\..\src\AgentHUD.Link\AgentHUD.Link.csproj" />
   </ItemGroup>
 </Project>

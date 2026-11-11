@@ -1,4 +1,4 @@
-Microsoft Visual Studio Solution File, Format Version 12.00
+﻿Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
@@ -7,6 +7,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AgentHUD.Core.Tests", "tests\AgentHUD.Core.Tests\AgentHUD.Core.Tests.csproj", "{769DE93C-F985-4A53-AEA6-8451CE97D0AA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AgentHUD.Windows", "src\AgentHUD.Windows\AgentHUD.Windows.csproj", "{B30E861E-E3F3-4936-99EC-E66B2B4E9D62}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{4535BE15-01A0-4219-8CB7-88EE8717E35F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AgentHUD.Link", "src\AgentHUD.Link\AgentHUD.Link.csproj", "{E1D914C9-F376-4DA2-AF97-062E7648C4C2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -40,8 +44,19 @@ Global
 		{B30E861E-E3F3-4936-99EC-E66B2B4E9D62}.Release|x64.Build.0 = Release|x64
 		{B30E861E-E3F3-4936-99EC-E66B2B4E9D62}.Release|x86.ActiveCfg = Release|x86
 		{B30E861E-E3F3-4936-99EC-E66B2B4E9D62}.Release|x86.Build.0 = Release|x86
+		{E1D914C9-F376-4DA2-AF97-062E7648C4C2}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{E1D914C9-F376-4DA2-AF97-062E7648C4C2}.Debug|x64.Build.0 = Debug|Any CPU
+		{E1D914C9-F376-4DA2-AF97-062E7648C4C2}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{E1D914C9-F376-4DA2-AF97-062E7648C4C2}.Debug|x86.Build.0 = Debug|Any CPU
+		{E1D914C9-F376-4DA2-AF97-062E7648C4C2}.Release|x64.ActiveCfg = Release|Any CPU
+		{E1D914C9-F376-4DA2-AF97-062E7648C4C2}.Release|x64.Build.0 = Release|Any CPU
+		{E1D914C9-F376-4DA2-AF97-062E7648C4C2}.Release|x86.ActiveCfg = Release|Any CPU
+		{E1D914C9-F376-4DA2-AF97-062E7648C4C2}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{E1D914C9-F376-4DA2-AF97-062E7648C4C2} = {4535BE15-01A0-4219-8CB7-88EE8717E35F}
 	EndGlobalSection
 EndGlobal
