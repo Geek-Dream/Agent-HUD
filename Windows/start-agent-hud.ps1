@@ -25,7 +25,7 @@ if ($null -eq $exe) {
 }
 
 if ($null -eq $exe) {
-    throw "找不到 AgentHUD.Windows.exe。请先运行 Windows\build.ps1。"
+    throw "AgentHUD.Windows.exe was not produced. Run Windows\build.ps1 first."
 }
 
 Start-Process -FilePath $exe.FullName
