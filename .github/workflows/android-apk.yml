@@ -73,3 +73,4 @@ jobs:
         with:
           files: mobile/build/app/outputs/flutter-apk/app-release.apk
           generate_release_notes: true
+          prerelease: true
