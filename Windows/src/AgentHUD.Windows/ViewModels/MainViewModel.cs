@@ -528,6 +528,17 @@ public sealed class MainViewModel : INotifyPropertyChanged
         _store.State.WindowX is { } x ? (int)x : null,
         _store.State.WindowY is { } y ? (int)y : null);
 
+    public (double? Width, double? Height) SavedExpandedWindowSize => (
+        _store.State.ExpandedWidth,
+        _store.State.ExpandedHeight);
+
+    public void SaveExpandedWindowSize(double width, double height)
+    {
+        _store.State.ExpandedWidth = width;
+        _store.State.ExpandedHeight = height;
+        _store.Save();
+    }
+
     private async Task RefreshLoopAsync(CancellationToken cancellationToken)
     {
         while (!cancellationToken.IsCancellationRequested)

@@ -21,6 +21,9 @@ internal sealed class TrayIcon : IDisposable
     private const int WmLeftButtonDoubleClick = 0x0203;
     private const int WmRightButtonUp = 0x0205;
     private const int IdiApplication = 32512;
+    private const uint ImageIcon = 1;
+    private const uint LrLoadFromFile = 0x00000010;
+    private const uint LrDefaultSize = 0x00000040;
 
     private const uint ShowCommand = 1;
     private const uint ExpandCommand = 2;
@@ -44,6 +47,7 @@ internal sealed class TrayIcon : IDisposable
     private readonly Func<bool> _isPositionLocked;
     private readonly SubclassProc _subclassProc;
     private readonly IntPtr _icon;
+    private bool _ownsIcon;
     private bool _disposed;
 
     public TrayIcon(
@@ -73,7 +77,7 @@ internal sealed class TrayIcon : IDisposable
         _isPrivacyMode = isPrivacyMode;
         _isPositionLocked = isPositionLocked;
         _subclassProc = WindowSubclassProc;
-        _icon = LoadIcon(IntPtr.Zero, (IntPtr)IdiApplication);
+        _icon = LoadTrayIcon();
 
         if (!SetWindowSubclass(_windowHandle, _subclassProc, UIntPtr.Zero, IntPtr.Zero))
         {
@@ -99,6 +103,32 @@ internal sealed class TrayIcon : IDisposable
         var data = CreateIconData();
         ShellNotifyIcon(NimDelete, ref data);
         RemoveWindowSubclass(_windowHandle, _subclassProc, UIntPtr.Zero);
+        if (_ownsIcon)
+        {
+            DestroyIcon(_icon);
+        }
+    }
+
+    private IntPtr LoadTrayIcon()
+    {
+        var path = Path.Combine(AppContext.BaseDirectory, "Assets", "AgentHUD.ico");
+        if (File.Exists(path))
+        {
+            var icon = LoadImage(
+                IntPtr.Zero,
+                path,
+                ImageIcon,
+                0,
+                0,
+                LrLoadFromFile | LrDefaultSize);
+            if (icon != IntPtr.Zero)
+            {
+                _ownsIcon = true;
+                return icon;
+            }
+        }
+
+        return LoadIcon(IntPtr.Zero, (IntPtr)IdiApplication);
     }
 
     private NotifyIconData CreateIconData() => new()
@@ -290,6 +320,19 @@ internal sealed class TrayIcon : IDisposable
 
     [DllImport("user32.dll", EntryPoint = "LoadIconW")]
     private static extern IntPtr LoadIcon(IntPtr instance, IntPtr iconName);
+
+    [DllImport("user32.dll", EntryPoint = "LoadImageW", CharSet = CharSet.Unicode, SetLastError = true)]
+    private static extern IntPtr LoadImage(
+        IntPtr instance,
+        string name,
+        uint type,
+        int width,
+        int height,
+        uint flags);
+
+    [DllImport("user32.dll")]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    private static extern bool DestroyIcon(IntPtr icon);
 
     [DllImport("user32.dll")]
     private static extern IntPtr CreatePopupMenu();

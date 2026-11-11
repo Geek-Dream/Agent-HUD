@@ -12,6 +12,8 @@ public sealed class PersistedAppState
     public ProviderFilter ProviderFilter { get; set; } = ProviderFilter.All;
     public double? WindowX { get; set; }
     public double? WindowY { get; set; }
+    public double? ExpandedWidth { get; set; }
+    public double? ExpandedHeight { get; set; }
     public AIConfiguration AI { get; set; } = new();
     public Dictionary<string, string> ManualTitles { get; set; } = new(StringComparer.Ordinal);
     public HashSet<string> ImportantSessionIds { get; set; } = new(StringComparer.Ordinal);

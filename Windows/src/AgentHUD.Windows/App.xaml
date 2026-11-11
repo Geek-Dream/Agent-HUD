@@ -16,7 +16,7 @@
                     <SolidColorBrush x:Key="HudControlFillBrush" Color="#14101826" />
                     <SolidColorBrush x:Key="HudControlHoverBrush" Color="#241D2938" />
                     <SolidColorBrush x:Key="HudBorderBrush" Color="#38101826" />
-                    <SolidColorBrush x:Key="HudBorderStrongBrush" Color="#5C101826" />
+                    <SolidColorBrush x:Key="HudBorderStrongBrush" Color="#26101826" />
                     <SolidColorBrush x:Key="HudDividerBrush" Color="#30101826" />
                     <SolidColorBrush x:Key="HudTextPrimaryBrush" Color="#09111E" />
                     <SolidColorBrush x:Key="HudTextSecondaryBrush" Color="#354052" />
@@ -46,13 +46,13 @@
                     <SolidColorBrush x:Key="HudControlFillBrush" Color="#24FFFFFF" />
                     <SolidColorBrush x:Key="HudControlHoverBrush" Color="#38FFFFFF" />
                     <SolidColorBrush x:Key="HudBorderBrush" Color="#42FFFFFF" />
-                    <SolidColorBrush x:Key="HudBorderStrongBrush" Color="#70FFFFFF" />
-                    <SolidColorBrush x:Key="HudDividerBrush" Color="#2EFFFFFF" />
+                    <SolidColorBrush x:Key="HudBorderStrongBrush" Color="#26FFFFFF" />
+                    <SolidColorBrush x:Key="HudDividerBrush" Color="#18FFFFFF" />
                     <SolidColorBrush x:Key="HudTextPrimaryBrush" Color="#FFFFFF" />
                     <SolidColorBrush x:Key="HudTextSecondaryBrush" Color="#D6DEE9" />
                     <SolidColorBrush x:Key="HudTextTertiaryBrush" Color="#A9B5C5" />
-                    <SolidColorBrush x:Key="HudSelectionBrush" Color="#2F5D91" />
-                    <SolidColorBrush x:Key="HudSelectionBorderBrush" Color="#86BEFF" />
+                    <SolidColorBrush x:Key="HudSelectionBrush" Color="#33465C" />
+                    <SolidColorBrush x:Key="HudSelectionBorderBrush" Color="#6B9FEF" />
                     <SolidColorBrush x:Key="HudShadowBrush" Color="#99000000" />
                     <SolidColorBrush x:Key="HudPrivacyBrush" Color="#44351B" />
                     <SolidColorBrush x:Key="HudWorkingBrush" Color="#55ADFF" />
@@ -120,10 +120,12 @@
                 <Setter Property="Padding" Value="8,0" />
                 <Setter Property="MinWidth" Value="0" />
                 <Setter Property="MinHeight" Value="0" />
+                <Setter Property="HorizontalContentAlignment" Value="Center" />
+                <Setter Property="VerticalContentAlignment" Value="Center" />
                 <Setter Property="CornerRadius" Value="8" />
                 <Setter Property="Background" Value="Transparent" />
                 <Setter Property="BorderThickness" Value="0" />
-                <Setter Property="FontSize" Value="12" />
+                <Setter Property="FontSize" Value="11.5" />
                 <Setter Property="FontWeight" Value="SemiBold" />
                 <Setter Property="Foreground" Value="{ThemeResource HudTextSecondaryBrush}" />
             </Style>
