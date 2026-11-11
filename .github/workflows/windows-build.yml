@@ -37,8 +37,10 @@ jobs:
           }
 
           [xml]$appXaml = Get-Content Windows/src/AgentHUD.Windows/App.xaml -Raw
-          $mergedDictionaries = $appXaml.Application.Resources.ResourceDictionary.MergedDictionaries
-          if ($null -eq $mergedDictionaries -or $null -eq $mergedDictionaries.XamlControlsResources) {
+          $controlsResources = $appXaml.SelectNodes(
+            "//*[local-name()='XamlControlsResources']"
+          )
+          if ($controlsResources.Count -eq 0) {
             Write-Host "App.xaml is missing XamlControlsResources."
             $failed = $true
           }
