@@ -18,6 +18,25 @@ jobs:
         with:
           dotnet-version: "8.0.x"
 
+      - name: Validate Windows launchers
+        shell: powershell
+        run: |
+          $failed = $false
+          Get-ChildItem Windows -Filter *.ps1 | ForEach-Object {
+            $tokens = $null
+            $errors = $null
+            [System.Management.Automation.Language.Parser]::ParseFile(
+              $_.FullName,
+              [ref]$tokens,
+              [ref]$errors
+            ) | Out-Null
+            if ($errors.Count -gt 0) {
+              $errors | ForEach-Object { Write-Host $_.Message }
+              $failed = $true
+            }
+          }
+          if ($failed) { exit 1 }
+
       - name: Restore
         run: dotnet restore Windows/AgentHUD.Windows.sln
 

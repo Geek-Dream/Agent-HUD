@@ -56,7 +56,8 @@ open build/AgentHUD.app
 
 ### Windows
 
-需要 .NET 8 SDK，以及安装了 Windows App SDK workload 的 Visual Studio 2022。
+首次启动会自动下载官方 .NET 8 SDK 到 `Windows\.dotnet`，不需要管理员权限，
+也不会修改系统级环境变量。该过程需要联网，首次下载和构建通常需要几分钟。
 
 直接双击：
 
@@ -71,7 +72,9 @@ Windows\build.ps1 -Configuration Release
 Windows\start-agent-hud.cmd
 ```
 
-首次启动会自动构建。`start-agent-hud.cmd` 启动应用时不会保留控制台窗口。
+首次启动会自动准备 .NET 8 SDK、构建应用并打开 AgentHUD。
+`start-agent-hud.cmd` 启动应用时不会保留控制台窗口。若需要手动构建，也可以安装
+.NET 8 SDK 后运行 `Windows\build.ps1`。
 
 ## 数据来源
 

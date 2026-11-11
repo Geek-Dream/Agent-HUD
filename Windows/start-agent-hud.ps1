@@ -15,8 +15,20 @@ function Find-Executable {
         Select-Object -First 1
 }
 
+function Test-DotnetAvailable {
+    if (Test-Path "$root\.dotnet\dotnet.exe") {
+        return $true
+    }
+    $installed = Get-Command dotnet -ErrorAction SilentlyContinue
+    if ($null -eq $installed) {
+        return $false
+    }
+    $runtimes = & $installed.Source --list-runtimes 2>$null
+    return ($LASTEXITCODE -eq 0 -and ($runtimes -match "Microsoft\.NETCore\.App 8\."))
+}
+
 $exe = if ($Rebuild) { $null } else { Find-Executable }
-if ($null -eq $exe) {
+if ($null -eq $exe -or -not (Test-DotnetAvailable)) {
     & "$root\build.ps1" -Configuration Release
     if ($LASTEXITCODE -ne 0) {
         throw "AgentHUD build failed."
@@ -26,6 +38,11 @@ if ($null -eq $exe) {
 
 if ($null -eq $exe) {
     throw "AgentHUD.Windows.exe was not produced. Run Windows\build.ps1 first."
+}
+
+if (Test-Path "$root\.dotnet\dotnet.exe") {
+    $env:DOTNET_ROOT = "$root\.dotnet"
+    $env:PATH = "$root\.dotnet;$env:PATH"
 }
 
 Start-Process -FilePath $exe.FullName
