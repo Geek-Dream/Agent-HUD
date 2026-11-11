@@ -1265,7 +1265,7 @@
                         VerticalAlignment="Center"
                         FontSize="9.5"
                         Foreground="{ThemeResource HudTextSecondaryBrush}"
-                        Text="只读监视" />
+                        Text="只读监控" />
                     <TextBlock
                         Grid.Column="2"
                         VerticalAlignment="Center"
