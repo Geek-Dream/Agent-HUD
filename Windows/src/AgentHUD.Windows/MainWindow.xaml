@@ -11,6 +11,33 @@
         BorderThickness="1"
         CornerRadius="14"
         ActualThemeChanged="RootBorder_ActualThemeChanged">
+        <Border.Resources>
+            <Storyboard
+                x:Key="LoadingPulseStoryboard"
+                AutoReverse="True"
+                RepeatBehavior="Forever">
+                <DoubleAnimation
+                    Storyboard.TargetName="LoadingSkeleton1"
+                    Storyboard.TargetProperty="Opacity"
+                    From="0.35"
+                    To="0.85"
+                    Duration="0:0:1.05" />
+                <DoubleAnimation
+                    Storyboard.TargetName="LoadingSkeleton2"
+                    Storyboard.TargetProperty="Opacity"
+                    From="0.35"
+                    To="0.85"
+                    BeginTime="0:0:0.12"
+                    Duration="0:0:1.05" />
+                <DoubleAnimation
+                    Storyboard.TargetName="LoadingSkeleton3"
+                    Storyboard.TargetProperty="Opacity"
+                    From="0.35"
+                    To="0.85"
+                    BeginTime="0:0:0.24"
+                    Duration="0:0:1.05" />
+            </Storyboard>
+        </Border.Resources>
         <Grid x:Name="RootGrid">
             <Grid
                 x:Name="CollapsedPanel"
@@ -186,10 +213,10 @@
                             VerticalAlignment="Center"
                             Spacing="1">
                             <TextBlock
-                                CharacterSpacing="70"
-                                FontFamily="Consolas"
-                                FontSize="11"
-                                FontWeight="Bold"
+                                CharacterSpacing="60"
+                                FontFamily="Segoe UI Variable Display"
+                                FontSize="13"
+                                FontWeight="SemiBold"
                                 Text="AGENT HUD" />
                             <TextBlock
                                 FontSize="10.5"
@@ -303,6 +330,7 @@
                             Style="{StaticResource HudFilterButtonStyle}"
                             Tag="Working">
                             <StackPanel Orientation="Horizontal" Spacing="5">
+                                <Ellipse Width="5" Height="5" VerticalAlignment="Center" Fill="{ThemeResource HudWorkingBrush}" />
                                 <TextBlock Text="工作" />
                                 <TextBlock
                                     x:Name="StatusWorkingCount"
@@ -317,6 +345,7 @@
                             Style="{StaticResource HudFilterButtonStyle}"
                             Tag="Waiting">
                             <StackPanel Orientation="Horizontal" Spacing="5">
+                                <Ellipse Width="5" Height="5" VerticalAlignment="Center" Fill="{ThemeResource HudWaitingBrush}" />
                                 <TextBlock Text="等待" />
                                 <TextBlock
                                     x:Name="StatusWaitingCount"
@@ -331,6 +360,7 @@
                             Style="{StaticResource HudFilterButtonStyle}"
                             Tag="Completed">
                             <StackPanel Orientation="Horizontal" Spacing="5">
+                                <Ellipse Width="5" Height="5" VerticalAlignment="Center" Fill="{ThemeResource HudCompletedBrush}" />
                                 <TextBlock Text="完成" />
                                 <TextBlock
                                     x:Name="StatusCompletedCount"
@@ -345,6 +375,7 @@
                             Style="{StaticResource HudFilterButtonStyle}"
                             Tag="Failed">
                             <StackPanel Orientation="Horizontal" Spacing="5">
+                                <Ellipse Width="5" Height="5" VerticalAlignment="Center" Fill="{ThemeResource HudFailedBrush}" />
                                 <TextBlock Text="错误" />
                                 <TextBlock
                                     x:Name="StatusFailedCount"
@@ -394,7 +425,7 @@
                                 Style="{StaticResource HudFilterButtonStyle}"
                                 Tag="Codex">
                                 <StackPanel Orientation="Horizontal" Spacing="5">
-                                    <TextBlock Text="Codex" />
+                                    <TextBlock Text="Codex" Foreground="{ThemeResource HudCodexBrush}" />
                                     <TextBlock
                                         x:Name="ProviderCodexCount"
                                         Opacity="0.62"
@@ -408,7 +439,7 @@
                                 Style="{StaticResource HudFilterButtonStyle}"
                                 Tag="Claude">
                                 <StackPanel Orientation="Horizontal" Spacing="5">
-                                    <TextBlock Text="Claude" />
+                                    <TextBlock Text="Claude" Foreground="{ThemeResource HudClaudeBrush}" />
                                     <TextBlock
                                         x:Name="ProviderClaudeCount"
                                         Opacity="0.62"
@@ -422,7 +453,7 @@
                                 Style="{StaticResource HudFilterButtonStyle}"
                                 Tag="Pi">
                                 <StackPanel Orientation="Horizontal" Spacing="5">
-                                    <TextBlock Text="Pi" />
+                                    <TextBlock Text="Pi" Foreground="{ThemeResource HudPiBrush}" />
                                     <TextBlock
                                         x:Name="ProviderPiCount"
                                         Opacity="0.62"
@@ -497,6 +528,7 @@
                         Visibility="{Binding ListVisibility}">
                         <ListView
                             x:Name="SessionList"
+                            Padding="0,4"
                             HorizontalContentAlignment="Stretch"
                             IsItemClickEnabled="True"
                             ItemContainerStyle="{StaticResource SessionListViewItemStyle}"
@@ -513,27 +545,29 @@
                                         PointerEntered="RowHoverSurface_PointerEntered"
                                         PointerExited="RowHoverSurface_PointerExited">
                                         <Border
-                                            Background="{ThemeResource HudSurfaceBrush}"
-                                            BorderBrush="{ThemeResource HudDividerBrush}"
-                                            BorderThickness="0,0,0,1" />
+                                            Margin="8,5"
+                                            Background="{ThemeResource HudRaisedBrush}"
+                                            BorderBrush="{Binding StatusTintBrush}"
+                                            BorderThickness="1"
+                                            CornerRadius="12" />
                                         <Border
-                                            Margin="7,6"
+                                            Margin="8,5"
                                             Background="{ThemeResource HudCompletedTintBrush}"
                                             BorderBrush="{ThemeResource HudCompletedBrush}"
                                             BorderThickness="1"
-                                            CornerRadius="9"
-                                            Opacity="0.92"
+                                            CornerRadius="12"
+                                            Opacity="0.58"
                                             Visibility="{Binding CompletedOutlineVisibility}" />
                                         <Border
-                                            Width="2"
-                                            Margin="3,13,0,13"
+                                            Width="3"
+                                            Margin="8,16,0,16"
                                             HorizontalAlignment="Left"
                                             Background="{ThemeResource HudImportantBrush}"
-                                            CornerRadius="1"
+                                            CornerRadius="1.5"
                                             Visibility="{Binding ImportantAccentVisibility}" />
                                         <Grid
-                                            Margin="13,11,11,10"
-                                            ColumnSpacing="10">
+                                            Margin="19,12,15,12"
+                                            ColumnSpacing="12">
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="36" />
                                                 <ColumnDefinition Width="*" />
@@ -768,13 +802,80 @@
                             Spacing="10"
                             Visibility="{Binding LoadingVisibility}">
                             <ProgressRing
-                                Width="22"
-                                Height="22"
+                                Width="24"
+                                Height="24"
+                                Foreground="{ThemeResource HudCodexBrush}"
                                 IsActive="True" />
                             <TextBlock
+                                HorizontalAlignment="Center"
                                 FontSize="10.5"
                                 Foreground="{ThemeResource HudTextSecondaryBrush}"
                                 Text="正在读取本地会话" />
+                            <StackPanel Margin="0,8,0,0" Spacing="8" Width="280">
+                                <Border
+                                    x:Name="LoadingSkeleton1"
+                                    Height="58"
+                                    Padding="12,10"
+                                    Background="{ThemeResource HudRaisedBrush}"
+                                    BorderBrush="{ThemeResource HudBorderBrush}"
+                                    BorderThickness="1"
+                                    CornerRadius="10"
+                                    Opacity="0.35">
+                                    <Grid ColumnSpacing="10">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <Border Width="32" Height="32" Background="{ThemeResource HudControlFillBrush}" CornerRadius="8" />
+                                        <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="7">
+                                            <Border Width="150" Height="8" HorizontalAlignment="Left" Background="{ThemeResource HudControlFillBrush}" CornerRadius="4" />
+                                            <Border Width="100" Height="6" HorizontalAlignment="Left" Background="{ThemeResource HudControlFillBrush}" CornerRadius="3" />
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+                                <Border
+                                    x:Name="LoadingSkeleton2"
+                                    Height="58"
+                                    Padding="12,10"
+                                    Background="{ThemeResource HudRaisedBrush}"
+                                    BorderBrush="{ThemeResource HudBorderBrush}"
+                                    BorderThickness="1"
+                                    CornerRadius="10"
+                                    Opacity="0.35">
+                                    <Grid ColumnSpacing="10">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <Border Width="32" Height="32" Background="{ThemeResource HudControlFillBrush}" CornerRadius="8" />
+                                        <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="7">
+                                            <Border Width="150" Height="8" HorizontalAlignment="Left" Background="{ThemeResource HudControlFillBrush}" CornerRadius="4" />
+                                            <Border Width="100" Height="6" HorizontalAlignment="Left" Background="{ThemeResource HudControlFillBrush}" CornerRadius="3" />
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+                                <Border
+                                    x:Name="LoadingSkeleton3"
+                                    Height="58"
+                                    Padding="12,10"
+                                    Background="{ThemeResource HudRaisedBrush}"
+                                    BorderBrush="{ThemeResource HudBorderBrush}"
+                                    BorderThickness="1"
+                                    CornerRadius="10"
+                                    Opacity="0.35">
+                                    <Grid ColumnSpacing="10">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <Border Width="32" Height="32" Background="{ThemeResource HudControlFillBrush}" CornerRadius="8" />
+                                        <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="7">
+                                            <Border Width="150" Height="8" HorizontalAlignment="Left" Background="{ThemeResource HudControlFillBrush}" CornerRadius="4" />
+                                            <Border Width="100" Height="6" HorizontalAlignment="Left" Background="{ThemeResource HudControlFillBrush}" CornerRadius="3" />
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+                            </StackPanel>
                         </StackPanel>
                     </Grid>
 
@@ -1265,7 +1366,7 @@
                         VerticalAlignment="Center"
                         FontSize="9.5"
                         Foreground="{ThemeResource HudTextSecondaryBrush}"
-                        Text="只读监视" />
+                        Text="只读监控" />
                     <TextBlock
                         Grid.Column="2"
                         VerticalAlignment="Center"
@@ -1273,6 +1374,31 @@
                         Foreground="{ThemeResource HudTextSecondaryBrush}"
                         Text="{Binding FooterText}" />
                 </Grid>
+
+                <Border
+                    x:Name="ResizeGrip"
+                    Grid.RowSpan="4"
+                    Width="22"
+                    Height="22"
+                    Margin="0,0,2,2"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Bottom"
+                    Canvas.ZIndex="30"
+                    Background="Transparent"
+                    PointerPressed="ResizeGrip_PointerPressed"
+                    ToolTipService.ToolTip="拖动调整大小（360×480 至 720×1000）">
+                    <Path
+                        Width="15"
+                        Height="15"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Data="M 4,14 L 14,4 M 9,14 L 14,9"
+                        Opacity="0.65"
+                        Stroke="{ThemeResource HudTextTertiaryBrush}"
+                        StrokeStartLineCap="Round"
+                        StrokeEndLineCap="Round"
+                        StrokeThickness="1.2" />
+                </Border>
             </Grid>
         </Grid>
     </Border>

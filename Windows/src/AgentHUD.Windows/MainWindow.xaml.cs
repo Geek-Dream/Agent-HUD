@@ -20,10 +20,12 @@ namespace AgentHUD.Windows;
 
 public sealed partial class MainWindow : Window
 {
-    private const int WmNcLButtonDown = 0x00A1;
-    private const int HtCaption = 0x0002;
-    private const int ExpandedWidth = 424;
-    private const int ExpandedHeight = 620;
+    private const int DefaultExpandedWidth = 424;
+    private const int DefaultExpandedHeight = 620;
+    private const int MinExpandedWidth = 360;
+    private const int MinExpandedHeight = 480;
+    private const int MaxExpandedWidth = 720;
+    private const int MaxExpandedHeight = 1000;
     private const int CollapsedWidth = 320;
     private const int CollapsedHeight = 62;
 
@@ -37,18 +39,44 @@ public sealed partial class MainWindow : Window
     private bool _allowClose;
     private bool _isAnimatingWindow;
     private bool _usesSystemBackdrop;
+    private UIElement? _dragSurface;
+    private uint _dragPointerId;
+    private int _dragStartCursorX;
+    private int _dragStartCursorY;
+    private int _dragStartWindowX;
+    private int _dragStartWindowY;
+    private double _expandedWidth = DefaultExpandedWidth;
+    private double _expandedHeight = DefaultExpandedHeight;
+    private UIElement? _resizeSurface;
+    private uint _resizePointerId;
+    private int _resizeStartCursorX;
+    private int _resizeStartCursorY;
 
     public MainWindow()
     {
         InitializeComponent();
         Title = "AgentHUD";
         _viewModel = new MainViewModel();
+        var savedSize = _viewModel.SavedExpandedWindowSize;
+        _expandedWidth = Math.Clamp(
+            savedSize.Width ?? DefaultExpandedWidth,
+            MinExpandedWidth,
+            MaxExpandedWidth);
+        _expandedHeight = Math.Clamp(
+            savedSize.Height ?? DefaultExpandedHeight,
+            MinExpandedHeight,
+            MaxExpandedHeight);
         RootGrid.DataContext = _viewModel;
+        RootBorder.AddHandler(UIElement.PointerMovedEvent, new PointerEventHandler(DragSurface_PointerMoved), true);
+        RootBorder.AddHandler(UIElement.PointerReleasedEvent, new PointerEventHandler(DragSurface_PointerReleased), true);
+        RootBorder.AddHandler(UIElement.PointerCanceledEvent, new PointerEventHandler(DragSurface_PointerReleased), true);
+        RootBorder.AddHandler(UIElement.PointerCaptureLostEvent, new PointerEventHandler(DragSurface_PointerReleased), true);
 
         _windowHandle = WindowNative.GetWindowHandle(this);
         var windowId = Win32Interop.GetWindowIdFromWindow(_windowHandle);
         _appWindow = AppWindow.GetFromWindowId(windowId);
         ConfigureWindow();
+        ConfigureWindowStyles();
         RestoreWindowPosition();
 
         _positionSaveTimer = DispatcherQueue.CreateTimer();
@@ -79,9 +107,43 @@ public sealed partial class MainWindow : Window
 
         UpdateFilterVisuals();
         _viewModel.Start();
+        UpdateLoadingAnimation();
     }
 
     public MainViewModel ViewModel => _viewModel;
+
+    private void ConfigureWindowStyles()
+    {
+        const int gwlExStyle = -20;
+        const long wsExToolWindow = 0x00000080;
+        const long wsExAppWindow = 0x00040000;
+        var style = GetWindowLongPtr(_windowHandle, gwlExStyle).ToInt64();
+        SetWindowLongPtr(
+            _windowHandle,
+            gwlExStyle,
+            new IntPtr((style & ~wsExAppWindow) | wsExToolWindow));
+
+        const uint swpNoMove = 0x0002;
+        const uint swpNoSize = 0x0001;
+        const uint swpNoActivate = 0x0010;
+        SetWindowPos(
+            _windowHandle,
+            new IntPtr(-1),
+            0,
+            0,
+            0,
+            0,
+            swpNoMove | swpNoSize | swpNoActivate);
+
+        const int dwmwaWindowCornerPreference = 33;
+        const int dwmwcpRound = 2;
+        var cornerPreference = dwmwcpRound;
+        DwmSetWindowAttribute(
+            _windowHandle,
+            dwmwaWindowCornerPreference,
+            ref cornerPreference,
+            Marshal.SizeOf<int>());
+    }
 
     private void ConfigureWindow()
     {
@@ -129,8 +191,7 @@ public sealed partial class MainWindow : Window
     private void RestoreWindowPosition()
     {
         var expanded = _viewModel.IsExpanded;
-        var width = expanded ? ExpandedWidth : CollapsedWidth;
-        var height = expanded ? ExpandedHeight : CollapsedHeight;
+        var (width, height) = ScaledWindowSize(expanded);
         var workArea = WorkArea();
         var saved = _viewModel.SavedWindowPosition;
         var x = saved.X ?? (workArea.X + workArea.Width - width - 18);
@@ -144,6 +205,23 @@ public sealed partial class MainWindow : Window
     {
         var display = DisplayArea.GetFromWindowId(_appWindow.Id, DisplayAreaFallback.Primary);
         return display.WorkArea;
+    }
+
+    private (int Width, int Height) ScaledWindowSize(bool expanded)
+    {
+        // AppWindow dimensions are physical pixels; XAML sizes use logical pixels.
+        var scale = WindowScale();
+        var logicalWidth = expanded ? _expandedWidth : CollapsedWidth;
+        var logicalHeight = expanded ? _expandedHeight : CollapsedHeight;
+        return (
+            (int)Math.Round(logicalWidth * scale),
+            (int)Math.Round(logicalHeight * scale));
+    }
+
+    private double WindowScale()
+    {
+        var dpi = GetDpiForWindow(_windowHandle);
+        return dpi == 0 ? 1d : dpi / 96d;
     }
 
     private async void ViewModel_ExpansionStateChanged(object? sender, EventArgs e)
@@ -180,8 +258,7 @@ public sealed partial class MainWindow : Window
 
         var startPosition = _appWindow.Position;
         var startSize = _appWindow.Size;
-        var targetWidth = expanded ? ExpandedWidth : CollapsedWidth;
-        var targetHeight = expanded ? ExpandedHeight : CollapsedHeight;
+        var (targetWidth, targetHeight) = ScaledWindowSize(expanded);
         var workArea = WorkArea();
         var targetX = Math.Clamp(
             startPosition.X + startSize.Width - targetWidth,
@@ -312,12 +389,48 @@ public sealed partial class MainWindow : Window
         Storyboard.SetTarget(translate, transform);
         Storyboard.SetTargetProperty(translate, nameof(CompositeTransform.TranslateX));
 
+        var translateY = new DoubleAnimation
+        {
+            From = entering ? 6 : 0,
+            To = entering ? 0 : 3,
+            Duration = duration,
+            EasingFunction = easing
+        };
+        Storyboard.SetTarget(translateY, transform);
+        Storyboard.SetTargetProperty(translateY, nameof(CompositeTransform.TranslateY));
+
+        var scaleX = new DoubleAnimation
+        {
+            From = entering ? 0.985 : 1,
+            To = entering ? 1 : 0.985,
+            Duration = duration,
+            EasingFunction = easing
+        };
+        Storyboard.SetTarget(scaleX, transform);
+        Storyboard.SetTargetProperty(scaleX, nameof(CompositeTransform.ScaleX));
+
+        var scaleY = new DoubleAnimation
+        {
+            From = scaleX.From,
+            To = scaleX.To,
+            Duration = duration,
+            EasingFunction = easing
+        };
+        Storyboard.SetTarget(scaleY, transform);
+        Storyboard.SetTargetProperty(scaleY, nameof(CompositeTransform.ScaleY));
+
         storyboard.Children.Add(opacity);
         storyboard.Children.Add(translate);
+        storyboard.Children.Add(translateY);
+        storyboard.Children.Add(scaleX);
+        storyboard.Children.Add(scaleY);
         storyboard.Completed += (_, _) =>
         {
             element.Opacity = entering ? 1 : 0;
             transform.TranslateX = entering ? 0 : fromX;
+            transform.TranslateY = entering ? 0 : 3;
+            transform.ScaleX = entering ? 1 : 0.985;
+            transform.ScaleY = entering ? 1 : 0.985;
             completion.TrySetResult(true);
         };
         storyboard.Begin();
@@ -554,6 +667,7 @@ public sealed partial class MainWindow : Window
     private void DragSurface_PointerPressed(object sender, PointerRoutedEventArgs e)
     {
         if (_viewModel.PositionLocked
+            || _dragSurface is not null
             || sender is not UIElement surface
             || !e.GetCurrentPoint(surface).Properties.IsLeftButtonPressed
             || IsInteractiveSource(e.OriginalSource as DependencyObject, surface))
@@ -561,8 +675,138 @@ public sealed partial class MainWindow : Window
             return;
         }
 
-        ReleaseCapture();
-        SendMessage(_windowHandle, WmNcLButtonDown, (IntPtr)HtCaption, IntPtr.Zero);
+        if (!GetCursorPos(out var cursor) || !surface.CapturePointer(e.Pointer))
+        {
+            return;
+        }
+
+        var position = _appWindow.Position;
+        _dragSurface = surface;
+        _dragPointerId = e.Pointer.PointerId;
+        _dragStartCursorX = cursor.X;
+        _dragStartCursorY = cursor.Y;
+        _dragStartWindowX = position.X;
+        _dragStartWindowY = position.Y;
+        e.Handled = true;
+    }
+
+    private void DragSurface_PointerMoved(object sender, PointerRoutedEventArgs e)
+    {
+        if (_resizeSurface is not null)
+        {
+            ResizeGrip_PointerMoved(sender, e);
+            return;
+        }
+
+        if (_dragSurface is null
+            || e.Pointer.PointerId != _dragPointerId
+            || !GetCursorPos(out var cursor))
+        {
+            return;
+        }
+
+        if ((GetAsyncKeyState(0x01) & 0x8000) == 0)
+        {
+            StopDragging();
+            e.Handled = true;
+            return;
+        }
+
+        _appWindow.Move(new PointInt32(
+            _dragStartWindowX + cursor.X - _dragStartCursorX,
+            _dragStartWindowY + cursor.Y - _dragStartCursorY));
+        e.Handled = true;
+    }
+
+    private void DragSurface_PointerReleased(object sender, PointerRoutedEventArgs e)
+    {
+        if (_resizeSurface is not null && e.Pointer.PointerId == _resizePointerId)
+        {
+            StopResizing();
+            e.Handled = true;
+            return;
+        }
+
+        if (_dragSurface is null || e.Pointer.PointerId != _dragPointerId)
+        {
+            return;
+        }
+
+        StopDragging();
+        e.Handled = true;
+    }
+
+    private void StopDragging()
+    {
+        _dragSurface = null;
+        SaveWindowPosition();
+    }
+
+    private void ResizeGrip_PointerPressed(object sender, PointerRoutedEventArgs e)
+    {
+        if (!_viewModel.IsExpanded
+            || _dragSurface is not null
+            || _resizeSurface is not null
+            || sender is not UIElement grip
+            || !e.GetCurrentPoint(grip).Properties.IsLeftButtonPressed)
+        {
+            return;
+        }
+
+        if (!GetCursorPos(out var cursor) || !grip.CapturePointer(e.Pointer))
+        {
+            return;
+        }
+
+        _resizeSurface = grip;
+        _resizePointerId = e.Pointer.PointerId;
+        _resizeStartCursorX = cursor.X;
+        _resizeStartCursorY = cursor.Y;
+        e.Handled = true;
+    }
+
+    private void ResizeGrip_PointerMoved(object sender, PointerRoutedEventArgs e)
+    {
+        if (_resizeSurface is null
+            || e.Pointer.PointerId != _resizePointerId
+            || !GetCursorPos(out var cursor))
+        {
+            return;
+        }
+
+        if ((GetAsyncKeyState(0x01) & 0x8000) == 0)
+        {
+            StopResizing();
+            e.Handled = true;
+            return;
+        }
+
+        var scale = WindowScale();
+        _expandedWidth = Math.Clamp(
+            _expandedWidth + (cursor.X - _resizeStartCursorX) / scale,
+            MinExpandedWidth,
+            MaxExpandedWidth);
+        _expandedHeight = Math.Clamp(
+            _expandedHeight + (cursor.Y - _resizeStartCursorY) / scale,
+            MinExpandedHeight,
+            MaxExpandedHeight);
+        _resizeStartCursorX = cursor.X;
+        _resizeStartCursorY = cursor.Y;
+
+        var position = _appWindow.Position;
+        _appWindow.MoveAndResize(new RectInt32(
+            position.X,
+            position.Y,
+            (int)Math.Round(_expandedWidth * scale),
+            (int)Math.Round(_expandedHeight * scale)));
+        e.Handled = true;
+    }
+
+    private void StopResizing()
+    {
+        _resizeSurface = null;
+        _viewModel.SaveExpandedWindowSize(_expandedWidth, _expandedHeight);
+        SaveWindowPosition();
     }
 
     private static bool IsInteractiveSource(DependencyObject? source, DependencyObject boundary)
@@ -596,7 +840,10 @@ public sealed partial class MainWindow : Window
         var highContrast = accessibility.HighContrast;
         if (_usesSystemBackdrop && !highContrast)
         {
-            RootBorder.Background = new SolidColorBrush(Colors.Transparent);
+            var backdropColor = RootBorder.ActualTheme == ElementTheme.Dark
+                ? global::Windows.UI.Color.FromArgb(238, 16, 23, 34)
+                : global::Windows.UI.Color.FromArgb(242, 242, 245, 249);
+            RootBorder.Background = new SolidColorBrush(backdropColor);
             return;
         }
 
@@ -610,6 +857,12 @@ public sealed partial class MainWindow : Window
 
     private void ViewModel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
+        if (e.PropertyName == nameof(MainViewModel.IsLoading))
+        {
+            DispatcherQueue.TryEnqueue(UpdateLoadingAnimation);
+            return;
+        }
+
         if (e.PropertyName is nameof(MainViewModel.FooterText)
             or nameof(MainViewModel.WorkingCount)
             or nameof(MainViewModel.WaitingCount)
@@ -618,6 +871,19 @@ public sealed partial class MainWindow : Window
             or nameof(MainViewModel.VisibleSessions))
         {
             DispatcherQueue.TryEnqueue(UpdateFilterVisuals);
+        }
+    }
+
+    private void UpdateLoadingAnimation()
+    {
+        var storyboard = (Storyboard)RootBorder.Resources["LoadingPulseStoryboard"];
+        if (_viewModel.IsLoading)
+        {
+            storyboard.Begin();
+        }
+        else
+        {
+            storyboard.Stop();
         }
     }
 
@@ -755,7 +1021,7 @@ public sealed partial class MainWindow : Window
 
     private void AppWindow_Changed(AppWindow sender, AppWindowChangedEventArgs args)
     {
-        if (args.DidPositionChange && !_isAnimatingWindow)
+        if (args.DidPositionChange && !_isAnimatingWindow && _dragSurface is null)
         {
             SaveWindowPositionSoon();
         }
@@ -788,6 +1054,12 @@ public sealed partial class MainWindow : Window
         SaveWindowPosition();
         _appWindow.Hide();
         UpdateTrayMenu();
+    }
+
+    public void StartInBackground()
+    {
+        Activate();
+        DispatcherQueue.TryEnqueue(HideToTray);
     }
 
     private void ShowHud()
@@ -883,16 +1155,46 @@ public sealed partial class MainWindow : Window
         _viewModel.Stop();
     }
 
-    [DllImport("user32.dll")]
-    private static extern bool ReleaseCapture();
+    [DllImport("user32.dll", EntryPoint = "GetWindowLongPtrW")]
+    private static extern IntPtr GetWindowLongPtr(IntPtr hWnd, int index);
 
-    [DllImport("user32.dll", CharSet = CharSet.Unicode)]
-    private static extern IntPtr SendMessage(
+    [DllImport("user32.dll", EntryPoint = "SetWindowLongPtrW")]
+    private static extern IntPtr SetWindowLongPtr(IntPtr hWnd, int index, IntPtr value);
+
+    [DllImport("user32.dll")]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    private static extern bool SetWindowPos(
         IntPtr hWnd,
-        int msg,
-        IntPtr wParam,
-        IntPtr lParam);
+        IntPtr insertAfter,
+        int x,
+        int y,
+        int width,
+        int height,
+        uint flags);
+
+    [DllImport("dwmapi.dll")]
+    private static extern int DwmSetWindowAttribute(
+        IntPtr hWnd,
+        int attribute,
+        ref int value,
+        int valueSize);
+
+    [StructLayout(LayoutKind.Sequential)]
+    private struct NativePoint
+    {
+        public int X;
+        public int Y;
+    }
+
+    [DllImport("user32.dll")]
+    private static extern bool GetCursorPos(out NativePoint point);
+
+    [DllImport("user32.dll")]
+    private static extern short GetAsyncKeyState(int vKey);
 
     [DllImport("user32.dll")]
     private static extern bool IsWindowVisible(IntPtr hWnd);
+
+    [DllImport("user32.dll")]
+    private static extern uint GetDpiForWindow(IntPtr hWnd);
 }

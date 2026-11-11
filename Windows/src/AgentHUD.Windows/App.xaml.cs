@@ -34,7 +34,14 @@ public partial class App : XamlApplication
         StateStore = new AppStateStore();
         Credentials = new CredentialStore();
         _window = new MainWindow();
-        _window.Activate();
+        if (Environment.GetCommandLineArgs().Contains("--show", StringComparer.OrdinalIgnoreCase))
+        {
+            _window.Activate();
+        }
+        else
+        {
+            ((MainWindow)_window).StartInBackground();
+        }
     }
 
     private static void WriteStartupFailure(Exception exception)
