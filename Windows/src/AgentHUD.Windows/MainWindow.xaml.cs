@@ -13,8 +13,7 @@ using Microsoft.UI.Xaml.Media.Animation;
 using Windows.Graphics;
 using Windows.UI.ViewManagement;
 using WinRT.Interop;
-using Drawing = System.Drawing;
-using Forms = System.Windows.Forms;
+using AgentHUD.Windows.Services;
 
 namespace AgentHUD.Windows;
 
@@ -30,11 +29,7 @@ public sealed partial class MainWindow : Window
     private readonly MainViewModel _viewModel;
     private readonly AppWindow _appWindow;
     private readonly IntPtr _windowHandle;
-    private readonly Forms.NotifyIcon _trayIcon;
-    private readonly Forms.ToolStripMenuItem _showMenuItem;
-    private readonly Forms.ToolStripMenuItem _expandMenuItem;
-    private readonly Forms.ToolStripMenuItem _privacyMenuItem;
-    private readonly Forms.ToolStripMenuItem _pinMenuItem;
+    private readonly TrayIcon _trayIcon;
     private readonly Microsoft.UI.Dispatching.DispatcherQueueTimer _positionSaveTimer;
     private CancellationTokenSource? _resizeAnimation;
     private CancellationTokenSource? _contentTransition;
@@ -60,36 +55,19 @@ public sealed partial class MainWindow : Window
         _positionSaveTimer.IsRepeating = false;
         _positionSaveTimer.Tick += (_, _) => SaveWindowPosition();
 
-        var menu = new Forms.ContextMenuStrip();
-        _showMenuItem = new Forms.ToolStripMenuItem("隐藏 AgentHUD", null, (_, _) => ToggleVisibility());
-        _expandMenuItem = new Forms.ToolStripMenuItem("展开面板", null, (_, _) => ToggleExpanded());
-        _privacyMenuItem = new Forms.ToolStripMenuItem("隐私模式", null, (_, _) => TogglePrivacy())
-        {
-            CheckOnClick = false
-        };
-        _pinMenuItem = new Forms.ToolStripMenuItem("锁定位置", null, (_, _) => TogglePositionLock())
-        {
-            CheckOnClick = false
-        };
-        menu.Items.Add(_showMenuItem);
-        menu.Items.Add(_expandMenuItem);
-        menu.Items.Add(new Forms.ToolStripSeparator());
-        menu.Items.Add(new Forms.ToolStripMenuItem("立即刷新", null, (_, _) => RefreshFromTray()));
-        menu.Items.Add(_privacyMenuItem);
-        menu.Items.Add(_pinMenuItem);
-        menu.Items.Add(new Forms.ToolStripMenuItem("AI 标题设置…", null, (_, _) => OpenSettingsFromTray()));
-        menu.Items.Add(new Forms.ToolStripSeparator());
-        menu.Items.Add(new Forms.ToolStripMenuItem("退出 AgentHUD", null, (_, _) => ExitApplication()));
-        menu.Opening += (_, _) => UpdateTrayMenu();
-
-        _trayIcon = new Forms.NotifyIcon
-        {
-            Icon = Drawing.SystemIcons.Application,
-            Text = "AgentHUD",
-            Visible = true,
-            ContextMenuStrip = menu
-        };
-        _trayIcon.DoubleClick += (_, _) => ToggleVisibility();
+        _trayIcon = new TrayIcon(
+            _windowHandle,
+            ToggleVisibility,
+            ToggleExpanded,
+            RefreshFromTray,
+            TogglePrivacy,
+            TogglePositionLock,
+            OpenSettingsFromTray,
+            ExitApplication,
+            () => IsWindowVisible(_windowHandle),
+            () => _viewModel.IsExpanded,
+            () => _viewModel.PrivacyMode,
+            () => _viewModel.PositionLocked);
 
         _viewModel.PropertyChanged += ViewModel_PropertyChanged;
         _viewModel.ExpansionStateChanged += ViewModel_ExpansionStateChanged;
@@ -881,17 +859,13 @@ public sealed partial class MainWindow : Window
 
     private void UpdateTrayMenu()
     {
-        var visible = IsWindowVisible(_windowHandle);
-        _showMenuItem.Text = visible ? "隐藏 AgentHUD" : "显示 AgentHUD";
-        _expandMenuItem.Text = _viewModel.IsExpanded ? "收起面板" : "展开面板";
-        _privacyMenuItem.Checked = _viewModel.PrivacyMode;
-        _pinMenuItem.Checked = _viewModel.PositionLocked;
+        // The native tray menu reads the current state whenever it opens.
     }
 
     private void ExitApplication()
     {
         _allowClose = true;
-        _trayIcon.Visible = false;
+        _trayIcon.Dispose();
         _viewModel.Stop();
         Close();
         Microsoft.UI.Xaml.Application.Current.Exit();
@@ -904,7 +878,6 @@ public sealed partial class MainWindow : Window
         _contentTransition?.Cancel();
         _contentTransition?.Dispose();
         _positionSaveTimer.Stop();
-        _trayIcon.Visible = false;
         _trayIcon.Dispose();
         _viewModel.Stop();
     }
