@@ -20,7 +20,10 @@ function Resolve-Dotnet {
         if ($LASTEXITCODE -eq 0 -and $versionText) {
             $major = [int](($versionText -split "\.")[0])
             if ($major -eq 8) {
-                return $installed.Source
+                $runtimes = & $installed.Source --list-runtimes 2>$null
+                if ($LASTEXITCODE -eq 0 -and ($runtimes -match "Microsoft\.AspNetCore\.App 8\.")) {
+                    return $installed.Source
+                }
             }
         }
     }

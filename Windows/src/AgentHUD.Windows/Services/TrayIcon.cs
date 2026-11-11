@@ -32,6 +32,7 @@ internal sealed class TrayIcon : IDisposable
     private const uint LockCommand = 5;
     private const uint SettingsCommand = 6;
     private const uint ExitCommand = 7;
+    private const uint LinkCommand = 8;
 
     private readonly IntPtr _windowHandle;
     private readonly Action _toggleVisibility;
@@ -40,6 +41,7 @@ internal sealed class TrayIcon : IDisposable
     private readonly Action _togglePrivacy;
     private readonly Action _togglePositionLock;
     private readonly Action _openSettings;
+    private readonly Action _openLinkSettings;
     private readonly Action _exit;
     private readonly Func<bool> _isVisible;
     private readonly Func<bool> _isExpanded;
@@ -58,6 +60,7 @@ internal sealed class TrayIcon : IDisposable
         Action togglePrivacy,
         Action togglePositionLock,
         Action openSettings,
+        Action openLinkSettings,
         Action exit,
         Func<bool> isVisible,
         Func<bool> isExpanded,
@@ -71,6 +74,7 @@ internal sealed class TrayIcon : IDisposable
         _togglePrivacy = togglePrivacy;
         _togglePositionLock = togglePositionLock;
         _openSettings = openSettings;
+        _openLinkSettings = openLinkSettings;
         _exit = exit;
         _isVisible = isVisible;
         _isExpanded = isExpanded;
@@ -195,6 +199,7 @@ internal sealed class TrayIcon : IDisposable
                 MfString | (_isPositionLocked() ? MfChecked : 0),
                 LockCommand,
                 "锁定位置");
+            AppendMenu(menu, MfString, LinkCommand, "手机关联...");
             AppendMenu(menu, MfString, SettingsCommand, "AI 标题设置...");
             AppendMenu(menu, MfSeparator, 0, null);
             AppendMenu(menu, MfString, ExitCommand, "退出 AgentHUD");
@@ -238,6 +243,9 @@ internal sealed class TrayIcon : IDisposable
                 break;
             case SettingsCommand:
                 _openSettings();
+                break;
+            case LinkCommand:
+                _openLinkSettings();
                 break;
             case ExitCommand:
                 _exit();

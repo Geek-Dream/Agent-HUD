@@ -92,6 +92,7 @@ public sealed partial class MainWindow : Window
             TogglePrivacy,
             TogglePositionLock,
             OpenSettingsFromTray,
+            OpenLinkSettingsFromTray,
             ExitApplication,
             () => IsWindowVisible(_windowHandle),
             () => _viewModel.IsExpanded,
@@ -108,6 +109,7 @@ public sealed partial class MainWindow : Window
         UpdateFilterVisuals();
         _viewModel.Start();
         UpdateLoadingAnimation();
+        _ = AgentHudLinkRuntime.StartAsync(_viewModel);
     }
 
     public MainViewModel ViewModel => _viewModel;
@@ -532,6 +534,11 @@ public sealed partial class MainWindow : Window
     private async void SettingsButton_Click(object sender, RoutedEventArgs e)
     {
         await ShowAISettingsAsync();
+    }
+
+    private async void LinkButton_Click(object sender, RoutedEventArgs e)
+    {
+        await ShowLinkSettingsAsync();
     }
 
     private void HideButton_Click(object sender, RoutedEventArgs e) => HideToTray();
@@ -1121,9 +1128,24 @@ public sealed partial class MainWindow : Window
         DispatcherQueue.TryEnqueue(async () => await ShowAISettingsAsync());
     }
 
+    private void OpenLinkSettingsFromTray()
+    {
+        ShowHud();
+        DispatcherQueue.TryEnqueue(async () => await ShowLinkSettingsAsync());
+    }
+
     private async Task ShowAISettingsAsync()
     {
         var dialog = new AISettingsDialog(_viewModel)
+        {
+            XamlRoot = RootBorder.XamlRoot
+        };
+        await dialog.ShowAsync();
+    }
+
+    private async Task ShowLinkSettingsAsync()
+    {
+        var dialog = new LinkSettingsDialog
         {
             XamlRoot = RootBorder.XamlRoot
         };
@@ -1139,6 +1161,7 @@ public sealed partial class MainWindow : Window
     {
         _allowClose = true;
         _trayIcon.Dispose();
+        _ = AgentHudLinkRuntime.StopAsync();
         _viewModel.Stop();
         Close();
         Microsoft.UI.Xaml.Application.Current.Exit();
@@ -1152,6 +1175,7 @@ public sealed partial class MainWindow : Window
         _contentTransition?.Dispose();
         _positionSaveTimer.Stop();
         _trayIcon.Dispose();
+        _ = AgentHudLinkRuntime.StopAsync();
         _viewModel.Stop();
     }
 
