@@ -26,8 +26,8 @@ struct HUDShell: View {
                     }
                 }
                 .frame(
-                    width: HUDMetrics.expandedWidth,
-                    height: HUDMetrics.expandedHeight,
+                    width: model.expandedWidth,
+                    height: model.expandedHeight,
                     alignment: .topTrailing
                 )
                 .opacity(model.isExpanded ? 1 : 0)
@@ -88,12 +88,16 @@ struct HUDShell: View {
 
     private var background: some View {
         ZStack {
-            VisualEffectView(material: .hudWindow, blendingMode: .behindWindow)
+            VisualEffectView(
+                material: .hudWindow,
+                blendingMode: .behindWindow,
+                opacity: 0.45
+            )
             HUDTheme.windowTint
             LinearGradient(
                 colors: colorScheme == .dark
                     ? [Color.white.opacity(0.045), Color.clear]
-                    : [Color.white.opacity(0.3), Color.clear],
+                    : [Color.white.opacity(0.20), Color.clear],
                 startPoint: .topLeading,
                 endPoint: .bottomTrailing
             )
@@ -179,7 +183,7 @@ private struct CollapsedHUDView: View {
                 model.togglePrivacy()
             }
 
-            HUDIconButton(symbol: "gearshape", help: "AI 标题设置") {
+            HUDIconButton(symbol: "gearshape", help: "AI 标题与显示设置") {
                 model.openAISettings()
             }
 
@@ -358,7 +362,7 @@ private struct ExpandedHUDView: View {
                         }
                     }
                 )
-                .frame(width: HUDMetrics.expandedWidth - 18, alignment: .leading)
+                .frame(width: model.expandedWidth - 18, alignment: .leading)
                 .padding(.leading, 9)
                 .offset(y: 44)
                 .transition(
@@ -928,8 +932,8 @@ private struct AgentRowView: View {
         model.isImportant(session)
     }
 
-    private var isCompleted: Bool {
-        session.status == .completed
+    private var showsStatusOutline: Bool {
+        SessionOutlinePolicy.shouldShow(status: session.status, isImportant: isImportant)
     }
 
     private var isDeparting: Bool {
@@ -1073,24 +1077,24 @@ private struct AgentRowView: View {
         .background {
             ZStack {
                 HUDTheme.surface.opacity(isHovered ? 0.72 : 0.34)
-                if isCompleted {
-                    AgentStatus.completed.color.opacity(isHovered ? 0.07 : 0.04)
+                if showsStatusOutline {
+                    session.status.color.opacity(isHovered ? 0.07 : 0.04)
                 }
             }
         }
         .overlay {
-            if isCompleted {
+            if showsStatusOutline {
                 RoundedRectangle(cornerRadius: 9, style: .continuous)
                     .strokeBorder(
-                        AgentStatus.completed.color.opacity(isHovered ? 0.86 : 0.64),
+                        session.status.color.opacity(isHovered ? 0.86 : 0.64),
                         lineWidth: isHovered ? 1.3 : 1
                     )
                     .shadow(
-                        color: AgentStatus.completed.color.opacity(isHovered ? 0.52 : 0.34),
+                        color: session.status.color.opacity(isHovered ? 0.52 : 0.34),
                         radius: isHovered ? 10 : 7
                     )
                     .shadow(
-                        color: AgentStatus.completed.color.opacity(0.22),
+                        color: session.status.color.opacity(0.22),
                         radius: 2
                     )
                     .padding(.horizontal, 6)
@@ -1816,7 +1820,9 @@ private struct ProviderFilterStrip: View {
 
     var body: some View {
         HStack(spacing: 6) {
-            ForEach(ProviderFilter.allCases) { filter in
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 6) {
+                    ForEach(ProviderFilter.allCases) { filter in
                 let selected = filter == selectedFilter
 
                 Button {
@@ -1908,7 +1914,10 @@ private struct ProviderFilterStrip: View {
                 }
                 .help("只显示 \(filter.label) 会话")
                 .accessibilityLabel("\(filter.label)，\(count(filter)) 个会话")
+                    }
+                }
             }
+            .layoutPriority(1)
 
             Spacer(minLength: 2)
 
@@ -2069,7 +2078,7 @@ private struct EmptyState: View {
                 .foregroundStyle(HUDTheme.textTertiary)
             Text(title)
                 .font(.system(size: 13, weight: .medium))
-            Text("AgentHUD 正在只读监听 Codex 与 Claude Code")
+            Text("AgentHUD 正在只读监听 Codex、Claude、Pi 与 OpenCode")
                 .font(.system(size: 11.5))
                 .foregroundStyle(HUDTheme.textSecondary)
         }

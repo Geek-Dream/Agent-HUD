@@ -1,5 +1,34 @@
 import Foundation
 
+func testLinkCertificateFingerprintAndStatusProtocol() throws {
+    try expect(AgentStatus.waitingUser.protocolValue == "WaitingUser", "Waiting status must match the mobile protocol")
+    try expect(AgentStatus.working.protocolValue == "Working", "Working status must match the mobile protocol")
+
+    let directory = FileManager.default.temporaryDirectory
+        .appendingPathComponent("AgentHUD-CertificateTests-\(UUID().uuidString)", isDirectory: true)
+    defer {
+        try? FileManager.default.removeItem(at: directory)
+    }
+    let certificate = try LinkCertificate.loadOrCreate(directory: directory)
+    let process = Process()
+    process.executableURL = URL(fileURLWithPath: "/usr/bin/openssl")
+    process.arguments = [
+        "x509", "-in", certificate.certificateURL.path, "-outform", "DER"
+    ]
+    let standardOutput = Pipe()
+    process.standardOutput = standardOutput
+    try process.run()
+    let der = try standardOutput.fileHandleForReading.readToEnd() ?? Data()
+    process.waitUntilExit()
+    try expect(process.terminationStatus == 0, "Test certificate must convert to DER")
+    try expect(certificate.fingerprint == der.sha256Hex(), "Certificate fingerprint must hash DER, not PEM")
+    let pemFingerprint = try Data(contentsOf: certificate.certificateURL).sha256Hex()
+    try expect(
+        certificate.fingerprint != pemFingerprint,
+        "Certificate test must distinguish PEM and DER bytes"
+    )
+}
+
 func testLinkPairing() async throws {
     let directory = FileManager.default.temporaryDirectory
         .appendingPathComponent("AgentHUD-LinkTests-\(UUID().uuidString)", isDirectory: true)

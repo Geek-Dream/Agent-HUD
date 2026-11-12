@@ -5,22 +5,25 @@ import SwiftUI
 final class AISettingsWindowController: NSWindowController {
     private let onConfigurationChanged: () -> Void
 
-    init(onConfigurationChanged: @escaping () -> Void) {
+    init(
+        displayModel: HUDViewModel,
+        onConfigurationChanged: @escaping () -> Void
+    ) {
         self.onConfigurationChanged = onConfigurationChanged
         let settingsModel = AISettingsViewModel(
             onConfigurationChanged: onConfigurationChanged
         )
         let window = NSWindow(
-            contentRect: NSRect(x: 0, y: 0, width: 520, height: 410),
+            contentRect: NSRect(x: 0, y: 0, width: 520, height: 590),
             styleMask: [.titled, .closable],
             backing: .buffered,
             defer: false
         )
-        window.title = "AI 标题设置"
+        window.title = "AI 标题与显示设置"
         window.isReleasedWhenClosed = false
         window.center()
         window.contentView = NSHostingView(
-            rootView: AISettingsView(model: settingsModel)
+            rootView: AISettingsView(model: settingsModel, displayModel: displayModel)
         )
         super.init(window: window)
     }
@@ -163,9 +166,11 @@ final class AISettingsViewModel: ObservableObject {
 
 private struct AISettingsView: View {
     @ObservedObject var model: AISettingsViewModel
+    @ObservedObject var displayModel: HUDViewModel
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 18) {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 18) {
             HStack(spacing: 12) {
                 Image(systemName: "sparkles")
                     .font(.system(size: 22, weight: .semibold))
@@ -184,6 +189,10 @@ private struct AISettingsView: View {
                         .foregroundStyle(.secondary)
                 }
             }
+
+            displaySettings
+
+            Divider()
 
             Toggle("启用 AI 标题", isOn: $model.enabled)
                 .toggleStyle(.switch)
@@ -263,11 +272,65 @@ private struct AISettingsView: View {
             )
             .font(.system(size: 10.5))
             .foregroundStyle(.secondary)
+            }
+            .padding(24)
+            .frame(width: 520, alignment: .topLeading)
         }
-        .padding(24)
-        .frame(width: 520, height: 410, alignment: .topLeading)
+        .frame(width: 520, height: 590)
         .onAppear {
             model.refreshSecretState()
+        }
+    }
+
+    private var displaySettings: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                Text("面板尺寸")
+                    .font(.system(size: 12, weight: .semibold))
+                Spacer()
+                Button("恢复默认") {
+                    displayModel.expandedWidth = ExpandedPanelSize.defaultWidth
+                    displayModel.expandedHeight = ExpandedPanelSize.defaultHeight
+                }
+                .font(.system(size: 11))
+            }
+
+            dimensionSlider(
+                title: "展开宽度",
+                value: Binding(
+                    get: { displayModel.expandedWidth },
+                    set: { displayModel.expandedWidth = $0 }
+                ),
+                range: ExpandedPanelSize.minimumWidth...ExpandedPanelSize.maximumWidth
+            )
+            dimensionSlider(
+                title: "展开高度",
+                value: Binding(
+                    get: { displayModel.expandedHeight },
+                    set: { displayModel.expandedHeight = $0 }
+                ),
+                range: ExpandedPanelSize.minimumHeight...ExpandedPanelSize.maximumHeight
+            )
+
+            Text("宽度上限 720，高度上限 1000；收起尺寸保持不变。")
+                .font(.system(size: 10.5))
+                .foregroundStyle(.secondary)
+        }
+    }
+
+    private func dimensionSlider(
+        title: String,
+        value: Binding<Double>,
+        range: ClosedRange<Double>
+    ) -> some View {
+        HStack(spacing: 12) {
+            Text(title)
+                .font(.system(size: 11))
+                .frame(width: 58, alignment: .leading)
+            Slider(value: value, in: range, step: 1)
+            Text("\(Int(value.wrappedValue))")
+                .font(.system(size: 11, design: .monospaced))
+                .frame(width: 38, alignment: .trailing)
         }
     }
 

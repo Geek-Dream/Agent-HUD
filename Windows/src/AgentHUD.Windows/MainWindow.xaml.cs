@@ -20,12 +20,6 @@ namespace AgentHUD.Windows;
 
 public sealed partial class MainWindow : Window
 {
-    private const int DefaultExpandedWidth = 424;
-    private const int DefaultExpandedHeight = 620;
-    private const int MinExpandedWidth = 360;
-    private const int MinExpandedHeight = 480;
-    private const int MaxExpandedWidth = 720;
-    private const int MaxExpandedHeight = 1000;
     private const int CollapsedWidth = 320;
     private const int CollapsedHeight = 62;
 
@@ -45,8 +39,8 @@ public sealed partial class MainWindow : Window
     private int _dragStartCursorY;
     private int _dragStartWindowX;
     private int _dragStartWindowY;
-    private double _expandedWidth = DefaultExpandedWidth;
-    private double _expandedHeight = DefaultExpandedHeight;
+    private double _expandedWidth = ExpandedPanelSize.DefaultWidth;
+    private double _expandedHeight = ExpandedPanelSize.DefaultHeight;
     private UIElement? _resizeSurface;
     private uint _resizePointerId;
     private int _resizeStartCursorX;
@@ -58,14 +52,10 @@ public sealed partial class MainWindow : Window
         Title = "AgentHUD";
         _viewModel = new MainViewModel();
         var savedSize = _viewModel.SavedExpandedWindowSize;
-        _expandedWidth = Math.Clamp(
-            savedSize.Width ?? DefaultExpandedWidth,
-            MinExpandedWidth,
-            MaxExpandedWidth);
-        _expandedHeight = Math.Clamp(
-            savedSize.Height ?? DefaultExpandedHeight,
-            MinExpandedHeight,
-            MaxExpandedHeight);
+        _expandedWidth = ExpandedPanelSize.ClampWidth(
+            savedSize.Width ?? ExpandedPanelSize.DefaultWidth);
+        _expandedHeight = ExpandedPanelSize.ClampHeight(
+            savedSize.Height ?? ExpandedPanelSize.DefaultHeight);
         RootGrid.DataContext = _viewModel;
         RootBorder.AddHandler(UIElement.PointerMovedEvent, new PointerEventHandler(DragSurface_PointerMoved), true);
         RootBorder.AddHandler(UIElement.PointerReleasedEvent, new PointerEventHandler(DragSurface_PointerReleased), true);
@@ -789,14 +779,10 @@ public sealed partial class MainWindow : Window
         }
 
         var scale = WindowScale();
-        _expandedWidth = Math.Clamp(
-            _expandedWidth + (cursor.X - _resizeStartCursorX) / scale,
-            MinExpandedWidth,
-            MaxExpandedWidth);
-        _expandedHeight = Math.Clamp(
-            _expandedHeight + (cursor.Y - _resizeStartCursorY) / scale,
-            MinExpandedHeight,
-            MaxExpandedHeight);
+        _expandedWidth = ExpandedPanelSize.ClampWidth(
+            _expandedWidth + (cursor.X - _resizeStartCursorX) / scale);
+        _expandedHeight = ExpandedPanelSize.ClampHeight(
+            _expandedHeight + (cursor.Y - _resizeStartCursorY) / scale);
         _resizeStartCursorX = cursor.X;
         _resizeStartCursorY = cursor.Y;
 
@@ -848,8 +834,8 @@ public sealed partial class MainWindow : Window
         if (_usesSystemBackdrop && !highContrast)
         {
             var backdropColor = RootBorder.ActualTheme == ElementTheme.Dark
-                ? global::Windows.UI.Color.FromArgb(238, 16, 23, 34)
-                : global::Windows.UI.Color.FromArgb(242, 242, 245, 249);
+                ? global::Windows.UI.Color.FromArgb(204, 16, 23, 34)
+                : global::Windows.UI.Color.FromArgb(210, 242, 245, 249);
             RootBorder.Background = new SolidColorBrush(backdropColor);
             return;
         }
@@ -909,6 +895,7 @@ public sealed partial class MainWindow : Window
         SetFilterStyle(ProviderCodexButton, ProviderFilter.Codex, selectedProviderStyle, normalStyle);
         SetFilterStyle(ProviderClaudeButton, ProviderFilter.Claude, selectedProviderStyle, normalStyle);
         SetFilterStyle(ProviderPiButton, ProviderFilter.Pi, selectedProviderStyle, normalStyle);
+        SetFilterStyle(ProviderOpenCodeButton, ProviderFilter.OpenCode, selectedProviderStyle, normalStyle);
 
         StatusAllCount.Text = _viewModel.StatusCount(StatusFilter.All);
         StatusWorkingCount.Text = _viewModel.StatusCount(StatusFilter.Working);
@@ -920,6 +907,7 @@ public sealed partial class MainWindow : Window
         ProviderCodexCount.Text = _viewModel.ProviderCount(ProviderFilter.Codex);
         ProviderClaudeCount.Text = _viewModel.ProviderCount(ProviderFilter.Claude);
         ProviderPiCount.Text = _viewModel.ProviderCount(ProviderFilter.Pi);
+        ProviderOpenCodeCount.Text = _viewModel.ProviderCount(ProviderFilter.OpenCode);
     }
 
     private void SetFilterStyle<TSetting>(
@@ -1141,6 +1129,15 @@ public sealed partial class MainWindow : Window
             XamlRoot = RootBorder.XamlRoot
         };
         await dialog.ShowAsync();
+        var savedSize = _viewModel.SavedExpandedWindowSize;
+        _expandedWidth = ExpandedPanelSize.ClampWidth(
+            savedSize.Width ?? ExpandedPanelSize.DefaultWidth);
+        _expandedHeight = ExpandedPanelSize.ClampHeight(
+            savedSize.Height ?? ExpandedPanelSize.DefaultHeight);
+        if (_viewModel.IsExpanded)
+        {
+            await AnimateWindowSizeAsync(expanded: true);
+        }
     }
 
     private async Task ShowLinkSettingsAsync()

@@ -2,8 +2,6 @@ import AppKit
 import SwiftUI
 
 enum HUDMetrics {
-    static let expandedWidth: CGFloat = 424
-    static let expandedHeight: CGFloat = 620
     static let collapsedWidth: CGFloat = 320
     static let collapsedHeight: CGFloat = 62
     static let panelGap: CGFloat = 18
@@ -47,6 +45,8 @@ extension AgentProvider {
             return "sparkle"
         case .pi:
             return "circle.hexagongrid.fill"
+        case .opencode:
+            return "chevron.left.forwardslash.chevron.right"
         }
     }
 
@@ -58,6 +58,8 @@ extension AgentProvider {
             return HUDTheme.claude
         case .pi:
             return HUDTheme.pi
+        case .opencode:
+            return HUDTheme.opencode
         }
     }
 }
@@ -130,17 +132,20 @@ extension AgentStatus {
 struct VisualEffectView: NSViewRepresentable {
     var material: NSVisualEffectView.Material = .hudWindow
     var blendingMode: NSVisualEffectView.BlendingMode = .behindWindow
+    var opacity: CGFloat = 1
 
     func makeNSView(context: Context) -> NSVisualEffectView {
         let view = NSVisualEffectView()
         view.material = material
         view.blendingMode = blendingMode
         view.state = .active
+        view.alphaValue = opacity
         return view
     }
 
     func updateNSView(_ nsView: NSVisualEffectView, context: Context) {
         nsView.material = material
         nsView.blendingMode = blendingMode
+        nsView.alphaValue = opacity
     }
 }

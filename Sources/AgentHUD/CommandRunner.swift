@@ -67,6 +67,7 @@ enum ProcessPresence {
     struct Snapshot {
         var codex = false
         var claude = false
+        var opencode = false
     }
 
     static func detect() -> Snapshot {
@@ -86,6 +87,11 @@ enum ProcessPresence {
             }
             if value.contains("/claude") || value.hasPrefix("claude ") || value.contains("claude-code") {
                 snapshot.claude = true
+            }
+            if value.contains("/opencode")
+                || value.hasPrefix("opencode ")
+                || value.contains("ai.opencode.desktop") {
+                snapshot.opencode = true
             }
         }
         return snapshot

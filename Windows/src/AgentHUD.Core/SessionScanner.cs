@@ -20,6 +20,10 @@ public sealed class SessionScanner
         var codexFiles = RecentFiles(codexRoot, cutoff, 36);
         var claudeFiles = RecentFiles(claudeRoot, cutoff, 36);
         var sessions = new List<AgentSession>();
+        sessions.AddRange(OpenCodeSessionSource.Scan(
+            databasePath: null,
+            providerIsRunning: processes.OpenCode,
+            now));
 
         foreach (var file in codexFiles)
         {
@@ -134,7 +138,7 @@ public sealed class SessionScanner
 
     private static class ProcessPresence
     {
-        public static (bool Codex, bool Claude) Detect()
+        public static (bool Codex, bool Claude, bool OpenCode) Detect()
         {
             try
             {
@@ -153,11 +157,12 @@ public sealed class SessionScanner
                     .ToArray();
                 return (
                     names.Any(name => name.Contains("codex", StringComparison.Ordinal)),
-                    names.Any(name => name.Contains("claude", StringComparison.Ordinal)));
+                    names.Any(name => name.Contains("claude", StringComparison.Ordinal)),
+                    names.Any(name => name.Contains("opencode", StringComparison.Ordinal)));
             }
             catch
             {
-                return (false, false);
+                return (false, false, false);
             }
         }
     }

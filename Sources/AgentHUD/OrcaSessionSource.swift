@@ -327,6 +327,8 @@ enum OrcaSessionSource {
             )
         case .pi:
             return nil
+        case .opencode:
+            return nil
         }
     }
 
@@ -441,6 +443,8 @@ enum OrcaSessionSource {
             return .claude
         case "pi", "pi-agent":
             return .pi
+        case "opencode", "open-code":
+            return .opencode
         default:
             return nil
         }

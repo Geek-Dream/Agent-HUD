@@ -20,7 +20,10 @@ iOS is distributed separately through TestFlight; GitHub does not provide an uns
 - Device tokens stored with `flutter_secure_storage`
 - Device list and local token removal
 - Session list, status/provider filters, detail view
-- Four-second polling with manual refresh and pull-to-refresh
+- One-second active polling (two seconds when idle), with manual refresh and pull-to-refresh
+- Persistent HTTPS connections and conditional session downloads using `ETag`/`304 Not Modified`
+- Optional on-demand computer scans when opening or manually refreshing monitoring
+- Legacy-server fallback when `refresh` or conditional responses are unavailable
 - Privacy-mode indicator
 
 Not yet implemented: mDNS discovery, WebSocket events, background push, and any control operation.

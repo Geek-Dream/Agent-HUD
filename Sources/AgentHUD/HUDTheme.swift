@@ -3,8 +3,8 @@ import SwiftUI
 
 enum HUDTheme {
     static let windowTint = adaptiveColor(
-        light: NSColor(calibratedRed: 0.955, green: 0.966, blue: 0.982, alpha: 0.96),
-        dark: NSColor(calibratedRed: 0.045, green: 0.060, blue: 0.085, alpha: 0.94)
+        light: NSColor(calibratedRed: 0.955, green: 0.966, blue: 0.982, alpha: 0.62),
+        dark: NSColor(calibratedRed: 0.045, green: 0.060, blue: 0.085, alpha: 0.70)
     )
     static let surface = adaptiveColor(
         light: NSColor(calibratedWhite: 1.0, alpha: 0.82),
@@ -73,6 +73,10 @@ enum HUDTheme {
     static let pi = adaptiveColor(
         light: NSColor(calibratedRed: 0.09, green: 0.42, blue: 0.06, alpha: 1),
         dark: NSColor(calibratedRed: 0.48, green: 0.89, blue: 0.36, alpha: 1)
+    )
+    static let opencode = adaptiveColor(
+        light: NSColor(calibratedRed: 0.0, green: 0.45, blue: 0.40, alpha: 1),
+        dark: NSColor(calibratedRed: 0.31, green: 0.82, blue: 0.77, alpha: 1)
     )
     static let important = adaptiveColor(
         light: NSColor(calibratedRed: 0.66, green: 0.37, blue: 0.0, alpha: 1),

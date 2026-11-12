@@ -80,6 +80,8 @@ public sealed class CoreTests
         Assert.False(StatusFilter.Completed.Matches(working.Status));
         Assert.True(ProviderFilter.Claude.Matches(waiting.Provider));
         Assert.False(ProviderFilter.Codex.Matches(waiting.Provider));
+        Assert.True(ProviderFilter.OpenCode.Matches(AgentProvider.OpenCode));
+        Assert.False(ProviderFilter.OpenCode.Matches(AgentProvider.Codex));
     }
 
     [Fact]
@@ -100,6 +102,36 @@ public sealed class CoreTests
         Assert.Equal(
             new[] { "session:running" },
             SessionTransitionDetector.RunningCompletionIds(previous, current));
+    }
+
+    [Theory]
+    [InlineData(AgentStatus.Starting, true, true)]
+    [InlineData(AgentStatus.Working, false, false)]
+    [InlineData(AgentStatus.Working, true, true)]
+    [InlineData(AgentStatus.WaitingUser, false, false)]
+    [InlineData(AgentStatus.WaitingUser, true, true)]
+    [InlineData(AgentStatus.Failed, true, true)]
+    [InlineData(AgentStatus.Completed, false, false)]
+    [InlineData(AgentStatus.Completed, true, true)]
+    [InlineData(AgentStatus.Idle, true, false)]
+    [InlineData(AgentStatus.Unknown, true, false)]
+    public void OutlinePolicySeparatesStatusAndImportance(
+        AgentStatus status,
+        bool isImportant,
+        bool expected)
+    {
+        Assert.Equal(expected, SessionOutlinePolicy.ShouldShow(status, isImportant));
+    }
+
+    [Fact]
+    public void ExpandedPanelSizeClampsCustomDimensions()
+    {
+        Assert.Equal(500, ExpandedPanelSize.ClampWidth(500));
+        Assert.Equal(700, ExpandedPanelSize.ClampHeight(700));
+        Assert.Equal(ExpandedPanelSize.MaxWidth, ExpandedPanelSize.ClampWidth(10_000));
+        Assert.Equal(ExpandedPanelSize.MaxHeight, ExpandedPanelSize.ClampHeight(10_000));
+        Assert.Equal(ExpandedPanelSize.MinWidth, ExpandedPanelSize.ClampWidth(1));
+        Assert.Equal(ExpandedPanelSize.DefaultHeight, ExpandedPanelSize.ClampHeight(double.NaN));
     }
 
     [Fact]

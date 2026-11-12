@@ -11,15 +11,20 @@ final class SessionScanner {
     private let cacheLock = NSLock()
 
     func scan(now: Date = .now) -> DashboardSnapshot {
+        let home = fileManager.homeDirectoryForCurrentUser
+        let processes = ProcessPresence.detect()
+        let openCodeSessions = OpenCodeSessionSource.scan(
+            providerIsRunning: processes.opencode,
+            now: now
+        )
+
         if let sessions = OrcaSessionSource.scan(now: now) {
-            var currentSessions = sessions
+            var currentSessions = deduplicate(sessions + openCodeSessions)
             currentSessions.sort(by: sessionSort)
+            currentSessions = Array(currentSessions.prefix(24))
             currentSessions = attachGitContexts(to: currentSessions, now: now)
             return DashboardSnapshot(sessions: currentSessions, scannedAt: now)
         }
-
-        let home = fileManager.homeDirectoryForCurrentUser
-        let processes = ProcessPresence.detect()
 
         let codexRoot = home.appendingPathComponent(".codex/sessions", isDirectory: true)
         let claudeRoot = home.appendingPathComponent(".claude/projects", isDirectory: true)
@@ -70,6 +75,7 @@ final class SessionScanner {
             }
         }
 
+        sessions.append(contentsOf: openCodeSessions)
         sessions = deduplicate(sessions)
         sessions.sort(by: sessionSort)
         sessions = Array(sessions.prefix(24))

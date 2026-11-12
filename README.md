@@ -8,15 +8,17 @@
 ![Read Only](https://img.shields.io/badge/local%20data-read--only-16A34A)
 
 AgentHUD 是一个本地优先、只读的 coding agent 常驻浮窗。它集中展示 Codex、
-Claude Code 和本地 Orca 会话的实时状态、任务标题、完成总结、Git 上下文与历史记录，
+Claude Code、OpenCode 和本地 Orca 会话的实时状态、任务标题、完成总结、Git 上下文与历史记录，
 但不会启动、停止、审批或控制任何 Agent。
 
 ## 核心能力
 
 - 常驻桌面并始终置顶，支持快速展开、收起和拖动锁定。
-- 展示工作、等待、完成和错误状态，并按 Codex、Claude、Pi 等 Agent 筛选。
+- 展示工作、等待、完成和错误状态，并按 Codex、Claude、Pi、OpenCode 等 Agent 筛选。
 - 自动读取最近会话，显示用户目标、Agent 动作、耗时、项目路径和只读 Git 上下文。
-- 完成记录支持分页加载，重要会话自动置顶并显示绿色霓虹轮廓。
+- 完成记录支持分页加载，重要会话自动置顶；星标会话按工作、完成、等待和
+  错误状态显示蓝、绿、黄、红色轮廓，未标星会话不显示状态轮廓。
+- 展开面板支持轻度透明背景，并可在设置中调整宽度和高度，上限为 720 × 1000。
 - 运行中的会话完成后向右滑出，再从列表底部平滑渐入。
 - 支持手动修改标题，也可通过 OpenAI 兼容接口生成更易读的任务标题。
 - 支持查看用户原始输入和会话图片，并提供可缩放、可切换的图片预览。
@@ -95,13 +97,14 @@ macOS 菜单栏同样提供“手机关联”，对应 Swift 实现见 `docs/mac
 
 - Codex：`~/.codex/sessions/**/*.jsonl`
 - Claude Code：`~/.claude/projects/**/*.jsonl`
+- OpenCode：`~/.local/share/opencode/opencode.db`（只读 SQLite）
 - Orca：读取其本地会话元数据
 - Git：仅执行 `rev-parse`、`branch`、`status`、`diff` 等只读命令
 
 默认展示最近七天内有活动的会话，最多 24 个。`继续`、`确认`、`continue` 这类
 追问不会覆盖会话原本的实质任务标题。
 
-AgentHUD 不安装 Agent hooks，不修改 `~/.codex`、`~/.claude` 或项目配置，不向 Agent
+AgentHUD 不安装 Agent hooks，不修改 `~/.codex`、`~/.claude`、OpenCode 数据或项目配置，不向 Agent
 终端发送输入，也不会自动提交、合并、回滚或清理 Git 改动。
 
 ## AI 标题
@@ -164,7 +167,7 @@ scripts/                      构建、测试和安装脚本
 
 ## 已知限制
 
-- 当前主要支持 Codex、Claude Code、Pi 和 Orca 的本地会话格式。
+- 当前主要支持 Codex、Claude Code、Pi、OpenCode 和 Orca 的本地会话格式。
 - 会话状态来自本地日志推断，无法确认时会标记为未知或推测。
 - macOS 开发机无法编译 WinUI。Windows 端最终视觉和运行时行为建议在 Windows 11
   实机或 GitHub Actions 产物中确认。

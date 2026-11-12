@@ -12,7 +12,9 @@ This document is the compatibility contract for the Windows, Flutter, and future
 - The Windows service listens on a dynamically assigned port on LAN interfaces.
 - `addresses` in pairing responses contains IPv4 addresses without a URL scheme. Clients construct `https://ADDRESS:PORT`.
 - REST JSON uses camelCase property names and ISO-8601 timestamps.
-- The first mobile implementation polls every 3–5 seconds. A later version may add sequenced WebSocket events without changing the REST snapshot format.
+- Mobile checks for updates every second while sessions are active and every two seconds when idle. Persistent HTTPS connections avoid repeated TLS handshakes.
+- `revision` describes the computer's scan sequence, not necessarily changed session content. Clients use the optional session-list `ETag` to avoid downloading unchanged data.
+- Servers advertising `refresh` may support an authenticated `POST /v1/refresh` to finish the current scan or start a new one. Clients must retain the normal polling fallback when this capability or endpoint is unavailable.
 
 ## Pairing
 
@@ -121,6 +123,8 @@ GET /v1/sessions?status=Working&provider=Codex&limit=50
 ```
 
 Filters are optional and case-insensitive. `limit` is clamped to 1–100.
+
+Response headers include an optional `ETag` derived from the filtered public session content. A subsequent request can send `If-None-Match: <etag>`; if the content is unchanged, the server returns `304 Not Modified` without a JSON body. Clients keep their existing list and update the connection timestamp. Servers without an `ETag` return the full list as before.
 
 Response:
 

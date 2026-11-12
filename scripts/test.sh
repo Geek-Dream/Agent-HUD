@@ -17,10 +17,13 @@ swiftc \
     Sources/AgentHUD/SessionImportanceStore.swift \
     Sources/AgentHUD/CodexAdapter.swift \
     Sources/AgentHUD/ClaudeAdapter.swift \
+    Sources/AgentHUD/OpenCodeAdapter.swift \
+    Sources/AgentHUD/OpenCodeSessionSource.swift \
     Sources/AgentHUD/OrcaSessionSource.swift \
     Sources/AgentHUD/LinkModels.swift \
     Sources/AgentHUD/LinkDeviceStore.swift \
     Sources/AgentHUD/LinkPairingManager.swift \
+    Sources/AgentHUD/LinkCertificate.swift \
     Tests/LinkTests.swift \
     Tests/main.swift \
     -o "$BINARY"

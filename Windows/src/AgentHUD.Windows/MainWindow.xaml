@@ -412,11 +412,17 @@
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
+                        <ScrollViewer
+                            Grid.Column="0"
+                            HorizontalScrollBarVisibility="Hidden"
+                            HorizontalScrollMode="Enabled"
+                            VerticalScrollMode="Disabled">
                         <Grid
                             x:Name="ProviderFilterStrip"
-                            Grid.Column="0"
+                            MinWidth="470"
                             ColumnSpacing="3">
                             <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="*" />
@@ -478,7 +484,22 @@
                                         Text="0" />
                                 </StackPanel>
                             </Button>
+                            <Button
+                                x:Name="ProviderOpenCodeButton"
+                                Grid.Column="4"
+                                Click="ProviderFilter_Click"
+                                Style="{StaticResource HudFilterButtonStyle}"
+                                Tag="OpenCode">
+                                <StackPanel Orientation="Horizontal" Spacing="5">
+                                    <TextBlock Text="OpenCode" Foreground="{ThemeResource HudOpenCodeBrush}" />
+                                    <TextBlock
+                                        x:Name="ProviderOpenCodeCount"
+                                        Opacity="0.62"
+                                        Text="0" />
+                                </StackPanel>
+                            </Button>
                         </Grid>
+                        </ScrollViewer>
                         <TextBlock
                             Grid.Column="1"
                             Margin="9,0,2,0"
@@ -565,17 +586,17 @@
                                         <Border
                                             Margin="8,5"
                                             Background="{ThemeResource HudRaisedBrush}"
-                                            BorderBrush="{Binding StatusTintBrush}"
-                                            BorderThickness="1"
+                                            BorderBrush="{ThemeResource HudBorderBrush}"
+                                            BorderThickness="0"
                                             CornerRadius="12" />
                                         <Border
                                             Margin="8,5"
-                                            Background="{ThemeResource HudCompletedTintBrush}"
-                                            BorderBrush="{ThemeResource HudCompletedBrush}"
+                                            Background="{Binding StatusTintBrush}"
+                                            BorderBrush="{Binding StatusBrush}"
                                             BorderThickness="1"
                                             CornerRadius="12"
                                             Opacity="0.58"
-                                            Visibility="{Binding CompletedOutlineVisibility}" />
+                                            Visibility="{Binding StatusOutlineVisibility}" />
                                         <Border
                                             Width="3"
                                             Margin="8,16,0,16"
@@ -811,7 +832,7 @@
                                 HorizontalAlignment="Center"
                                 FontSize="10.5"
                                 Foreground="{ThemeResource HudTextSecondaryBrush}"
-                                Text="本地 Codex 与 Claude 日志会在这里出现" />
+                                Text="本地 Codex、Claude、Pi 与 OpenCode 会话会在这里出现" />
                         </StackPanel>
 
                         <StackPanel

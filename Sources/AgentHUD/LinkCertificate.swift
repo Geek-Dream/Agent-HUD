@@ -29,7 +29,18 @@ struct LinkCertificate {
                 ofItemAtPath: privateKeyURL.path
             )
         }
-        let fingerprint = try Data(contentsOf: certificateURL).sha256Hex()
+        let process = Process()
+        process.executableURL = URL(fileURLWithPath: "/usr/bin/openssl")
+        process.arguments = ["x509", "-in", certificateURL.path, "-outform", "DER"]
+        let standardOutput = Pipe()
+        process.standardOutput = standardOutput
+        try process.run()
+        let der = try standardOutput.fileHandleForReading.readToEnd() ?? Data()
+        process.waitUntilExit()
+        guard process.terminationStatus == 0, !der.isEmpty else {
+            throw NSError(domain: "AgentHUD.Link.Certificate", code: Int(process.terminationStatus))
+        }
+        let fingerprint = der.sha256Hex()
         return LinkCertificate(
             certificateURL: certificateURL,
             privateKeyURL: privateKeyURL,

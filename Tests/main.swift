@@ -467,6 +467,169 @@ func testRunningFirstOrderingAndCompletionTransition() throws {
     )
 }
 
+func testSessionOutlinePolicy() throws {
+    for status in [AgentStatus.starting, .working, .waitingUser, .completed, .failed] {
+        try expect(
+            SessionOutlinePolicy.shouldShow(status: status, isImportant: true),
+            "Important \(status) sessions must show their status outline"
+        )
+        try expect(
+            !SessionOutlinePolicy.shouldShow(status: status, isImportant: false),
+            "Unstarred \(status) sessions must not show an outline"
+        )
+    }
+    for status in [AgentStatus.idle, .unknown] {
+        try expect(
+            !SessionOutlinePolicy.shouldShow(status: status, isImportant: true),
+            "\(status) sessions must not show a status outline"
+        )
+    }
+}
+
+func testExpandedPanelSizePolicy() throws {
+    try expect(ExpandedPanelSize.clampedWidth(500) == 500, "Valid custom width should be preserved")
+    try expect(ExpandedPanelSize.clampedHeight(700) == 700, "Valid custom height should be preserved")
+    try expect(
+        ExpandedPanelSize.clampedWidth(10_000) == ExpandedPanelSize.maximumWidth,
+        "Width must not exceed its upper limit"
+    )
+    try expect(
+        ExpandedPanelSize.clampedHeight(10_000) == ExpandedPanelSize.maximumHeight,
+        "Height must not exceed its upper limit"
+    )
+    try expect(
+        ExpandedPanelSize.clampedWidth(1) == ExpandedPanelSize.minimumWidth,
+        "Width must not be smaller than its lower limit"
+    )
+    try expect(
+        ExpandedPanelSize.clampedHeight(.nan) == ExpandedPanelSize.defaultHeight,
+        "Invalid height should restore the default"
+    )
+}
+
+func testOpenCode() throws {
+    let base = Date(timeIntervalSince1970: 1_800_000_000)
+    let user = OpenCodeEvent(
+        id: "msg-user",
+        date: base,
+        data: ["role": "user"]
+    )
+    let assistant = OpenCodeEvent(
+        id: "msg-assistant",
+        date: base.addingTimeInterval(1),
+        data: ["role": "assistant", "time": ["completed": (base.addingTimeInterval(4).timeIntervalSince1970 * 1_000)]]
+    )
+    let userText = OpenCodeEvent(
+        id: "part-user-text",
+        date: base,
+        data: ["messageID": "msg-user", "type": "text", "text": "增加 OpenCode 支持"]
+    )
+    let question = OpenCodeEvent(
+        id: "part-question",
+        date: base.addingTimeInterval(2),
+        data: [
+            "messageID": "msg-assistant",
+            "type": "tool",
+            "tool": "question",
+            "state": ["status": "running", "input": ["filePath": "/tmp/Agent-HUD/Models.swift"]]
+        ]
+    )
+    let summary = OpenCodeEvent(
+        id: "part-summary",
+        date: base.addingTimeInterval(4),
+        data: ["messageID": "msg-assistant", "type": "text", "text": "OpenCode 已接入。"]
+    )
+    let record = OpenCodeSessionRecord(
+        id: "ses_test",
+        directory: "/tmp/Agent-HUD",
+        title: "OpenCode 会话",
+        createdAt: base,
+        updatedAt: base.addingTimeInterval(4),
+        messages: [assistant, user],
+        parts: [summary, question, userText]
+    )
+    let waiting = OpenCodeAdapter.parse(
+        record: record,
+        fileURL: URL(fileURLWithPath: "/tmp/opencode.db"),
+        providerIsRunning: true,
+        now: base.addingTimeInterval(100)
+    )
+    try expect(waiting?.provider == .opencode, "OpenCode provider must be preserved")
+    try expect(waiting?.status == .waitingUser, "OpenCode question must map to waiting")
+    try expect(
+        waiting?.title.contains("OpenCode") == true && waiting?.title != "OpenCode 会话",
+        "OpenCode title should use the substantive prompt, actual: \(waiting?.title ?? "nil")"
+    )
+    try expect(waiting?.currentFiles == ["/tmp/Agent-HUD/Models.swift"], "OpenCode tool files should be extracted")
+
+    let completed = OpenCodeAdapter.parse(
+        record: OpenCodeSessionRecord(
+            id: "ses_test",
+            directory: "/tmp/Agent-HUD",
+            title: "OpenCode 会话",
+            createdAt: base,
+            updatedAt: base.addingTimeInterval(4),
+            messages: [assistant, user],
+            parts: [summary, userText]
+        ),
+        fileURL: URL(fileURLWithPath: "/tmp/opencode.db"),
+        providerIsRunning: false,
+        now: base.addingTimeInterval(100)
+    )
+    try expect(completed?.status == .completed, "OpenCode final text must map to completed")
+    try expect(completed?.runs.count == 1, "OpenCode completion should produce a run")
+
+    let failed = OpenCodeAdapter.parse(
+        record: OpenCodeSessionRecord(
+            id: "ses_test",
+            directory: "/tmp/Agent-HUD",
+            title: "OpenCode 会话",
+            createdAt: base,
+            updatedAt: base.addingTimeInterval(4),
+            messages: [assistant, user],
+            parts: [
+                userText,
+                OpenCodeEvent(
+                    id: "part-error",
+                    date: base.addingTimeInterval(3),
+                    data: [
+                        "messageID": "msg-assistant",
+                        "type": "tool",
+                        "tool": "bash",
+                        "state": ["status": "error"]
+                    ]
+                )
+            ]
+        ),
+        fileURL: URL(fileURLWithPath: "/tmp/opencode.db"),
+        providerIsRunning: true,
+        now: base.addingTimeInterval(100)
+    )
+    try expect(failed?.status == .failed, "OpenCode tool error must map to failed")
+}
+
+func testOpenCodeCurrentDatabase() throws {
+    let url = FileManager.default.homeDirectoryForCurrentUser
+        .appendingPathComponent(".local/share/opencode/opencode.db")
+    guard FileManager.default.fileExists(atPath: url.path) else {
+        return
+    }
+    let sessions = OpenCodeSessionSource.scan(
+        databaseURL: url,
+        providerIsRunning: true,
+        now: Date()
+    )
+    try expect(!sessions.isEmpty, "The current OpenCode database should produce sessions")
+    try expect(
+        sessions.allSatisfy { $0.provider == .opencode && $0.id.hasPrefix("opencode:") },
+        "Database rows must use the OpenCode provider identity"
+    )
+    try expect(
+        sessions.contains { $0.latestUserPrompt != nil },
+        "The current OpenCode database must include readable user prompts"
+    )
+}
+
 func makeTestSession(
     id: String,
     status: AgentStatus,
@@ -1213,6 +1376,8 @@ do {
     try expect(StatusFilter.working.matches(.starting), "Starting status should be included in working filter")
     try expect(!StatusFilter.completed.matches(.working), "Completed filter must not include working sessions")
     try expect(ProviderFilter.pi.matches(.pi), "Pi provider filter should match Pi sessions")
+    try expect(ProviderFilter.opencode.matches(.opencode), "OpenCode provider filter should match OpenCode sessions")
+    try expect(!ProviderFilter.opencode.matches(.codex), "OpenCode provider filter must not include Codex sessions")
     try expect(!ProviderFilter.codex.matches(.claude), "Codex provider filter must not include Claude sessions")
     try expect(
         SessionImageAttachment.displayLabel(for: 0) == "[图片1]",
@@ -1231,6 +1396,10 @@ do {
     try testSessionImportanceStore()
     try testImportantSessionOrdering()
     try testRunningFirstOrderingAndCompletionTransition()
+    try testSessionOutlinePolicy()
+    try testExpandedPanelSizePolicy()
+    try testOpenCode()
+    try testOpenCodeCurrentDatabase()
     try testLogReaderFindsRecentPromptBeyondTail()
     try testCodex()
     try testClaude()
@@ -1244,8 +1413,9 @@ do {
     try await testAICacheAndFailureBackoff()
     try testAIConfiguration()
     try testAISecretEnvironmentFallback()
+    try testLinkCertificateFingerprintAndStatusProtocol()
     try await testLinkPairing()
-    print("19 tests passed (adapter, AI title, session priority and LAN pairing smoke tests)")
+    print("23 tests passed (adapter, OpenCode, AI title, session presentation and LAN protocol smoke tests)")
 } catch {
     fputs("Adapter smoke tests failed: \(error)\n", stderr)
     exit(1)

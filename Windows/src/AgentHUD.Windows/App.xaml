@@ -32,6 +32,7 @@
                     <SolidColorBrush x:Key="HudCodexBrush" Color="#0053C7" />
                     <SolidColorBrush x:Key="HudClaudeBrush" Color="#A83A06" />
                     <SolidColorBrush x:Key="HudPiBrush" Color="#176612" />
+                    <SolidColorBrush x:Key="HudOpenCodeBrush" Color="#00776B" />
                     <SolidColorBrush x:Key="HudImportantBrush" Color="#8A4E00" />
                     <SolidColorBrush x:Key="HudWorkingTintBrush" Color="#220053C7" />
                     <SolidColorBrush x:Key="HudWaitingTintBrush" Color="#278A4E00" />
@@ -62,6 +63,7 @@
                     <SolidColorBrush x:Key="HudCodexBrush" Color="#68B2FF" />
                     <SolidColorBrush x:Key="HudClaudeBrush" Color="#FF9A62" />
                     <SolidColorBrush x:Key="HudPiBrush" Color="#8BE879" />
+                    <SolidColorBrush x:Key="HudOpenCodeBrush" Color="#4FD1C5" />
                     <SolidColorBrush x:Key="HudImportantBrush" Color="#FFD45E" />
                     <SolidColorBrush x:Key="HudWorkingTintBrush" Color="#3055A7FF" />
                     <SolidColorBrush x:Key="HudWaitingTintBrush" Color="#2EFFC857" />
@@ -92,6 +94,7 @@
                     <SolidColorBrush x:Key="HudCodexBrush" Color="#FF66B7FF" />
                     <SolidColorBrush x:Key="HudClaudeBrush" Color="#FFFFA36D" />
                     <SolidColorBrush x:Key="HudPiBrush" Color="#FF98F08A" />
+                    <SolidColorBrush x:Key="HudOpenCodeBrush" Color="#FF70D7C8" />
                     <SolidColorBrush x:Key="HudImportantBrush" Color="#FFFFD84D" />
                     <SolidColorBrush x:Key="HudWorkingTintBrush" Color="#FF10283F" />
                     <SolidColorBrush x:Key="HudWaitingTintBrush" Color="#FF342A00" />

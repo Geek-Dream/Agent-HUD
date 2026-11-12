@@ -315,7 +315,7 @@ enum CodexAdapter {
         case .starting:
             return "已发现会话，正在读取进度"
         case .waitingUser, .unknown:
-            return "正在等待更多本地信号"
+            return "暂未发现开始或完成记录"
         }
     }
 }

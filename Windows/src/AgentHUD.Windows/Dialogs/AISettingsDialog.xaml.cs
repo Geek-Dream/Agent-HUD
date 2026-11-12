@@ -17,6 +17,9 @@ public sealed partial class AISettingsDialog : ContentDialog
         EnabledSwitch.IsOn = configuration.Enabled;
         EndpointBox.Text = configuration.Endpoint;
         ModelBox.Text = configuration.Model;
+        var savedSize = _viewModel.SavedExpandedWindowSize;
+        ExpandedWidthBox.Value = savedSize.Width ?? ExpandedPanelSize.DefaultWidth;
+        ExpandedHeightBox.Value = savedSize.Height ?? ExpandedPanelSize.DefaultHeight;
         UpdateKeyState();
     }
 
@@ -31,6 +34,9 @@ public sealed partial class AISettingsDialog : ContentDialog
         ContentDialog sender,
         ContentDialogButtonClickEventArgs args)
     {
+        _viewModel.SaveExpandedWindowSize(
+            ExpandedWidthBox.Value,
+            ExpandedHeightBox.Value);
         if (!TryReadConfiguration(
                 forceEnabled: false,
                 out var configuration,

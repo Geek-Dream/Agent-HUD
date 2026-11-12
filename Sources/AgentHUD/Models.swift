@@ -4,6 +4,7 @@ enum AgentProvider: String, Codable, CaseIterable, Identifiable {
     case codex
     case claude
     case pi
+    case opencode
 
     var id: String { rawValue }
 
@@ -15,6 +16,8 @@ enum AgentProvider: String, Codable, CaseIterable, Identifiable {
             return "Claude Code"
         case .pi:
             return "Pi"
+        case .opencode:
+            return "OpenCode"
         }
     }
 
@@ -26,6 +29,8 @@ enum AgentProvider: String, Codable, CaseIterable, Identifiable {
             return "CLAUDE"
         case .pi:
             return "PI"
+        case .opencode:
+            return "OPENCODE"
         }
     }
 }
@@ -38,6 +43,10 @@ enum AgentStatus: String, Codable, CaseIterable {
     case completed
     case failed
     case unknown
+
+    var protocolValue: String {
+        self == .waitingUser ? "WaitingUser" : rawValue.capitalized
+    }
 
     var label: String {
         switch self {
@@ -319,6 +328,49 @@ struct SessionRowPresentation: Identifiable {
     }
 }
 
+enum SessionOutlinePolicy {
+    static func shouldShow(status: AgentStatus, isImportant: Bool) -> Bool {
+        guard isImportant else {
+            return false
+        }
+        switch status {
+        case .starting, .working, .waitingUser, .completed, .failed:
+            return true
+        case .idle, .unknown:
+            return false
+        }
+    }
+}
+
+enum ExpandedPanelSize {
+    static let defaultWidth = 424.0
+    static let defaultHeight = 620.0
+    static let minimumWidth = 360.0
+    static let minimumHeight = 480.0
+    static let maximumWidth = 720.0
+    static let maximumHeight = 1000.0
+
+    static func clampedWidth(_ value: Double) -> Double {
+        clamp(value, minimum: minimumWidth, maximum: maximumWidth, fallback: defaultWidth)
+    }
+
+    static func clampedHeight(_ value: Double) -> Double {
+        clamp(value, minimum: minimumHeight, maximum: maximumHeight, fallback: defaultHeight)
+    }
+
+    private static func clamp(
+        _ value: Double,
+        minimum: Double,
+        maximum: Double,
+        fallback: Double
+    ) -> Double {
+        guard value.isFinite else {
+            return fallback
+        }
+        return min(max(value, minimum), maximum)
+    }
+}
+
 struct ImportantCompletionNotice: Identifiable {
     let sessionID: String
     let provider: AgentProvider
@@ -396,6 +448,7 @@ enum ProviderFilter: String, CaseIterable, Identifiable {
     case codex
     case claude
     case pi
+    case opencode
 
     var id: String { rawValue }
 
@@ -409,6 +462,8 @@ enum ProviderFilter: String, CaseIterable, Identifiable {
             return "Claude"
         case .pi:
             return "Pi"
+        case .opencode:
+            return "OpenCode"
         }
     }
 
@@ -422,6 +477,8 @@ enum ProviderFilter: String, CaseIterable, Identifiable {
             return .claude
         case .pi:
             return .pi
+        case .opencode:
+            return .opencode
         }
     }
 

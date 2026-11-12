@@ -22,10 +22,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var subscriptions: Set<AnyCancellable> = []
     private var linkServer: LinkServer?
     private var linkSettingsWindowController: LinkSettingsWindowController?
-    private lazy var aiSettingsWindowController = AISettingsWindowController {
-        [weak self] in
-        self?.model.reloadAIConfiguration()
-    }
+    private lazy var aiSettingsWindowController = AISettingsWindowController(
+        displayModel: model,
+        onConfigurationChanged: { [weak self] in
+            self?.model.reloadAIConfiguration()
+        }
+    )
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         NSApp.setActivationPolicy(.accessory)
@@ -96,18 +98,24 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         panel.isMovableByWindowBackground = !model.positionLocked
         panel.animationBehavior = .utilityWindow
         panel.contentMinSize = panelSize(expanded: false)
-        panel.contentMaxSize = panelSize(expanded: true)
+        panel.contentMaxSize = NSSize(
+            width: ExpandedPanelSize.maximumWidth,
+            height: ExpandedPanelSize.maximumHeight
+        )
 
         let container = NSView(
             frame: NSRect(origin: .zero, size: initialSize)
         )
         container.wantsLayer = true
+        container.layer?.backgroundColor = NSColor.clear.cgColor
         container.layer?.masksToBounds = true
         container.layer?.cornerRadius = 14
         container.layer?.cornerCurve = .continuous
         container.autoresizesSubviews = true
 
         let hostingView = NSHostingView(rootView: HUDShell(model: model))
+        hostingView.wantsLayer = true
+        hostingView.layer?.backgroundColor = NSColor.clear.cgColor
         hostingView.frame = container.bounds
         hostingView.autoresizingMask = [.width, .height]
         container.addSubview(hostingView)
@@ -137,6 +145,19 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                 self?.resizePanel(expanded: expanded)
             }
             .store(in: &subscriptions)
+
+        Publishers.CombineLatest(model.$expandedWidth, model.$expandedHeight)
+            .removeDuplicates { lhs, rhs in
+                lhs.0 == rhs.0 && lhs.1 == rhs.1
+            }
+            .dropFirst()
+            .sink { [weak self] _ in
+                guard let self, self.model.isExpanded else {
+                    return
+                }
+                self.resizePanel(expanded: true, animated: false)
+            }
+            .store(in: &subscriptions)
     }
 
     private func positionPanelAtDefaultLocation(_ panel: NSPanel) {
@@ -152,7 +173,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         panel.setFrameOrigin(origin)
     }
 
-    private func resizePanel(expanded: Bool) {
+    private func resizePanel(expanded: Bool, animated: Bool = true) {
         guard let panel else {
             return
         }
@@ -161,6 +182,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             for: panelSize(expanded: expanded),
             keepingTopTrailingAnchor: panel
         )
+        guard animated else {
+            panel.setFrame(targetFrame, display: true)
+            return
+        }
         NSAnimationContext.runAnimationGroup { context in
             context.duration = HUDMetrics.resizeDuration
             context.timingFunction = CAMediaTimingFunction(
@@ -173,7 +198,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     private func panelSize(expanded: Bool) -> NSSize {
         expanded
-            ? NSSize(width: HUDMetrics.expandedWidth, height: HUDMetrics.expandedHeight)
+            ? NSSize(width: model.expandedWidth, height: model.expandedHeight)
             : NSSize(width: HUDMetrics.collapsedWidth, height: HUDMetrics.collapsedHeight)
     }
 
@@ -292,7 +317,7 @@ private struct AgentHUDStatusMenu: View {
             appDelegate.showLinkSettings()
         }
 
-        Button("AI 标题设置…") {
+        Button("AI 标题与显示设置…") {
             appDelegate.showAISettings()
         }
 

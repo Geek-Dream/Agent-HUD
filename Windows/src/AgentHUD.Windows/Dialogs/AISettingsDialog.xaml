@@ -2,7 +2,7 @@
     x:Class="AgentHUD.Windows.AISettingsDialog"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    Title="AI 标题设置"
+    Title="AI 标题与显示设置"
     CloseButtonText="关闭"
     DefaultButton="Primary"
     Opened="AISettingsDialog_Opened"
@@ -50,6 +50,41 @@
                         TextWrapping="Wrap" />
                 </StackPanel>
             </Grid>
+
+            <StackPanel Spacing="10">
+                <TextBlock
+                    FontSize="12"
+                    FontWeight="SemiBold"
+                    Text="面板尺寸" />
+                <Grid ColumnSpacing="12">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <NumberBox
+                        x:Name="ExpandedWidthBox"
+                        Header="展开宽度"
+                        LargeChange="10"
+                        Maximum="720"
+                        Minimum="360"
+                        SmallChange="1"
+                        SpinButtonPlacementMode="Inline" />
+                    <NumberBox
+                        x:Name="ExpandedHeightBox"
+                        Grid.Column="1"
+                        Header="展开高度"
+                        LargeChange="10"
+                        Maximum="1000"
+                        Minimum="480"
+                        SmallChange="1"
+                        SpinButtonPlacementMode="Inline" />
+                </Grid>
+                <TextBlock
+                    FontSize="10.5"
+                    Foreground="{ThemeResource HudTextTertiaryBrush}"
+                    Text="宽度上限 720，高度上限 1000；收起尺寸保持不变。"
+                    TextWrapping="Wrap" />
+            </StackPanel>
 
             <ToggleSwitch
                 x:Name="EnabledSwitch"
