@@ -15,6 +15,8 @@ void main() {
     final address = fixture['address'] as String;
     final port = fixture['port'] as int;
     final fingerprint = fixture['fingerprint'] as String;
+    final ipv6Address = fixture['ipv6Address'] as String;
+    expect(formatLinkAddress(ipv6Address, port), '[::1]:$port');
     final offer = PairingOffer.fromQr(fixture['offer'] as String);
     expect(offer.expiresAt.isAfter(DateTime.now().toUtc()), isTrue);
     expect(offer.fingerprint, fingerprint);
@@ -27,6 +29,7 @@ void main() {
       final device = await api.completeQr(offer, 'Dart integration phone');
       expect(device.fingerprint, fingerprint);
       expect(device.addresses, isNotEmpty);
+      expect(device.baseUri(ipv6Address).toString(), startsWith('https://[::1]:'));
 
       final localDevice = LinkedDevice(
         deviceId: device.deviceId,
@@ -39,6 +42,26 @@ void main() {
       );
       step = 'status';
       final status = await api.status(localDevice);
+      final ipv4Device = LinkedDevice(
+        deviceId: localDevice.deviceId,
+        token: localDevice.token,
+        instanceId: localDevice.instanceId,
+        instanceName: localDevice.instanceName,
+        fingerprint: localDevice.fingerprint,
+        addresses: ['127.0.0.1'],
+        port: port,
+      );
+      expect((await api.status(ipv4Device)).revision, 7);
+      final ipv6Device = LinkedDevice(
+        deviceId: localDevice.deviceId,
+        token: localDevice.token,
+        instanceId: localDevice.instanceId,
+        instanceName: localDevice.instanceName,
+        fingerprint: localDevice.fingerprint,
+        addresses: [ipv6Address],
+        port: port,
+      );
+      expect((await api.status(ipv6Device)).revision, 7);
       expect(status.revision, 7);
       expect(status.privacyMode, isFalse);
       expect(status.supportsRefresh, isTrue);

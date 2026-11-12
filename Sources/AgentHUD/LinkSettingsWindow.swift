@@ -8,6 +8,7 @@ final class LinkSettingsModel: ObservableObject {
     @Published var expiresAt = Date()
     @Published var qrImage: NSImage?
     @Published var serviceText = "局域网服务尚未启动"
+    @Published var ipv6Text = ""
     @Published var error: String?
     @Published var devices: [LinkedDevice] = []
 
@@ -23,6 +24,7 @@ final class LinkSettingsModel: ObservableObject {
             code = offer.code
             expiresAt = offer.expiresAt
             serviceText = "监听端口 \(offer.port) · \(offer.addresses.joined(separator: " / "))"
+            ipv6Text = LinkNetwork.ipv6Addresses().joined(separator: "\n")
             qrImage = Self.qrCode(payload: offer.payload)
             error = nil
         } catch {
@@ -97,6 +99,16 @@ private struct LinkSettingsView: View {
                     .font(.caption)
                     .foregroundStyle(.secondary)
                     .textSelection(.enabled)
+
+                if !model.ipv6Text.isEmpty {
+                    Text("IPv6 候选地址（是否可路由取决于网络与防火墙）")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                    Text(model.ipv6Text)
+                        .font(.caption.monospaced())
+                        .foregroundStyle(.secondary)
+                        .textSelection(.enabled)
+                }
 
                 if let image = model.qrImage {
                     Image(nsImage: image)

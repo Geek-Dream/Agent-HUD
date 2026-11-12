@@ -266,13 +266,15 @@ class _PairingPageState extends State<PairingPage> {
     return ListView(
       padding: const EdgeInsets.all(HudSpacing.xxl),
       children: [
-        const _FieldLabel('电脑局域网地址'),
+        const _FieldLabel('电脑地址（IPv4 或 IPv6）'),
         const SizedBox(height: HudSpacing.md),
         TextField(
           controller: _address,
           keyboardType: TextInputType.url,
           textInputAction: TextInputAction.next,
-          decoration: const InputDecoration(hintText: '例如 192.168.1.5'),
+          decoration: const InputDecoration(
+            hintText: '192.168.1.5 或 2409:…（无需方括号）',
+          ),
         ),
         const SizedBox(height: HudSpacing.xl),
         const _FieldLabel('监听端口'),

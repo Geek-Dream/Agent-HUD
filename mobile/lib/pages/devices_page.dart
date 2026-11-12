@@ -142,7 +142,8 @@ class _DeviceCard extends StatelessWidget {
                           ),
                           const SizedBox(height: HudSpacing.xs),
                           Text(
-                            '${device.addresses.first}:${device.port}',
+                            formatLinkAddress(
+                                device.addresses.first, device.port),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: HudText.caption.copyWith(

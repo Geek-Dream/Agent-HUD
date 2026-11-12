@@ -1,5 +1,23 @@
 import 'dart:convert';
 
+List<String> _addresses(Map<String, dynamic> value) => [
+      ...(value['addresses'] as List?) ?? const [],
+      ...(value['ipv6Addresses'] as List?) ?? const [],
+    ].whereType<String>().where((item) => item.isNotEmpty).toList();
+
+String normalizeLinkAddress(String value) {
+  final trimmed = value.trim();
+  if (trimmed.startsWith('[') && trimmed.endsWith(']')) {
+    return trimmed.substring(1, trimmed.length - 1);
+  }
+  return trimmed;
+}
+
+String formatLinkAddress(String address, int port) =>
+    address.contains(':') && !address.startsWith('[')
+        ? '[$address]:$port'
+        : '$address:$port';
+
 class PairingOffer {
   const PairingOffer({
     required this.instanceId,
@@ -29,11 +47,8 @@ class PairingOffer {
     if (value['v'] != 1) {
       throw const FormatException('不支持的配对协议版本');
     }
-    final addresses = (value['addresses'] as List?)
-        ?.whereType<String>()
-        .where((item) => item.isNotEmpty)
-        .toList();
-    if (addresses == null || addresses.isEmpty) {
+    final addresses = _addresses(value);
+    if (addresses.isEmpty) {
       throw const FormatException('配对信息中没有可用的局域网地址');
     }
     return PairingOffer(
@@ -71,7 +86,7 @@ class LinkedDevice {
   String get id => '$instanceId/$deviceId';
   String get authorization => '$deviceId.$token';
   Uri baseUri(String address) =>
-      Uri(scheme: 'https', host: address, port: port);
+      Uri(scheme: 'https', host: normalizeLinkAddress(address), port: port);
 
   factory LinkedDevice.fromPairing(Map<String, dynamic> value) => LinkedDevice(
         deviceId: value['deviceId'] as String,
@@ -79,7 +94,7 @@ class LinkedDevice {
         instanceId: value['instanceId'] as String,
         instanceName: value['instanceName'] as String? ?? 'AgentHUD',
         fingerprint: value['fingerprint'] as String,
-        addresses: (value['addresses'] as List).whereType<String>().toList(),
+        addresses: _addresses(value),
         port: value['port'] as int,
       );
 
@@ -89,7 +104,7 @@ class LinkedDevice {
         instanceId: value['instanceId'] as String,
         instanceName: value['instanceName'] as String,
         fingerprint: value['fingerprint'] as String,
-        addresses: (value['addresses'] as List).whereType<String>().toList(),
+        addresses: _addresses(value),
         port: value['port'] as int,
       );
 

@@ -5,6 +5,7 @@ struct LinkPairingPayload: Codable {
     let instanceId: String
     let instanceName: String
     let addresses: [String]
+    let ipv6Addresses: [String]?
     let port: Int
     let fingerprint: String
     let sessionId: String
@@ -23,6 +24,7 @@ struct LinkStatusResponse: Codable {
     let privacyMode: Bool
     let fingerprint: String
     let addresses: [String]
+    let ipv6Addresses: [String]?
     let port: Int
 }
 

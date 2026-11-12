@@ -1,3 +1,4 @@
+import Darwin
 import Foundation
 
 struct LinkCertificate {
@@ -50,6 +51,60 @@ struct LinkCertificate {
 }
 
 enum LinkNetwork {
+    struct IPv6Address {
+        let value: String
+        let isGlobal: Bool
+        let isUniqueLocal: Bool
+    }
+
+    static func ipv6Addresses() -> [String] {
+        interfaceIPv6Addresses()
+            .filter { !$0.value.hasPrefix("::1") }
+            .sorted {
+                if $0.isUniqueLocal != $1.isUniqueLocal { return $0.isUniqueLocal }
+                if $0.isGlobal != $1.isGlobal { return $0.isGlobal }
+                return $0.value < $1.value
+            }
+            .map(\.value)
+            .uniqued()
+            .prefix(4)
+            .map { $0 }
+    }
+
+    static func interfaceIPv6Addresses() -> [IPv6Address] {
+        var interfaces: UnsafeMutablePointer<ifaddrs>?
+        guard getifaddrs(&interfaces) == 0, let first = interfaces else { return [] }
+        defer { freeifaddrs(interfaces) }
+        var output: [IPv6Address] = []
+        for pointer in sequence(first: first, next: { $0.pointee.ifa_next }) {
+            let interface = pointer.pointee
+            guard let address = interface.ifa_addr,
+                  address.pointee.sa_family == sa_family_t(AF_INET6),
+                  let interfaceName = interface.ifa_name else {
+                continue
+            }
+            let name = String(cString: interfaceName)
+            guard !name.hasPrefix("lo"), !name.hasPrefix("utun"),
+                  !name.hasPrefix("awdl"), !name.hasPrefix("llw") else {
+                continue
+            }
+            var bytes = address.withMemoryRebound(to: sockaddr_in6.self, capacity: 1) {
+                $0.pointee.sin6_addr.__u6_addr.__u6_addr8
+            }
+            let isLinkLocal = bytes.0 == 0xfe && bytes.1 & 0xc0 == 0x80
+            let isUniqueLocal = bytes.0 & 0xfe == 0xfc
+            let isGlobal = bytes.0 & 0xe0 == 0x20
+            guard isLinkLocal || isUniqueLocal || isGlobal else { continue }
+            var text = [CChar](repeating: 0, count: Int(INET6_ADDRSTRLEN))
+            guard inet_ntop(AF_INET6, &bytes, &text, socklen_t(INET6_ADDRSTRLEN)) != nil else {
+                continue
+            }
+            let value = String(cString: text) + (isLinkLocal ? "%\(name)" : "")
+            output.append(IPv6Address(value: value, isGlobal: isGlobal, isUniqueLocal: isUniqueLocal))
+        }
+        return output
+    }
+
     static func localIPv4Addresses() -> [String] {
         Host.current().addresses
             .filter { address in

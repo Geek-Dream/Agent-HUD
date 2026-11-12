@@ -51,6 +51,7 @@ struct PairingResult: Codable {
     let capabilities: [String]
     let fingerprint: String
     let addresses: [String]
+    let ipv6Addresses: [String]?
     let port: Int
 }
 
@@ -68,6 +69,16 @@ struct LinkPromptSnapshot: Codable {
 struct LinkPromptImagePayload {
     let data: Data
     let contentType: String
+}
+
+struct LinkTaskRun: Codable {
+    let id: String
+    let objective: String
+    let summary: String
+    let actions: [String]
+    let filesChanged: [String]
+    let completedAt: Date
+    let status: String
 }
 
 struct LinkMonitoringSession: Codable {
@@ -92,6 +103,7 @@ struct LinkMonitoringSession: Codable {
     var titleSource: String = "Automatic"
     var hasCustomTitle: Bool = false
     var latestPrompt: LinkPromptSnapshot? = nil
+    var runs: [LinkTaskRun] = []
 }
 
 struct LinkMonitoringSnapshot {

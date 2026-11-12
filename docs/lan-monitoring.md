@@ -11,6 +11,8 @@ This document is the compatibility contract for the Windows, Flutter, and future
 - Clients pin the hex-encoded SHA-256 certificate fingerprint.
 - The Windows service listens on a dynamically assigned port on LAN interfaces.
 - `addresses` in pairing responses contains IPv4 addresses without a URL scheme. Clients construct `https://ADDRESS:PORT`.
+- macOS can also include optional `ipv6Addresses` in pairing and status responses. IPv6-capable clients append these as fallback connection candidates without changing the existing IPv4 behavior. IPv6 literal URLs use brackets, for example `https://[2409:...]:47653`; API host values do not include brackets. Link-local candidates include their interface scope.
+- macOS listens separately on IPv4 and IPv6 on the same port. If IPv6 cannot be bound, IPv4 monitoring continues to work. A globally routable IPv6 address does not imply that a carrier or router permits inbound connections.
 - REST JSON uses camelCase property names and ISO-8601 timestamps.
 - Mobile checks for updates every second while sessions are active and every two seconds when idle. Persistent HTTPS connections avoid repeated TLS handshakes.
 - `revision` describes the computer's scan sequence, not necessarily changed session content. Clients use the optional session-list `ETag` to avoid downloading unchanged data.

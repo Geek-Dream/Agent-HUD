@@ -108,6 +108,7 @@ func runLinkServerFixture() async throws {
         "offer": offer.payload,
         "code": offer.code,
         "address": "127.0.0.1",
+        "ipv6Address": "::1",
         "port": offer.port,
         "fingerprint": offer.fingerprint,
         "expectedSessionId": try LinkDeviceStore(directory: directory).publicSessionId(rawId: "codex:waiting")

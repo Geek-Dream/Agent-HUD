@@ -15,7 +15,11 @@ cleanup() {
         wait "$SERVER_PID" >/dev/null 2>&1 || true
         cat "$LOG"
     fi
-    rm -rf "$WORK_DIR"
+    if [[ -z "${AGENTHUD_KEEP_FIXTURE:-}" ]]; then
+        rm -rf "$WORK_DIR"
+    else
+        print "Fixture directory: $WORK_DIR"
+    fi
 }
 trap cleanup EXIT INT TERM
 

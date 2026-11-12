@@ -13,6 +13,7 @@ final class LinkServer {
     private let certificate: LinkCertificate
     private let environment: Environment
     private var application: Application?
+    private var ipv6Application: Application?
     private var snapshotProvider: LinkSnapshotProviding?
 
     private(set) var port = 0
@@ -35,10 +36,18 @@ final class LinkServer {
         var lastError: Error?
         for candidate in 47653..<47663 {
             do {
-                let app = try makeApplication(port: candidate)
+                let app = try makeApplication(port: candidate, hostname: "0.0.0.0")
                 configureRoutes(app)
                 try app.start()
                 application = app
+                let ipv6App = try makeApplication(port: candidate, hostname: "::")
+                configureRoutes(ipv6App)
+                do {
+                    try ipv6App.start()
+                    ipv6Application = ipv6App
+                } catch {
+                    ipv6App.shutdown()
+                }
                 port = candidate
                 self.lastError = nil
                 return
@@ -53,6 +62,8 @@ final class LinkServer {
     func stop() {
         application?.shutdown()
         application = nil
+        ipv6Application?.shutdown()
+        ipv6Application = nil
     }
 
     func createPairingOffer() async throws -> PairingOffer {
@@ -70,6 +81,7 @@ final class LinkServer {
             instanceId: devices.instanceId,
             instanceName: devices.instanceName,
             addresses: addresses,
+            ipv6Addresses: LinkNetwork.ipv6Addresses(),
             port: port,
             fingerprint: fingerprint,
             sessionId: session.id,
@@ -95,10 +107,10 @@ final class LinkServer {
         await devices.revoke(deviceId: deviceId)
     }
 
-    private func makeApplication(port: Int) throws -> Application {
+    private func makeApplication(port: Int, hostname: String) throws -> Application {
         let app = Application(environment)
         app.logger.logLevel = .critical
-        app.http.server.configuration.hostname = "0.0.0.0"
+        app.http.server.configuration.hostname = hostname
         app.http.server.configuration.port = port
         let certificate = try NIOSSLCertificate(file: self.certificate.certificateURL.path, format: .pem)
         let privateKey = try NIOSSLPrivateKey(file: self.certificate.privateKeyURL.path, format: .pem)
@@ -149,6 +161,7 @@ final class LinkServer {
                 privacyMode: snapshot.privacyMode,
                 fingerprint: self.fingerprint,
                 addresses: LinkNetwork.localIPv4Addresses(),
+                ipv6Addresses: LinkNetwork.ipv6Addresses(),
                 port: self.port
             )
             return Self.json(response, status: .ok)
@@ -343,6 +356,7 @@ final class LinkServer {
             capabilities: Self.capabilities,
             fingerprint: fingerprint,
             addresses: LinkNetwork.localIPv4Addresses(),
+            ipv6Addresses: LinkNetwork.ipv6Addresses(),
             port: port
         )
     }

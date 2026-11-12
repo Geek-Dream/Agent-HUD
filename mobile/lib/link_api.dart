@@ -263,7 +263,7 @@ class LinkApi implements MonitoringApi, SessionActionsApi {
     Duration timeout = const Duration(seconds: 9),
   }) async {
     Object? lastError;
-    for (final address in addresses) {
+    for (final address in addresses.map(normalizeLinkAddress)) {
       final key = '$address:$port:${fingerprint ?? 'pairing'}';
       final client =
           _clients.putIfAbsent(key, () => _pinnedClient(fingerprint));
@@ -285,7 +285,8 @@ class LinkApi implements MonitoringApi, SessionActionsApi {
       }
       _clients.remove(key)?.close(force: true);
     }
-    throw LinkApiException('无法连接电脑，请确认手机和电脑位于同一局域网。${lastError ?? ''}');
+    throw LinkApiException(
+        '无法连接电脑，请检查 IPv4/IPv6 地址、端口及网络是否可达。${lastError ?? ''}');
   }
 
   Future<_ApiResponse> _readResponse(HttpClientRequest request) async {
