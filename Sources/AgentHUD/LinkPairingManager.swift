@@ -22,7 +22,7 @@ actor LinkPairingManager {
         return session
     }
 
-    func completeQr(sessionId: String?, secret: String?, deviceName: String?) throws -> IssuedDeviceToken? {
+    func completeQr(sessionId: String?, secret: String?, deviceName: String?) async throws -> IssuedDeviceToken? {
         guard let current,
               constantTimeEqual(current.id, sessionId),
               constantTimeEqual(current.secret, secret) else {
@@ -33,13 +33,13 @@ actor LinkPairingManager {
             self.current = nil
             return nil
         }
-        let issued = try devices.issueToken(deviceName: deviceName)
+        let issued = try await devices.issueToken(deviceName: deviceName)
         self.current = nil
         attempts = 0
         return issued
     }
 
-    func completeCode(code: String?, deviceName: String?) throws -> IssuedDeviceToken? {
+    func completeCode(code: String?, deviceName: String?) async throws -> IssuedDeviceToken? {
         let normalized = (code ?? "").filter(\.isNumber)
         guard let current, constantTimeEqual(current.code, normalized) else {
             registerFailure()
@@ -49,7 +49,7 @@ actor LinkPairingManager {
             self.current = nil
             return nil
         }
-        let issued = try devices.issueToken(deviceName: deviceName)
+        let issued = try await devices.issueToken(deviceName: deviceName)
         self.current = nil
         attempts = 0
         return issued
