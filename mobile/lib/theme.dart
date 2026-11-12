@@ -28,6 +28,7 @@ class HudColors {
   static const pi = Color(0xFF7AE35C);
   static const opencode = Color(0xFF4FD1C5);
   static const important = Color(0xFFFFC233);
+  static const todo = Color(0xFFB86AFE);
 
   static Color status(String value) {
     switch (value) {

@@ -20,6 +20,15 @@ public sealed record MonitoringPromptSnapshot(
     DateTimeOffset? SentAt,
     IReadOnlyList<MonitoringPromptImage> Images);
 
+public sealed record MonitoringTaskRun(
+    string Id,
+    string Objective,
+    string Summary,
+    IReadOnlyList<string> Actions,
+    IReadOnlyList<string> FilesChanged,
+    DateTimeOffset CompletedAt,
+    string Status);
+
 public sealed record MonitoringSnapshot(
     long Revision,
     DateTimeOffset? ScannedAt,
@@ -47,4 +56,5 @@ public sealed record MonitoringSessionSnapshot(
     bool IsImportant = false,
     string TitleSource = "Automatic",
     bool HasCustomTitle = false,
-    MonitoringPromptSnapshot? LatestPrompt = null);
+    MonitoringPromptSnapshot? LatestPrompt = null,
+    IReadOnlyList<MonitoringTaskRun> Runs = null!);

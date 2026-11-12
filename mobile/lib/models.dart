@@ -206,6 +206,38 @@ class PromptSnapshot {
       );
 }
 
+class TaskRun {
+  const TaskRun({
+    required this.id,
+    required this.objective,
+    required this.summary,
+    required this.actions,
+    required this.filesChanged,
+    required this.completedAt,
+    required this.status,
+  });
+
+  final String id;
+  final String objective;
+  final String summary;
+  final List<String> actions;
+  final List<String> filesChanged;
+  final DateTime completedAt;
+  final String status;
+
+  factory TaskRun.fromJson(Map<String, dynamic> value) => TaskRun(
+        id: value['id'] as String,
+        objective: value['objective'] as String? ?? '',
+        summary: value['summary'] as String? ?? '',
+        actions: (value['actions'] as List?)?.whereType<String>().toList() ?? const <String>[],
+        filesChanged:
+            (value['filesChanged'] as List?)?.whereType<String>().toList() ??
+                const <String>[],
+        completedAt: DateTime.parse(value['completedAt'] as String),
+        status: value['status'] as String? ?? 'Completed',
+      );
+}
+
 class AgentSession {
   const AgentSession({
     required this.id,
@@ -229,6 +261,7 @@ class AgentSession {
     this.hasCustomTitle = false,
     this.isImportant = false,
     this.latestPrompt,
+    this.runs = const [],
   });
 
   final String id;
@@ -252,6 +285,7 @@ class AgentSession {
   final bool hasCustomTitle;
   final bool isImportant;
   final PromptSnapshot? latestPrompt;
+  final List<TaskRun> runs;
 
   bool get isActive =>
       status == 'Starting' || status == 'Working' || status == 'WaitingUser';
@@ -262,6 +296,7 @@ class AgentSession {
     bool? hasCustomTitle,
     bool? isImportant,
     PromptSnapshot? latestPrompt,
+    List<TaskRun>? runs,
   }) =>
       AgentSession(
         id: id,
@@ -285,6 +320,7 @@ class AgentSession {
         hasCustomTitle: hasCustomTitle ?? this.hasCustomTitle,
         isImportant: isImportant ?? this.isImportant,
         latestPrompt: latestPrompt ?? this.latestPrompt,
+        runs: runs ?? this.runs,
       );
 
   factory AgentSession.fromJson(Map<String, dynamic> value) => AgentSession(
@@ -317,6 +353,11 @@ class AgentSession {
                 value['latestPrompt'] as Map<String, dynamic>,
               )
             : null,
+        runs: (value['runs'] as List?)
+                ?.whereType<Map<String, dynamic>>()
+                .map(TaskRun.fromJson)
+                .toList() ??
+            const <TaskRun>[],
       );
 }
 

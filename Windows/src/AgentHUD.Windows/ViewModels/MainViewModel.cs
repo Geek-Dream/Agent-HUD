@@ -549,6 +549,16 @@ public sealed class MainViewModel : INotifyPropertyChanged, IMonitoringSnapshotS
         {
             var git = privacy ? null : session.Git;
             var resolved = ResolveTitle(session);
+            var runs = privacy
+                ? Array.Empty<MonitoringTaskRun>()
+                : session.Runs.Select(r => new MonitoringTaskRun(
+                    r.Id,
+                    r.Objective,
+                    r.Summary,
+                    r.Actions,
+                    r.FilesChanged,
+                    r.CompletedAt,
+                    r.Status.ToString())).ToArray();
             return new MonitoringSessionSnapshot(
                 session.Id,
                 session.Provider.ToString(),
@@ -570,7 +580,8 @@ public sealed class MainViewModel : INotifyPropertyChanged, IMonitoringSnapshotS
                 _store.State.ImportantSessionIds.Contains(session.Id),
                 resolved.Source.ToString(),
                 _store.State.ManualTitles.ContainsKey(session.Id),
-                privacy ? null : BuildPromptSnapshot(session));
+                privacy ? null : BuildPromptSnapshot(session),
+                runs);
         }).ToArray();
         return new MonitoringSnapshot(_monitoringRevision, LastScannedAt, privacy, sessions);
     }

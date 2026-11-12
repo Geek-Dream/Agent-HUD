@@ -1,3 +1,154 @@
+# 发布 IPv6 Android beta.6
+
+## 状态
+
+构建中（2026-11-12）。
+
+## 执行进度
+
+- `457fafb feat: support IPv6 monitoring connections` 已推送 `main`，包含版本 `0.1.0-beta.6+6`。
+- 独立 worktree 验证实际提交快照：Flutter 测试通过，静态检查无问题；临时 worktree 已移除。
+- `v0.1.0-beta.6` 标签已推送，正在等待 APK 上传。
+- 工作区其他未提交功能未纳入发布。
+
+## 范围与验证
+
+- 基于 `d115431` / beta.5，发布 `v0.1.0-beta.6`，Android 版本 `0.1.0-beta.6+6`。
+- 暂存区仅包含 IPv6 双栈、手机地址处理、对应测试、文档和版本号；不包含待办页面、完成记录、主题色、`.metadata`、Android runner、`.artifacts` 或本机文件。
+- `models.dart` 的暂存版本从 HEAD 精确加入 IPv6，不带其他并行功能；工作区原文件保留。
+- 已验证 Mac Release、23 项 Mac 测试、真实 IPv4/IPv6 Dart↔Mac 链路及正式全球 IPv6 TLS/鉴权；Flutter 相关测试与静态检查通过。
+
+## 拟执行命令（待批准）
+
+1. `git diff --cached --check && git diff --cached --stat` — 核对仅 IPv6 的暂存内容。
+2. `git commit -m "feat: support IPv6 monitoring connections"` — 创建功能提交，附署名。
+3. `git push origin main` — 推送 IPv6 功能。
+4. `git tag -a v0.1.0-beta.6 -m "AgentHUD v0.1.0-beta.6" <功能提交>` — 创建 beta.6 标签。
+5. `git push origin v0.1.0-beta.6` — 推送标签，触发 APK 构建。
+6. 从提交创建临时 `git worktree`，在其中运行 `flutter test` 与 `flutter analyze --no-fatal-infos --no-fatal-warnings`，验证实际发布快照；测试完成后移除临时 worktree。
+7. 轮询 Release 附件页，验证 APK 和 SHA-256 后提供下载链接。
+
+## 边界
+
+- 不强制推送、不修改旧 Release、不将工作区其他未提交功能纳入。
+- 公网 IPv6 仍需真机跨网络验证，发布成功不保证运营商入站连接。
+
+---
+
+# 尝试 IPv6 手机连接
+
+## 完成记录（2026-11-12）
+
+- macOS 保留 IPv4 listener，并在相同端口增加 IPv6 listener；IPv6 绑定失败不阻断原 IPv4 服务。
+- 通过 `getifaddrs` 获取实际网卡 IPv6 地址，二维码/状态新增可选 `ipv6Addresses`，旧 `addresses` 的 IPv4 含义不变。
+- Android 合并 IPv4 优先的连接候选，支持 IPv6 手动地址输入和 `[IPv6]:端口` 显示，URI 传递去除方括号，保持 DER 指纹校验。
+- Mac 配对窗口显示 IPv6 候选地址与网络/防火墙提示。
+- 实测 `::1` 和 Mac 全球 IPv6 地址的正式 HTTPS 服务证书 DER 指纹匹配；Dart 请求未授权状态正确返回 `401`。
+- 真实 Dart↔Mac 集成测试通过 IPv4 扫码及 IPv4/IPv6 双栈读取；Flutter 相关测试 7 项通过、相关静态检查无问题；Mac 23 项测试及 Release 构建通过。
+- 本机成功不证明公网 IPv6 入站可达；仍需安卓真机跨网络验证运营商、路由器和防火墙。
+- 未提交、推送或发布新 APK；beta.5 不包含本试验改动。
+
+## 状态
+
+待审批（2026-11-12）。
+
+## 已确认前提
+
+- Mac `en0` 已有全球 IPv6 地址，但当前 AgentHUD 只监听 `0.0.0.0:47653`，二维码和状态只返回 IPv4。
+- 当前 Android 的 `Uri(host: address)` 对 IPv6 字面量生成方括号，但 UI 输入不展示正确格式，且二维码不含 IPv6。
+- 试验不证明运营商或路由器允许公网入站，需真机跨网络验证。
+
+## 最小试验范围
+
+1. macOS `LinkServer`：支持 IPv4 与 IPv6 双栈监听，默认不暴露新端口，保持既有鉴权和 DER 证书固定。
+2. `LinkNetwork`：通过实际网卡读取 IPv6 地址，区分链路本地、唯一本地、全球地址，优先局域网/组网地址；二维码提供可选 IPv6 字段，保留 IPv4 回退。
+3. Android：手动连接支持 `[IPv6]:端口` 输入及正确显示；解析新增可选 IPv6 地址，不强制旧服务端支持。
+4. 先用 `::1` 对真实 HTTPS 服务和 Dart `LinkApi` 做 TLS、鉴权和读取验证，再测试 Mac 本机 IPv6 地址。
+5. 测试：IPv6 URL、地址选择、双栈连接和原 IPv4 回归；不修改 Windows 业务代码。
+
+## 验证边界
+
+- 不在此任务承诺公网 IPv6 可用；Mac/手机运营商、路由器防火墙与地址变化需要实际环境验证。
+- 链路本地地址保留接口作用域，不能盲目作为公网地址；临时 IPv6 地址不应成为唯一长期绑定。
+- 不自动修改系统防火墙、路由器或 DNS，不新建公网隧道。
+- beta.5 APK 已发布并完成哈希验证，不包含本试验的后续改动。
+
+## 拟执行命令（待批准）
+
+1. 本机 IPv6 HTTPS 验证：启动修改后的临时测试服务，使用 Dart 客户端连接 `https://[::1]:端口`。
+2. `flutter test`、`./scripts/test.sh`、`./scripts/test-mobile-link.sh` — 验证双栈和 IPv4 回归。
+3. `./scripts/build-app.sh` — 构建正式 Mac 应用；若失败列出实际错误。
+4. 真机跨网络连接：需要用户连接安卓设备或提供另一台 IPv6 客户端，当前不作为本机可完成项。
+
+---
+
+# 发布 Android beta.5 APK
+
+## 状态
+
+构建中（2026-11-12）。
+
+## 执行进度
+
+- 版本提交 `d115431` 已推送 `main`，仅修改 `mobile/pubspec.yaml` 为 `0.1.0-beta.5+5`。
+- `v0.1.0-beta.5` 标签已推送，正在等待 GitHub Actions 上传 `app-release.apk`。
+- 不包含本机生成文件或其他未提交文档。
+
+## 发布范围
+
+- 基于远程最新 `5b65b43 feat: add OpenCode monitoring and improve cross-platform UI`，本地 `main` 与 `origin/main` 同步。
+- 仅将 `mobile/pubspec.yaml` 的版本从 `0.1.0-beta.4+4` 改为 `0.1.0-beta.5+5`。
+- 发布标签：`v0.1.0-beta.2` 的后续 `v0.1.0-beta.5`。
+- 不包含 `PLAN.md`、`mobile/.dart_tool/`、`.flutter-plugins-dependencies` 或构建产物。
+
+## 拟执行命令（待批准）
+
+1. `git diff --check` — 检查当前差异；只读。
+2. `git add -- mobile/pubspec.yaml && git diff --cached --check && git diff --cached --stat` — 只暂存版本文件并检查。
+3. `git commit -m "chore(mobile): release v0.1.0-beta.5"` — 创建版本提交，附要求的署名。
+4. `git push origin main` — 推送版本提交。
+5. `git tag -a v0.1.0-beta.5 -m "AgentHUD v0.1.0-beta.5" <版本提交>` — 创建发布标签。
+6. `git push origin v0.1.0-beta.5` — 推送标签，触发 GitHub Actions。
+7. 轮询 Release 附件页，确认 `app-release.apk` 上传并读取哈希，再提供下载链接。
+
+## 验证与边界
+
+- 沿用已通过的 Mac Release、23 项 Mac 测试、Flutter 测试与静态检查；发布必须等待 CI APK 附件实际上传。
+- 不修改旧 Release、不强制推送、不包含本机文件。
+- 无安卓真机，发布成功不代表已验证安装或界面。
+
+---
+
+# 提交并推送当前源码与测试
+
+## 状态
+
+待审批（2026-11-12）。
+
+## 已确认事实
+
+- 手机同步优化已在远程 `67f4c70` / `v0.1.0-beta.4` 中，beta.4 APK 已发布；不重复提交同一同步代码。
+- 当前未提交内容包括 macOS DER 证书指纹、OpenCode 数据源、双端 UI 调整、相关测试和文档；这些是当前工作区待推送内容。
+- 最新 Mac Debug/Release 构建通过；`./scripts/test.sh` 23 项通过；Flutter 测试 6 项通过、静态检查无问题。
+- 不提交 `mobile/.dart_tool/`、`mobile/.flutter-plugins-dependencies` 或构建产物。
+
+## 拟执行命令（待批准）
+
+1. `git diff --check` — 检查空白错误；只读。
+2. `git add -- README.md Sources Tests scripts/test.sh scripts/test-mobile-link.sh Windows docs/lan-monitoring.md mobile/README.md mobile/test/link_integration_test.dart` — 暂存当前源码、测试与文档；不包含 Flutter 本机生成目录。
+3. `git diff --cached --check && git diff --cached --stat` — 核对提交范围与空白错误；只读。
+4. `git commit -m "feat: add OpenCode monitoring and improve cross-platform UI"` — 创建提交，附要求的署名。
+5. `git push origin main` — 推送至 GitHub 主分支；不强制推送。
+6. `git status --short --branch` — 验证同步状态及排除的本机文件；只读。
+
+## 验证与未验证项
+
+- Windows 未在本机编译；已有 Windows Core 测试改动仅纳入源码，不声称本机 Windows 验证通过。
+- 不创建新 beta 标签，本次仅推送源码；如需新 APK 需另行发布。
+- 无安卓真机，不声称真机界面和局域网速度已验收。
+
+---
+
 # 优化手机局域网同步与未知状态文案
 
 ## 完成记录（2026-11-12）
@@ -620,3 +771,56 @@
   - macOS `swift build -c debug/release` 因本地 swift-crypto C++ 头文件缺失（`'memory' file not found`）未能完成，但 `./scripts/test.sh`（swiftc 编译）通过，说明源码逻辑正确；正式构建依赖问题需清理 DerivedData 或 SwiftPM 缓存后重试。
   - Windows 构建无 `dotnet`，仅静态审阅。
   - 真机/模拟器运行、动画帧率、图片加载性能、远程改名/星标端到端行为未验证。
+
+### 待办列表与隐藏模式（2026-11-12）
+
+#### 目标
+
+1. **待办列表**：在手机端增加「待办」筛选（紫色），与「全部/工作/等待/完成/错误」并列；支持待办 CRUD（增删改查）。
+2. **隐藏模式**：用户通过配对页面触发隐藏模式后，应用进入「高级功能」状态，显示额外入口（待办列表、消息发送等）。隐藏模式状态持久化到本地存储。
+3. **手机端 UI 优化**：确保筛选、会话卡、详情页与桌面版（macOS/Windows）视觉和交互一致。
+
+#### 设计决策
+
+- 待办是**纯本地功能**，不走 LAN 协议（不依赖电脑）；各端独立存储，暂不同步。
+- 待办状态筛选显示为紫色（`Color(0xFFB86AFE)` 或类似），使用与状态筛选相同的切角科技边框 + 霓虹效果。
+- 隐藏模式状态使用 `flutter_secure_storage` 或 `SharedPreferences` 持久化；macOS/Windows 也增加隐藏模式状态，但用户自行触发。
+- 手机端待办列表使用与桌面 session list 类似的卡片布局，支持滑动删除、长按编辑。
+- UI 优化重点：
+  - 筛选：保持切角/胶囊区分，增加待办筛选。
+  - 卡片：确保信息密度、字体大小、间距与桌面版一致。
+  - 详情：确保所有 section 的呈现方式与桌面版对齐。
+
+#### 实施步骤
+
+1. **移动端模型 + 存储**：`models.dart` 增加 `TodoItem`；新增 `todo_store.dart` 使用 `flutter_secure_storage` 或文件存储。
+2. **移动端界面**：
+   - `sessions_page.dart`：状态筛选行增加「待办」选项（紫色）。
+   - 新增 `todos_page.dart`：待办列表，支持增删改查。
+   - `session_detail_page.dart`：微调确保与桌面版一致。
+   - 隐藏模式状态管理：新增 `hidden_mode.dart`。
+3. **macOS/Windows**：扩展协议增加 `hiddenMode` capability/flag；复用现有存储机制。
+4. **验证**：`flutter analyze`、单元测试、`./scripts/test.sh`、`git diff --check`。
+
+#### 完成记录（2026-11-12）
+
+- **移动端待办**：新增 `TodoItem` 模型、`TodoStore`（`flutter_secure_storage` 本地持久化）、`TodosPage`（增删改查 + 滑动删除）。状态筛选增加紫色「待办」入口；激活时 AppBar 切换为「待办」并跳转 `TodosPage`。
+- **移动端隐藏模式**：新增 `HiddenModeStore`（本地持久化）；`SessionsPage` AppBar 在隐藏模式启用时显示「☰」待办按钮；入口由配对页触发，状态管理已就绪。
+- **移动端完成记录**：`AgentSession` 增加 `runs` 字段（构造函数、字段声明、`fromJson`、`copyWith`）；`SessionDetailPage` 新增「完成记录」分区及 `_RunsList` 组件，展示 `objective/summary/actions/filesChanged/completedAt`。
+- **macOS 协议**：`LinkModels.swift` 新增 `LinkTaskRun` 结构体；`LinkMonitoringSession` 增加 `runs: [LinkTaskRun]`；`HUDViewModel.monitoringSnapshot()` 将 `session.runs` 映射后填充到快照，隐私模式下返回空数组。
+- **Windows 协议**：`MonitoringContracts.cs` 新增 `MonitoringTaskRun` record；`MonitoringSessionSnapshot` 增加 `Runs` 字段；`MainViewModel.GetMonitoringSnapshot()` 将 `session.Runs` 映射为 `MonitoringTaskRun` 列表传入快照。
+- **验证**：`flutter analyze --no-fatal-infos --no-fatal-warnings`：0 issue。`flutter test test/models_test.dart`：3/3 通过。`./scripts/test-mobile-link.sh`：1/1 通过。`./scripts/test.sh`：23/23 通过。`git diff --check`：无输出。
+- **未验证**：macOS `swift build` 因 C++ 头文件缺失未通过（与源码无关）；Windows 无 `dotnet` 未编译；真机/模拟器运行、动画帧率、待办滑动手感、完成记录多端同步未验证。
+
+#### 边界
+
+- 不实现远程发送消息（用户自行处理）。
+- 待办暂不同步到电脑，仅手机端本地使用。
+- 不提交、不推送，除非用户另行要求。
+
+#### 拟执行命令
+
+1. `flutter analyze` — 静态分析。
+2. `flutter test` — 测试。
+3. `./scripts/test.sh` — macOS 逻辑测试。
+4. `git diff --check` — 空白检查。

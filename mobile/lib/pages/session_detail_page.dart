@@ -228,6 +228,12 @@ class _SessionDetailPageState extends State<SessionDetailPage> {
                           icon: Icons.checklist_rounded,
                           child: Text(session.summary!, style: HudText.body),
                         ),
+                      if (session.runs.isNotEmpty)
+                        _SectionCard(
+                          title: '完成记录',
+                          icon: Icons.history_rounded,
+                          child: _RunsList(runs: session.runs),
+                        ),
                       if (session.gitBranch != null)
                         _SectionCard(
                           title: 'Git 上下文',
@@ -917,6 +923,83 @@ class _PromptImageViewerState extends State<_PromptImageViewer> {
           ),
         ],
       ),
+    );
+  }
+}
+
+class _RunsList extends StatelessWidget {
+  const _RunsList({required this.runs});
+
+  final List<TaskRun> runs;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        for (final run in runs)
+          Container(
+            margin: const EdgeInsets.only(bottom: HudSpacing.md),
+            padding: const EdgeInsets.all(HudSpacing.lg),
+            decoration: BoxDecoration(
+              color: HudColors.controlFill,
+              borderRadius: BorderRadius.circular(HudRadii.control),
+              border: Border.all(color: HudColors.divider),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        run.objective,
+                        style: HudText.label.copyWith(fontSize: 13),
+                      ),
+                    ),
+                    const SizedBox(width: HudSpacing.sm),
+                    Text(
+                      DateFormat('MM-dd HH:mm').format(run.completedAt.toLocal()),
+                      style: HudText.caption.copyWith(fontSize: 10.5),
+                    ),
+                  ],
+                ),
+                if (run.summary.isNotEmpty) ...[
+                  const SizedBox(height: HudSpacing.sm),
+                  Text(run.summary, style: HudText.bodySecondary),
+                ],
+                if (run.actions.isNotEmpty) ...[
+                  const SizedBox(height: HudSpacing.sm),
+                  Wrap(
+                    spacing: HudSpacing.sm,
+                    runSpacing: HudSpacing.sm,
+                    children: [
+                      for (final action in run.actions)
+                        _FactChip(
+                          icon: Icons.bolt_rounded,
+                          text: action,
+                        ),
+                    ],
+                  ),
+                ],
+                if (run.filesChanged.isNotEmpty) ...[
+                  const SizedBox(height: HudSpacing.sm),
+                  Wrap(
+                    spacing: HudSpacing.sm,
+                    runSpacing: HudSpacing.sm,
+                    children: [
+                      for (final file in run.filesChanged)
+                        _FactChip(
+                          icon: Icons.description_outlined,
+                          text: file,
+                        ),
+                    ],
+                  ),
+                ],
+              ],
+            ),
+          ),
+      ],
     );
   }
 }

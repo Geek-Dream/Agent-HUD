@@ -228,6 +228,17 @@ final class HUDViewModel: ObservableObject, LinkSnapshotProviding {
         let privacy = privacyMode
         let current = sessions.map { session in
             let git = privacy ? nil : session.git
+            let runs = privacy ? [] : session.runs.map { run in
+                LinkTaskRun(
+                    id: run.id,
+                    objective: run.objective,
+                    summary: run.summary,
+                    actions: run.actions,
+                    filesChanged: run.filesChanged,
+                    completedAt: run.completedAt,
+                    status: run.status.protocolValue
+                )
+            }
             let prompt: LinkPromptSnapshot?
             if privacy {
                 prompt = nil
@@ -267,7 +278,8 @@ final class HUDViewModel: ObservableObject, LinkSnapshotProviding {
                 isImportant: isImportant(session),
                 titleSource: Self.protocolTitleSource(titleSource(for: session)),
                 hasCustomTitle: hasCustomTitle(for: session),
-                latestPrompt: prompt
+                latestPrompt: prompt,
+                runs: runs
             )
         }
         return LinkMonitoringSnapshot(

@@ -5,8 +5,10 @@ import 'package:flutter/material.dart';
 import '../models.dart';
 import '../session_controller.dart';
 import '../theme.dart';
+import '../hidden_mode_store.dart';
 import '../widgets/hud_chips.dart';
 import 'session_detail_page.dart';
+import 'todos_page.dart';
 
 class SessionsPage extends StatefulWidget {
   const SessionsPage({super.key, required this.device});
@@ -25,6 +27,7 @@ class _SessionsPageState extends State<SessionsPage>
 
   bool _reduceMotion = false;
   bool _entrancePlayed = false;
+  bool _hiddenMode = false;
 
   @override
   void initState() {
@@ -38,6 +41,12 @@ class _SessionsPageState extends State<SessionsPage>
     _controller = SessionController(widget.device);
     _controller.addListener(_changed);
     _controller.start();
+    _loadHiddenMode();
+  }
+
+  Future<void> _loadHiddenMode() async {
+    final enabled = await HiddenModeStore.isEnabled();
+    if (mounted) setState(() => _hiddenMode = enabled);
   }
 
   @override
@@ -57,6 +66,13 @@ class _SessionsPageState extends State<SessionsPage>
 
   void _changed() {
     if (!mounted) return;
+    if (_controller.statusFilter == 'Todo') {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _controller.setStatusFilter('All');
+        _openTodos();
+      });
+      return;
+    }
     final bool firstData = !_entrancePlayed && _controller.sessions.isNotEmpty;
     setState(() {});
     _syncPulse();
@@ -89,6 +105,14 @@ class _SessionsPageState extends State<SessionsPage>
           controller: _controller,
           session: session,
         ),
+      ),
+    );
+  }
+
+  void _openTodos() {
+    Navigator.of(context).push(
+      HudSlidePageRoute<void>(
+        builder: (_) => const TodosPage(),
       ),
     );
   }
@@ -151,6 +175,12 @@ class _SessionsPageState extends State<SessionsPage>
                   color: HudColors.waiting,
                 ),
               ),
+            ),
+          if (_hiddenMode)
+            IconButton(
+              tooltip: '待办',
+              onPressed: _openTodos,
+              icon: const Icon(Icons.checklist_rounded, size: 21, color: HudColors.todo),
             ),
           IconButton(
             tooltip: '刷新',
@@ -271,6 +301,8 @@ const List<_FilterOption> _statusOptions = [
       icon: Icons.check_rounded),
   _FilterOption('Failed', '错误', HudColors.failed,
       icon: Icons.priority_high_rounded),
+  _FilterOption('Todo', '待办', HudColors.todo,
+      icon: Icons.checklist_rounded),
 ];
 
 const List<_FilterOption> _providerOptions = [
