@@ -11,6 +11,9 @@ using Microsoft.Extensions.Logging;
 
 namespace AgentHUD.Link;
 
+public sealed record LinkTitleRequest(string? Title);
+public sealed record LinkImportantRequest(bool Important);
+
 [SupportedOSPlatform("windows")]
 public sealed class AgentHudLinkHost : IAsyncDisposable
 {
@@ -101,7 +104,7 @@ public sealed class AgentHudLinkHost : IAsyncDisposable
                 protocol = 1,
                 instanceId = _devices.InstanceId,
                 instanceName = _devices.InstanceName,
-                capabilities = new[] { "monitor" },
+                capabilities = new[] { "monitor", "write", "prompt", "images" },
                 revision = snapshot.Revision,
                 scannedAt = snapshot.ScannedAt,
                 serverTime = DateTimeOffset.Now,
@@ -142,11 +145,83 @@ public sealed class AgentHudLinkHost : IAsyncDisposable
         app.MapGet("/v1/sessions/{id}", (string id) =>
         {
             var snapshot = _snapshotSource.GetMonitoringSnapshot();
-            var session = snapshot.Sessions.FirstOrDefault(item =>
-                _devices.PublicSessionId(item.Id).Equals(id, StringComparison.OrdinalIgnoreCase));
+            var session = FindSession(snapshot, id);
             return session is null
                 ? Results.NotFound(new { error = "session_not_found" })
                 : Results.Ok(ToPublicSession(session));
+        });
+
+        app.MapPost("/v1/sessions/{id}/title", (string id, LinkTitleRequest request) =>
+        {
+            var snapshot = _snapshotSource.GetMonitoringSnapshot();
+            var session = FindSession(snapshot, id);
+            if (session is null)
+            {
+                return Results.NotFound(new { error = "session_not_found" });
+            }
+
+            var normalized = request.Title?.Trim() ?? string.Empty;
+            if (normalized.Length > 72)
+            {
+                return Results.BadRequest(new { error = "title_too_long" });
+            }
+
+            if (!_snapshotSource.SetSessionTitle(
+                    session.Id,
+                    normalized.Length == 0 ? null : normalized))
+            {
+                return Results.Json(
+                    new { error = "unsupported" },
+                    statusCode: StatusCodes.Status501NotImplemented);
+            }
+
+            var updated = FindSession(_snapshotSource.GetMonitoringSnapshot(), id);
+            return Results.Ok(new
+            {
+                id,
+                title = updated?.Title ?? normalized,
+                titleSource = updated?.TitleSource ?? "User",
+                hasCustomTitle = updated?.HasCustomTitle ?? normalized.Length > 0
+            });
+        });
+
+        app.MapPost("/v1/sessions/{id}/important", (string id, LinkImportantRequest request) =>
+        {
+            var snapshot = _snapshotSource.GetMonitoringSnapshot();
+            var session = FindSession(snapshot, id);
+            if (session is null)
+            {
+                return Results.NotFound(new { error = "session_not_found" });
+            }
+
+            if (!_snapshotSource.SetSessionImportant(session.Id, request.Important))
+            {
+                return Results.Json(
+                    new { error = "unsupported" },
+                    statusCode: StatusCodes.Status501NotImplemented);
+            }
+
+            var updated = FindSession(_snapshotSource.GetMonitoringSnapshot(), id);
+            return Results.Ok(new
+            {
+                id,
+                isImportant = updated?.IsImportant ?? request.Important
+            });
+        });
+
+        app.MapGet("/v1/sessions/{id}/images/{index:int}", (string id, int index) =>
+        {
+            var snapshot = _snapshotSource.GetMonitoringSnapshot();
+            var session = FindSession(snapshot, id);
+            if (session is null)
+            {
+                return Results.NotFound(new { error = "session_not_found" });
+            }
+
+            var payload = _snapshotSource.GetPromptImage(session.Id, index);
+            return payload is null
+                ? Results.NotFound(new { error = "image_not_found" })
+                : Results.File(payload.Data, payload.ContentType);
         });
 
         _app = app;
@@ -218,13 +293,17 @@ public sealed class AgentHudLinkHost : IAsyncDisposable
         _devices!.InstanceId,
         _devices.InstanceName,
         1,
-        new[] { "monitor" },
+        new[] { "monitor", "write", "prompt", "images" },
         Fingerprint,
         LinkNetwork.LocalIPv4Addresses(),
         Port);
 
     private MonitoringSessionSnapshot ToPublicSession(MonitoringSessionSnapshot session) =>
         session with { Id = _devices!.PublicSessionId(session.Id) };
+
+    private MonitoringSessionSnapshot? FindSession(MonitoringSnapshot snapshot, string publicId) =>
+        snapshot.Sessions.FirstOrDefault(item =>
+            _devices!.PublicSessionId(item.Id).Equals(publicId, StringComparison.OrdinalIgnoreCase));
 
     private bool TryAuthenticate(HttpContext context, out string deviceId, out string token)
     {

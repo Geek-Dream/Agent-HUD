@@ -32,6 +32,26 @@ struct LinkSessionsResponse: Codable {
     let sessions: [LinkMonitoringSession]
 }
 
+struct LinkTitleRequest: Codable {
+    let title: String?
+}
+
+struct LinkImportantRequest: Codable {
+    let important: Bool
+}
+
+struct LinkTitleResponse: Codable {
+    let id: String
+    let title: String
+    let titleSource: String
+    let hasCustomTitle: Bool
+}
+
+struct LinkImportantResponse: Codable {
+    let id: String
+    let isImportant: Bool
+}
+
 struct LinkErrorResponse: Codable {
     let error: String
 }

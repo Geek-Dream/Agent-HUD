@@ -83,6 +83,27 @@ public sealed class AppStateStore
         Save();
     }
 
+    public void SetImportant(string sessionId, bool important)
+    {
+        if (string.IsNullOrWhiteSpace(sessionId))
+        {
+            return;
+        }
+
+        lock (_lock)
+        {
+            if (important)
+            {
+                State.ImportantSessionIds.Add(sessionId);
+            }
+            else
+            {
+                State.ImportantSessionIds.Remove(sessionId);
+            }
+        }
+        Save();
+    }
+
     private PersistedAppState Load()
     {
         if (!File.Exists(_path))

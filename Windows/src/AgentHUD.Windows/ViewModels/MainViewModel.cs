@@ -537,8 +537,8 @@ public sealed class MainViewModel : INotifyPropertyChanged, IMonitoringSnapshotS
 
     public void SaveExpandedWindowSize(double width, double height)
     {
-        _store.State.ExpandedWidth = width;
-        _store.State.ExpandedHeight = height;
+        _store.State.ExpandedWidth = ExpandedPanelSize.ClampWidth(width);
+        _store.State.ExpandedHeight = ExpandedPanelSize.ClampHeight(height);
         _store.Save();
     }
 
@@ -548,12 +548,13 @@ public sealed class MainViewModel : INotifyPropertyChanged, IMonitoringSnapshotS
         var sessions = _sessions.Select(session =>
         {
             var git = privacy ? null : session.Git;
+            var resolved = ResolveTitle(session);
             return new MonitoringSessionSnapshot(
                 session.Id,
                 session.Provider.ToString(),
                 session.Status.ToString(),
                 session.Confidence.ToString(),
-                privacy ? "隐私模式已开启" : DisplayTitle(session),
+                privacy ? "隐私模式已开启" : resolved.Value,
                 privacy ? "已隐藏" : session.ProjectName,
                 privacy ? "隐私模式已开启" : session.CurrentAction,
                 privacy ? Array.Empty<string>() : session.CurrentFiles,
@@ -565,10 +566,140 @@ public sealed class MainViewModel : INotifyPropertyChanged, IMonitoringSnapshotS
                 git?.ChangedFiles,
                 git?.Insertions,
                 git?.Deletions,
-                privacy ? null : session.Runs.LastOrDefault()?.Summary);
+                privacy ? null : session.Runs.LastOrDefault()?.Summary,
+                _store.State.ImportantSessionIds.Contains(session.Id),
+                resolved.Source.ToString(),
+                _store.State.ManualTitles.ContainsKey(session.Id),
+                privacy ? null : BuildPromptSnapshot(session));
         }).ToArray();
         return new MonitoringSnapshot(_monitoringRevision, LastScannedAt, privacy, sessions);
     }
+
+    public bool SetSessionTitle(string sessionId, string? title)
+    {
+        if (_sessions.All(session => session.Id != sessionId))
+        {
+            return false;
+        }
+
+        var normalized = title?.Trim();
+        _store.SetManualTitle(
+            sessionId,
+            string.IsNullOrWhiteSpace(normalized) ? null : normalized);
+        _monitoringRevision++;
+        RebuildRows(force: true);
+        return true;
+    }
+
+    public bool SetSessionImportant(string sessionId, bool important)
+    {
+        if (_sessions.All(session => session.Id != sessionId))
+        {
+            return false;
+        }
+
+        _store.SetImportant(sessionId, important);
+        _monitoringRevision++;
+        RebuildRows(force: true);
+        return true;
+    }
+
+    public SessionImagePayload? GetPromptImage(string sessionId, int index)
+    {
+        if (PrivacyMode)
+        {
+            return null;
+        }
+
+        var session = _sessions.FirstOrDefault(item => item.Id == sessionId);
+        var prompt = session?.LatestUserPrompt;
+        if (prompt is null || index < 0 || index >= prompt.Images.Count)
+        {
+            return null;
+        }
+
+        var image = prompt.Images[index];
+        if (!string.IsNullOrWhiteSpace(image.LocalPath) && File.Exists(image.LocalPath))
+        {
+            try
+            {
+                var data = File.ReadAllBytes(image.LocalPath);
+                return data.Length <= 12_000_000
+                    ? new SessionImagePayload(data, ImageContentType(image.LocalPath))
+                    : null;
+            }
+            catch (IOException)
+            {
+                return null;
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return null;
+            }
+        }
+
+        if (string.IsNullOrWhiteSpace(image.DataUrl))
+        {
+            return null;
+        }
+
+        var comma = image.DataUrl.IndexOf(',');
+        if (comma < 0)
+        {
+            return null;
+        }
+
+        try
+        {
+            var bytes = Convert.FromBase64String(image.DataUrl[(comma + 1)..]);
+            if (bytes.Length > 12_000_000)
+            {
+                return null;
+            }
+            var header = image.DataUrl[..comma].Replace("data:", string.Empty);
+            var contentType = header.Split(';').FirstOrDefault();
+            return new SessionImagePayload(
+                bytes,
+                string.IsNullOrWhiteSpace(contentType) ? "image/png" : contentType);
+        }
+        catch (FormatException)
+        {
+            return null;
+        }
+    }
+
+    private static MonitoringPromptSnapshot? BuildPromptSnapshot(AgentSession session)
+    {
+        var prompt = session.LatestUserPrompt;
+        if (prompt is null)
+        {
+            return null;
+        }
+
+        var images = prompt.Images
+            .Select((image, index) => new MonitoringPromptImage(
+                index,
+                string.IsNullOrWhiteSpace(image.Label)
+                    ? SessionImageAttachment.DisplayLabel(index)
+                    : image.Label!))
+            .Take(12)
+            .ToArray();
+        var text = prompt.Text.Length > 8_000
+            ? prompt.Text[..8_000]
+            : prompt.Text;
+        return new MonitoringPromptSnapshot(text, prompt.SentAt, images);
+    }
+
+    private static string ImageContentType(string path) =>
+        Path.GetExtension(path).ToLowerInvariant() switch
+        {
+            ".jpg" or ".jpeg" => "image/jpeg",
+            ".png" => "image/png",
+            ".gif" => "image/gif",
+            ".webp" => "image/webp",
+            ".heic" => "image/heic",
+            _ => "application/octet-stream"
+        };
 
     private async Task RefreshLoopAsync(CancellationToken cancellationToken)
     {
@@ -864,6 +995,7 @@ public sealed class SessionRowViewModel : INotifyPropertyChanged
         AgentProvider.Codex => "Cx",
         AgentProvider.Claude => "Cl",
         AgentProvider.Pi => "Pi",
+        AgentProvider.OpenCode => "Oc",
         _ => "Ag"
     };
     public Brush ProviderBrush => BrushForProvider(Session.Provider);
@@ -903,8 +1035,10 @@ public sealed class SessionRowViewModel : INotifyPropertyChanged
         Runs.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
     public Visibility ImportantAccentVisibility =>
         IsImportant ? Visibility.Visible : Visibility.Collapsed;
-    public Visibility CompletedOutlineVisibility =>
-        Session.Status == AgentStatus.Completed ? Visibility.Visible : Visibility.Collapsed;
+    public Visibility StatusOutlineVisibility =>
+        SessionOutlinePolicy.ShouldShow(Session.Status, IsImportant)
+            ? Visibility.Visible
+            : Visibility.Collapsed;
 
     public bool IsEditing
     {
@@ -992,6 +1126,7 @@ public sealed class SessionRowViewModel : INotifyPropertyChanged
             AgentProvider.Codex => "HudCodexBrush",
             AgentProvider.Claude => "HudClaudeBrush",
             AgentProvider.Pi => "HudPiBrush",
+            AgentProvider.OpenCode => "HudOpenCodeBrush",
             _ => "HudTextSecondaryBrush"
         });
 

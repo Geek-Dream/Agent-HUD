@@ -128,7 +128,7 @@ enum TextTools {
         ),
         TitleConcept(
             phrase: "Agent筛选",
-            terms: ["筛选项", "筛选", "过滤", "codex", "claude", "pi"],
+            terms: ["筛选项", "筛选", "过滤", "codex", "claude", "pi", "opencode"],
             weight: 7
         ),
         TitleConcept(
@@ -543,7 +543,8 @@ enum TextTools {
         let clearActionPrefixes = [
             "完善", "设计", "实现", "修复", "优化", "检查", "查询",
             "添加", "新增", "创建", "启动", "梳理", "验证", "调整",
-            "完成", "处理", "分析", "排查", "定位", "读取", "阅读", "理解"
+            "完成", "处理", "分析", "排查", "定位", "读取", "阅读", "理解",
+            "增加"
         ]
         guard clearActionPrefixes.contains(where: { value.hasPrefix($0) }) else {
             return false

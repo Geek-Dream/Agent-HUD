@@ -4,17 +4,23 @@ import Vapor
 
 @MainActor
 final class LinkServer {
+    private static let capabilities = [
+        "monitor", "refresh", "revision", "write", "prompt", "images"
+    ]
+
     private let devices: LinkDeviceStore
     private let pairing: LinkPairingManager
     private let certificate: LinkCertificate
+    private let environment: Environment
     private var application: Application?
     private var snapshotProvider: LinkSnapshotProviding?
 
     private(set) var port = 0
     private(set) var lastError: String?
 
-    init(directory: URL? = nil) throws {
+    init(directory: URL? = nil, environment: Environment = .production) throws {
         let root = try directory ?? LinkDeviceStore.defaultDirectory()
+        self.environment = environment
         devices = try LinkDeviceStore(directory: root)
         pairing = LinkPairingManager(devices: devices)
         certificate = try LinkCertificate.loadOrCreate(directory: root)
@@ -90,7 +96,7 @@ final class LinkServer {
     }
 
     private func makeApplication(port: Int) throws -> Application {
-        let app = Application(.production)
+        let app = Application(environment)
         app.logger.logLevel = .critical
         app.http.server.configuration.hostname = "0.0.0.0"
         app.http.server.configuration.port = port
@@ -136,7 +142,7 @@ final class LinkServer {
                 `protocol`: 1,
                 instanceId: self.devices.instanceId,
                 instanceName: self.devices.instanceName,
-                capabilities: ["monitor"],
+                capabilities: Self.capabilities,
                 revision: snapshot.revision,
                 scannedAt: snapshot.scannedAt,
                 serverTime: Date(),
@@ -146,6 +152,22 @@ final class LinkServer {
                 port: self.port
             )
             return Self.json(response, status: .ok)
+        }
+
+        app.post("v1", "refresh") { request async throws -> Response in
+            guard await self.authorized(request) else {
+                return Self.json(LinkErrorResponse(error: "unauthorized"), status: .unauthorized)
+            }
+            await self.snapshotProvider?.refreshMonitoringSnapshot()
+            let snapshot = await self.snapshot()
+            return Self.json(
+                LinkSessionsResponse(
+                    revision: snapshot.revision,
+                    scannedAt: snapshot.scannedAt,
+                    sessions: []
+                ),
+                status: .ok
+            )
         }
 
         app.get("v1", "sessions") { request async throws -> Response in
@@ -161,13 +183,18 @@ final class LinkServer {
                     && (provider == nil || session.provider.caseInsensitiveCompare(provider!) == .orderedSame)
             }
             let publicSessions = await self.publicSessions(sessions.prefix(limit))
+            let etag = try Self.etag(publicSessions)
+            if request.headers.first(name: .ifNoneMatch) == etag {
+                return Response(status: .notModified, headers: ["ETag": etag])
+            }
             return Self.json(
                 LinkSessionsResponse(
                     revision: snapshot.revision,
                     scannedAt: snapshot.scannedAt,
                     sessions: publicSessions
                 ),
-                status: .ok
+                status: .ok,
+                headers: ["ETag": etag]
             )
         }
 
@@ -189,6 +216,116 @@ final class LinkServer {
             }
             return Self.json(LinkErrorResponse(error: "session_not_found"), status: .notFound)
         }
+
+        app.post("v1", "sessions", ":id", "title") { request async throws -> Response in
+            guard await self.authorized(request) else {
+                return Self.json(LinkErrorResponse(error: "unauthorized"), status: .unauthorized)
+            }
+            guard let id = request.parameters.get("id") else {
+                return Self.json(LinkErrorResponse(error: "session_not_found"), status: .notFound)
+            }
+            let input = try request.content.decode(LinkTitleRequest.self)
+            let normalized = input.title?
+                .trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+            guard normalized.count <= 72 else {
+                return Self.json(LinkErrorResponse(error: "title_too_long"), status: .badRequest)
+            }
+            let snapshot = await self.snapshot()
+            guard let session = await self.session(matchingPublicID: id, in: snapshot) else {
+                return Self.json(LinkErrorResponse(error: "session_not_found"), status: .notFound)
+            }
+            guard let provider = self.snapshotProvider,
+                  await provider.setSessionTitle(
+                    sessionID: session.id,
+                    title: normalized.isEmpty ? nil : normalized
+                  ) else {
+                return Self.json(LinkErrorResponse(error: "unsupported"), status: .notImplemented)
+            }
+            let updated = await self.snapshot()
+            guard let result = updated.sessions.first(where: { $0.id == session.id }) else {
+                return Self.json(LinkErrorResponse(error: "session_not_found"), status: .notFound)
+            }
+            return Self.json(
+                LinkTitleResponse(
+                    id: id,
+                    title: result.title,
+                    titleSource: result.titleSource,
+                    hasCustomTitle: result.hasCustomTitle
+                ),
+                status: .ok
+            )
+        }
+
+        app.post("v1", "sessions", ":id", "important") { request async throws -> Response in
+            guard await self.authorized(request) else {
+                return Self.json(LinkErrorResponse(error: "unauthorized"), status: .unauthorized)
+            }
+            guard let id = request.parameters.get("id") else {
+                return Self.json(LinkErrorResponse(error: "session_not_found"), status: .notFound)
+            }
+            let input = try request.content.decode(LinkImportantRequest.self)
+            let snapshot = await self.snapshot()
+            guard let session = await self.session(matchingPublicID: id, in: snapshot) else {
+                return Self.json(LinkErrorResponse(error: "session_not_found"), status: .notFound)
+            }
+            guard let provider = self.snapshotProvider,
+                  await provider.setSessionImportant(
+                    sessionID: session.id,
+                    important: input.important
+                  ) else {
+                return Self.json(LinkErrorResponse(error: "unsupported"), status: .notImplemented)
+            }
+            let updated = await self.snapshot()
+            let isImportant = updated.sessions
+                .first(where: { $0.id == session.id })?
+                .isImportant ?? input.important
+            return Self.json(
+                LinkImportantResponse(id: id, isImportant: isImportant),
+                status: .ok
+            )
+        }
+
+        app.get("v1", "sessions", ":id", "images", ":index") { request async throws -> Response in
+            guard await self.authorized(request) else {
+                return Self.json(LinkErrorResponse(error: "unauthorized"), status: .unauthorized)
+            }
+            guard let id = request.parameters.get("id"),
+                  let indexText = request.parameters.get("index"),
+                  let index = Int(indexText), index >= 0 else {
+                return Self.json(LinkErrorResponse(error: "image_not_found"), status: .notFound)
+            }
+            let snapshot = await self.snapshot()
+            guard let session = await self.session(matchingPublicID: id, in: snapshot) else {
+                return Self.json(LinkErrorResponse(error: "session_not_found"), status: .notFound)
+            }
+            guard let payload = await self.snapshotProvider?.promptImage(
+                sessionID: session.id,
+                index: index
+            ) else {
+                return Self.json(LinkErrorResponse(error: "image_not_found"), status: .notFound)
+            }
+            var headers = HTTPHeaders()
+            headers.replaceOrAdd(name: .contentType, value: payload.contentType)
+            headers.replaceOrAdd(name: .cacheControl, value: "private, max-age=300")
+            return Response(
+                status: .ok,
+                headers: headers,
+                body: .init(data: payload.data)
+            )
+        }
+    }
+
+    private func session(
+        matchingPublicID id: String,
+        in snapshot: LinkMonitoringSnapshot
+    ) async -> LinkMonitoringSession? {
+        for session in snapshot.sessions {
+            let publicId = await devices.publicSessionId(rawId: session.id)
+            if publicId.caseInsensitiveCompare(id) == .orderedSame {
+                return session
+            }
+        }
+        return nil
     }
 
     private func snapshot() async -> LinkMonitoringSnapshot {
@@ -203,7 +340,7 @@ final class LinkServer {
             instanceId: devices.instanceId,
             instanceName: devices.instanceName,
             `protocol`: 1,
-            capabilities: ["monitor"],
+            capabilities: Self.capabilities,
             fingerprint: fingerprint,
             addresses: LinkNetwork.localIPv4Addresses(),
             port: port
@@ -229,12 +366,19 @@ final class LinkServer {
         return await devices.validate(deviceId: deviceId, token: token)
     }
 
-    private static func json<T: Encodable>(_ value: T, status: HTTPResponseStatus) -> Response {
+    private static func etag<T: Encodable>(_ value: T) throws -> String {
+        let data = try LinkJSON.encoder().encode(value)
+        return "\"\(data.sha256Hex())\""
+    }
+
+    private static func json<T: Encodable>(_ value: T, status: HTTPResponseStatus, headers: [String: String] = [:]) -> Response {
         do {
             let data = try LinkJSON.encoder().encode(value)
+            var headers = headers
+            headers["Content-Type"] = "application/json; charset=utf-8"
             return Response(
                 status: status,
-                headers: ["Content-Type": "application/json; charset=utf-8"],
+                headers: HTTPHeaders(headers.map { ($0.key, $0.value) }),
                 body: .init(data: data)
             )
         } catch {

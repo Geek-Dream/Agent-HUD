@@ -54,6 +54,22 @@ struct PairingResult: Codable {
     let port: Int
 }
 
+struct LinkPromptImage: Codable {
+    let index: Int
+    let label: String
+}
+
+struct LinkPromptSnapshot: Codable {
+    let text: String
+    let sentAt: Date?
+    let images: [LinkPromptImage]
+}
+
+struct LinkPromptImagePayload {
+    let data: Data
+    let contentType: String
+}
+
 struct LinkMonitoringSession: Codable {
     var id: String
     let provider: String
@@ -72,6 +88,10 @@ struct LinkMonitoringSession: Codable {
     let gitInsertions: Int?
     let gitDeletions: Int?
     let summary: String?
+    var isImportant: Bool = false
+    var titleSource: String = "Automatic"
+    var hasCustomTitle: Bool = false
+    var latestPrompt: LinkPromptSnapshot? = nil
 }
 
 struct LinkMonitoringSnapshot {
@@ -83,6 +103,17 @@ struct LinkMonitoringSnapshot {
 
 protocol LinkSnapshotProviding {
     func monitoringSnapshot() async -> LinkMonitoringSnapshot
+    func refreshMonitoringSnapshot() async
+    func setSessionTitle(sessionID: String, title: String?) async -> Bool
+    func setSessionImportant(sessionID: String, important: Bool) async -> Bool
+    func promptImage(sessionID: String, index: Int) async -> LinkPromptImagePayload?
+}
+
+extension LinkSnapshotProviding {
+    func refreshMonitoringSnapshot() async {}
+    func setSessionTitle(sessionID: String, title: String?) async -> Bool { false }
+    func setSessionImportant(sessionID: String, important: Bool) async -> Bool { false }
+    func promptImage(sessionID: String, index: Int) async -> LinkPromptImagePayload? { nil }
 }
 
 enum LinkJSON {

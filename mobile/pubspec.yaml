@@ -1,7 +1,7 @@
 name: agent_hud_mobile
 description: AgentHUD LAN monitoring client for Android and iOS.
 publish_to: "none"
-version: 0.1.0-beta.3+3
+version: 0.1.0-beta.4+4
 
 environment:
   sdk: ^3.5.0

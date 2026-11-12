@@ -70,6 +70,29 @@ class _SessionsPageState extends State<SessionsPage>
     }
   }
 
+  Future<void> _toggleImportant(AgentSession session) async {
+    final bool applied =
+        await _controller.setImportant(session, !session.isImportant);
+    if (applied || !mounted) return;
+    final String? message = _controller.actionError;
+    if (message == null) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
+    );
+    _controller.clearActionError();
+  }
+
+  void _openSession(AgentSession session) {
+    Navigator.of(context).push(
+      HudSlidePageRoute<void>(
+        builder: (_) => SessionDetailPage(
+          controller: _controller,
+          session: session,
+        ),
+      ),
+    );
+  }
+
   void _syncPulse() {
     if (!mounted) return;
     final bool active = _controller.sessions
@@ -101,7 +124,7 @@ class _SessionsPageState extends State<SessionsPage>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      _controller.refresh();
+      _controller.refresh(scan: true);
     }
   }
 
@@ -131,7 +154,7 @@ class _SessionsPageState extends State<SessionsPage>
             ),
           IconButton(
             tooltip: '刷新',
-            onPressed: controller.refresh,
+            onPressed: () => controller.refresh(scan: true),
             icon: const Icon(Icons.refresh_rounded, size: 21),
           ),
           const SizedBox(width: HudSpacing.xs),
@@ -153,7 +176,7 @@ class _SessionsPageState extends State<SessionsPage>
               child: RefreshIndicator(
                 color: HudColors.working,
                 backgroundColor: HudColors.surfaceRaised,
-                onRefresh: controller.refresh,
+                onRefresh: () => controller.refresh(scan: true),
                 child: AnimatedSwitcher(
                   duration: HudMotion.base,
                   switchInCurve: HudMotion.easeOut,
@@ -208,6 +231,9 @@ class _SessionsPageState extends State<SessionsPage>
                                   entrance: _entrance,
                                   pulse: _pulse,
                                   reduced: _reduceMotion,
+                                  canStar: controller.supportsActions,
+                                  onStar: () => _toggleImportant(session),
+                                  onOpen: () => _openSession(session),
                                 );
                               },
                             ),
@@ -217,6 +243,7 @@ class _SessionsPageState extends State<SessionsPage>
             _Footer(
               lastUpdated: controller.lastUpdated,
               isRefreshing: controller.isRefreshing,
+              supportsActions: controller.supportsActions,
             ),
           ],
         ),
@@ -253,6 +280,8 @@ const List<_FilterOption> _providerOptions = [
   _FilterOption('Claude', 'Claude', HudColors.claude,
       icon: Icons.auto_awesome_rounded),
   _FilterOption('Pi', 'Pi', HudColors.pi, icon: Icons.hexagon_outlined),
+  _FilterOption('OpenCode', 'OpenCode', HudColors.opencode,
+      icon: Icons.code_rounded),
 ];
 
 class _Filters extends StatelessWidget {
@@ -271,6 +300,7 @@ class _Filters extends StatelessWidget {
       child: Column(
         children: [
           _FilterRow(
+            tech: true,
             options: _statusOptions,
             selected: controller.statusFilter,
             count: controller.countForStatus,
@@ -294,12 +324,14 @@ class _FilterRow extends StatelessWidget {
     required this.selected,
     required this.count,
     required this.onSelected,
+    this.tech = false,
   });
 
   final List<_FilterOption> options;
   final String selected;
   final int Function(String) count;
   final ValueChanged<String> onSelected;
+  final bool tech;
 
   @override
   Widget build(BuildContext context) {
@@ -318,6 +350,7 @@ class _FilterRow extends StatelessWidget {
                 option: option,
                 selected: option.value == selected,
                 count: count(option.value),
+                tech: tech,
                 onTap: () => onSelected(option.value),
               ),
             ),
@@ -333,17 +366,39 @@ class _FilterPill extends StatelessWidget {
     required this.selected,
     required this.count,
     required this.onTap,
+    this.tech = false,
   });
 
   final _FilterOption option;
   final bool selected;
   final int count;
   final VoidCallback onTap;
+  final bool tech;
 
   @override
   Widget build(BuildContext context) {
-    final Color foreground = selected ? option.color : HudColors.textSecondary;
+    final Color color = option.color;
+    final Color foreground = selected ? color : HudColors.textSecondary;
     final TextStyle baseStyle = DefaultTextStyle.of(context).style;
+    final ShapeBorder shape = tech
+        ? HudChamferBorder(
+            cut: 6,
+            side: BorderSide(
+              color: selected
+                  ? color.withValues(alpha: 0.86)
+                  : HudColors.border,
+              width: selected ? 1.1 : 0.9,
+            ),
+          )
+        : StadiumBorder(
+            side: BorderSide(
+              color: selected
+                  ? color.withValues(alpha: 0.58)
+                  : HudColors.border,
+              width: selected ? 1.1 : 0.9,
+            ),
+          );
+
     return Semantics(
       button: true,
       selected: selected,
@@ -351,57 +406,87 @@ class _FilterPill extends StatelessWidget {
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          borderRadius: BorderRadius.circular(HudRadii.panel),
+          customBorder: shape,
           onTap: onTap,
           child: AnimatedContainer(
             duration: HudMotion.fast,
             curve: HudMotion.easeOut,
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-            decoration: BoxDecoration(
-              color: selected
-                  ? option.color.withValues(alpha: 0.16)
-                  : HudColors.controlFill,
-              borderRadius: BorderRadius.circular(HudRadii.panel),
-              border: Border.all(
-                color: selected
-                    ? option.color.withValues(alpha: 0.52)
-                    : HudColors.border,
-                width: 0.9,
-              ),
+            padding: EdgeInsets.symmetric(
+              horizontal: tech ? 11 : 12,
+              vertical: 6.5,
             ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
+            decoration: ShapeDecoration(
+              color: selected
+                  ? color.withValues(alpha: tech ? 0.2 : 0.16)
+                  : HudColors.controlFill,
+              shape: shape,
+              shadows: selected
+                  ? <BoxShadow>[
+                      BoxShadow(
+                        color: color.withValues(alpha: tech ? 0.34 : 0.22),
+                        blurRadius: tech ? 16 : 12,
+                        spreadRadius: tech ? 1 : 0.5,
+                      ),
+                    ]
+                  : const <BoxShadow>[],
+            ),
+            child: Stack(
+              alignment: Alignment.center,
               children: [
-                Icon(
-                  option.icon ?? Icons.circle,
-                  size: 12,
-                  color: selected
-                      ? option.color
-                      : option.color.withValues(alpha: 0.62),
-                ),
-                const SizedBox(width: 5),
-                AnimatedDefaultTextStyle(
-                  duration: HudMotion.fast,
-                  curve: HudMotion.easeOut,
-                  style: baseStyle.copyWith(
-                    fontSize: 12,
-                    fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
-                    color: foreground,
+                if (selected && tech)
+                  Positioned(
+                    top: 0,
+                    left: 9,
+                    right: 9,
+                    child: Container(
+                      height: 1.2,
+                      decoration: BoxDecoration(
+                        color: color.withValues(alpha: 0.9),
+                        boxShadow: <BoxShadow>[
+                          BoxShadow(
+                            color: color.withValues(alpha: 0.75),
+                            blurRadius: 6,
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
-                  child: Text(option.label),
-                ),
-                const SizedBox(width: 5),
-                AnimatedDefaultTextStyle(
-                  duration: HudMotion.fast,
-                  curve: HudMotion.easeOut,
-                  style: baseStyle.copyWith(
-                    fontSize: 10.5,
-                    fontWeight: FontWeight.w600,
-                    color: selected
-                        ? option.color.withValues(alpha: 0.9)
-                        : HudColors.textTertiary,
-                  ),
-                  child: Text('$count'),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      option.icon ?? Icons.circle,
+                      size: 12,
+                      color: selected
+                          ? color
+                          : color.withValues(alpha: 0.62),
+                    ),
+                    const SizedBox(width: 5),
+                    AnimatedDefaultTextStyle(
+                      duration: HudMotion.fast,
+                      curve: HudMotion.easeOut,
+                      style: baseStyle.copyWith(
+                        fontSize: 12,
+                        fontWeight:
+                            selected ? FontWeight.w600 : FontWeight.w500,
+                        color: foreground,
+                      ),
+                      child: Text(option.label),
+                    ),
+                    const SizedBox(width: 5),
+                    AnimatedDefaultTextStyle(
+                      duration: HudMotion.fast,
+                      curve: HudMotion.easeOut,
+                      style: baseStyle.copyWith(
+                        fontSize: 10.5,
+                        fontWeight: FontWeight.w600,
+                        color: selected
+                            ? color.withValues(alpha: 0.9)
+                            : HudColors.textTertiary,
+                      ),
+                      child: Text('$count'),
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -454,7 +539,7 @@ class _ErrorBanner extends StatelessWidget {
   }
 }
 
-class _AnimatedSessionCard extends StatelessWidget {
+class _AnimatedSessionCard extends StatefulWidget {
   const _AnimatedSessionCard({
     super.key,
     required this.session,
@@ -462,6 +547,9 @@ class _AnimatedSessionCard extends StatelessWidget {
     required this.entrance,
     required this.pulse,
     required this.reduced,
+    required this.canStar,
+    required this.onStar,
+    required this.onOpen,
   });
 
   final AgentSession session;
@@ -469,30 +557,154 @@ class _AnimatedSessionCard extends StatelessWidget {
   final Animation<double> entrance;
   final Animation<double> pulse;
   final bool reduced;
+  final bool canStar;
+  final VoidCallback onStar;
+  final VoidCallback onOpen;
+
+  @override
+  State<_AnimatedSessionCard> createState() => _AnimatedSessionCardState();
+}
+
+class _AnimatedSessionCardState extends State<_AnimatedSessionCard>
+    with TickerProviderStateMixin {
+  late final AnimationController _transition;
+  late final AnimationController _appear;
+  AgentSession? _previous;
+
+  @override
+  void initState() {
+    super.initState();
+    _transition = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 560),
+    )..addStatusListener((AnimationStatus status) {
+        if (status == AnimationStatus.completed && mounted) {
+          setState(() => _previous = null);
+        }
+      });
+    _appear = AnimationController(
+      vsync: this,
+      duration: HudMotion.entrance,
+    );
+    if (!widget.reduced && widget.entrance.value >= 0.999) {
+      _appear.forward(from: 0);
+    } else {
+      _appear.value = 1;
+    }
+  }
+
+  @override
+  void didUpdateWidget(covariant _AnimatedSessionCard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.session.status == widget.session.status) return;
+    if (widget.reduced) {
+      _previous = null;
+      _transition.value = 1;
+      return;
+    }
+    _previous = oldWidget.session;
+    _transition.forward(from: 0);
+  }
+
+  @override
+  void dispose() {
+    _transition.dispose();
+    _appear.dispose();
+    super.dispose();
+  }
+
+  Widget _buildCard(AgentSession session) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: HudSpacing.lg),
+      child: _SessionCard(
+        session: session,
+        pulse: widget.pulse,
+        reduced: widget.reduced,
+        canStar: widget.canStar,
+        onStar: widget.onStar,
+        onOpen: widget.onOpen,
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    final Widget card = Padding(
-      padding: const EdgeInsets.only(bottom: HudSpacing.lg),
-      child: _SessionCard(session: session, pulse: pulse, reduced: reduced),
+    final AgentSession? previous = _previous;
+    Widget card;
+    if (previous == null) {
+      card = _buildCard(widget.session);
+    } else {
+      card = AnimatedBuilder(
+        animation: _transition,
+        builder: (BuildContext context, Widget? child) {
+          final double value = _transition.value;
+          final double outgoing = Curves.easeInCubic.transform(
+            (value / 0.5).clamp(0.0, 1.0),
+          );
+          final double incoming = Curves.easeOutCubic.transform(
+            ((value - 0.42) / 0.58).clamp(0.0, 1.0),
+          );
+          return Stack(
+            clipBehavior: Clip.none,
+            children: [
+              Opacity(
+                opacity: incoming,
+                child: FractionalTranslation(
+                  translation: Offset(0, (1 - incoming) * 0.42),
+                  child: _buildCard(widget.session),
+                ),
+              ),
+              Positioned(
+                top: 0,
+                left: 0,
+                right: 0,
+                child: IgnorePointer(
+                  child: Opacity(
+                    opacity: (1 - outgoing) * 0.92,
+                    child: FractionalTranslation(
+                      translation: Offset(outgoing * 0.9, 0),
+                      child: _buildCard(previous),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          );
+        },
+      );
+    }
+
+    if (widget.reduced) return card;
+
+    final Animation<double> appear = CurvedAnimation(
+      parent: _appear,
+      curve: HudMotion.easeOut,
+    );
+    final Widget appeared = FadeTransition(
+      opacity: appear,
+      child: SlideTransition(
+        position: Tween<Offset>(
+          begin: const Offset(0, 0.09),
+          end: Offset.zero,
+        ).animate(appear),
+        child: card,
+      ),
     );
 
-    if (reduced) return card;
-
-    final double start = math.min(index * 0.045, 0.35);
+    final double start = math.min(widget.index * 0.045, 0.35);
     final double end = math.min(start + 0.55, 1);
-    final Animation<double> animation = CurvedAnimation(
-      parent: entrance,
+    final Animation<double> entrance = CurvedAnimation(
+      parent: widget.entrance,
       curve: Interval(start, end, curve: HudMotion.easeOut),
     );
     return FadeTransition(
-      opacity: animation,
+      opacity: entrance,
       child: SlideTransition(
         position: Tween<Offset>(
           begin: const Offset(0, 0.035),
           end: Offset.zero,
-        ).animate(animation),
-        child: card,
+        ).animate(entrance),
+        child: appeared,
       ),
     );
   }
@@ -503,17 +715,28 @@ class _SessionCard extends StatelessWidget {
     required this.session,
     required this.pulse,
     required this.reduced,
+    required this.canStar,
+    required this.onStar,
+    required this.onOpen,
   });
 
   final AgentSession session;
   final Animation<double> pulse;
   final bool reduced;
+  final bool canStar;
+  final VoidCallback onStar;
+  final VoidCallback onOpen;
 
   @override
   Widget build(BuildContext context) {
     final Color statusColor = HudColors.status(session.status);
     final bool outlined =
         HudColors.isActive(session.status) || session.status == 'Failed';
+    final Color borderColor = session.isImportant
+        ? HudColors.important.withValues(alpha: 0.55)
+        : outlined
+            ? statusColor.withValues(alpha: 0.38)
+            : HudColors.border;
 
     return Material(
       color: Colors.transparent,
@@ -522,27 +745,30 @@ class _SessionCard extends StatelessWidget {
           gradient: LinearGradient(
             colors: [
               HudColors.surfaceRaised,
-              outlined
-                  ? statusColor.withValues(alpha: 0.06)
-                  : HudColors.surface,
+              session.isImportant
+                  ? HudColors.important.withValues(alpha: 0.07)
+                  : outlined
+                      ? statusColor.withValues(alpha: 0.06)
+                      : HudColors.surface,
             ],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
           borderRadius: BorderRadius.circular(HudRadii.panel),
-          border: Border.all(
-            color: outlined
-                ? statusColor.withValues(alpha: 0.38)
-                : HudColors.border,
-          ),
+          border: Border.all(color: borderColor),
+          boxShadow: session.isImportant
+              ? <BoxShadow>[
+                  BoxShadow(
+                    color: HudColors.important.withValues(alpha: 0.12),
+                    blurRadius: 16,
+                    spreadRadius: 0.5,
+                  ),
+                ]
+              : null,
         ),
         child: InkWell(
           borderRadius: BorderRadius.circular(HudRadii.panel),
-          onTap: () => Navigator.of(context).push(
-            MaterialPageRoute<void>(
-              builder: (_) => SessionDetailPage(session: session),
-            ),
-          ),
+          onTap: onOpen,
           child: Stack(
             children: [
               Positioned.fill(
@@ -555,7 +781,10 @@ class _SessionCard extends StatelessWidget {
                         vertical: HudSpacing.lg,
                       ),
                       decoration: BoxDecoration(
-                        color: statusColor.withValues(alpha: 0.72),
+                        color: (session.isImportant
+                                ? HudColors.important
+                                : statusColor)
+                            .withValues(alpha: 0.72),
                         borderRadius: BorderRadius.circular(2),
                       ),
                     ),
@@ -582,7 +811,27 @@ class _SessionCard extends StatelessWidget {
                             style: HudText.title.copyWith(fontSize: 15.5),
                           ),
                         ),
-                        const SizedBox(width: HudSpacing.md),
+                        if (canStar)
+                          IconButton(
+                            onPressed: onStar,
+                            tooltip: session.isImportant ? '取消重要' : '标记为重要',
+                            visualDensity: VisualDensity.compact,
+                            padding: EdgeInsets.zero,
+                            constraints: const BoxConstraints.tightFor(
+                              width: 30,
+                              height: 30,
+                            ),
+                            iconSize: 17,
+                            icon: Icon(
+                              session.isImportant
+                                  ? Icons.star_rounded
+                                  : Icons.star_outline_rounded,
+                              color: session.isImportant
+                                  ? HudColors.important
+                                  : HudColors.textTertiary,
+                            ),
+                          ),
+                        const SizedBox(width: HudSpacing.xxs),
                         AnimatedSwitcher(
                           duration: HudMotion.fast,
                           transitionBuilder: (child, animation) =>
@@ -650,6 +899,56 @@ class _SessionCard extends StatelessWidget {
                         ),
                       ],
                     ),
+                    if (session.latestPrompt != null &&
+                        !session.latestPrompt!.isEmpty) ...[
+                      const SizedBox(height: HudSpacing.md),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: HudSpacing.md,
+                          vertical: HudSpacing.sm,
+                        ),
+                        decoration: BoxDecoration(
+                          color: HudColors.controlFill,
+                          borderRadius: BorderRadius.circular(HudRadii.micro),
+                          border: Border.all(color: HudColors.divider),
+                        ),
+                        child: Row(
+                          children: [
+                            const Icon(
+                              Icons.format_quote_rounded,
+                              size: 12,
+                              color: HudColors.textTertiary,
+                            ),
+                            const SizedBox(width: HudSpacing.sm),
+                            Expanded(
+                              child: Text(
+                                session.latestPrompt!.text
+                                    .replaceAll(RegExp(r'\s+'), ' ')
+                                    .trim(),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: HudText.caption.copyWith(
+                                  color: HudColors.textSecondary,
+                                ),
+                              ),
+                            ),
+                            if (session.latestPrompt!.images.isNotEmpty) ...[
+                              const SizedBox(width: HudSpacing.sm),
+                              const Icon(
+                                Icons.photo_outlined,
+                                size: 12,
+                                color: HudColors.textTertiary,
+                              ),
+                              const SizedBox(width: 2),
+                              Text(
+                                '${session.latestPrompt!.images.length}',
+                                style: HudText.caption.copyWith(fontSize: 10.5),
+                              ),
+                            ],
+                          ],
+                        ),
+                      ),
+                    ],
                   ],
                 ),
               ),
@@ -671,6 +970,11 @@ class _SessionCard extends StatelessWidget {
         ..write(' · ')
         ..write(changes)
         ..write(' 个改动');
+    }
+    if (session.hasCustomTitle) {
+      buffer
+        ..write(' · ')
+        ..write(titleSourceLabel(session.titleSource));
     }
     return buffer.toString();
   }
@@ -845,10 +1149,15 @@ class _EmptyList extends StatelessWidget {
 }
 
 class _Footer extends StatelessWidget {
-  const _Footer({required this.lastUpdated, required this.isRefreshing});
+  const _Footer({
+    required this.lastUpdated,
+    required this.isRefreshing,
+    required this.supportsActions,
+  });
 
   final DateTime? lastUpdated;
   final bool isRefreshing;
+  final bool supportsActions;
 
   @override
   Widget build(BuildContext context) {
@@ -873,7 +1182,10 @@ class _Footer extends StatelessWidget {
             color: HudColors.textTertiary,
           ),
           const SizedBox(width: HudSpacing.sm),
-          const Text('只读监控', style: HudText.caption),
+          Text(
+            supportsActions ? '证书固定 · 可改名/星标' : '只读监控',
+            style: HudText.caption,
+          ),
           const Spacer(),
           AnimatedSwitcher(
             duration: HudMotion.fast,

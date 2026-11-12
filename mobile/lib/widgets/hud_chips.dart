@@ -11,6 +11,8 @@ IconData hudProviderIcon(String provider) {
       return Icons.auto_awesome_rounded;
     case 'Pi':
       return Icons.hexagon_outlined;
+    case 'OpenCode':
+      return Icons.code_rounded;
     default:
       return Icons.smart_toy_outlined;
   }

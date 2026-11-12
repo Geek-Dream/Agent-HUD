@@ -4,7 +4,8 @@ public enum AgentProvider
 {
     Codex,
     Claude,
-    Pi
+    Pi,
+    OpenCode
 }
 
 public enum AgentStatus
@@ -39,7 +40,8 @@ public enum ProviderFilter
     All,
     Codex,
     Claude,
-    Pi
+    Pi,
+    OpenCode
 }
 
 public enum TitleSource
@@ -124,6 +126,7 @@ public static class ModelLabels
         AgentProvider.Codex => "CODEX",
         AgentProvider.Claude => "CLAUDE",
         AgentProvider.Pi => "PI",
+        AgentProvider.OpenCode => "OPENCODE",
         _ => "AGENT"
     };
 
@@ -132,6 +135,7 @@ public static class ModelLabels
         AgentProvider.Codex => "Codex",
         AgentProvider.Claude => "Claude Code",
         AgentProvider.Pi => "Pi",
+        AgentProvider.OpenCode => "OpenCode",
         _ => "Agent"
     };
 
@@ -180,6 +184,7 @@ public static class ModelLabels
         ProviderFilter.Codex => "Codex",
         ProviderFilter.Claude => "Claude",
         ProviderFilter.Pi => "Pi",
+        ProviderFilter.OpenCode => "OpenCode",
         _ => "全部"
     };
 
@@ -223,6 +228,7 @@ public static class ModelLabels
         ProviderFilter.Codex => provider == AgentProvider.Codex,
         ProviderFilter.Claude => provider == AgentProvider.Claude,
         ProviderFilter.Pi => provider == AgentProvider.Pi,
+        ProviderFilter.OpenCode => provider == AgentProvider.OpenCode,
         _ => true
     };
 }
@@ -242,6 +248,35 @@ public static class SessionOrdering
             .ThenBy(session => session.Id, StringComparer.Ordinal)
             .ToArray();
     }
+}
+
+public static class SessionOutlinePolicy
+{
+    public static bool ShouldShow(AgentStatus status, bool isImportant) => status switch
+    {
+        AgentStatus.Starting or AgentStatus.Working or AgentStatus.WaitingUser
+            or AgentStatus.Completed or AgentStatus.Failed => isImportant,
+        _ => false
+    };
+}
+
+public static class ExpandedPanelSize
+{
+    public const double DefaultWidth = 424;
+    public const double DefaultHeight = 620;
+    public const double MinWidth = 360;
+    public const double MinHeight = 480;
+    public const double MaxWidth = 720;
+    public const double MaxHeight = 1000;
+
+    public static double ClampWidth(double value) =>
+        Clamp(value, MinWidth, MaxWidth, DefaultWidth);
+
+    public static double ClampHeight(double value) =>
+        Clamp(value, MinHeight, MaxHeight, DefaultHeight);
+
+    private static double Clamp(double value, double minimum, double maximum, double fallback) =>
+        double.IsFinite(value) ? Math.Clamp(value, minimum, maximum) : fallback;
 }
 
 public static class SessionTransitionDetector

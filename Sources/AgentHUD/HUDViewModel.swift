@@ -22,6 +22,26 @@ final class HUDViewModel: ObservableObject, LinkSnapshotProviding {
             UserDefaults.standard.set(positionLocked, forKey: "hud.positionLocked")
         }
     }
+    @Published var expandedWidth: Double {
+        didSet {
+            let clamped = ExpandedPanelSize.clampedWidth(expandedWidth)
+            if expandedWidth != clamped {
+                expandedWidth = clamped
+            } else {
+                UserDefaults.standard.set(clamped, forKey: "hud.expandedWidth")
+            }
+        }
+    }
+    @Published var expandedHeight: Double {
+        didSet {
+            let clamped = ExpandedPanelSize.clampedHeight(expandedHeight)
+            if expandedHeight != clamped {
+                expandedHeight = clamped
+            } else {
+                UserDefaults.standard.set(clamped, forKey: "hud.expandedHeight")
+            }
+        }
+    }
     @Published var statusFilter: StatusFilter = .all {
         didSet {
             UserDefaults.standard.set(statusFilter.rawValue, forKey: "hud.statusFilter")
@@ -59,6 +79,7 @@ final class HUDViewModel: ObservableObject, LinkSnapshotProviding {
     private let secretStore = KeychainAISecretStore()
     private let aiTitleService = AITitleService()
     private var refreshLoop: Task<Void, Never>?
+    private var refreshTask: Task<Void, Never>?
     private var aiRefreshTask: Task<Void, Never>?
     private var aiTitleKeys: [String: String] = [:]
     private var isRefreshing = false
@@ -70,6 +91,14 @@ final class HUDViewModel: ObservableObject, LinkSnapshotProviding {
         isExpanded = UserDefaults.standard.object(forKey: "hud.isExpanded") as? Bool ?? false
         privacyMode = UserDefaults.standard.bool(forKey: "hud.privacyMode")
         positionLocked = UserDefaults.standard.object(forKey: "hud.positionLocked") as? Bool ?? false
+        expandedWidth = ExpandedPanelSize.clampedWidth(
+            UserDefaults.standard.object(forKey: "hud.expandedWidth") as? Double
+                ?? ExpandedPanelSize.defaultWidth
+        )
+        expandedHeight = ExpandedPanelSize.clampedHeight(
+            UserDefaults.standard.object(forKey: "hud.expandedHeight") as? Double
+                ?? ExpandedPanelSize.defaultHeight
+        )
         statusFilter = StatusFilter(
             rawValue: UserDefaults.standard.string(forKey: "hud.statusFilter") ?? ""
         ) ?? .all
@@ -191,14 +220,36 @@ final class HUDViewModel: ObservableObject, LinkSnapshotProviding {
         resolvedTitle(for: session).value
     }
 
+    func refreshMonitoringSnapshot() async {
+        await refresh(waitForCurrent: true)
+    }
+
     func monitoringSnapshot() async -> LinkMonitoringSnapshot {
         let privacy = privacyMode
         let current = sessions.map { session in
             let git = privacy ? nil : session.git
+            let prompt: LinkPromptSnapshot?
+            if privacy {
+                prompt = nil
+            } else if let latest = session.latestUserPrompt {
+                let images = latest.images.enumerated().prefix(12).map { index, image in
+                    let label = image.label?.isEmpty == false
+                        ? image.label!
+                        : SessionImageAttachment.displayLabel(for: index)
+                    return LinkPromptImage(index: index, label: label)
+                }
+                prompt = LinkPromptSnapshot(
+                    text: String(latest.text.prefix(8_000)),
+                    sentAt: latest.sentAt,
+                    images: images
+                )
+            } else {
+                prompt = nil
+            }
             return LinkMonitoringSession(
                 id: session.id,
                 provider: session.provider.rawValue.capitalized,
-                status: session.status.rawValue.capitalized,
+                status: session.status.protocolValue,
                 confidence: session.confidence.rawValue.capitalized,
                 title: privacy ? "隐私模式已开启" : displayTitle(for: session),
                 projectName: privacy ? "已隐藏" : session.projectName,
@@ -212,7 +263,11 @@ final class HUDViewModel: ObservableObject, LinkSnapshotProviding {
                 gitChangedFiles: git?.changedFiles,
                 gitInsertions: git?.insertions,
                 gitDeletions: git?.deletions,
-                summary: privacy ? nil : session.lastRun?.summary
+                summary: privacy ? nil : session.lastRun?.summary,
+                isImportant: isImportant(session),
+                titleSource: Self.protocolTitleSource(titleSource(for: session)),
+                hasCustomTitle: hasCustomTitle(for: session),
+                latestPrompt: prompt
             )
         }
         return LinkMonitoringSnapshot(
@@ -221,6 +276,97 @@ final class HUDViewModel: ObservableObject, LinkSnapshotProviding {
             privacyMode: privacy,
             sessions: current
         )
+    }
+
+    func setSessionTitle(sessionID: String, title: String?) async -> Bool {
+        guard let session = sessions.first(where: { $0.id == sessionID }) else {
+            return false
+        }
+        let normalized = title?
+            .trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        if normalized.isEmpty {
+            clearCustomTitle(for: session)
+        } else {
+            setCustomTitle(normalized, for: session)
+        }
+        monitoringRevision += 1
+        return true
+    }
+
+    func setSessionImportant(sessionID: String, important: Bool) async -> Bool {
+        guard let session = sessions.first(where: { $0.id == sessionID }) else {
+            return false
+        }
+        if isImportant(session) != important {
+            toggleImportance(for: session)
+        }
+        monitoringRevision += 1
+        return true
+    }
+
+    func promptImage(sessionID: String, index: Int) async -> LinkPromptImagePayload? {
+        guard !privacyMode,
+              let session = sessions.first(where: { $0.id == sessionID }),
+              let prompt = session.latestUserPrompt,
+              prompt.images.indices.contains(index) else {
+            return nil
+        }
+        let image = prompt.images[index]
+        switch image.source {
+        case .unavailable:
+            return nil
+        case .localPath(let path):
+            guard let data = try? Data(contentsOf: URL(fileURLWithPath: path)),
+                  data.count <= 12_000_000 else {
+                return nil
+            }
+            return LinkPromptImagePayload(
+                data: data,
+                contentType: Self.imageContentType(for: path)
+            )
+        case .dataURL(let value):
+            guard let comma = value.firstIndex(of: ",") else { return nil }
+            let header = String(value[..<comma])
+            let encoded = String(value[value.index(after: comma)...])
+            guard let data = Data(base64Encoded: encoded),
+                  data.count <= 12_000_000 else {
+                return nil
+            }
+            let contentType = header
+                .replacingOccurrences(of: "data:", with: "")
+                .split(separator: ";")
+                .first
+                .map(String.init) ?? "image/png"
+            return LinkPromptImagePayload(data: data, contentType: contentType)
+        }
+    }
+
+    private static func protocolTitleSource(_ source: TaskTitleSource) -> String {
+        switch source {
+        case .automatic:
+            return "Automatic"
+        case .ai:
+            return "AI"
+        case .user:
+            return "User"
+        }
+    }
+
+    private static func imageContentType(for path: String) -> String {
+        switch URL(fileURLWithPath: path).pathExtension.lowercased() {
+        case "jpg", "jpeg":
+            return "image/jpeg"
+        case "png":
+            return "image/png"
+        case "gif":
+            return "image/gif"
+        case "webp":
+            return "image/webp"
+        case "heic":
+            return "image/heic"
+        default:
+            return "application/octet-stream"
+        }
     }
 
     func titleSource(for session: AgentSession) -> TaskTitleSource {
@@ -284,7 +430,25 @@ final class HUDViewModel: ObservableObject, LinkSnapshotProviding {
         refreshLoop = nil
     }
 
-    func refresh() async {
+    func refresh(waitForCurrent: Bool = false) async {
+        if let refreshTask {
+            if waitForCurrent {
+                await refreshTask.value
+            }
+            return
+        }
+        let task = Task<Void, Never> { @MainActor [weak self] in
+            guard let self else {
+                return
+            }
+            await self.performRefresh()
+        }
+        refreshTask = task
+        defer { refreshTask = nil }
+        await task.value
+    }
+
+    private func performRefresh() async {
         guard !isRefreshing else {
             return
         }

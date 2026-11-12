@@ -26,6 +26,7 @@ class HudColors {
   static const codex = Color(0xFF54ADFF);
   static const claude = Color(0xFFFF8C47);
   static const pi = Color(0xFF7AE35C);
+  static const opencode = Color(0xFF4FD1C5);
   static const important = Color(0xFFFFC233);
 
   static Color status(String value) {
@@ -54,6 +55,8 @@ class HudColors {
         return claude;
       case 'Pi':
         return pi;
+      case 'OpenCode':
+        return opencode;
       default:
         return textTertiary;
     }
@@ -281,6 +284,114 @@ ThemeData buildHudTheme() {
       ),
     ),
   );
+}
+
+/// Chamfered "tech" panel used by status filters.
+class HudChamferBorder extends OutlinedBorder {
+  const HudChamferBorder({
+    this.cut = 6,
+    super.side = const BorderSide(),
+  });
+
+  final double cut;
+
+  @override
+  ShapeBorder scale(double t) => HudChamferBorder(
+        cut: cut * t,
+        side: side.scale(t),
+      );
+
+  @override
+  ShapeBorder? lerpFrom(ShapeBorder? a, double t) {
+    if (a is HudChamferBorder) {
+      return HudChamferBorder(
+        cut: a.cut + (cut - a.cut) * t,
+        side: BorderSide.lerp(a.side, side, t),
+      );
+    }
+    return super.lerpFrom(a, t);
+  }
+
+  @override
+  ShapeBorder? lerpTo(ShapeBorder? b, double t) {
+    if (b is HudChamferBorder) {
+      return HudChamferBorder(
+        cut: cut + (b.cut - cut) * t,
+        side: BorderSide.lerp(side, b.side, t),
+      );
+    }
+    return super.lerpTo(b, t);
+  }
+
+  @override
+  HudChamferBorder copyWith({BorderSide? side}) => HudChamferBorder(
+        cut: cut,
+        side: side ?? this.side,
+      );
+
+  @override
+  Path getOuterPath(Rect rect, {TextDirection? textDirection}) {
+    final double c = cut.clamp(0.0, rect.shortestSide / 2).toDouble();
+    return Path()
+      ..moveTo(rect.left + c, rect.top)
+      ..lineTo(rect.right - c, rect.top)
+      ..lineTo(rect.right, rect.top + c)
+      ..lineTo(rect.right, rect.bottom - c)
+      ..lineTo(rect.right - c, rect.bottom)
+      ..lineTo(rect.left + c, rect.bottom)
+      ..lineTo(rect.left, rect.bottom - c)
+      ..lineTo(rect.left, rect.top + c)
+      ..close();
+  }
+
+  @override
+  Path getInnerPath(Rect rect, {TextDirection? textDirection}) =>
+      getOuterPath(rect.deflate(side.width), textDirection: textDirection);
+
+  @override
+  void paint(Canvas canvas, Rect rect, {TextDirection? textDirection}) {
+    if (side.style == BorderStyle.none || side.width <= 0) return;
+    canvas.drawPath(
+      getOuterPath(
+        rect.deflate(side.width / 2),
+        textDirection: textDirection,
+      ),
+      side.toPaint(),
+    );
+  }
+}
+
+/// Right-to-left page push with a soft fade, used for session details.
+class HudSlidePageRoute<T> extends PageRouteBuilder<T> {
+  HudSlidePageRoute({
+    required WidgetBuilder builder,
+    super.settings,
+  }) : super(
+          transitionDuration: const Duration(milliseconds: 380),
+          reverseTransitionDuration: const Duration(milliseconds: 300),
+          pageBuilder: (context, animation, secondaryAnimation) =>
+              builder(context),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            if (HudMotion.reduced(context)) return child;
+            final Animation<double> curved = CurvedAnimation(
+              parent: animation,
+              curve: HudMotion.easeOut,
+              reverseCurve: HudMotion.easeIn,
+            );
+            final Animation<Offset> slide = Tween<Offset>(
+              begin: const Offset(1, 0),
+              end: Offset.zero,
+            ).animate(curved);
+            final Animation<double> fade = CurvedAnimation(
+              parent: animation,
+              curve: const Interval(0, 0.72, curve: Curves.easeOut),
+            );
+            return FadeTransition(
+              opacity: fade,
+              child: SlideTransition(position: slide, child: child),
+            );
+          },
+        );
 }
 
 /// Fade + short rise used for route changes.
