@@ -23,11 +23,9 @@ class SessionController extends ChangeNotifier {
 
   List<AgentSession> get sessions {
     final filtered = _sessions.where((session) {
-      final statusMatches = statusFilter == 'All' ||
-          (statusFilter == 'Working' && (session.status == 'Working' || session.status == 'Starting')) ||
-          (statusFilter == 'Waiting' && session.status == 'WaitingUser') ||
-          session.status == statusFilter;
-      final providerMatches = providerFilter == 'All' || session.provider == providerFilter;
+      final statusMatches = _matchesStatus(session.status, statusFilter);
+      final providerMatches =
+          providerFilter == 'All' || session.provider == providerFilter;
       return statusMatches && providerMatches;
     }).toList();
     filtered.sort((a, b) {
@@ -38,6 +36,21 @@ class SessionController extends ChangeNotifier {
   }
 
   int get totalCount => _sessions.length;
+
+  int countForStatus(String filter) => _sessions
+      .where((session) => _matchesStatus(session.status, filter))
+      .length;
+
+  int countForProvider(String filter) => filter == 'All'
+      ? _sessions.length
+      : _sessions.where((session) => session.provider == filter).length;
+
+  bool _matchesStatus(String status, String filter) {
+    if (filter == 'All') return true;
+    if (filter == 'Working') return status == 'Working' || status == 'Starting';
+    if (filter == 'Waiting') return status == 'WaitingUser';
+    return status == filter;
+  }
 
   Future<void> start() async {
     await refresh();
@@ -51,7 +64,8 @@ class SessionController extends ChangeNotifier {
     isRefreshing = true;
     notifyListeners();
     try {
-      final results = await Future.wait([_api.status(device), _api.sessions(device)]);
+      final results =
+          await Future.wait([_api.status(device), _api.sessions(device)]);
       status = results[0] as MonitoringStatus;
       _sessions = results[1] as List<AgentSession>;
       lastUpdated = DateTime.now();
