@@ -153,9 +153,9 @@ final class LinkServer {
                 return Self.json(LinkErrorResponse(error: "unauthorized"), status: .unauthorized)
             }
             let snapshot = await self.snapshot()
-            let status = request.query[String.self, "status"]
-            let provider = request.query[String.self, "provider"]
-            let limit = min(max(request.query[Int.self, "limit"] ?? 50, 1), 100)
+            let status = request.query[String.self, at: "status"]
+            let provider = request.query[String.self, at: "provider"]
+            let limit = min(max(request.query[Int.self, at: "limit"] ?? 50, 1), 100)
             let sessions = snapshot.sessions.filter { session in
                 (status == nil || session.status.caseInsensitiveCompare(status!) == .orderedSame)
                     && (provider == nil || session.provider.caseInsensitiveCompare(provider!) == .orderedSame)

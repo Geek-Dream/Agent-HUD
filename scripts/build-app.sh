@@ -7,7 +7,11 @@ APP_DIR="$ROOT_DIR/build/AgentHUD.app"
 CONTENTS_DIR="$APP_DIR/Contents"
 
 cd "$ROOT_DIR"
-swift build -c release
+build_args=(-c release)
+if ! printf '#include <memory>\n' | xcrun clang++ -x c++ -fsyntax-only - >/dev/null 2>&1; then
+    build_args+=(-Xcxx "-I$(xcrun --show-sdk-path)/usr/include/c++/v1")
+fi
+swift build "${build_args[@]}"
 
 rm -rf "$APP_DIR"
 mkdir -p "$CONTENTS_DIR/MacOS" "$CONTENTS_DIR/Resources"
