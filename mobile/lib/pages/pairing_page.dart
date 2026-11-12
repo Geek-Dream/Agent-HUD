@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:provider/provider.dart';
@@ -21,20 +23,107 @@ class _PairingPageState extends State<PairingPage> {
   final TextEditingController _code = TextEditingController();
   bool _handling = false;
   String? _error;
+  String? _scanNotice;
+  String? _lastRejectedRaw;
+  DateTime? _lastRejectedAt;
+  int _scannerAttempt = 0;
+  bool _slowStart = false;
+  Timer? _startupTimer;
+  Timer? _noticeTimer;
+
+  @override
+  void initState() {
+    super.initState();
+    _armStartupTimer();
+  }
 
   @override
   void dispose() {
+    _startupTimer?.cancel();
+    _noticeTimer?.cancel();
     _address.dispose();
     _port.dispose();
     _code.dispose();
     super.dispose();
   }
 
+  void _armStartupTimer() {
+    _startupTimer?.cancel();
+    _startupTimer = Timer(const Duration(seconds: 8), () {
+      if (mounted) setState(() => _slowStart = true);
+    });
+  }
+
+  void _restartScanner() {
+    _startupTimer?.cancel();
+    _noticeTimer?.cancel();
+    setState(() {
+      _scannerAttempt++;
+      _slowStart = false;
+      _scanNotice = null;
+      _lastRejectedRaw = null;
+      _lastRejectedAt = null;
+    });
+    _armStartupTimer();
+  }
+
+  void _showScanNotice(String message) {
+    _noticeTimer?.cancel();
+    setState(() => _scanNotice = message);
+    _noticeTimer = Timer(const Duration(milliseconds: 2600), () {
+      if (mounted) setState(() => _scanNotice = null);
+    });
+  }
+
+  void _onScan(BarcodeCapture capture) {
+    if (!mounted || _handling) return;
+    Barcode? barcode;
+    for (final candidate in capture.barcodes) {
+      if (candidate.format == BarcodeFormat.qrCode &&
+          candidate.rawValue != null) {
+        barcode = candidate;
+        break;
+      }
+    }
+    if (barcode == null) return;
+
+    _startupTimer?.cancel();
+    final String raw = barcode.rawValue!;
+    final DateTime now = DateTime.now();
+    final DateTime? rejectedAt = _lastRejectedAt;
+    if (raw == _lastRejectedRaw &&
+        rejectedAt != null &&
+        now.difference(rejectedAt) < const Duration(seconds: 3)) {
+      return;
+    }
+
+    PairingOffer offer;
+    try {
+      offer = PairingOffer.fromQr(raw);
+    } catch (_) {
+      _lastRejectedRaw = raw;
+      _lastRejectedAt = now;
+      _showScanNotice('这不是 AgentHUD 的配对二维码');
+      return;
+    }
+    if (offer.expiresAt.isBefore(now)) {
+      _lastRejectedRaw = raw;
+      _lastRejectedAt = now;
+      _showScanNotice('配对码已过期，请在电脑上生成新配对码');
+      return;
+    }
+
+    _finish(() => _api.completeQr(offer, LinkApi.defaultDeviceName));
+  }
+
   Future<void> _finish(Future<LinkedDevice> Function() action) async {
     if (_handling) return;
+    _noticeTimer?.cancel();
+    _startupTimer?.cancel();
     setState(() {
       _handling = true;
       _error = null;
+      _scanNotice = null;
     });
     try {
       final LinkedDevice device = await action();
@@ -76,53 +165,35 @@ class _PairingPageState extends State<PairingPage> {
             padding: const EdgeInsets.all(HudSpacing.xl),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(HudRadii.hero),
-              child: Stack(
-                fit: StackFit.expand,
-                children: [
-                  MobileScanner(
-                    onDetect: (capture) {
-                      if (_handling || capture.barcodes.isEmpty) return;
-                      final String? raw = capture.barcodes.first.rawValue;
-                      if (raw == null) return;
-                      try {
-                        final PairingOffer offer = PairingOffer.fromQr(raw);
-                        if (offer.expiresAt.isBefore(DateTime.now())) {
-                          throw const FormatException(
-                            '配对码已过期，请在 Windows 上生成新配对码',
-                          );
-                        }
-                        _finish(
-                          () =>
-                              _api.completeQr(offer, LinkApi.defaultDeviceName),
-                        );
-                      } catch (error) {
-                        setState(() {
-                          _handling = true;
-                          _error = error.toString();
-                        });
-                        Future<void>.delayed(const Duration(seconds: 2), () {
-                          if (mounted) setState(() => _handling = false);
-                        });
-                      }
-                    },
-                  ),
-                  IgnorePointer(
-                    child: DecoratedBox(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(HudRadii.hero),
-                        border: Border.all(
-                          color: HudColors.working.withValues(alpha: 0.42),
-                          width: 1.2,
+              child: MobileScanner(
+                key: ValueKey<int>(_scannerAttempt),
+                onDetect: _onScan,
+                tapToFocus: true,
+                errorBuilder: (context, error) => _CameraError(
+                  error: error,
+                  onRetry: _restartScanner,
+                ),
+                placeholderBuilder: (context) => _CameraStarting(
+                  slow: _slowStart,
+                  onRetry: _restartScanner,
+                ),
+                overlayBuilder: (context, constraints) => IgnorePointer(
+                  child: Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      DecoratedBox(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(HudRadii.hero),
+                          border: Border.all(
+                            color: HudColors.working.withValues(alpha: 0.42),
+                            width: 1.2,
+                          ),
                         ),
                       ),
-                    ),
+                      const Center(child: _ScanFrame()),
+                    ],
                   ),
-                  const IgnorePointer(
-                    child: Center(
-                      child: _ScanFrame(),
-                    ),
-                  ),
-                ],
+                ),
               ),
             ),
           ),
@@ -146,22 +217,7 @@ class _PairingPageState extends State<PairingPage> {
                 child: child,
               ),
             ),
-            child: _handling
-                ? const Padding(
-                    key: ValueKey<String>('handling'),
-                    padding: EdgeInsets.symmetric(vertical: HudSpacing.md),
-                    child: SizedBox(
-                      width: 24,
-                      height: 24,
-                      child: CircularProgressIndicator(strokeWidth: 2.4),
-                    ),
-                  )
-                : const Text(
-                    '对准 Windows 上的 AgentHUD 配对二维码',
-                    key: ValueKey<String>('hint'),
-                    textAlign: TextAlign.center,
-                    style: HudText.caption,
-                  ),
+            child: _scannerStatus(),
           ),
         ),
         if (_error != null)
@@ -175,6 +231,34 @@ class _PairingPageState extends State<PairingPage> {
             child: _InlineError(message: _error!),
           ),
       ],
+    );
+  }
+
+  Widget _scannerStatus() {
+    if (_handling) {
+      return const Padding(
+        key: ValueKey<String>('handling'),
+        padding: EdgeInsets.symmetric(vertical: HudSpacing.md),
+        child: SizedBox(
+          width: 24,
+          height: 24,
+          child: CircularProgressIndicator(strokeWidth: 2.4),
+        ),
+      );
+    }
+    if (_scanNotice != null) {
+      return Text(
+        _scanNotice!,
+        key: const ValueKey<String>('notice'),
+        textAlign: TextAlign.center,
+        style: HudText.caption.copyWith(color: HudColors.waiting),
+      );
+    }
+    return const Text(
+      '对准电脑上的 AgentHUD 配对二维码',
+      key: ValueKey<String>('hint'),
+      textAlign: TextAlign.center,
+      style: HudText.caption,
     );
   }
 
@@ -254,6 +338,117 @@ class _PairingPageState extends State<PairingPage> {
         port: port,
         code: _code.text.trim(),
         deviceName: LinkApi.defaultDeviceName,
+      ),
+    );
+  }
+}
+
+class _CameraError extends StatelessWidget {
+  const _CameraError({required this.error, required this.onRetry});
+
+  final MobileScannerException error;
+  final VoidCallback onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    final bool permissionDenied =
+        error.errorCode == MobileScannerErrorCode.permissionDenied;
+    final bool unsupported =
+        error.errorCode == MobileScannerErrorCode.unsupported;
+    final String title = permissionDenied
+        ? '需要相机权限'
+        : unsupported
+            ? '无法使用扫码'
+            : '相机启动失败';
+    final String message = permissionDenied
+        ? '请在系统设置中允许 AgentHUD 使用相机，然后返回重试。'
+        : unsupported
+            ? '当前设备不支持相机扫码，请改用“验证码”关联。'
+            : '请关闭其他正在使用相机的应用，然后重试。';
+    final String? detail = error.errorDetails?.message;
+
+    return ColoredBox(
+      color: HudColors.background,
+      child: Center(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(HudSpacing.xxl),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                permissionDenied
+                    ? Icons.no_photography_outlined
+                    : Icons.videocam_off_outlined,
+                size: 30,
+                color: HudColors.textTertiary,
+              ),
+              const SizedBox(height: HudSpacing.lg),
+              Text(title, style: HudText.title),
+              const SizedBox(height: HudSpacing.sm),
+              Text(
+                message,
+                textAlign: TextAlign.center,
+                style: HudText.bodySecondary,
+              ),
+              if (detail != null && detail.isNotEmpty) ...[
+                const SizedBox(height: HudSpacing.sm),
+                Text(
+                  detail,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.center,
+                  style: HudText.caption,
+                ),
+              ],
+              const SizedBox(height: HudSpacing.lg),
+              FilledButton.icon(
+                onPressed: onRetry,
+                icon: const Icon(Icons.refresh_rounded, size: 18),
+                label: const Text('重试'),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _CameraStarting extends StatelessWidget {
+  const _CameraStarting({required this.slow, required this.onRetry});
+
+  final bool slow;
+  final VoidCallback onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    return ColoredBox(
+      color: HudColors.background,
+      child: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (slow) ...[
+              const Icon(
+                Icons.hourglass_empty_rounded,
+                size: 28,
+                color: HudColors.textTertiary,
+              ),
+              const SizedBox(height: HudSpacing.lg),
+              const Text('相机启动较慢', style: HudText.caption),
+              const SizedBox(height: HudSpacing.sm),
+              TextButton(onPressed: onRetry, child: const Text('重新启动')),
+            ] else ...[
+              const SizedBox(
+                width: 26,
+                height: 26,
+                child: CircularProgressIndicator(strokeWidth: 2.4),
+              ),
+              const SizedBox(height: HudSpacing.lg),
+              const Text('正在启动相机…', style: HudText.caption),
+            ],
+          ],
+        ),
       ),
     );
   }
