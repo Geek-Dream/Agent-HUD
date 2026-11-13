@@ -3,8 +3,8 @@ import SwiftUI
 
 enum HUDTheme {
     static let windowTint = adaptiveColor(
-        light: NSColor(calibratedRed: 0.955, green: 0.966, blue: 0.982, alpha: 0.62),
-        dark: NSColor(calibratedRed: 0.045, green: 0.060, blue: 0.085, alpha: 0.70)
+        light: NSColor(calibratedRed: 0.955, green: 0.966, blue: 0.982, alpha: 1),
+        dark: NSColor(calibratedRed: 0.045, green: 0.060, blue: 0.085, alpha: 1)
     )
     static let surface = adaptiveColor(
         light: NSColor(calibratedWhite: 1.0, alpha: 0.82),
@@ -82,6 +82,23 @@ enum HUDTheme {
         light: NSColor(calibratedRed: 0.66, green: 0.37, blue: 0.0, alpha: 1),
         dark: NSColor(calibratedRed: 1.0, green: 0.76, blue: 0.20, alpha: 1)
     )
+
+    // MARK: - Shadows
+
+    enum Shadow {
+        static let rowBase = (
+            color: Color.black.opacity(0.10),
+            radius: CGFloat(8),
+            y: CGFloat(3)
+        )
+        static func status(color: Color, hovered: Bool) -> (color: Color, radius: CGFloat, y: CGFloat) {
+            (
+                color: color.opacity(hovered ? 0.28 : 0.20),
+                radius: CGFloat(hovered ? 9 : 7),
+                y: CGFloat(hovered ? 3 : 2)
+            )
+        }
+    }
 
     private static func adaptiveColor(light: NSColor, dark: NSColor) -> Color {
         Color(

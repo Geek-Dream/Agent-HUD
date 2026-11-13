@@ -9,6 +9,10 @@ public interface IMonitoringSnapshotSource
     bool SetSessionImportant(string sessionId, bool important) => false;
 
     SessionImagePayload? GetPromptImage(string sessionId, int index) => null;
+
+    string SendMessage(string sessionId, string clientMessageId, string text) => string.Empty;
+
+    (DeliveryStatus Status, DeliveryError? Error)? GetDeliveryStatus(string deliveryId) => null;
 }
 
 public sealed record SessionImagePayload(byte[] Data, string ContentType);
@@ -35,6 +39,11 @@ public sealed record MonitoringSnapshot(
     bool PrivacyMode,
     IReadOnlyList<MonitoringSessionSnapshot> Sessions);
 
+public sealed record ConversationCapability(
+    bool Enabled,
+    string State,
+    string? Reason);
+
 public sealed record MonitoringSessionSnapshot(
     string Id,
     string Provider,
@@ -57,4 +66,41 @@ public sealed record MonitoringSessionSnapshot(
     string TitleSource = "Automatic",
     bool HasCustomTitle = false,
     MonitoringPromptSnapshot? LatestPrompt = null,
-    IReadOnlyList<MonitoringTaskRun> Runs = null!);
+    IReadOnlyList<MonitoringTaskRun> Runs = null!,
+    ConversationCapability? Conversation = null);
+
+public sealed record MessageRequest(string? ClientMessageId, string? Text);
+
+public sealed record MessageResponse(string DeliveryId, string ClientMessageId, string Status);
+
+public sealed record DeliveryResponse(string DeliveryId, string ClientMessageId, string Status, string? Error);
+
+public enum DeliveryStatus
+{
+    Accepted,
+    Delivered,
+    Observed,
+    Failed
+}
+
+public enum DeliveryError
+{
+    SessionOffline,
+    ProviderUnsupported,
+    InputUnavailable,
+    AgentBusy,
+    InvalidMessage,
+    DeliveryFailed
+}
+
+public enum InputState
+{
+    Ready,
+    Busy,
+    WaitingUser,
+    Offline,
+    Unsupported,
+    Unavailable
+}
+
+public sealed record InputCapability(bool Enabled, InputState State, string? Reason);

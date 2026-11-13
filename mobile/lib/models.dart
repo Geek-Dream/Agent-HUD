@@ -1,9 +1,16 @@
 import 'dart:convert';
 
-List<String> _addresses(Map<String, dynamic> value) => [
-      ...(value['addresses'] as List?) ?? const [],
-      ...(value['ipv6Addresses'] as List?) ?? const [],
-    ].whereType<String>().where((item) => item.isNotEmpty).toList();
+List<String> _addresses(
+  Map<String, dynamic> value, {
+  bool preferIpv6 = false,
+}) {
+  final ipv4 = (value['addresses'] as List?) ?? const [];
+  final ipv6 = (value['ipv6Addresses'] as List?) ?? const [];
+  final selected = preferIpv6
+      ? [...ipv6]
+      : [...ipv4, ...ipv6];
+  return selected.whereType<String>().where((item) => item.isNotEmpty).toList();
+}
 
 String normalizeLinkAddress(String value) {
   final trimmed = value.trim();
@@ -39,7 +46,10 @@ class PairingOffer {
   final String secret;
   final DateTime expiresAt;
 
-  factory PairingOffer.fromQr(String source) {
+  factory PairingOffer.fromQr(
+    String source, {
+    bool preferIpv6 = false,
+  }) {
     final value = jsonDecode(source);
     if (value is! Map<String, dynamic>) {
       throw const FormatException('二维码内容不是有效的 AgentHUD 配对信息');
@@ -47,9 +57,13 @@ class PairingOffer {
     if (value['v'] != 1) {
       throw const FormatException('不支持的配对协议版本');
     }
-    final addresses = _addresses(value);
+    final addresses = _addresses(value, preferIpv6: preferIpv6);
     if (addresses.isEmpty) {
-      throw const FormatException('配对信息中没有可用的局域网地址');
+      throw FormatException(
+        preferIpv6
+            ? '配对信息中没有可用的 IPv6 地址'
+            : '配对信息中没有可用的局域网地址',
+      );
     }
     return PairingOffer(
       instanceId: value['instanceId'] as String,
@@ -88,13 +102,17 @@ class LinkedDevice {
   Uri baseUri(String address) =>
       Uri(scheme: 'https', host: normalizeLinkAddress(address), port: port);
 
-  factory LinkedDevice.fromPairing(Map<String, dynamic> value) => LinkedDevice(
+  factory LinkedDevice.fromPairing(
+    Map<String, dynamic> value, {
+    bool preferIpv6 = false,
+  }) =>
+      LinkedDevice(
         deviceId: value['deviceId'] as String,
         token: value['token'] as String,
         instanceId: value['instanceId'] as String,
         instanceName: value['instanceName'] as String? ?? 'AgentHUD',
         fingerprint: value['fingerprint'] as String,
-        addresses: _addresses(value),
+        addresses: _addresses(value, preferIpv6: preferIpv6),
         port: value['port'] as int,
       );
 
@@ -139,6 +157,7 @@ class MonitoringStatus {
   bool get supportsActions => capabilities.contains('write');
   bool get supportsPrompt => capabilities.contains('prompt');
   bool get supportsImages => capabilities.contains('images');
+  bool get supportsConversation => capabilities.contains('conversation');
 
   MonitoringStatus copyWith({
     bool? supportsRefresh,
@@ -262,6 +281,7 @@ class AgentSession {
     this.isImportant = false,
     this.latestPrompt,
     this.runs = const [],
+    this.conversation,
   });
 
   final String id;
@@ -286,9 +306,16 @@ class AgentSession {
   final bool isImportant;
   final PromptSnapshot? latestPrompt;
   final List<TaskRun> runs;
+  final ConversationState? conversation;
 
   bool get isActive =>
       status == 'Starting' || status == 'Working' || status == 'WaitingUser';
+
+  bool get canSendMessage {
+    if (conversation == null) return false;
+    return conversation!.enabled &&
+        (conversation!.state == 'ready' || conversation!.state == 'waitingUser');
+  }
 
   AgentSession copyWith({
     String? title,
@@ -297,6 +324,7 @@ class AgentSession {
     bool? isImportant,
     PromptSnapshot? latestPrompt,
     List<TaskRun>? runs,
+    ConversationState? conversation,
   }) =>
       AgentSession(
         id: id,
@@ -321,6 +349,7 @@ class AgentSession {
         isImportant: isImportant ?? this.isImportant,
         latestPrompt: latestPrompt ?? this.latestPrompt,
         runs: runs ?? this.runs,
+        conversation: conversation ?? this.conversation,
       );
 
   factory AgentSession.fromJson(Map<String, dynamic> value) => AgentSession(
@@ -358,7 +387,56 @@ class AgentSession {
                 .map(TaskRun.fromJson)
                 .toList() ??
             const <TaskRun>[],
+        conversation: value['conversation'] is Map<String, dynamic>
+            ? ConversationState.fromJson(
+                value['conversation'] as Map<String, dynamic>,
+              )
+            : null,
       );
+}
+
+class ConversationState {
+  const ConversationState({
+    required this.enabled,
+    required this.state,
+    this.reason,
+  });
+
+  final bool enabled;
+  final String state;
+  final String? reason;
+
+  factory ConversationState.fromJson(Map<String, dynamic> value) =>
+      ConversationState(
+        enabled: value['enabled'] as bool? ?? false,
+        state: value['state'] as String? ?? 'unsupported',
+        reason: value['reason'] as String?,
+      );
+}
+
+class MessageDelivery {
+  const MessageDelivery({
+    required this.deliveryId,
+    required this.clientMessageId,
+    required this.status,
+    this.error,
+  });
+
+  final String deliveryId;
+  final String clientMessageId;
+  final String status;
+  final String? error;
+
+  factory MessageDelivery.fromJson(Map<String, dynamic> value) =>
+      MessageDelivery(
+        deliveryId: value['deliveryId'] as String? ?? '',
+        clientMessageId: value['clientMessageId'] as String? ?? '',
+        status: value['status'] as String? ?? 'failed',
+        error: value['error'] as String?,
+      );
+
+  bool get isFinal =>
+      status == 'observed' || status == 'failed' || status == 'delivered';
 }
 
 String relativeTime(DateTime value) {

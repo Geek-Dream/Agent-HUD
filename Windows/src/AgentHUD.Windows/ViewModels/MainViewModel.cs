@@ -30,6 +30,7 @@ public sealed class MainViewModel : INotifyPropertyChanged, IMonitoringSnapshotS
     private readonly SessionScanner _scanner = new();
     private readonly AITitleService _aiTitleService = new();
     private readonly SessionTitleResolver _titleResolver = new();
+    private readonly AgentInputDispatcher _inputDispatcher;
     private readonly Dictionary<string, string> _aiTitles = new(StringComparer.Ordinal);
     private readonly Dictionary<string, string> _aiKeys = new(StringComparer.Ordinal);
     private readonly SemaphoreSlim _refreshGate = new(1, 1);
@@ -50,6 +51,7 @@ public sealed class MainViewModel : INotifyPropertyChanged, IMonitoringSnapshotS
     {
         _store = App.StateStore;
         _credentials = App.Credentials;
+        _inputDispatcher = new AgentInputDispatcher();
         var state = _store.State;
         _isExpanded = state.IsExpanded;
         _privacyMode = state.PrivacyMode;
@@ -581,9 +583,21 @@ public sealed class MainViewModel : INotifyPropertyChanged, IMonitoringSnapshotS
                 resolved.Source.ToString(),
                 _store.State.ManualTitles.ContainsKey(session.Id),
                 privacy ? null : BuildPromptSnapshot(session),
-                runs);
+                runs,
+                privacy
+                    ? new ConversationCapability(false, InputState.Offline.ToString(), "隐私模式已开启")
+                    : BuildConversationCapability(session));
         }).ToArray();
         return new MonitoringSnapshot(_monitoringRevision, LastScannedAt, privacy, sessions);
+    }
+
+    private ConversationCapability BuildConversationCapability(AgentSession session)
+    {
+        var capability = _inputDispatcher.CapabilityFor(session);
+        return new ConversationCapability(
+            capability.Enabled,
+            capability.State.ToString(),
+            capability.Reason);
     }
 
     public bool SetSessionTitle(string sessionId, string? title)
@@ -677,6 +691,21 @@ public sealed class MainViewModel : INotifyPropertyChanged, IMonitoringSnapshotS
         {
             return null;
         }
+    }
+
+    public string SendMessage(string sessionId, string clientMessageId, string text)
+    {
+        var session = _sessions.FirstOrDefault(item => item.Id == sessionId);
+        if (session is null)
+        {
+            return string.Empty;
+        }
+        return _inputDispatcher.Dispatch(clientMessageId, text, session, sessionId);
+    }
+
+    public (DeliveryStatus Status, DeliveryError? Error)? GetDeliveryStatus(string deliveryId)
+    {
+        return _inputDispatcher.Status(deliveryId);
     }
 
     private static MonitoringPromptSnapshot? BuildPromptSnapshot(AgentSession session)

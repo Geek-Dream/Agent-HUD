@@ -371,6 +371,52 @@ enum ExpandedPanelSize {
     }
 }
 
+enum HUDVisualTheme: String, CaseIterable, Identifiable {
+    case classic
+    case starlight
+
+    var id: String { rawValue }
+
+    var label: String {
+        switch self {
+        case .classic:
+            return "经典"
+        case .starlight:
+            return "星光"
+        }
+    }
+}
+
+enum HUDPanelAppearance {
+    static let defaultOpacity = 0.88
+    static let minimumOpacity = 0.55
+    static let maximumOpacity = 1.0
+
+    static let defaultContrast = 1.0
+    static let minimumContrast = 0.85
+    static let maximumContrast = 1.35
+
+    static func clampedOpacity(_ value: Double) -> Double {
+        clamp(value, minimum: minimumOpacity, maximum: maximumOpacity, fallback: defaultOpacity)
+    }
+
+    static func clampedContrast(_ value: Double) -> Double {
+        clamp(value, minimum: minimumContrast, maximum: maximumContrast, fallback: defaultContrast)
+    }
+
+    private static func clamp(
+        _ value: Double,
+        minimum: Double,
+        maximum: Double,
+        fallback: Double
+    ) -> Double {
+        guard value.isFinite else {
+            return fallback
+        }
+        return min(max(value, minimum), maximum)
+    }
+}
+
 struct ImportantCompletionNotice: Identifiable {
     let sessionID: String
     let provider: AgentProvider

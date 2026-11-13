@@ -44,6 +44,7 @@ final class AISettingsViewModel: ObservableObject {
     @Published var enabled: Bool
     @Published var endpoint: String
     @Published var model: String
+    @Published var supportsVision: Bool
     @Published var apiKeyDraft = ""
     @Published private(set) var hasStoredKey = false
     @Published private(set) var statusMessage = ""
@@ -62,6 +63,7 @@ final class AISettingsViewModel: ObservableObject {
         self.enabled = configuration.enabled
         self.endpoint = configuration.endpoint
         self.model = configuration.model
+        self.supportsVision = configuration.supportsVision
         self.secretStore = secretStore
         self.onConfigurationChanged = onConfigurationChanged
         refreshSecretState()
@@ -103,7 +105,8 @@ final class AISettingsViewModel: ObservableObject {
             var configuration = formConfiguration() ?? AIConfiguration(
                 enabled: false,
                 endpoint: endpoint,
-                model: model
+                model: model,
+                supportsVision: supportsVision
             )
             configuration.enabled = false
             configuration.save()
@@ -153,7 +156,8 @@ final class AISettingsViewModel: ObservableObject {
         let configuration = AIConfiguration(
             enabled: enabled,
             endpoint: endpoint.trimmingCharacters(in: .whitespacesAndNewlines),
-            model: model.trimmingCharacters(in: .whitespacesAndNewlines)
+            model: model.trimmingCharacters(in: .whitespacesAndNewlines),
+            supportsVision: supportsVision
         )
         return configuration.chatCompletionsURL == nil ? nil : configuration
     }
@@ -203,8 +207,21 @@ private struct AISettingsView: View {
             }
 
             settingsField("模型") {
-                TextField("模型名称", text: $model.model)
-                    .textFieldStyle(.roundedBorder)
+                VStack(alignment: .leading, spacing: 8) {
+                    TextField("模型名称", text: $model.model)
+                        .textFieldStyle(.roundedBorder)
+
+                    Toggle(isOn: $model.supportsVision) {
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("模型支持识图")
+                                .font(.system(size: 11.5))
+                            Text("开启后会随标题请求发送图片附件；关闭时仅用文本描述补充。")
+                                .font(.system(size: 10.5))
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                    .toggleStyle(.checkbox)
+                }
             }
 
             settingsField("API Key") {
@@ -285,15 +302,52 @@ private struct AISettingsView: View {
     private var displaySettings: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
-                Text("面板尺寸")
+                Text("外观与尺寸")
                     .font(.system(size: 12, weight: .semibold))
                 Spacer()
                 Button("恢复默认") {
-                    displayModel.expandedWidth = ExpandedPanelSize.defaultWidth
-                    displayModel.expandedHeight = ExpandedPanelSize.defaultHeight
+                    displayModel.resetAppearanceToDefaults()
                 }
                 .font(.system(size: 11))
             }
+
+            VStack(alignment: .leading, spacing: 6) {
+                Text("主题")
+                    .font(.system(size: 11, weight: .semibold))
+                    .foregroundStyle(.secondary)
+                Picker("主题", selection: $displayModel.visualTheme) {
+                    ForEach(HUDVisualTheme.allCases) { theme in
+                        Text(theme.label).tag(theme)
+                    }
+                }
+                .pickerStyle(.segmented)
+                .labelsHidden()
+            }
+
+            appearanceSlider(
+                title: "不透明度",
+                value: Binding(
+                    get: { displayModel.panelOpacity },
+                    set: { displayModel.panelOpacity = $0 }
+                ),
+                range: HUDPanelAppearance.minimumOpacity...HUDPanelAppearance.maximumOpacity,
+                step: 0.01,
+                formattedValue: "\(Int((displayModel.panelOpacity * 100).rounded()))%"
+            )
+
+            appearanceSlider(
+                title: "对比度",
+                value: Binding(
+                    get: { displayModel.panelContrast },
+                    set: { displayModel.panelContrast = $0 }
+                ),
+                range: HUDPanelAppearance.minimumContrast...HUDPanelAppearance.maximumContrast,
+                step: 0.01,
+                formattedValue: String(format: "%.2fx", displayModel.panelContrast)
+            )
+
+            Divider()
+                .opacity(0.6)
 
             dimensionSlider(
                 title: "展开宽度",
@@ -312,9 +366,27 @@ private struct AISettingsView: View {
                 range: ExpandedPanelSize.minimumHeight...ExpandedPanelSize.maximumHeight
             )
 
-            Text("宽度上限 720，高度上限 1000；收起尺寸保持不变。")
+            Text("不透明度仅影响面板背景；星光主题会显示星空背景。宽度上限 720，高度上限 1000；收起尺寸保持不变。")
                 .font(.system(size: 10.5))
                 .foregroundStyle(.secondary)
+        }
+    }
+
+    private func appearanceSlider(
+        title: String,
+        value: Binding<Double>,
+        range: ClosedRange<Double>,
+        step: Double,
+        formattedValue: String
+    ) -> some View {
+        HStack(spacing: 12) {
+            Text(title)
+                .font(.system(size: 11))
+                .frame(width: 58, alignment: .leading)
+            Slider(value: value, in: range, step: step)
+            Text(formattedValue)
+                .font(.system(size: 11, design: .monospaced))
+                .frame(width: 52, alignment: .trailing)
         }
     }
 

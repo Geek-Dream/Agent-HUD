@@ -486,6 +486,44 @@ func testSessionOutlinePolicy() throws {
     }
 }
 
+func testHUDPanelAppearancePolicy() throws {
+    try expect(HUDVisualTheme.classic.rawValue == "classic", "Classic theme raw value mismatch")
+    try expect(HUDVisualTheme.starlight.rawValue == "starlight", "Starlight theme raw value mismatch")
+    try expect(HUDVisualTheme(rawValue: "starlight") == .starlight, "Starlight theme should decode from raw value")
+    try expect(HUDVisualTheme(rawValue: "missing") == nil, "Unknown theme raw value should fail")
+
+    try expect(HUDPanelAppearance.defaultOpacity == 0.88, "Default panel opacity should be 0.88")
+    try expect(HUDPanelAppearance.defaultContrast == 1.0, "Default panel contrast should be 1.0")
+
+    try expect(HUDPanelAppearance.clampedOpacity(0.7) == 0.7, "Valid panel opacity should be preserved")
+    try expect(
+        HUDPanelAppearance.clampedOpacity(0.1) == HUDPanelAppearance.minimumOpacity,
+        "Panel opacity should clamp to the minimum"
+    )
+    try expect(
+        HUDPanelAppearance.clampedOpacity(2.0) == HUDPanelAppearance.maximumOpacity,
+        "Panel opacity should clamp to the maximum"
+    )
+    try expect(
+        HUDPanelAppearance.clampedOpacity(.nan) == HUDPanelAppearance.defaultOpacity,
+        "Invalid panel opacity should fall back to the default"
+    )
+
+    try expect(HUDPanelAppearance.clampedContrast(1.1) == 1.1, "Valid panel contrast should be preserved")
+    try expect(
+        HUDPanelAppearance.clampedContrast(0.1) == HUDPanelAppearance.minimumContrast,
+        "Panel contrast should clamp to the minimum"
+    )
+    try expect(
+        HUDPanelAppearance.clampedContrast(3.0) == HUDPanelAppearance.maximumContrast,
+        "Panel contrast should clamp to the maximum"
+    )
+    try expect(
+        HUDPanelAppearance.clampedContrast(.infinity) == HUDPanelAppearance.defaultContrast,
+        "Invalid panel contrast should fall back to the default"
+    )
+}
+
 func testExpandedPanelSizePolicy() throws {
     try expect(ExpandedPanelSize.clampedWidth(500) == 500, "Valid custom width should be preserved")
     try expect(ExpandedPanelSize.clampedHeight(700) == 700, "Valid custom height should be preserved")
@@ -952,6 +990,90 @@ func testOrcaCurrentTabs() throws {
         "The transcript's latest user input must outrank an older Orca status prompt"
     )
 
+    let waitingTranscriptURL = FileManager.default.temporaryDirectory
+        .appendingPathComponent("AgentHUD-orca-waiting-\(UUID().uuidString).jsonl")
+    defer {
+        try? FileManager.default.removeItem(at: waitingTranscriptURL)
+    }
+    let waitingTranscript = [
+        """
+        {"timestamp":"2026-11-11T09:59:00.000Z","type":"user","sessionId":"waiting-current","cwd":"/tmp/waiting-sample","message":{"role":"user","content":[{"type":"text","text":"批准，按这个方案执行"}]}}
+        """,
+        """
+        {"timestamp":"2026-11-11T09:59:10.000Z","type":"assistant","sessionId":"waiting-current","cwd":"/tmp/waiting-sample","message":{"role":"assistant","content":[{"type":"text","text":"请选择处理方案。"},{"type":"tool_use","id":"question-1","name":"AskUserQuestion","input":{"questions":[]}}]}}
+        """
+    ].joined(separator: "\n") + "\n"
+    try Data(waitingTranscript.utf8).write(to: waitingTranscriptURL)
+
+    let waitingWorkspace = json("""
+    {
+      "tabsByWorktree": {
+        "repo::/tmp/waiting-sample": [
+          {
+            "id":"waiting-tab",
+            "createdAt":1794360000000,
+            "aiVaultTitle":{"agent":"claude","sessionId":"waiting-current","title":"等待选择"}
+          }
+        ]
+      }
+    }
+    """)
+    let waitingStatus = json("""
+    {
+      "tabId":"waiting-tab",
+      "providerSession":{
+        "id":"waiting-current",
+        "cwd":"/tmp/waiting-sample",
+        "transcriptPath":"\(waitingTranscriptURL.path)"
+      },
+      "payload":{
+        "state":"working",
+        "prompt":"批准，按这个方案执行",
+        "mainAgent":{"state":"working","stateStartedAt":1794362350000}
+      },
+      "receivedAt":1794362350000
+    }
+    """)
+    let waitingSession = OrcaSessionSource.makeSessions(
+        workspacePayload: waitingWorkspace,
+        statusEntries: [waitingStatus],
+        now: now
+    )?.first
+    try expect(
+        waitingSession?.status == .waitingUser,
+        "A pending Claude question must override Orca's stale working status"
+    )
+    try expect(
+        waitingSession?.currentAction == "Agent 正在等待确认或补充信息",
+        "Waiting sessions should explain why they need the user"
+    )
+
+    let stoppedWhileWaitingStatus = json("""
+    {
+      "tabId":"waiting-tab",
+      "providerSession":{
+        "id":"waiting-current",
+        "cwd":"/tmp/waiting-sample",
+        "transcriptPath":"\(waitingTranscriptURL.path)"
+      },
+      "payload":{
+        "state":"done",
+        "prompt":"批准，按这个方案执行",
+        "mainAgent":{"state":"done","stateStartedAt":1794362350000}
+      },
+      "receivedAt":1794362350000
+    }
+    """)
+    let stoppedWhileWaiting = OrcaSessionSource.makeSessions(
+        workspacePayload: waitingWorkspace,
+        statusEntries: [stoppedWhileWaitingStatus],
+        now: now
+    )?.first
+    try expect(
+        stoppedWhileWaiting?.status == .waitingUser,
+        "A pending Claude question must override a Stop hook reported as done"
+    )
+
     let unavailable = OrcaSessionSource.makeSessions(
         workspacePayload: [:],
         statusEntries: [],
@@ -1114,7 +1236,7 @@ func testAIRequestConstruction() throws {
     let bodyData = request.httpBody ?? Data()
     let body = try JSONSerialization.jsonObject(with: bodyData) as? [String: Any] ?? [:]
     try expect(body["model"] as? String == "test-model", "AI request should include the model")
-    try expect(body["max_tokens"] as? Int == 512, "AI request should leave room for reasoning models")
+    try expect(body["max_tokens"] as? Int == 2048, "AI request should leave room for reasoning models")
     try expect(
         body["temperature"] == nil,
         "AI request should not force a model-specific temperature"
@@ -1133,6 +1255,212 @@ func testAIRequestConstruction() throws {
                 && (item["image_url"] as? [String: Any])?["url"] as? String == imageURL
         },
         "AI request should include multimodal image content"
+    )
+}
+
+func testAITitleTwoTurnContext() throws {
+    let configuration = AIConfiguration(
+        enabled: true,
+        endpoint: "https://example.com/v1",
+        model: "test-model"
+    )
+    let prepared = try AITitleRequestFactory.prepare(
+        AITitleRequest(
+            sessionID: "two-turn-test",
+            prompt: "确认",
+            projectName: "demo",
+            images: [],
+            previousPrompt: "合并java代码并且检查前端是否正常"
+        )
+    )
+    let request = try AITitleRequestFactory.makeURLRequest(
+        prepared: prepared,
+        configuration: configuration,
+        apiKey: "test-key"
+    )
+    let body = try JSONSerialization.jsonObject(
+        with: request.httpBody ?? Data()
+    ) as? [String: Any] ?? [:]
+    let messages = body["messages"] as? [[String: Any]] ?? []
+    let systemText = messages.first { $0["role"] as? String == "system" }?["content"] as? String ?? ""
+    let userContent = messages.first { $0["role"] as? String == "user" }?["content"]
+        as? [[String: Any]] ?? []
+    let userText = userContent.first?["text"] as? String ?? ""
+
+    try expect(
+        userText.contains("上一次输入"),
+        "Two-turn requests should label the previous input"
+    )
+    try expect(
+        userText.contains("合并java代码并且检查前端是否正常"),
+        "Two-turn requests should carry the previous substantive prompt"
+    )
+    try expect(
+        userText.contains("确认"),
+        "Two-turn requests should still carry the current prompt"
+    )
+    try expect(
+        systemText.contains("上一次输入"),
+        "Continuation prompts should instruct the model to use the previous input as the goal"
+    )
+    try expect(
+        systemText.contains("禁止描述对话过程"),
+        "System prompt should forbid meta descriptions of the conversation"
+    )
+
+    let nonContinuation = try AITitleRequestFactory.prepare(
+        AITitleRequest(
+            sessionID: "non-continuation-test",
+            prompt: "检查订单列表分页",
+            projectName: "demo",
+            images: [],
+            previousPrompt: "合并java代码并且检查前端是否正常"
+        )
+    )
+    let nonContinuationRequest = try AITitleRequestFactory.makeURLRequest(
+        prepared: nonContinuation,
+        configuration: configuration,
+        apiKey: "test-key"
+    )
+    let nonContinuationBody = try JSONSerialization.jsonObject(
+        with: nonContinuationRequest.httpBody ?? Data()
+    ) as? [String: Any] ?? [:]
+    let nonContinuationMessages = nonContinuationBody["messages"] as? [[String: Any]] ?? []
+    let nonContinuationSystem = nonContinuationMessages
+        .first { $0["role"] as? String == "system" }?["content"] as? String ?? ""
+    try expect(
+        nonContinuationSystem.contains("不要概括上一次的任务"),
+        "Non-continuation prompts should be told to title the current task, not the previous one"
+    )
+
+    let plain = try AITitleRequestFactory.prepare(
+        AITitleRequest(
+            sessionID: "single-turn-test",
+            prompt: "查询日志报错详情",
+            projectName: "demo",
+            images: []
+        )
+    )
+    try expect(
+        plain.request.previousPrompt.isEmpty,
+        "Single-turn requests should not invent a previous prompt"
+    )
+}
+
+func testAITitleEligibility() throws {
+    try expect(
+        AITitleEligibility.previousPrompt(
+            currentPrompt: "查询日志报错详情",
+            hasImages: false,
+            latestObjective: nil
+        ) == "",
+        "A first-turn question should have no previous prompt"
+    )
+    try expect(
+        AITitleEligibility.previousPrompt(
+            currentPrompt: "继续",
+            hasImages: false,
+            latestObjective: nil
+        ) == nil,
+        "A first-turn continuation should skip the AI title request"
+    )
+    try expect(
+        AITitleEligibility.previousPrompt(
+            currentPrompt: "确认",
+            hasImages: false,
+            latestObjective: "合并java代码并且检查前端是否正常"
+        ) == "合并java代码并且检查前端是否正常",
+        "A continuation should reuse the previous substantive objective"
+    )
+    try expect(
+        AITitleEligibility.previousPrompt(
+            currentPrompt: "检查订单列表分页",
+            hasImages: false,
+            latestObjective: "合并java代码并且检查前端是否正常"
+        ) == "合并java代码并且检查前端是否正常",
+        "A new task still keeps the previous objective as background"
+    )
+    try expect(
+        AITitleEligibility.previousPrompt(
+            currentPrompt: "继续",
+            hasImages: false,
+            latestObjective: "继续"
+        ) == nil,
+        "A continuation objective should not count as a usable previous prompt"
+    )
+    try expect(
+        AITitleEligibility.previousPrompt(
+            currentPrompt: "继续",
+            hasImages: true,
+            latestObjective: nil
+        ) == "",
+        "A continuation with images should still request a title"
+    )
+}
+
+func testAITitleRejectsConversationMeta() throws {
+    try expect(
+        AITitleOutputSanitizer.sanitize(
+            "用户确认了该任务",
+            originalPrompt: "确认",
+            previousPrompt: "合并java代码并且检查前端是否正常",
+            projectName: "demo"
+        ) == nil,
+        "Titles describing the conversation itself should be rejected"
+    )
+    try expect(
+        AITitleOutputSanitizer.sanitize(
+            "用户同意合并代码",
+            originalPrompt: "确认",
+            previousPrompt: "合并java代码并且检查前端是否正常",
+            projectName: "demo"
+        ) == nil,
+        "Titles narrating user agreement should be rejected"
+    )
+    try expect(
+        AITitleOutputSanitizer.sanitize(
+            "用户登录鉴权改造",
+            originalPrompt: "改造一下登录鉴权",
+            previousPrompt: "",
+            projectName: "demo"
+        ) == "用户登录鉴权改造",
+        "Legitimate titles starting with 用户 should still pass"
+    )
+    try expect(
+        AITitleOutputSanitizer.sanitize(
+            "用户要求新增导出功能",
+            originalPrompt: "加一个导出",
+            previousPrompt: "",
+            projectName: "demo"
+        ) == nil,
+        "Titles narrating what the user asked should be rejected"
+    )
+    try expect(
+        AITitleOutputSanitizer.sanitize(
+            "用户管理模块重构",
+            originalPrompt: "重构用户管理模块",
+            previousPrompt: "",
+            projectName: "demo"
+        ) == "用户管理模块重构",
+        "Titles naming a 用户管理 domain should still pass"
+    )
+    try expect(
+        AITitleOutputSanitizer.sanitize(
+            "检查Java代码和前后端",
+            originalPrompt: "确认",
+            previousPrompt: "合并java代码并且检查前端是否正常",
+            projectName: "demo"
+        ) == "检查Java代码和前后端",
+        "Task-focused titles should still pass"
+    )
+    try expect(
+        AITitleOutputSanitizer.sanitize(
+            "合并java代码并且检查前端是否正常",
+            originalPrompt: "确认",
+            previousPrompt: "合并java代码并且检查前端是否正常",
+            projectName: "demo"
+        ) == nil,
+        "Titles copying the previous prompt verbatim should be rejected"
     )
 }
 
@@ -1397,6 +1725,7 @@ do {
     try testImportantSessionOrdering()
     try testRunningFirstOrderingAndCompletionTransition()
     try testSessionOutlinePolicy()
+    try testHUDPanelAppearancePolicy()
     try testExpandedPanelSizePolicy()
     try testOpenCode()
     try testOpenCodeCurrentDatabase()
@@ -1409,13 +1738,16 @@ do {
     try testSessionTitleResolution()
     try testAITitleOutputSanitizer()
     try testAIRequestConstruction()
+    try testAITitleTwoTurnContext()
+    try testAITitleEligibility()
+    try testAITitleRejectsConversationMeta()
     try testAIImagePreparation()
     try await testAICacheAndFailureBackoff()
     try testAIConfiguration()
     try testAISecretEnvironmentFallback()
     try testLinkCertificateFingerprintAndStatusProtocol()
     try await testLinkPairing()
-    print("23 tests passed (adapter, OpenCode, AI title, session presentation and LAN protocol smoke tests)")
+    print("28 tests passed (adapter, OpenCode, AI title, session presentation, appearance and LAN protocol smoke tests)")
 } catch {
     fputs("Adapter smoke tests failed: \(error)\n", stderr)
     exit(1)

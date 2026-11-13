@@ -1,7 +1,12 @@
 import 'dart:async';
+import 'dart:io';
+import 'dart:typed_data';
+import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 
 import '../device_store.dart';
@@ -21,13 +26,17 @@ class _PairingPageState extends State<PairingPage> {
   final TextEditingController _address = TextEditingController();
   final TextEditingController _port = TextEditingController();
   final TextEditingController _code = TextEditingController();
+  final GlobalKey _scannerKey = GlobalKey();
+
   bool _handling = false;
+  bool _useIpv6 = false;
   String? _error;
   String? _scanNotice;
   String? _lastRejectedRaw;
   DateTime? _lastRejectedAt;
   int _scannerAttempt = 0;
   bool _slowStart = false;
+  String? _capturedPath;
   Timer? _startupTimer;
   Timer? _noticeTimer;
 
@@ -44,6 +53,7 @@ class _PairingPageState extends State<PairingPage> {
     _address.dispose();
     _port.dispose();
     _code.dispose();
+    _deleteCapturedFile();
     super.dispose();
   }
 
@@ -57,9 +67,12 @@ class _PairingPageState extends State<PairingPage> {
   void _restartScanner() {
     _startupTimer?.cancel();
     _noticeTimer?.cancel();
+    _deleteCapturedFile();
     setState(() {
       _scannerAttempt++;
       _slowStart = false;
+      _handling = false;
+      _error = null;
       _scanNotice = null;
       _lastRejectedRaw = null;
       _lastRejectedAt = null;
@@ -73,6 +86,43 @@ class _PairingPageState extends State<PairingPage> {
     _noticeTimer = Timer(const Duration(milliseconds: 2600), () {
       if (mounted) setState(() => _scanNotice = null);
     });
+  }
+
+  /// Capture a screenshot of the scanner preview and save to temp directory.
+  Future<void> _captureScreenshot() async {
+    try {
+      final RenderObject? renderObject =
+          _scannerKey.currentContext?.findRenderObject();
+      if (renderObject is! RenderRepaintBoundary) return;
+
+      final ui.Image image = await renderObject.toImage(pixelRatio: 2.0);
+      final ByteData? byteData =
+          await image.toByteData(format: ui.ImageByteFormat.png);
+      image.dispose();
+      if (byteData == null) return;
+
+      final Directory tempDir = await getTemporaryDirectory();
+      final String path =
+          '${tempDir.path}/agent_hud_scan_${DateTime.now().millisecondsSinceEpoch}.png';
+      final File file = File(path);
+      await file.writeAsBytes(byteData.buffer.asUint8List());
+
+      if (mounted) setState(() => _capturedPath = path);
+    } catch (_) {
+      // Screenshot is best-effort; do not block pairing on failure.
+    }
+  }
+
+  /// Delete the captured screenshot file if it exists.
+  void _deleteCapturedFile() {
+    final String? path = _capturedPath;
+    if (path == null) return;
+    _capturedPath = null;
+    try {
+      File(path).deleteSync();
+    } catch (_) {
+      // Ignore cleanup errors.
+    }
   }
 
   void _onScan(BarcodeCapture capture) {
@@ -99,7 +149,7 @@ class _PairingPageState extends State<PairingPage> {
 
     PairingOffer offer;
     try {
-      offer = PairingOffer.fromQr(raw);
+      offer = PairingOffer.fromQr(raw, preferIpv6: _useIpv6);
     } catch (_) {
       _lastRejectedRaw = raw;
       _lastRejectedAt = now;
@@ -113,7 +163,15 @@ class _PairingPageState extends State<PairingPage> {
       return;
     }
 
-    _finish(() => _api.completeQr(offer, LinkApi.defaultDeviceName));
+    // Freeze the UI by capturing a screenshot and entering handling state.
+    _captureScreenshot();
+    _finish(
+      () => _api.completeQr(
+        offer,
+        LinkApi.defaultDeviceName,
+        preferIpv6: _useIpv6,
+      ),
+    );
   }
 
   Future<void> _finish(Future<LinkedDevice> Function() action) async {
@@ -127,14 +185,22 @@ class _PairingPageState extends State<PairingPage> {
     });
     try {
       final LinkedDevice device = await action();
+      _deleteCapturedFile();
       if (!mounted) return;
       await context.read<DeviceStore>().upsert(device);
       if (mounted) Navigator.of(context).pop();
     } catch (error) {
+      _deleteCapturedFile();
       if (!mounted) return;
       setState(() => _error = error.toString());
       await Future<void>.delayed(const Duration(seconds: 2));
-      if (mounted) setState(() => _handling = false);
+      if (mounted) {
+        setState(() {
+          _handling = false;
+          _error = null;
+        });
+        _armStartupTimer();
+      }
     }
   }
 
@@ -147,10 +213,47 @@ class _PairingPageState extends State<PairingPage> {
           title: const Text('关联电脑'),
           bottom: const TabBar(tabs: [Tab(text: '扫码关联'), Tab(text: '验证码')]),
         ),
-        body: TabBarView(
+        body: Column(
           children: [
-            _buildScanner(),
-            _buildManualForm(),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(
+                HudSpacing.xxl,
+                HudSpacing.md,
+                HudSpacing.xxl,
+                0,
+              ),
+              child: Row(
+                children: [
+                  Checkbox(
+                    value: _useIpv6,
+                    onChanged: _handling
+                        ? null
+                        : (value) => setState(
+                              () => _useIpv6 = value ?? false,
+                            ),
+                  ),
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: _handling
+                          ? null
+                          : () => setState(() => _useIpv6 = !_useIpv6),
+                      child: Text(
+                        '仅使用 IPv6 地址连接',
+                        style: HudText.bodySecondary,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+              child: TabBarView(
+                children: [
+                  _buildScanner(),
+                  _buildManualForm(),
+                ],
+              ),
+            ),
           ],
         ),
       ),
@@ -165,34 +268,45 @@ class _PairingPageState extends State<PairingPage> {
             padding: const EdgeInsets.all(HudSpacing.xl),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(HudRadii.hero),
-              child: MobileScanner(
-                key: ValueKey<int>(_scannerAttempt),
-                onDetect: _onScan,
-                tapToFocus: true,
-                errorBuilder: (context, error) => _CameraError(
-                  error: error,
-                  onRetry: _restartScanner,
-                ),
-                placeholderBuilder: (context) => _CameraStarting(
-                  slow: _slowStart,
-                  onRetry: _restartScanner,
-                ),
-                overlayBuilder: (context, constraints) => IgnorePointer(
-                  child: Stack(
-                    fit: StackFit.expand,
-                    children: [
-                      DecoratedBox(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(HudRadii.hero),
-                          border: Border.all(
-                            color: HudColors.working.withValues(alpha: 0.42),
-                            width: 1.2,
-                          ),
+              child: RepaintBoundary(
+                key: _scannerKey,
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    MobileScanner(
+                      key: ValueKey<int>(_scannerAttempt),
+                      onDetect: _onScan,
+                      tapToFocus: true,
+                      errorBuilder: (context, error) => _CameraError(
+                        error: error,
+                        onRetry: _restartScanner,
+                      ),
+                      placeholderBuilder: (context) => _CameraStarting(
+                        slow: _slowStart,
+                        onRetry: _restartScanner,
+                      ),
+                      overlayBuilder: (context, constraints) => IgnorePointer(
+                        child: Stack(
+                          fit: StackFit.expand,
+                          children: [
+                            DecoratedBox(
+                              decoration: BoxDecoration(
+                                borderRadius:
+                                    BorderRadius.circular(HudRadii.hero),
+                                border: Border.all(
+                                  color: HudColors.working
+                                      .withValues(alpha: 0.42),
+                                  width: 1.2,
+                                ),
+                              ),
+                            ),
+                            const Center(child: _ScanFrame()),
+                          ],
                         ),
                       ),
-                      const Center(child: _ScanFrame()),
-                    ],
-                  ),
+                    ),
+                    if (_handling) _CaptureOverlay(),
+                  ],
                 ),
               ),
             ),
@@ -266,14 +380,16 @@ class _PairingPageState extends State<PairingPage> {
     return ListView(
       padding: const EdgeInsets.all(HudSpacing.xxl),
       children: [
-        const _FieldLabel('电脑地址（IPv4 或 IPv6）'),
+        _FieldLabel(_useIpv6 ? '电脑地址（IPv6）' : '电脑地址（IPv4 或 IPv6）'),
         const SizedBox(height: HudSpacing.md),
         TextField(
           controller: _address,
           keyboardType: TextInputType.url,
           textInputAction: TextInputAction.next,
-          decoration: const InputDecoration(
-            hintText: '192.168.1.5 或 2409:…（无需方括号）',
+          decoration: InputDecoration(
+            hintText: _useIpv6
+                ? '2409:…（无需方括号）'
+                : '192.168.1.5 或 2409:…（无需方括号）',
           ),
         ),
         const SizedBox(height: HudSpacing.xl),
@@ -345,6 +461,49 @@ class _PairingPageState extends State<PairingPage> {
   }
 }
 
+/// Dark overlay shown on top of the scanner when a code has been captured
+/// and pairing is in progress. Prevents the user from "waving around".
+class _CaptureOverlay extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: Colors.black.withValues(alpha: 0.55),
+      child: const Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SizedBox(
+              width: 32,
+              height: 32,
+              child: CircularProgressIndicator(
+                strokeWidth: 2.4,
+                color: HudColors.working,
+              ),
+            ),
+            SizedBox(height: HudSpacing.lg),
+            Text(
+              '已识别二维码，正在关联…',
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+                color: HudColors.textPrimary,
+              ),
+            ),
+            SizedBox(height: HudSpacing.sm),
+            Text(
+              '请保持手机稳定',
+              style: TextStyle(
+                fontSize: 11.5,
+                color: HudColors.textSecondary,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class _CameraError extends StatelessWidget {
   const _CameraError({required this.error, required this.onRetry});
 
@@ -365,7 +524,7 @@ class _CameraError extends StatelessWidget {
     final String message = permissionDenied
         ? '请在系统设置中允许 AgentHUD 使用相机，然后返回重试。'
         : unsupported
-            ? '当前设备不支持相机扫码，请改用“验证码”关联。'
+            ? '当前设备不支持相机扫码，请改用"验证码"关联。'
             : '请关闭其他正在使用相机的应用，然后重试。';
     final String? detail = error.errorDetails?.message;
 

@@ -4,7 +4,7 @@ import Vapor
 
 @MainActor
 final class LinkServer {
-    private static let capabilities = [
+    private static let baseCapabilities = [
         "monitor", "refresh", "revision", "write", "prompt", "images"
     ]
 
@@ -19,7 +19,10 @@ final class LinkServer {
     private(set) var port = 0
     private(set) var lastError: String?
 
-    init(directory: URL? = nil, environment: Environment = .production) throws {
+    init(
+        directory: URL? = nil,
+        environment: Environment = .production
+    ) throws {
         let root = try directory ?? LinkDeviceStore.defaultDirectory()
         self.environment = environment
         devices = try LinkDeviceStore(directory: root)
@@ -107,6 +110,10 @@ final class LinkServer {
         await devices.revoke(deviceId: deviceId)
     }
 
+    func setConversationEnabled(deviceId: String, enabled: Bool) async -> Bool {
+        await devices.setConversationEnabled(deviceId: deviceId, enabled: enabled)
+    }
+
     private func makeApplication(port: Int, hostname: String) throws -> Application {
         let app = Application(environment)
         app.logger.logLevel = .critical
@@ -146,15 +153,20 @@ final class LinkServer {
         }
 
         app.get("v1", "status") { request async throws -> Response in
-            guard await self.authorized(request) else {
+            let auth = await self.authorizedDevice(request)
+            guard let device = auth else {
                 return Self.json(LinkErrorResponse(error: "unauthorized"), status: .unauthorized)
             }
             let snapshot = await self.snapshot()
+            var capabilities = Self.baseCapabilities
+            if device.conversationEnabled {
+                capabilities.append("conversation")
+            }
             let response = LinkStatusResponse(
                 `protocol`: 1,
                 instanceId: self.devices.instanceId,
                 instanceName: self.devices.instanceName,
-                capabilities: Self.capabilities,
+                capabilities: capabilities,
                 revision: snapshot.revision,
                 scannedAt: snapshot.scannedAt,
                 serverTime: Date(),
@@ -326,6 +338,70 @@ final class LinkServer {
                 body: .init(data: payload.data)
             )
         }
+
+        app.post("v1", "sessions", ":id", "messages") { request async throws -> Response in
+            let auth = await self.authorizedDevice(request)
+            guard let device = auth else {
+                return Self.json(LinkErrorResponse(error: "unauthorized"), status: .unauthorized)
+            }
+            guard device.conversationEnabled else {
+                return Self.json(
+                    LinkErrorResponse(error: "conversation_disabled"),
+                    status: .forbidden
+                )
+            }
+            guard let id = request.parameters.get("id") else {
+                return Self.json(LinkErrorResponse(error: "session_not_found"), status: .notFound)
+            }
+            let input = try request.content.decode(LinkMessageRequest.self)
+            let clientMessageId = input.clientMessageId?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+            let text = input.text ?? ""
+            guard !clientMessageId.isEmpty else {
+                return Self.json(
+                    LinkErrorResponse(error: "invalid_message"),
+                    status: .badRequest
+                )
+            }
+            let snapshot = await self.snapshot()
+            guard let session = await self.session(matchingPublicID: id, in: snapshot) else {
+                return Self.json(LinkErrorResponse(error: "session_not_found"), status: .notFound)
+            }
+            let result = await self.snapshotProvider?.sendMessage(
+                sessionID: session.id,
+                clientMessageId: clientMessageId,
+                text: text
+            ) ?? ("", .failed, .providerUnsupported)
+            let statusCode: HTTPResponseStatus = result.error == nil ? .accepted : .conflict
+            return Self.json(
+                LinkMessageResponse(
+                    deliveryId: result.deliveryId,
+                    clientMessageId: clientMessageId,
+                    status: result.status.rawValue
+                ),
+                status: statusCode
+            )
+        }
+
+        app.get("v1", "deliveries", ":id") { request async throws -> Response in
+            guard await self.authorized(request) else {
+                return Self.json(LinkErrorResponse(error: "unauthorized"), status: .unauthorized)
+            }
+            guard let id = request.parameters.get("id") else {
+                return Self.json(LinkErrorResponse(error: "not_found"), status: .notFound)
+            }
+            guard let status = await self.snapshotProvider?.deliveryStatus(deliveryId: id) else {
+                return Self.json(LinkErrorResponse(error: "not_found"), status: .notFound)
+            }
+            return Self.json(
+                LinkDeliveryResponse(
+                    deliveryId: id,
+                    clientMessageId: "",
+                    status: status.status.rawValue,
+                    error: status.error?.rawValue
+                ),
+                status: .ok
+            )
+        }
     }
 
     private func session(
@@ -347,13 +423,17 @@ final class LinkServer {
     }
 
     private func result(_ issued: IssuedDeviceToken) -> PairingResult {
-        PairingResult(
+        var capabilities = Self.baseCapabilities
+        if issued.device.conversationEnabled {
+            capabilities.append("conversation")
+        }
+        return PairingResult(
             deviceId: issued.device.id,
             token: issued.token,
             instanceId: devices.instanceId,
             instanceName: devices.instanceName,
             `protocol`: 1,
-            capabilities: Self.capabilities,
+            capabilities: capabilities,
             fingerprint: fingerprint,
             addresses: LinkNetwork.localIPv4Addresses(),
             ipv6Addresses: LinkNetwork.ipv6Addresses(),
@@ -372,12 +452,19 @@ final class LinkServer {
     }
 
     private func authorized(_ request: Request) async -> Bool {
-        guard let header = request.headers.bearerAuthorization else { return false }
+        await authorizedDevice(request) != nil
+    }
+
+    private func authorizedDevice(_ request: Request) async -> LinkedDevice? {
+        guard let header = request.headers.bearerAuthorization else { return nil }
         let credential = header.token
-        guard let separator = credential.firstIndex(of: ".") else { return false }
+        guard let separator = credential.firstIndex(of: ".") else { return nil }
         let deviceId = String(credential[..<separator])
         let token = String(credential[credential.index(after: separator)...])
-        return await devices.validate(deviceId: deviceId, token: token)
+        guard await devices.validate(deviceId: deviceId, token: token) else {
+            return nil
+        }
+        return await devices.device(deviceId: deviceId)
     }
 
     private static func etag<T: Encodable>(_ value: T) throws -> String {

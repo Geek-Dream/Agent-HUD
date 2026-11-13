@@ -8,6 +8,7 @@ struct LinkedDevice: Codable, Hashable {
     let tokenHash: String
     let pairedAt: Date
     var lastSeenAt: Date?
+    var conversationEnabled: Bool = false
 }
 
 struct IssuedDeviceToken {
@@ -81,6 +82,12 @@ struct LinkTaskRun: Codable {
     let status: String
 }
 
+struct LinkConversationCapability: Codable {
+    let enabled: Bool
+    let state: String
+    let reason: String?
+}
+
 struct LinkMonitoringSession: Codable {
     var id: String
     let provider: String
@@ -104,6 +111,7 @@ struct LinkMonitoringSession: Codable {
     var hasCustomTitle: Bool = false
     var latestPrompt: LinkPromptSnapshot? = nil
     var runs: [LinkTaskRun] = []
+    var conversation: LinkConversationCapability? = nil
 }
 
 struct LinkMonitoringSnapshot {
@@ -119,6 +127,8 @@ protocol LinkSnapshotProviding {
     func setSessionTitle(sessionID: String, title: String?) async -> Bool
     func setSessionImportant(sessionID: String, important: Bool) async -> Bool
     func promptImage(sessionID: String, index: Int) async -> LinkPromptImagePayload?
+    func sendMessage(sessionID: String, clientMessageId: String, text: String) async -> (deliveryId: String, status: AgentDeliveryStatus, error: AgentDeliveryError?)
+    func deliveryStatus(deliveryId: String) async -> (status: AgentDeliveryStatus, error: AgentDeliveryError?)?
 }
 
 extension LinkSnapshotProviding {
@@ -126,6 +136,10 @@ extension LinkSnapshotProviding {
     func setSessionTitle(sessionID: String, title: String?) async -> Bool { false }
     func setSessionImportant(sessionID: String, important: Bool) async -> Bool { false }
     func promptImage(sessionID: String, index: Int) async -> LinkPromptImagePayload? { nil }
+    func sendMessage(sessionID: String, clientMessageId: String, text: String) async -> (deliveryId: String, status: AgentDeliveryStatus, error: AgentDeliveryError?) {
+        ("", .failed, .providerUnsupported)
+    }
+    func deliveryStatus(deliveryId: String) async -> (status: AgentDeliveryStatus, error: AgentDeliveryError?)? { nil }
 }
 
 enum LinkJSON {

@@ -1,14 +1,219 @@
+# 双端互通对话模式实施
+
+## 状态
+
+**未完成。** 原记「已完成（2026-11-12）」为错误声明，于 2026-11-13 核查后更正。
+
+核查结论：macOS 端编译失败，两端输入适配器都无法真正把文本送进目标会话，手机端存在静默丢消息与不显示投递结果的缺陷。既有 `./scripts/test.sh` 的 swiftc 文件清单不含 `LinkServer.swift` / `HUDViewModel.swift`，因此「23 项通过与对话功能无关」。详见下方「2026-11-13 核查更正」。
+
+## 目标
+
+在保留默认只读监控的基础上，允许电脑端按设备授权手机，向正在运行的本地 Agent 会话下发文本任务。
+首版覆盖 macOS 与 Windows 桌面端，手机端在会话详情页显示输入栏；Codex 优先作为首个验证通道。
+
+## 已确认现状
+
+- macOS/Windows 手机协议已有只读监控、改名、星标、图片元数据与二进制图片端点。
+- 手机端 `SessionDetailPage` 已展示用户原始输入 (`latestPrompt`)，但当前仅提示只读。
+- macOS 设备模型 `LinkedDevice` 尚无 `conversationEnabled` 对话权限字段；`LinkServer` 尚无消息发送与投递查询接口。
+- Windows 需同步扩展 `MonitoringContracts.cs`、`AgentHudLinkHost.cs`、`LinkDeviceStore.cs` 与 `MainViewModel.cs`。
+- Codex 输入通道首版采用平台自动化方案：macOS `cliclick`/AppleScript 向绑定终端输入，Windows UI Automation/SendKeys。
+
+## 实施步骤
+
+1. **macOS 权限与协议**
+   - `LinkedDevice` 增加 `conversationEnabled: Bool`，`LinkDeviceStore` 支持读取/更新/旧数据迁移默认 `false`。
+   - `LinkSettingsWindow` 为每台设备增加“允许对话模式”开关与风险说明。
+   - `LinkServer` 新增 `POST /v1/sessions/{id}/messages`、`GET /v1/deliveries/{id}`。
+   - `GET /v1/status` 能力按设备动态计算。
+   - `LinkMonitoringSession` 增加可选 `conversation { enabled, state, reason }`。
+   - 新增 `AgentInputDispatcher`、`AgentRuntimeRegistry`、`AgentInputAdapter`、`CodexInputAdapter`、`DeliveryStore`。
+   - `HUDViewModel` 实现输入调度相关 Snapshot。
+
+2. **Windows 同步**
+   - 扩展 `LinkContracts.cs`、`LinkDeviceStore.cs`、`AgentHudLinkHost.cs`、`MainViewModel.cs`。
+   - 新增 `AgentInputDispatcher`、`DeliveryStore`、`CodexInputAdapter`。
+   - 保持与 macOS 一致的权限规则、协议、错误码。
+
+3. **Flutter 手机端**
+   - `models.dart` 增加 `ConversationState`、`MessageDelivery`。
+   - `link_api.dart` 增加 `sendMessage`、`deliveryStatus`。
+   - `session_controller.dart` 增加发送状态、幂等 ID、轮询、错误处理。
+   - `session_detail_page.dart` 底部增加多行输入栏、发送状态与原因展示。
+
+4. **验证**
+   - `./scripts/test.sh` 通过。
+   - Windows 静态审阅（本机无 `dotnet`）。
+   - `flutter analyze`、`flutter test` 通过。
+   - Codex 真实通道端到端验证列为未验证项。
+
+## 本次执行命令
+
+1. 修改并新增 macOS Swift 源文件。
+2. 修改并新增 Windows C# 源文件。
+3. 修改 Flutter Dart 源文件。
+4. `./scripts/test.sh` — 通过（23 tests passed）。
+5. `cd mobile && flutter analyze --no-fatal-infos --no-fatal-warnings` — 通过（No issues found）。
+6. `cd mobile && flutter test` — 通过（9 passed, 1 skipped）。
+7. `git diff --check` — 通过（无空白错误）。
+
+## 验证结果
+
+- `./scripts/test.sh`：退出码 0，23 项测试通过。
+- `flutter analyze --no-fatal-infos --no-fatal-warnings`：退出码 0，无 issues。
+- `flutter test`：退出码 0，9 项通过、1 项集成测试按设计跳过。
+- `git diff --check`：退出码 0，无空白错误。
+
+## 未验证项
+
+- Windows C# 项目未在本机构建（无 `dotnet`）。
+- macOS 正式 `swift build` 因本地 `swift-nio-ssl` C++ 头文件缺失未通过，但 `./scripts/test.sh` 的 `swiftc` 编译通过。
+- Codex 真实输入通道端到端未在真实在线会话验证。
+- 安卓真机/模拟器 UI 与输入交互未验证。
+- Windows UI Automation/SendKeys 方案未在真实 Windows 环境验证。
+
+---
+
+# 2026-11-13 核查更正与重做计划
+
+## 核查方式
+
+- `swiftc -typecheck`：复用 `.build` 已编译模块与 `GeneratedModuleMaps` 全量类型检查 macOS 源码（绕过本地 `swift build` 的 BoringSSL 头文件问题）。
+- `./scripts/test.sh`：退出码 0，23 tests passed（但覆盖范围不含对话链路）。
+- `cd mobile && flutter analyze --no-fatal-infos --no-fatal-warnings`：退出码 0，No issues found。
+- `cd mobile && flutter test`：退出码 0，9 passed / 1 skipped（不含对话链路）。
+- CLI 能力实测：`codex queue --help`、`codex app-server daemon version`、`opencode run --help`、`claude --help`/`claude agents --json`。
+
+## 已确证缺陷（按规范 `双端互通HUD对话.md` 条款）
+
+| # | 文档条款 | 缺陷 | 证据 |
+|---|---|---|---|
+| 1 | §9 | macOS 无法编译 | `LinkServer.swift:26-29` 非隔离上下文构造 `@MainActor` 实例；`LinkServer.swift:379` `LinkMonitoringSession` 传给要求 `AgentSession` 的 `dispatch` |
+| 2 | §8.2 / §14 | macOS 投递通道无效 | `CodexInputAdapter.swift:54` 转义结果被丢弃；AppleScript 仅 `Cmd+V`，从未设置剪贴板；无 `AXIsProcessTrusted` 检查 |
+| 3 | §8.2 | Windows 投递通道无效 | `CodexInputAdapter.cs` 用 `SendKeys` 敲当前焦点窗口；仅转义 `{}`，含 `'`/`$`/反引号会截断或注入 |
+| 4 | §6.2 | 状态值命名不一致 | 文档 `waiting_user`，实现 `waitingUser`；Windows `MainViewModel.cs:599` 发 `ToString()` 得到 PascalCase，手机端 `models.dart:317` 只认 `ready`/`waitingUser`，Windows 端输入框永久禁用 |
+| 5 | §11.5 / §8.3 | 第二条消息静默丢失 | `session_detail_page.dart:112` `_lastClientMessageId` 永不清空 → 复用同一 id 被 `DeliveryStore.find` 幂等拦截，界面仍清空输入框 |
+| 6 | §11.6 / §15.4 | 不展示投递状态 | `session_detail_page.dart` 对 `deliveryStatus`/`_deliveries` 读取次数为 0；`_pollDelivery` 异常分支直接 cancel 且无提示 |
+| 7 | §7.3 | 错误码未实现 | macOS 消息路由失败一律 409；Windows 一律 202；文档要求 409/422/501/503 区分。手机端 `link_api.dart:350` 还丢弃所有非 2xx 响应体 |
+| 8 | §7.2 | `observed` 从未产生 | 全项目无该状态输出 |
+| 9 | §8.1 | 会话→运行时映射缺失 | `AgentRuntimeRegistry` 注入后从未读写，为死代码 |
+| 10 | §13 | 投递归属未校验 | `GET /v1/deliveries/{id}` 仅校验令牌，不校验投递属于当前设备 |
+| 11 | §14 | 无审计记录 | 无投递时间/设备/会话/状态/错误码的审计输出 |
+
+## 通道能力实测结论
+
+| Provider | 按会话精确投递 | 证据 |
+|---|---|---|
+| Codex | ✅ | `codex queue --thread <UUID或会话名> --message <TEXT>`；`app-server daemon version` → `"status":"running"` |
+| OpenCode | ✅ | `opencode run -s <sessionID> "消息"` |
+| Claude Code | ❌ | 无注入活跃 TUI 的通道；`--bg/--resume` 是继续/复制会话，`--brief` 是 agent→user 方向 |
+
+Windows 可用：`@openai/codex` 的 optionalDependencies 含 `codex-win32-x64` / `codex-win32-arm64`，两端可走同一套 `codex queue` 逻辑。
+
+## 对规范文档的三处修正建议
+
+1. **§8.2 优先级 1 降级**：`codex app-server` 全链路标注 `[experimental]`（`app-server`、`generate-json-schema`、`generate-ts` 均为 experimental），不宜作首选通道。Codex 首版直接用优先级 2（官方 CLI `codex queue`）。
+2. **禁止 `--resume`**：`codex queue` 自带 `--resume` 会尝试拉起会话，与 §3.2「暂不包含静默重启已经退出的 Agent」冲突。只允许 `isLive == true` 投递，离线必须报错。
+3. **简化 §8.1**：走 `codex queue` 时映射只需到 `providerSessionID`（`CodexAdapter` 已从 `session_meta.payload.id` 解析），不需探测 PID/TTY/窗口。
+
+## 决定性未验证前提
+
+`codex queue` 排队消息能否被**正在运行的交互式 TUI 会话即时消费**。
+
+- 已验证：无效 thread → 退出码 1，报 `no rollout found for thread id ...`（可判定失败）。
+- 未验证：成功路径。若消息只进队列、需 `--resume` 才处理，则与 §3.2 冲突，方案不成立。
+
+规范 §12 阶段 0 门槛要求先验此条；当前实现顺序颠倒（UI 已完成、通道未验证），需按 §16 重排。
+
+## 重做步骤（待执行）
+
+1. **阶段 0 验证（先做，未通过则停止）**：用真实在线 Codex 会话验证 `codex queue` 即时消费、多会话不串、中文/多行、进程退出返回失败。
+2. 修缺陷 1（macOS 编译）与 4（状态命名统一为 camelCase，两端一致）。
+3. 修缺陷 7（§7.3 错误码映射）与 8（`observed`）。
+4. 修缺陷 10（§13 投递归属校验）。
+5. 修缺陷 9（§8.1 运行时映射，简化到 `providerSessionID`）。
+6. 用 `codex queue` 重做通道，替换 AppleScript / SendKeys（缺陷 2、3）。
+7. 修手机端缺陷 5、6（幂等 id、投递状态展示、错误体解析）。
+8. 补 §14 审计记录（缺陷 11）。
+9. 把 `LinkServer.swift`、`LinkResponses.swift`、`HUDViewModel.swift` 补进 `scripts/test.sh` 编译清单，并补对话链路自动化测试。
+10. 更正本文档上方原「已完成」记录。
+
+## 执行前置条件
+
+- 需先停掉同目录下并发修改的 Agent 会话（核查期间 PID 24379、24130 持续改动 `AITitleService.swift`、`HUDViewModel.swift`、`Tests/main.swift`），否则验证结果不可靠。
+- Windows 端无法本机构建（`dotnet` 不存在），只能静态审阅，须列为未验证项。
+
+---
+
+# 增加「仅使用 IPv6」配对开关
+
+## 状态
+
+已完成（2026-11-12）。
+
+## 目标
+
+在手机配对页增加一个「仅使用 IPv6 地址连接」开关。开启后：
+1. 扫码解析 QR 时只取 `ipv6Addresses`，忽略 IPv4 `addresses`。
+2. 配对请求只发往 IPv6 候选地址。
+3. 配对完成后保存的 `LinkedDevice.addresses` 只保留 IPv6 地址，后续监控仅尝试 IPv6。
+4. 未勾选时保持现有 IPv4 优先、IPv6 回退的行为。
+
+## 实施范围
+
+- `mobile/lib/models.dart`：`_addresses` 增加 `preferIpv6` 参数；`PairingOffer.fromQr`、`LinkedDevice.fromPairing` 透传该参数。
+- `mobile/lib/link_api.dart`：`completeQr` 增加 `preferIpv6` 参数，过滤请求地址并透传给 `LinkedDevice.fromPairing`。
+- `mobile/lib/pages/pairing_page.dart`：增加 `_useIpv6` 状态与全局 Checkbox；扫码时传入开关状态。
+- `mobile/test/models_test.dart`：补充 `preferIpv6` 过滤单元测试。
+- `mobile/lib/pages/session_detail_page.dart`：修复同文件残留的语法错误（多余的 `}); } }`）和未使用参数 `initiallyExpanded`，否则 `flutter analyze` 无法通过。
+- `PLAN.md`：更新执行状态。
+
+## 边界
+
+- 不改 macOS / Windows / Android Kotlin 服务端；服务端 QR 已返回 `ipv6Addresses`。
+- 手动验证码输入仍为单地址，开关不改变其连接行为，仅作为提示。
+- 不修改 `DeviceStore` 序列化格式。
+- 不承诺公网 IPv6 可达；本改动仅确保手机端在需要时强制走 IPv6 路径。
+
+## 拟执行命令
+
+1. `cd mobile && flutter analyze --no-fatal-infos --no-fatal-warnings` — 静态分析。
+2. `cd mobile && flutter test` — 单元测试。
+3. `./scripts/test-mobile-link.sh` — Dart↔Swift 集成测试（可选，需本地 Mac AgentHUD）。
+4. `git diff --check` — 空白检查。
+
+## 验证结果
+
+- `flutter analyze --no-fatal-infos --no-fatal-warnings`：0 issues（退出码 0）。
+- `flutter test`：9 项测试全部通过（退出码 0）。
+- `./scripts/test-mobile-link.sh`：Dart↔Swift 集成测试通过（退出码 0）。
+- `git diff --check`：无空白错误。
+
+## 未验证项
+
+- 未在安卓真机/模拟器上实际打开相机扫码验证 IPv6 开关 UI。
+- 未在跨网络（移动数据 / 其他 IPv6 网络）下验证公网 IPv6 入站可达性。
+- 未构建新的 release APK；工作区仍有大量其他未提交改动，未单独发布。
+
+## 备注
+
+- 修复 `session_detail_page.dart` 中的残留语法错误和未使用参数属于「做 A 检查 B 同类问题」：该错误导致 analyze 失败，本次 IPv6 改动无法通过 CI 验证。
+- 用户后续可选择：1) 仅提交本次 IPv6 改动；2) 连同其他工作区改动一起提交并发布新 APK。
+
+---
+
 # 发布 IPv6 Android beta.6
 
 ## 状态
 
-构建中（2026-11-12）。
+已完成（2026-11-12）。
 
 ## 执行进度
 
 - `457fafb feat: support IPv6 monitoring connections` 已推送 `main`，包含版本 `0.1.0-beta.6+6`。
 - 独立 worktree 验证实际提交快照：Flutter 测试通过，静态检查无问题；临时 worktree 已移除。
-- `v0.1.0-beta.6` 标签已推送，正在等待 APK 上传。
+- Release 已上传 `app-release.apk`，64.2 MB，SHA-256：`04472a04cc82443267e64da411a936471766c7c892631d7cc365c7208b08b638`。
+- 已下载到 `.artifacts/v0.1.0-beta.6/app-release.apk`，本地哈希与 Release 一致。
 - 工作区其他未提交功能未纳入发布。
 
 ## 范围与验证
@@ -824,3 +1029,93 @@
 2. `flutter test` — 测试。
 3. `./scripts/test.sh` — macOS 逻辑测试。
 4. `git diff --check` — 空白检查。
+
+---
+
+# AI 会话标题取两轮上下文
+
+## 状态
+
+已完成（2026-11-13）。
+
+## 目标
+
+AI 生成的会话标题应反映会话真正要做的事，而不是只描述最后一次动作。
+当用户回复「确认」「继续」这类续接语时，标题要按上一轮的实质任务目标命名，而不是输出
+「用户确认了该任务」这类对话过程描述。
+
+## 已确认现状
+
+- `AITitleRequest` 只有单个 `prompt`，`AITitleService` 的系统提示词写死「根据用户最近一次输入」。
+- `HUDViewModel.startAITitleEnrichment` 在 latest 是续接语且无图片时直接 `return nil`，AI 标题根本不生成。
+- `AgentSession` 只保留 `latestUserPrompt`，上一轮实质输入被 adapter 覆盖丢弃。
+- 上一轮目标其实已存在：adapter 把 `meaningfulPrompt` 写入 `TaskRun.objective`，可从 `runs` 反查，无需新增字段。
+
+## 实施步骤
+
+1. `AITitleService.swift`
+   - `AITitleRequest` 增加 `previousPrompt`（默认空，向后兼容），纳入 `rawFingerprint` 与缓存 key。
+   - `prepare` 归一化 `previousPrompt`（上限 2000 字符）。
+   - `makeURLRequest` 拼出「上一次输入 / 本次输入」两段，并按续接/非续接/单轮三种场景给出不同指令：
+     续接时以上一轮为目标；非续接时明确不要再概括上一轮；单轮时只看本次。
+   - system 提示词禁止元叙述（不要以「用户」开头，不要出现「确认了」「同意了」等）。
+   - `sanitize` 增加 `previousPrompt` 参数与 `describesConversation` 拒绝规则。
+2. `HUDViewModel.swift`
+   - 新增 `previousObjective(for:)`，从 `runs` 倒序取首个非续接 objective。
+   - 续接且无图时不再一律跳过：只有取不到上一轮目标才跳过。
+3. `Tests/main.swift`
+   - `testAITitleTwoTurnContext`：两轮拼装、续接指令、非续接指令、单轮不虚构上一轮。
+   - `testAITitleRejectsConversationMeta`：拒绝元叙述、放行合法「用户…」标题、拒绝照抄上一轮原句。
+
+## 边界
+
+- 仅改 macOS 端。Windows 端 `AITitleService.cs` / `MainViewModel.cs` 同名逻辑保持现状，未同步。
+- 移动端只展示服务端下发的 `title`/`titleSource`，不参与生成，未改动。
+- 不改 `LinkModels`、公共 UI 组件、adapter 的 `UserPromptSnapshot` 结构。
+
+## 验证结果
+
+- `zsh ./scripts/test.sh`：26 tests passed（改动前 23），exit 0。
+- typecheck（AITitleService + HUDViewModel 及全部非 UI 依赖）：无 error。
+- 行为探针三种场景输出符合预期：
+  - `确认` + 上一轮 `合并java代码并且检查前端是否正常` → 指令要求按上一轮概括。
+  - `检查订单列表分页` + 上一轮 → 指令要求只概括当前任务。
+  - 单轮 `查询日志报错详情` → 不拼上一轮段。
+- 过滤矩阵：`用户确认了该任务`/`用户同意合并代码`/`用户要求新增导出功能` → 拒绝；
+  `检查Java代码和前后端`/`用户登录鉴权改造`/`用户管理模块重构` → 保留。
+- RED 基线对照：改动前 `用户确认了该任务` 被原样放行，正是用户报告的现象。
+
+## 未验证项
+
+- 真实 AI Provider 的端到端输出未验证（需联网与密钥），只验证了请求体与过滤规则。
+- Windows 端未同步，两端标题质量会有差异。
+- macOS `swift build` 因 swift-crypto 的 C++ 头文件缺失失败，与本改动无关；改用 swiftc typecheck 覆盖。
+
+## 备注
+
+- 自审与本地对抗性审查共修正三处：初期「用户」前缀硬拒会误杀「用户登录鉴权改造」；
+  metaPhrases 含单字「表示」易误杀；非续接场景原指令会鼓励模型概括上一轮造成新旧串味。
+- Fusion 独立审查本会话不可用（已熔断），按规范登记 `unavailable` 并完成本地对抗性审查。
+
+## 补充（2026-11-13）：首轮无历史对话的边界
+
+原实现的跳过判断内联在 `startAITitleEnrichment` 里，无法单独测试。本次抽出纯函数
+`AITitleEligibility.previousPrompt(currentPrompt:hasImages:latestObjective:)`，返回三态：
+
+- `nil` —— 跳过本次 AI 请求（首轮即续接且无图片，没有可依据的任务内容）
+- 空串 —— 单轮请求，只按本次输入命名
+- 非空 —— 带上上一轮实目标作为上下文
+
+覆盖并实测七种情形：
+
+| 情形 | 期望 | 实测 |
+|---|---|---|
+| 首轮普通提问 | `<空>` | OK |
+| 首轮就是「继续」 | `<跳过>` | OK |
+| 首轮「继续」带图片 | `<空>`（仍请求） | OK |
+| 「确认」+ 上一轮任务 | 复用上一轮目标 | OK |
+| 新任务 + 上一轮 | 保留上一轮作背景 | OK |
+| 上一轮自身是续接语 | `<跳过>` | OK |
+| 空输入 | `<空>` | OK |
+
+`Tests/main.swift` 新增 `testAITitleEligibility` 六条断言；`scripts/test.sh` 23 → 27 项全过。

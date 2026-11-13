@@ -7,19 +7,23 @@ struct AIConfiguration: Equatable {
     private static let enabledKey = "ai.title.enabled"
     private static let endpointKey = "ai.title.endpoint"
     private static let modelKey = "ai.title.model"
+    private static let supportsVisionKey = "ai.title.supportsVision"
 
     var enabled: Bool
     var endpoint: String
     var model: String
+    var supportsVision: Bool
 
     init(
         enabled: Bool = false,
         endpoint: String = Self.defaultEndpoint,
-        model: String = Self.defaultModel
+        model: String = Self.defaultModel,
+        supportsVision: Bool = true
     ) {
         self.enabled = enabled
         self.endpoint = endpoint
         self.model = model
+        self.supportsVision = supportsVision
     }
 
     static func load(defaults: UserDefaults = .standard) -> AIConfiguration {
@@ -31,7 +35,8 @@ struct AIConfiguration: Equatable {
         return AIConfiguration(
             enabled: defaults.bool(forKey: enabledKey),
             endpoint: endpoint.flatMap { $0.isEmpty ? nil : $0 } ?? defaultEndpoint,
-            model: model.flatMap { $0.isEmpty ? nil : $0 } ?? defaultModel
+            model: model.flatMap { $0.isEmpty ? nil : $0 } ?? defaultModel,
+            supportsVision: defaults.object(forKey: supportsVisionKey) as? Bool ?? true
         )
     }
 
@@ -39,6 +44,7 @@ struct AIConfiguration: Equatable {
         defaults.set(enabled, forKey: Self.enabledKey)
         defaults.set(endpoint, forKey: Self.endpointKey)
         defaults.set(model, forKey: Self.modelKey)
+        defaults.set(supportsVision, forKey: Self.supportsVisionKey)
     }
 
     var chatCompletionsURL: URL? {

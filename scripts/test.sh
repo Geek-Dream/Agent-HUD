@@ -24,6 +24,11 @@ swiftc \
     Sources/AgentHUD/LinkDeviceStore.swift \
     Sources/AgentHUD/LinkPairingManager.swift \
     Sources/AgentHUD/LinkCertificate.swift \
+    Sources/AgentHUD/AgentInputAdapter.swift \
+    Sources/AgentHUD/AgentRuntimeRegistry.swift \
+    Sources/AgentHUD/DeliveryStore.swift \
+    Sources/AgentHUD/CodexInputAdapter.swift \
+    Sources/AgentHUD/AgentInputDispatcher.swift \
     Tests/LinkTests.swift \
     Tests/main.swift \
     -o "$BINARY"

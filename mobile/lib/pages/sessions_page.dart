@@ -370,7 +370,7 @@ class _FilterRow extends StatelessWidget {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       padding: const EdgeInsets.symmetric(
-        horizontal: HudSpacing.lg,
+        horizontal: HudSpacing.md,
         vertical: HudSpacing.xxs,
       ),
       child: Row(
@@ -449,15 +449,20 @@ class _FilterPill extends StatelessWidget {
             ),
             decoration: ShapeDecoration(
               color: selected
-                  ? color.withValues(alpha: tech ? 0.2 : 0.16)
+                  ? color.withValues(alpha: tech ? 0.22 : 0.18)
                   : HudColors.controlFill,
               shape: shape,
               shadows: selected
                   ? <BoxShadow>[
                       BoxShadow(
-                        color: color.withValues(alpha: tech ? 0.34 : 0.22),
-                        blurRadius: tech ? 16 : 12,
-                        spreadRadius: tech ? 1 : 0.5,
+                        color: color.withValues(alpha: tech ? 0.45 : 0.28),
+                        blurRadius: tech ? 20 : 14,
+                        spreadRadius: tech ? 2 : 1,
+                      ),
+                      BoxShadow(
+                        color: color.withValues(alpha: tech ? 0.18 : 0.12),
+                        blurRadius: tech ? 8 : 6,
+                        spreadRadius: 0,
                       ),
                     ]
                   : const <BoxShadow>[],
@@ -764,227 +769,229 @@ class _SessionCard extends StatelessWidget {
     final Color statusColor = HudColors.status(session.status);
     final bool outlined =
         HudColors.isActive(session.status) || session.status == 'Failed';
+    final bool isActive = HudColors.isActive(session.status);
     final Color borderColor = session.isImportant
         ? HudColors.important.withValues(alpha: 0.55)
         : outlined
             ? statusColor.withValues(alpha: 0.38)
             : HudColors.border;
 
-    return Material(
-      color: Colors.transparent,
-      child: Ink(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              HudColors.surfaceRaised,
-              session.isImportant
-                  ? HudColors.important.withValues(alpha: 0.07)
-                  : outlined
-                      ? statusColor.withValues(alpha: 0.06)
-                      : HudColors.surface,
-            ],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+    return Container(
+      margin: const EdgeInsets.only(bottom: HudSpacing.lg),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(HudRadii.panel),
+        boxShadow: session.isImportant
+            ? HudElevation.glow(HudColors.important)
+            : outlined
+                ? HudElevation.card(statusColor.withValues(alpha: 0.25))
+                : HudElevation.card(HudColors.border),
+      ),
+      child: Material(
+        color: Colors.transparent,
+        borderRadius: BorderRadius.circular(HudRadii.panel),
+        clipBehavior: Clip.antiAlias,
+        child: Ink(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                HudColors.surfaceRaised,
+                session.isImportant
+                    ? HudColors.important.withValues(alpha: 0.09)
+                    : outlined
+                        ? statusColor.withValues(alpha: 0.07)
+                        : HudColors.surface,
+              ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            borderRadius: BorderRadius.circular(HudRadii.panel),
+            border: Border.all(
+              color: borderColor,
+              width: session.isImportant ? 1.2 : 1.0,
+            ),
           ),
-          borderRadius: BorderRadius.circular(HudRadii.panel),
-          border: Border.all(color: borderColor),
-          boxShadow: session.isImportant
-              ? <BoxShadow>[
-                  BoxShadow(
-                    color: HudColors.important.withValues(alpha: 0.12),
-                    blurRadius: 16,
-                    spreadRadius: 0.5,
-                  ),
-                ]
-              : null,
-        ),
-        child: InkWell(
-          borderRadius: BorderRadius.circular(HudRadii.panel),
-          onTap: onOpen,
-          child: Stack(
-            children: [
-              Positioned.fill(
-                child: IgnorePointer(
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: Container(
-                      width: 3,
-                      margin: const EdgeInsets.symmetric(
-                        vertical: HudSpacing.lg,
-                      ),
-                      decoration: BoxDecoration(
-                        color: (session.isImportant
-                                ? HudColors.important
-                                : statusColor)
-                            .withValues(alpha: 0.72),
-                        borderRadius: BorderRadius.circular(2),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(
-                  HudSpacing.xl,
-                  HudSpacing.lg,
-                  HudSpacing.md,
-                  HudSpacing.lg,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            session.title,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: HudText.title.copyWith(fontSize: 15.5),
-                          ),
-                        ),
-                        if (canStar)
-                          IconButton(
-                            onPressed: onStar,
-                            tooltip: session.isImportant ? '取消重要' : '标记为重要',
-                            visualDensity: VisualDensity.compact,
-                            padding: EdgeInsets.zero,
-                            constraints: const BoxConstraints.tightFor(
-                              width: 30,
-                              height: 30,
-                            ),
-                            iconSize: 17,
-                            icon: Icon(
-                              session.isImportant
-                                  ? Icons.star_rounded
-                                  : Icons.star_outline_rounded,
-                              color: session.isImportant
-                                  ? HudColors.important
-                                  : HudColors.textTertiary,
-                            ),
-                          ),
-                        const SizedBox(width: HudSpacing.xxs),
-                        AnimatedSwitcher(
-                          duration: HudMotion.fast,
-                          transitionBuilder: (child, animation) =>
-                              FadeTransition(
-                            opacity: animation,
-                            child: ScaleTransition(
-                              scale: animation,
-                              child: child,
-                            ),
-                          ),
-                          child: HudStatusPill(
-                            key: ValueKey<String>(session.status),
-                            status: session.status,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: HudSpacing.sm),
-                    Row(
-                      children: [
-                        HudProviderGlyph(provider: session.provider),
-                        const SizedBox(width: HudSpacing.sm),
-                        Expanded(
-                          child: Text(
-                            _metadata(session),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: HudText.caption,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: HudSpacing.md),
-                    Row(
-                      children: [
-                        _StatusDot(
-                          color: statusColor,
-                          pulsing:
-                              HudColors.isActive(session.status) && !reduced,
-                          pulse: pulse,
-                        ),
-                        const SizedBox(width: HudSpacing.sm),
-                        Expanded(
-                          child: Text(
-                            session.currentAction,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style:
-                                HudText.bodySecondary.copyWith(fontSize: 12.5),
-                          ),
-                        ),
-                        const SizedBox(width: HudSpacing.md),
-                        Text(
-                          relativeTime(session.lastActivityAt),
-                          style: HudText.caption.copyWith(
-                            fontSize: 11,
-                            color: HudColors.textTertiary,
-                          ),
-                        ),
-                        const SizedBox(width: HudSpacing.xxs),
-                        const Icon(
-                          Icons.chevron_right_rounded,
-                          size: 18,
-                          color: HudColors.textTertiary,
-                        ),
-                      ],
-                    ),
-                    if (session.latestPrompt != null &&
-                        !session.latestPrompt!.isEmpty) ...[
-                      const SizedBox(height: HudSpacing.md),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: HudSpacing.md,
-                          vertical: HudSpacing.sm,
+          child: InkWell(
+            onTap: onOpen,
+            highlightColor: HudColors.controlHover.withValues(alpha: 0.35),
+            splashColor: HudColors.controlFill.withValues(alpha: 0.45),
+            child: Stack(
+              children: [
+                Positioned.fill(
+                  child: IgnorePointer(
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: AnimatedContainer(
+                        duration: HudMotion.fast,
+                        width: session.isImportant ? 4 : 3,
+                        margin: EdgeInsets.symmetric(
+                          vertical: session.isImportant
+                              ? HudSpacing.md
+                              : HudSpacing.lg,
                         ),
                         decoration: BoxDecoration(
-                          color: HudColors.controlFill,
-                          borderRadius: BorderRadius.circular(HudRadii.micro),
-                          border: Border.all(color: HudColors.divider),
+                          color: (session.isImportant
+                                  ? HudColors.important
+                                  : statusColor)
+                              .withValues(alpha: session.isImportant ? 0.9 : 0.72),
+                          borderRadius: BorderRadius.circular(2),
+                          boxShadow: session.isImportant
+                              ? [
+                                  BoxShadow(
+                                    color: HudColors.important
+                                        .withValues(alpha: 0.4),
+                                    blurRadius: 6,
+                                    spreadRadius: 1,
+                                  ),
+                                ]
+                              : null,
                         ),
-                        child: Row(
-                          children: [
-                            const Icon(
-                              Icons.format_quote_rounded,
-                              size: 12,
-                              color: HudColors.textTertiary,
+                      ),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(
+                    HudSpacing.xl,
+                    HudSpacing.lg,
+                    HudSpacing.md,
+                    HudSpacing.lg,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              session.title,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: HudText.title.copyWith(fontSize: 15.5),
                             ),
-                            const SizedBox(width: HudSpacing.sm),
-                            Expanded(
-                              child: Text(
-                                session.latestPrompt!.text
-                                    .replaceAll(RegExp(r'\s+'), ' ')
-                                    .trim(),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: HudText.caption.copyWith(
-                                  color: HudColors.textSecondary,
-                                ),
+                          ),
+                          if (canStar) _StarButton(session: session, onStar: onStar),
+                          const SizedBox(width: HudSpacing.xxs),
+                          AnimatedSwitcher(
+                            duration: HudMotion.fast,
+                            transitionBuilder: (child, animation) =>
+                                FadeTransition(
+                              opacity: animation,
+                              child: ScaleTransition(
+                                scale: animation,
+                                child: child,
                               ),
                             ),
-                            if (session.latestPrompt!.images.isNotEmpty) ...[
-                              const SizedBox(width: HudSpacing.sm),
+                            child: HudStatusPill(
+                              key: ValueKey<String>(session.status),
+                              status: session.status,
+                              pulsing: isActive && !reduced,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: HudSpacing.sm),
+                      Row(
+                        children: [
+                          HudProviderGlyph(provider: session.provider),
+                          const SizedBox(width: HudSpacing.sm),
+                          Expanded(
+                            child: Text(
+                              _metadata(session),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: HudText.caption,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: HudSpacing.md),
+                      Row(
+                        children: [
+                          HudStatusDot(
+                            color: statusColor,
+                            pulsing: isActive && !reduced,
+                          ),
+                          const SizedBox(width: HudSpacing.sm),
+                          Expanded(
+                            child: Text(
+                              session.currentAction,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style:
+                                  HudText.bodySecondary.copyWith(fontSize: 12.5),
+                            ),
+                          ),
+                          const SizedBox(width: HudSpacing.md),
+                          Text(
+                            relativeTime(session.lastActivityAt),
+                            style: HudText.caption.copyWith(
+                              fontSize: 11,
+                              color: HudColors.textTertiary,
+                            ),
+                          ),
+                          const SizedBox(width: HudSpacing.xxs),
+                          const Icon(
+                            Icons.chevron_right_rounded,
+                            size: 18,
+                            color: HudColors.textTertiary,
+                          ),
+                        ],
+                      ),
+                      if (session.latestPrompt != null &&
+                          !session.latestPrompt!.isEmpty) ...[
+                        const SizedBox(height: HudSpacing.md),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: HudSpacing.md,
+                            vertical: HudSpacing.sm,
+                          ),
+                          decoration: BoxDecoration(
+                            color: HudColors.controlFill,
+                            borderRadius: BorderRadius.circular(HudRadii.micro),
+                            border: Border.all(color: HudColors.divider),
+                          ),
+                          child: Row(
+                            children: [
                               const Icon(
-                                Icons.photo_outlined,
+                                Icons.format_quote_rounded,
                                 size: 12,
                                 color: HudColors.textTertiary,
                               ),
-                              const SizedBox(width: 2),
-                              Text(
-                                '${session.latestPrompt!.images.length}',
-                                style: HudText.caption.copyWith(fontSize: 10.5),
+                              const SizedBox(width: HudSpacing.sm),
+                              Expanded(
+                                child: Text(
+                                  session.latestPrompt!.text
+                                      .replaceAll(RegExp(r'\s+'), ' ')
+                                      .trim(),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: HudText.caption.copyWith(
+                                    color: HudColors.textSecondary,
+                                  ),
+                                ),
                               ),
+                              if (session.latestPrompt!.images.isNotEmpty) ...[
+                                const SizedBox(width: HudSpacing.sm),
+                                const Icon(
+                                  Icons.photo_outlined,
+                                  size: 12,
+                                  color: HudColors.textTertiary,
+                                ),
+                                const SizedBox(width: 2),
+                                Text(
+                                  '${session.latestPrompt!.images.length}',
+                                  style: HudText.caption.copyWith(fontSize: 10.5),
+                                ),
+                              ],
                             ],
-                          ],
+                          ),
                         ),
-                      ),
+                      ],
                     ],
-                  ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -1012,65 +1019,67 @@ class _SessionCard extends StatelessWidget {
   }
 }
 
-class _StatusDot extends StatelessWidget {
-  const _StatusDot({
-    required this.color,
-    required this.pulsing,
-    required this.pulse,
-  });
+class _StarButton extends StatefulWidget {
+  const _StarButton({required this.session, required this.onStar});
 
-  final Color color;
-  final bool pulsing;
-  final Animation<double> pulse;
+  final AgentSession session;
+  final VoidCallback onStar;
+
+  @override
+  State<_StarButton> createState() => _StarButtonState();
+}
+
+class _StarButtonState extends State<_StarButton>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 320),
+    );
+  }
+
+  @override
+  void didUpdateWidget(covariant _StarButton oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.session.isImportant != widget.session.isImportant) {
+      _controller.forward(from: 0);
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    const double box = 14;
-    if (!pulsing) {
-      return SizedBox(
-        width: box,
-        height: box,
-        child: Center(
-          child: Container(
-            width: 7,
-            height: 7,
-            decoration: BoxDecoration(color: color, shape: BoxShape.circle),
-          ),
+    return ScaleTransition(
+      scale: Tween<double>(begin: 1.0, end: 1.25).animate(
+        CurvedAnimation(parent: _controller, curve: Curves.elasticOut),
+      ),
+      child: IconButton(
+        onPressed: widget.onStar,
+        tooltip:
+            widget.session.isImportant ? '取消重要' : '标记为重要',
+        visualDensity: VisualDensity.compact,
+        padding: EdgeInsets.zero,
+        constraints: const BoxConstraints.tightFor(
+          width: 30,
+          height: 30,
         ),
-      );
-    }
-    return SizedBox(
-      width: box,
-      height: box,
-      child: AnimatedBuilder(
-        animation: pulse,
-        builder: (context, child) {
-          final double value = pulse.value;
-          return Stack(
-            alignment: Alignment.center,
-            children: [
-              Transform.scale(
-                scale: 1 + value * 0.9,
-                child: Opacity(
-                  opacity: (1 - value) * 0.32,
-                  child: Container(
-                    width: 9,
-                    height: 9,
-                    decoration: BoxDecoration(
-                      color: color,
-                      shape: BoxShape.circle,
-                    ),
-                  ),
-                ),
-              ),
-              child!,
-            ],
-          );
-        },
-        child: Container(
-          width: 7,
-          height: 7,
-          decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+        iconSize: 17,
+        icon: Icon(
+          widget.session.isImportant
+              ? Icons.star_rounded
+              : Icons.star_outline_rounded,
+          color: widget.session.isImportant
+              ? HudColors.important
+              : HudColors.textTertiary,
         ),
       ),
     );
@@ -1155,6 +1164,7 @@ class _EmptyList extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListView(
       physics: const AlwaysScrollableScrollPhysics(),
+      padding: const EdgeInsets.only(bottom: 32),
       children: const [
         SizedBox(height: 120),
         HudEntrance(
@@ -1201,7 +1211,7 @@ class _Footer extends StatelessWidget {
         HudSpacing.xl,
         HudSpacing.sm,
         HudSpacing.xl,
-        HudSpacing.lg,
+        HudSpacing.xl,
       ),
       decoration: const BoxDecoration(
         border: Border(top: BorderSide(color: HudColors.divider)),

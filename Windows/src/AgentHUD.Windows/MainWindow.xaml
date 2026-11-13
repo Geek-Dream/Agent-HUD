@@ -9,7 +9,7 @@
         Background="Transparent"
         BorderBrush="{ThemeResource HudBorderStrongBrush}"
         BorderThickness="1"
-        CornerRadius="14"
+        CornerRadius="{ThemeResource HudPanelRadius}"
         ActualThemeChanged="RootBorder_ActualThemeChanged">
         <Border.Resources>
             <Storyboard
@@ -39,6 +39,12 @@
             </Storyboard>
         </Border.Resources>
         <Grid x:Name="RootGrid">
+            <Grid.ChildrenTransitions>
+                <TransitionCollection>
+                    <EntranceThemeTransition />
+                    <RepositionThemeTransition />
+                </TransitionCollection>
+            </Grid.ChildrenTransitions>
             <Grid
                 x:Name="CollapsedPanel"
                 Visibility="{Binding CollapsedVisibility}">
@@ -61,7 +67,7 @@
                         Margin="0,0,9,0"
                         Padding="0"
                         Click="ExpandButton_Click"
-                        CornerRadius="9"
+                        CornerRadius="{ThemeResource HudHeroRadius}"
                         ToolTipService.ToolTip="展开 AgentHUD">
                         <FontIcon
                             FontFamily="Segoe Fluent Icons"
@@ -211,7 +217,7 @@
                             Height="34"
                             Padding="0"
                             Click="CollapseButton_Click"
-                            CornerRadius="9"
+                            CornerRadius="{ThemeResource HudHeroRadius}"
                             ToolTipService.ToolTip="收起 AgentHUD">
                             <FontIcon
                                 FontFamily="Segoe Fluent Icons"
@@ -320,6 +326,11 @@
                         Padding="9,6"
                         ColumnSpacing="3"
                         PointerPressed="DragSurface_PointerPressed">
+                        <Grid.ChildrenTransitions>
+                            <TransitionCollection>
+                                <RepositionThemeTransition />
+                            </TransitionCollection>
+                        </Grid.ChildrenTransitions>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="*" />
@@ -421,6 +432,11 @@
                             x:Name="ProviderFilterStrip"
                             MinWidth="470"
                             ColumnSpacing="3">
+                            <Grid.ChildrenTransitions>
+                                <TransitionCollection>
+                                    <RepositionThemeTransition />
+                                </TransitionCollection>
+                            </Grid.ChildrenTransitions>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="*" />
@@ -518,7 +534,7 @@
                         BorderBrush="{ThemeResource HudCompletedBrush}"
                         BorderThickness="1"
                         Canvas.ZIndex="20"
-                        CornerRadius="9"
+                        CornerRadius="{ThemeResource HudHeroRadius}"
                         Visibility="{Binding ImportantNoticeVisibility}">
                         <Grid ColumnSpacing="9">
                             <Grid.ColumnDefinitions>
@@ -546,7 +562,7 @@
                                 Padding="8,4"
                                 Click="ImportantRevealButton_Click"
                                 Content="查看"
-                                CornerRadius="6"
+                                CornerRadius="{ThemeResource HudMicroRadius}"
                                 FontSize="10.5" />
                             <Button
                                 Grid.Column="3"
@@ -588,13 +604,13 @@
                                             Background="{ThemeResource HudRaisedBrush}"
                                             BorderBrush="{ThemeResource HudBorderBrush}"
                                             BorderThickness="0"
-                                            CornerRadius="12" />
+                                            CornerRadius="{ThemeResource HudHeroRadius}" />
                                         <Border
                                             Margin="8,5"
                                             Background="{Binding StatusTintBrush}"
                                             BorderBrush="{Binding StatusBrush}"
                                             BorderThickness="1"
-                                            CornerRadius="12"
+                                            CornerRadius="{ThemeResource HudHeroRadius}"
                                             Opacity="0.58"
                                             Visibility="{Binding StatusOutlineVisibility}" />
                                         <Border
@@ -602,7 +618,7 @@
                                             Margin="8,16,0,16"
                                             HorizontalAlignment="Left"
                                             Background="{ThemeResource HudImportantBrush}"
-                                            CornerRadius="1.5"
+                                            CornerRadius="{ThemeResource HudMicroRadius}"
                                             Visibility="{Binding ImportantAccentVisibility}" />
                                         <Grid
                                             Margin="19,12,15,12"
@@ -618,7 +634,7 @@
                                                 Height="34"
                                                 VerticalAlignment="Top"
                                                 Background="{Binding StatusTintBrush}"
-                                                CornerRadius="8">
+                                                CornerRadius="{ThemeResource HudCardRadius}">
                                                 <TextBlock
                                                     HorizontalAlignment="Center"
                                                     VerticalAlignment="Center"
@@ -719,7 +735,7 @@
                                                         Height="23"
                                                         Padding="0"
                                                         Click="StarButton_Click"
-                                                        CornerRadius="6"
+                                                        CornerRadius="{ThemeResource HudMicroRadius}"
                                                         Tag="{Binding}"
                                                         ToolTipService.ToolTip="标记重要">
                                                         <FontIcon
@@ -733,7 +749,7 @@
                                                         Padding="7,3"
                                                         VerticalAlignment="Center"
                                                         Background="{Binding StatusTintBrush}"
-                                                        CornerRadius="6">
+                                                        CornerRadius="{ThemeResource HudMicroRadius}">
                                                         <TextBlock
                                                             FontSize="9.5"
                                                             FontWeight="SemiBold"
@@ -858,17 +874,17 @@
                                     Background="{ThemeResource HudRaisedBrush}"
                                     BorderBrush="{ThemeResource HudBorderBrush}"
                                     BorderThickness="1"
-                                    CornerRadius="10"
+                                    CornerRadius="{ThemeResource HudCardRadius}"
                                     Opacity="0.35">
                                     <Grid ColumnSpacing="10">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="Auto" />
                                             <ColumnDefinition Width="*" />
                                         </Grid.ColumnDefinitions>
-                                        <Border Width="32" Height="32" Background="{ThemeResource HudControlFillBrush}" CornerRadius="8" />
+                                        <Border Width="32" Height="32" Background="{ThemeResource HudControlFillBrush}"                                 CornerRadius="{ThemeResource HudCardRadius}" />
                                         <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="7">
-                                            <Border Width="150" Height="8" HorizontalAlignment="Left" Background="{ThemeResource HudControlFillBrush}" CornerRadius="4" />
-                                            <Border Width="100" Height="6" HorizontalAlignment="Left" Background="{ThemeResource HudControlFillBrush}" CornerRadius="3" />
+                                            <Border Width="150" Height="8" HorizontalAlignment="Left" Background="{ThemeResource HudControlFillBrush}" CornerRadius="{ThemeResource HudMicroRadius}" />
+                                            <Border Width="100" Height="6" HorizontalAlignment="Left" Background="{ThemeResource HudControlFillBrush}" CornerRadius="{ThemeResource HudMicroRadius}" />
                                         </StackPanel>
                                     </Grid>
                                 </Border>
@@ -879,17 +895,17 @@
                                     Background="{ThemeResource HudRaisedBrush}"
                                     BorderBrush="{ThemeResource HudBorderBrush}"
                                     BorderThickness="1"
-                                    CornerRadius="10"
+                                    CornerRadius="{ThemeResource HudCardRadius}"
                                     Opacity="0.35">
                                     <Grid ColumnSpacing="10">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="Auto" />
                                             <ColumnDefinition Width="*" />
                                         </Grid.ColumnDefinitions>
-                                        <Border Width="32" Height="32" Background="{ThemeResource HudControlFillBrush}" CornerRadius="8" />
+                                        <Border Width="32" Height="32" Background="{ThemeResource HudControlFillBrush}"                                 CornerRadius="{ThemeResource HudCardRadius}" />
                                         <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="7">
-                                            <Border Width="150" Height="8" HorizontalAlignment="Left" Background="{ThemeResource HudControlFillBrush}" CornerRadius="4" />
-                                            <Border Width="100" Height="6" HorizontalAlignment="Left" Background="{ThemeResource HudControlFillBrush}" CornerRadius="3" />
+                                            <Border Width="150" Height="8" HorizontalAlignment="Left" Background="{ThemeResource HudControlFillBrush}" CornerRadius="{ThemeResource HudMicroRadius}" />
+                                            <Border Width="100" Height="6" HorizontalAlignment="Left" Background="{ThemeResource HudControlFillBrush}" CornerRadius="{ThemeResource HudMicroRadius}" />
                                         </StackPanel>
                                     </Grid>
                                 </Border>
@@ -900,17 +916,17 @@
                                     Background="{ThemeResource HudRaisedBrush}"
                                     BorderBrush="{ThemeResource HudBorderBrush}"
                                     BorderThickness="1"
-                                    CornerRadius="10"
+                                    CornerRadius="{ThemeResource HudCardRadius}"
                                     Opacity="0.35">
                                     <Grid ColumnSpacing="10">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="Auto" />
                                             <ColumnDefinition Width="*" />
                                         </Grid.ColumnDefinitions>
-                                        <Border Width="32" Height="32" Background="{ThemeResource HudControlFillBrush}" CornerRadius="8" />
+                                        <Border Width="32" Height="32" Background="{ThemeResource HudControlFillBrush}"                                 CornerRadius="{ThemeResource HudCardRadius}" />
                                         <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="7">
-                                            <Border Width="150" Height="8" HorizontalAlignment="Left" Background="{ThemeResource HudControlFillBrush}" CornerRadius="4" />
-                                            <Border Width="100" Height="6" HorizontalAlignment="Left" Background="{ThemeResource HudControlFillBrush}" CornerRadius="3" />
+                                            <Border Width="150" Height="8" HorizontalAlignment="Left" Background="{ThemeResource HudControlFillBrush}" CornerRadius="{ThemeResource HudMicroRadius}" />
+                                            <Border Width="100" Height="6" HorizontalAlignment="Left" Background="{ThemeResource HudControlFillBrush}" CornerRadius="{ThemeResource HudMicroRadius}" />
                                         </StackPanel>
                                     </Grid>
                                 </Border>
@@ -1055,7 +1071,7 @@
                                             Width="38"
                                             Height="38"
                                             Background="{Binding StatusTintBrush}"
-                                            CornerRadius="9">
+                                            CornerRadius="{ThemeResource HudHeroRadius}">
                                             <TextBlock
                                                 HorizontalAlignment="Center"
                                                 VerticalAlignment="Center"
@@ -1096,7 +1112,7 @@
                                             VerticalAlignment="Top"
                                             Click="OpenProjectButton_Click"
                                             Content="打开目录"
-                                            CornerRadius="7"
+                                            CornerRadius="{ThemeResource HudControlRadius}"
                                             FontSize="10" />
                                     </Grid>
 
@@ -1176,7 +1192,7 @@
                                         <Border
                                             Padding="11"
                                             Background="{ThemeResource HudControlFillBrush}"
-                                            CornerRadius="7">
+                                            CornerRadius="{ThemeResource HudControlRadius}">
                                             <TextBlock
                                                 FontSize="11.5"
                                                 IsTextSelectionEnabled="True"
@@ -1199,14 +1215,14 @@
                                                     <Button
                                                         Padding="5"
                                                         Click="PromptImageButton_Click"
-                                                        CornerRadius="8"
+                                                        CornerRadius="{ThemeResource HudCardRadius}"
                                                         Tag="{Binding}">
                                                         <StackPanel Spacing="4">
                                                             <Border
                                                                 Width="104"
                                                                 Height="66"
                                                                 Background="{ThemeResource HudControlFillBrush}"
-                                                                CornerRadius="6">
+                                                                CornerRadius="{ThemeResource HudMicroRadius}">
                                                                 <Image
                                                                     Stretch="UniformToFill"
                                                                     Source="{Binding ImageSource}" />
@@ -1321,7 +1337,7 @@
                                             Margin="0,2,0,8"
                                             HorizontalAlignment="Stretch"
                                             Click="LoadMoreButton_Click"
-                                            CornerRadius="7"
+                                            CornerRadius="{ThemeResource HudControlRadius}"
                                             Visibility="{Binding LoadMoreVisibility}">
                                             <Grid ColumnSpacing="8">
                                                 <Grid.ColumnDefinitions>
@@ -1375,7 +1391,7 @@
                                     Padding="7,2"
                                     Click="ClearManualTitleButton_Click"
                                     Content="恢复自动标题"
-                                    CornerRadius="5"
+                                    CornerRadius="{ThemeResource HudMicroRadius}"
                                     FontSize="9"
                                     Visibility="{Binding ManualTitleActionVisibility}" />
                             </Grid>

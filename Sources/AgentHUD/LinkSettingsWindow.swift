@@ -41,6 +41,11 @@ final class LinkSettingsModel: ObservableObject {
         await refreshDevices()
     }
 
+    func setConversation(deviceId: String, enabled: Bool) async {
+        await server.setConversationEnabled(deviceId: deviceId, enabled: enabled)
+        await refreshDevices()
+    }
+
     private static func qrCode(payload: String) -> NSImage? {
         guard let filter = CIFilter(name: "CIQRCodeGenerator") else { return nil }
         filter.setValue(Data(payload.utf8), forKey: "inputMessage")
@@ -148,22 +153,37 @@ private struct LinkSettingsView: View {
 
                 Text("已关联设备")
                     .font(.headline)
-                ForEach(model.devices, id: \.id) { device in
-                    HStack {
-                        VStack(alignment: .leading) {
-                            Text(device.name)
-                            Text(device.pairedAt.formatted())
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
+                ForEach($model.devices, id: \.id) { $device in
+                    VStack(alignment: .leading, spacing: 8) {
+                        HStack {
+                            VStack(alignment: .leading) {
+                                Text(device.name)
+                                Text(device.pairedAt.formatted())
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                            Spacer()
+                            Button("撤销", role: .destructive) {
+                                Task { await model.revoke(device.id) }
+                            }
                         }
-                        Spacer()
-                        Button("撤销", role: .destructive) {
-                            Task { await model.revoke(device.id) }
+                        Toggle(isOn: $device.conversationEnabled) {
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text("允许对话模式")
+                                    .font(.callout)
+                                Text("开启后，该手机可向此电脑的 Agent 会话发送文本任务。")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
+                        .toggleStyle(.switch)
+                        .onChange(of: device.conversationEnabled) { _, enabled in
+                            Task { await model.setConversation(deviceId: device.id, enabled: enabled) }
                         }
                     }
                 }
 
-                Text("首版仅提供只读监控，不发送 API Key、完整路径、原始日志或图片。请在防火墙中仅允许专用网络访问。")
+                Text("首版仅提供只读监控与已授权设备的文本任务下发，不发送 API Key、完整路径、原始日志或图片。请在防火墙中仅允许专用网络访问。")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }

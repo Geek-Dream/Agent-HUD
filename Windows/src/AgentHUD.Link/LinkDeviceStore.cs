@@ -100,6 +100,28 @@ public sealed class LinkDeviceStore
         }
     }
 
+    public LinkedDevice? GetDevice(string deviceId)
+    {
+        lock (_gate)
+        {
+            return _devices.GetValueOrDefault(deviceId);
+        }
+    }
+
+    public bool SetConversationEnabled(string deviceId, bool enabled)
+    {
+        lock (_gate)
+        {
+            if (!_devices.TryGetValue(deviceId, out var device))
+            {
+                return false;
+            }
+            _devices[deviceId] = device with { ConversationEnabled = enabled };
+            SaveDevices();
+            return true;
+        }
+    }
+
     public bool Revoke(string deviceId)
     {
         lock (_gate)

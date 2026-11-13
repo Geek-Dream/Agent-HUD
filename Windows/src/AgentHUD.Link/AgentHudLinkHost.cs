@@ -71,12 +71,14 @@ public sealed class AgentHudLinkHost : IAsyncDisposable
                 return;
             }
 
-            if (!TryAuthenticate(context, out _, out _))
+            var device = TryAuthenticate(context);
+            if (device is null)
             {
                 context.Response.StatusCode = StatusCodes.Status401Unauthorized;
                 await context.Response.WriteAsJsonAsync(new { error = "unauthorized" });
                 return;
             }
+            context.Items["AgentHUD.Device"] = device;
             await next();
         });
 
@@ -96,15 +98,25 @@ public sealed class AgentHudLinkHost : IAsyncDisposable
                 : Results.Ok(CreatePairingResult(issued));
         });
 
-        app.MapGet("/v1/status", () =>
+        app.MapGet("/v1/status", (HttpContext context) =>
         {
+            var device = TryAuthenticate(context);
+            if (device is null)
+            {
+                return Results.Json(new { error = "unauthorized" }, statusCode: StatusCodes.Status401Unauthorized);
+            }
             var snapshot = _snapshotSource.GetMonitoringSnapshot();
+            var capabilities = new List<string> { "monitor", "refresh", "revision", "write", "prompt", "images" };
+            if (device.ConversationEnabled)
+            {
+                capabilities.Add("conversation");
+            }
             return Results.Ok(new
             {
                 protocol = 1,
                 instanceId = _devices.InstanceId,
                 instanceName = _devices.InstanceName,
-                capabilities = new[] { "monitor", "write", "prompt", "images" },
+                capabilities = capabilities.ToArray(),
                 revision = snapshot.Revision,
                 scannedAt = snapshot.ScannedAt,
                 serverTime = DateTimeOffset.Now,
@@ -224,6 +236,58 @@ public sealed class AgentHudLinkHost : IAsyncDisposable
                 : Results.File(payload.Data, payload.ContentType);
         });
 
+        app.MapPost("/v1/sessions/{id}/messages", (string id, MessageRequest request, HttpContext context) =>
+        {
+            var device = context.Items["AgentHUD.Device"] as LinkedDevice;
+            if (device is null || !device.ConversationEnabled)
+            {
+                return Results.Json(
+                    new { error = "conversation_disabled" },
+                    statusCode: StatusCodes.Status403Forbidden);
+            }
+
+            var snapshot = _snapshotSource.GetMonitoringSnapshot();
+            var session = FindSession(snapshot, id);
+            if (session is null)
+            {
+                return Results.NotFound(new { error = "session_not_found" });
+            }
+
+            var clientMessageId = request.ClientMessageId?.Trim() ?? string.Empty;
+            var text = request.Text ?? string.Empty;
+            if (string.IsNullOrEmpty(clientMessageId) || string.IsNullOrWhiteSpace(text))
+            {
+                return Results.BadRequest(new { error = "invalid_message" });
+            }
+
+            var deliveryId = _snapshotSource.SendMessage(session.Id, clientMessageId, text);
+            if (string.IsNullOrEmpty(deliveryId))
+            {
+                return Results.Json(
+                    new { error = "unsupported" },
+                    statusCode: StatusCodes.Status501NotImplemented);
+            }
+
+            return Results.Accepted(
+                $"/v1/deliveries/{deliveryId}",
+                new MessageResponse(deliveryId, clientMessageId, "accepted"));
+        });
+
+        app.MapGet("/v1/deliveries/{id}", (string id) =>
+        {
+            var status = _snapshotSource.GetDeliveryStatus(id);
+            if (status is null)
+            {
+                return Results.NotFound(new { error = "not_found" });
+            }
+            var (deliveryStatus, error) = status.Value;
+            return Results.Ok(new DeliveryResponse(
+                id,
+                string.Empty,
+                deliveryStatus.ToString().ToLowerInvariant(),
+                error?.ToString().ToLowerInvariant()));
+        });
+
         _app = app;
         await _app.StartAsync();
         var server = _app.Services.GetRequiredService<IServer>();
@@ -274,6 +338,11 @@ public sealed class AgentHudLinkHost : IAsyncDisposable
         return Devices.Devices;
     }
 
+    public bool SetConversationEnabled(string deviceId, bool enabled)
+    {
+        return Devices.SetConversationEnabled(deviceId, enabled);
+    }
+
     public async ValueTask DisposeAsync()
     {
         if (_app is not null)
@@ -287,16 +356,24 @@ public sealed class AgentHudLinkHost : IAsyncDisposable
         _snapshotSource = null;
     }
 
-    private PairingResult CreatePairingResult(IssuedDeviceToken issued) => new(
-        issued.Device.Id,
-        issued.Token,
-        _devices!.InstanceId,
-        _devices.InstanceName,
-        1,
-        new[] { "monitor", "write", "prompt", "images" },
-        Fingerprint,
-        LinkNetwork.LocalIPv4Addresses(),
-        Port);
+    private PairingResult CreatePairingResult(IssuedDeviceToken issued)
+    {
+        var capabilities = new List<string> { "monitor", "refresh", "revision", "write", "prompt", "images" };
+        if (issued.Device.ConversationEnabled)
+        {
+            capabilities.Add("conversation");
+        }
+        return new PairingResult(
+            issued.Device.Id,
+            issued.Token,
+            _devices!.InstanceId,
+            _devices.InstanceName,
+            1,
+            capabilities,
+            Fingerprint,
+            LinkNetwork.LocalIPv4Addresses(),
+            Port);
+    }
 
     private MonitoringSessionSnapshot ToPublicSession(MonitoringSessionSnapshot session) =>
         session with { Id = _devices!.PublicSessionId(session.Id) };
@@ -305,25 +382,41 @@ public sealed class AgentHudLinkHost : IAsyncDisposable
         snapshot.Sessions.FirstOrDefault(item =>
             _devices!.PublicSessionId(item.Id).Equals(publicId, StringComparison.OrdinalIgnoreCase));
 
-    private bool TryAuthenticate(HttpContext context, out string deviceId, out string token)
+    private LinkedDevice? TryAuthenticate(HttpContext context)
     {
-        deviceId = string.Empty;
-        token = string.Empty;
         var header = context.Request.Headers.Authorization.ToString();
         if (!header.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
         {
-            return false;
+            return null;
         }
 
         var credential = header[7..].Trim();
         var separator = credential.IndexOf('.');
         if (separator <= 0 || separator == credential.Length - 1)
         {
-            return false;
+            return null;
         }
 
-        deviceId = credential[..separator];
-        token = credential[(separator + 1)..];
-        return _devices!.Validate(deviceId, token);
+        var deviceId = credential[..separator];
+        var token = credential[(separator + 1)..];
+        if (!_devices!.Validate(deviceId, token))
+        {
+            return null;
+        }
+        return _devices.GetDevice(deviceId);
+    }
+
+    private bool TryAuthenticate(HttpContext context, out string deviceId, out string token)
+    {
+        deviceId = string.Empty;
+        token = string.Empty;
+        var device = TryAuthenticate(context);
+        if (device is null)
+        {
+            return false;
+        }
+        deviceId = device.Id;
+        token = string.Empty;
+        return true;
     }
 }

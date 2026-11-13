@@ -16,7 +16,7 @@
                     <SolidColorBrush x:Key="HudControlFillBrush" Color="#14101826" />
                     <SolidColorBrush x:Key="HudControlHoverBrush" Color="#241D2938" />
                     <SolidColorBrush x:Key="HudBorderBrush" Color="#38101826" />
-                    <SolidColorBrush x:Key="HudBorderStrongBrush" Color="#26101826" />
+                    <SolidColorBrush x:Key="HudBorderStrongBrush" Color="#4A101826" />
                     <SolidColorBrush x:Key="HudDividerBrush" Color="#30101826" />
                     <SolidColorBrush x:Key="HudTextPrimaryBrush" Color="#09111E" />
                     <SolidColorBrush x:Key="HudTextSecondaryBrush" Color="#354052" />
@@ -47,7 +47,7 @@
                     <SolidColorBrush x:Key="HudControlFillBrush" Color="#24FFFFFF" />
                     <SolidColorBrush x:Key="HudControlHoverBrush" Color="#38FFFFFF" />
                     <SolidColorBrush x:Key="HudBorderBrush" Color="#42FFFFFF" />
-                    <SolidColorBrush x:Key="HudBorderStrongBrush" Color="#26FFFFFF" />
+                    <SolidColorBrush x:Key="HudBorderStrongBrush" Color="#50FFFFFF" />
                     <SolidColorBrush x:Key="HudDividerBrush" Color="#18FFFFFF" />
                     <SolidColorBrush x:Key="HudTextPrimaryBrush" Color="#FFFFFF" />
                     <SolidColorBrush x:Key="HudTextSecondaryBrush" Color="#D6DEE9" />
@@ -103,6 +103,34 @@
                     <SolidColorBrush x:Key="HudNeutralTintBrush" Color="#FF202020" />
                 </ResourceDictionary>
             </ResourceDictionary.ThemeDictionaries>
+
+            <CornerRadius x:Key="HudPanelRadius">14</CornerRadius>
+            <CornerRadius x:Key="HudHeroRadius">12</CornerRadius>
+            <CornerRadius x:Key="HudCardRadius">10</CornerRadius>
+            <CornerRadius x:Key="HudControlRadius">7</CornerRadius>
+            <CornerRadius x:Key="HudMicroRadius">5</CornerRadius>
+
+            <x:Double x:Key="HudSpacingXXS">2</x:Double>
+            <x:Double x:Key="HudSpacingXS">4</x:Double>
+            <x:Double x:Key="HudSpacingSM">6</x:Double>
+            <x:Double x:Key="HudSpacingMD">8</x:Double>
+            <x:Double x:Key="HudSpacingLG">12</x:Double>
+            <x:Double x:Key="HudSpacingXL">16</x:Double>
+            <x:Double x:Key="HudSpacingXXL">24</x:Double>
+
+            <x:Double x:Key="HudFontSizeDisplay">20</x:Double>
+            <x:Double x:Key="HudFontSizeTitle">13</x:Double>
+            <x:Double x:Key="HudFontSizeBody">12</x:Double>
+            <x:Double x:Key="HudFontSizeLabel">11</x:Double>
+            <x:Double x:Key="HudFontSizeCaption">10.5</x:Double>
+            <x:Double x:Key="HudFontSizeMicro">9.5</x:Double>
+            <x:Double x:Key="HudFontSizeAgent">8.5</x:Double>
+
+            <Duration x:Key="HudDurationEnter">0:0:0.32</Duration>
+            <Duration x:Key="HudDurationExit">0:0:0.14</Duration>
+            <Duration x:Key="HudDurationState">0:0:0.30</Duration>
+            <Duration x:Key="HudDurationPage">0:0:0.18</Duration>
+
 
             <Style x:Key="HudIconButtonStyle" TargetType="Button">
                 <Setter Property="Width" Value="28" />

@@ -23,6 +23,18 @@ class SessionDetailPage extends StatefulWidget {
 }
 
 class _SessionDetailPageState extends State<SessionDetailPage> {
+  final TextEditingController _messageController = TextEditingController();
+  final FocusNode _messageFocus = FocusNode();
+  String? _lastClientMessageId;
+  bool _sending = false;
+
+  @override
+  void dispose() {
+    _messageController.dispose();
+    _messageFocus.dispose();
+    super.dispose();
+  }
+
   Future<void> _toggleImportant(AgentSession session) async {
     final bool applied = await widget.controller.setImportant(
       session,
@@ -92,6 +104,173 @@ class _SessionDetailPageState extends State<SessionDetailPage> {
     );
   }
 
+
+  Future<void> _sendMessage(AgentSession session) async {
+    final String text = _messageController.text.trim();
+    if (text.isEmpty || _sending) return;
+    final String clientMessageId =
+        _lastClientMessageId ?? DateTime.now().millisecondsSinceEpoch.toString();
+    _lastClientMessageId = clientMessageId;
+    setState(() => _sending = true);
+    try {
+      final MessageDelivery? delivery = await widget.controller.sendMessage(
+        session,
+        clientMessageId,
+        text,
+      );
+      if (delivery == null && mounted) {
+        _showActionError();
+        return;
+      }
+      if (delivery != null && delivery.status != 'failed' && mounted) {
+        _messageController.clear();
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _sending = false);
+      }
+    }
+  }
+
+  Widget _buildMessageComposer(AgentSession session) {
+    final bool supportsConversation = widget.controller.supportsConversation;
+    if (!supportsConversation) {
+      return const SizedBox.shrink();
+    }
+    final ConversationState? conversation = session.conversation;
+    final bool canSend = session.canSendMessage;
+    final String? reason = conversation?.reason;
+    final bool waitingUser = conversation?.state == 'waitingUser';
+
+    return Container(
+      padding: const EdgeInsets.fromLTRB(
+        HudSpacing.xl,
+        HudSpacing.md,
+        HudSpacing.xl,
+        HudSpacing.xl,
+      ),
+      decoration: BoxDecoration(
+        color: HudColors.surface,
+        border: Border(
+          top: BorderSide(color: HudColors.border),
+        ),
+      ),
+      child: SafeArea(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (waitingUser)
+              Padding(
+                padding: const EdgeInsets.only(bottom: HudSpacing.sm),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.info_outline_rounded,
+                      size: 13,
+                      color: HudColors.waiting,
+                    ),
+                    const SizedBox(width: HudSpacing.sm),
+                    Expanded(
+                      child: Text(
+                        'Agent 正在等待确认，你发送的内容将作为当前问题的回复。',
+                        style: HudText.caption.copyWith(
+                          color: HudColors.waiting,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            if (!canSend && reason != null)
+              Padding(
+                padding: const EdgeInsets.only(bottom: HudSpacing.sm),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.block_outlined,
+                      size: 13,
+                      color: HudColors.failed,
+                    ),
+                    const SizedBox(width: HudSpacing.sm),
+                    Expanded(
+                      child: Text(
+                        reason,
+                        style: HudText.caption.copyWith(
+                          color: HudColors.failed,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: _messageController,
+                    focusNode: _messageFocus,
+                    enabled: canSend && !_sending,
+                    minLines: 1,
+                    maxLines: 5,
+                    maxLength: 4000,
+                    textInputAction: TextInputAction.newline,
+                    style: HudText.body,
+                    decoration: InputDecoration(
+                      hintText: canSend ? '输入任务…' : '当前无法发送',
+                      filled: true,
+                      fillColor: HudColors.controlFill,
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: HudSpacing.lg,
+                        vertical: HudSpacing.md,
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(HudRadii.control),
+                        borderSide: BorderSide(color: HudColors.border),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(HudRadii.control),
+                        borderSide: BorderSide(color: HudColors.border),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(HudRadii.control),
+                        borderSide: BorderSide(color: HudColors.working),
+                      ),
+                      counterText: '',
+                    ),
+                    onSubmitted: (_) => _sendMessage(session),
+                  ),
+                ),
+                const SizedBox(width: HudSpacing.md),
+                FilledButton(
+                  onPressed:
+                      canSend && !_sending ? () => _sendMessage(session) : null,
+                  style: FilledButton.styleFrom(
+                    minimumSize: const Size(48, 48),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(HudRadii.control),
+                    ),
+                  ),
+                  child: _sending
+                      ? const SizedBox(
+                          width: 18,
+                          height: 18,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: Colors.white,
+                          ),
+                        )
+                      : const Icon(Icons.send_rounded, size: 20),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
@@ -138,15 +317,18 @@ class _SessionDetailPageState extends State<SessionDetailPage> {
                 end: Alignment.bottomCenter,
               ),
             ),
-            child: ListView(
-              padding: const EdgeInsets.fromLTRB(
-                HudSpacing.xl,
-                HudSpacing.md,
-                HudSpacing.xl,
-                HudSpacing.xxl,
-              ),
+            child: Column(
               children: [
-                HudEntrance(
+                Expanded(
+                  child: ListView(
+                    padding: const EdgeInsets.fromLTRB(
+                      HudSpacing.xl,
+                      HudSpacing.md,
+                      HudSpacing.xl,
+                      HudSpacing.xxl,
+                    ),
+                    children: [
+                      HudEntrance(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
@@ -307,7 +489,7 @@ class _SessionDetailPageState extends State<SessionDetailPage> {
                           Flexible(
                             child: Text(
                               canEdit
-                                  ? '局域网直连 · 仅用于重命名、星标与查看，不会执行任务或修改会话状态。'
+                                  ? '局域网直连 · 可用于重命名、星标、查看与已授权的文本任务下发。'
                                   : '此页面仅用于只读监控，不会向电脑发送控制命令。',
                               textAlign: TextAlign.center,
                               style: HudText.caption,
@@ -321,7 +503,11 @@ class _SessionDetailPageState extends State<SessionDetailPage> {
               ],
             ),
           ),
-        );
+          _buildMessageComposer(session),
+        ],
+      ),
+    ),
+  );
       },
     );
   }

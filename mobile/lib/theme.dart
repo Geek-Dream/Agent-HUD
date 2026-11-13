@@ -89,6 +89,47 @@ class HudSpacing {
   static const double xxl = 24;
 }
 
+/// ---------------------------------------------------------------------------
+/// Surface elevation / shadow tokens – pressed → raised → floating
+/// ---------------------------------------------------------------------------
+class HudElevation {
+  const HudElevation._();
+
+  static const List<BoxShadow> none = <BoxShadow>[];
+
+  static List<BoxShadow> pressed(Color base) => <BoxShadow>[
+        BoxShadow(
+          color: base.withValues(alpha: 0.06),
+          blurRadius: 2,
+          offset: const Offset(0, 1),
+        ),
+      ];
+
+  static List<BoxShadow> card(Color base) => <BoxShadow>[
+        BoxShadow(
+          color: base.withValues(alpha: 0.10),
+          blurRadius: 8,
+          offset: const Offset(0, 3),
+        ),
+      ];
+
+  static List<BoxShadow> floating(Color base) => <BoxShadow>[
+        BoxShadow(
+          color: base.withValues(alpha: 0.14),
+          blurRadius: 20,
+          offset: const Offset(0, 8),
+        ),
+      ];
+
+  static List<BoxShadow> glow(Color color) => <BoxShadow>[
+        BoxShadow(
+          color: color.withValues(alpha: 0.18),
+          blurRadius: 14,
+          spreadRadius: 1,
+        ),
+      ];
+}
+
 class HudMotion {
   const HudMotion._();
 

@@ -54,6 +54,16 @@ abstract interface class SessionActionsApi {
     String id,
     int index,
   );
+  Future<MessageDelivery> sendMessage(
+    LinkedDevice device,
+    String id,
+    String clientMessageId,
+    String text,
+  );
+  Future<MessageDelivery> deliveryStatus(
+    LinkedDevice device,
+    String deliveryId,
+  );
 }
 
 class LinkApi implements MonitoringApi, SessionActionsApi {
@@ -65,7 +75,11 @@ class LinkApi implements MonitoringApi, SessionActionsApi {
     return host.isEmpty ? system : '$system · $host';
   }
 
-  Future<LinkedDevice> completeQr(PairingOffer offer, String deviceName) async {
+  Future<LinkedDevice> completeQr(
+    PairingOffer offer,
+    String deviceName, {
+    bool preferIpv6 = false,
+  }) async {
     final value = await _postOnAllAddresses(
       offer.addresses,
       offer.port,
@@ -77,7 +91,7 @@ class LinkApi implements MonitoringApi, SessionActionsApi {
         'deviceName': deviceName,
       },
     );
-    return LinkedDevice.fromPairing(value);
+    return LinkedDevice.fromPairing(value, preferIpv6: preferIpv6);
   }
 
   Future<LinkedDevice> completeCode({
@@ -207,6 +221,39 @@ class LinkApi implements MonitoringApi, SessionActionsApi {
       timeout: const Duration(seconds: 20),
     );
     return value!;
+  }
+
+  @override
+  Future<MessageDelivery> sendMessage(
+    LinkedDevice device,
+    String id,
+    String clientMessageId,
+    String text,
+  ) async {
+    final value = await _postOnAllAddresses(
+      device.addresses,
+      device.port,
+      '/v1/sessions/${Uri.encodeComponent(id)}/messages',
+      device.fingerprint,
+      {
+        'clientMessageId': clientMessageId,
+        'text': text,
+      },
+      authorization: device.authorization,
+    );
+    return MessageDelivery.fromJson(value);
+  }
+
+  @override
+  Future<MessageDelivery> deliveryStatus(
+    LinkedDevice device,
+    String deliveryId,
+  ) async {
+    final value = await _getOnAllAddresses(
+      device,
+      '/v1/deliveries/${Uri.encodeComponent(deliveryId)}',
+    );
+    return MessageDelivery.fromJson(value.body!);
   }
 
   Future<Map<String, dynamic>> _postOnAllAddresses(

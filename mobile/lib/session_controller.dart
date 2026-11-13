@@ -34,6 +34,10 @@ class SessionController extends ChangeNotifier {
   bool get supportsActions => status?.supportsActions ?? false;
   bool get supportsPrompt => status?.supportsPrompt ?? false;
   bool get supportsImages => status?.supportsImages ?? false;
+  bool get supportsConversation => status?.supportsConversation ?? false;
+
+  final Map<String, MessageDelivery> _deliveries = {};
+  final Map<String, Timer> _deliveryPollers = {};
 
   List<AgentSession> get sessions {
     final filtered = _sessions.where((session) {
@@ -252,6 +256,76 @@ class SessionController extends ChangeNotifier {
     }
   }
 
+  Future<MessageDelivery?> sendMessage(
+    AgentSession session,
+    String clientMessageId,
+    String text,
+  ) async {
+    final SessionActionsApi? actions = _actions;
+    if (actions == null || !supportsConversation) {
+      actionError = '当前电脑或设备未开启对话模式。';
+      notifyListeners();
+      return null;
+    }
+    if (!session.canSendMessage) {
+      actionError = _conversationReason(session) ?? '当前会话无法接收消息。';
+      notifyListeners();
+      return null;
+    }
+    actionError = null;
+    notifyListeners();
+    try {
+      final MessageDelivery delivery = await actions.sendMessage(
+        device,
+        session.id,
+        clientMessageId,
+        text,
+      );
+      _deliveries[delivery.deliveryId] = delivery;
+      notifyListeners();
+      _pollDelivery(delivery.deliveryId);
+      return delivery;
+    } catch (exception) {
+      actionError = '发送失败：${_message(exception)}';
+      notifyListeners();
+      return null;
+    }
+  }
+
+  MessageDelivery? deliveryStatus(String deliveryId) => _deliveries[deliveryId];
+
+  void _pollDelivery(String deliveryId) {
+    _deliveryPollers[deliveryId]?.cancel();
+    _deliveryPollers[deliveryId] = Timer.periodic(
+      const Duration(seconds: 1),
+      (Timer timer) async {
+        final SessionActionsApi? actions = _actions;
+        if (actions == null) {
+          timer.cancel();
+          return;
+        }
+        try {
+          final MessageDelivery delivery =
+              await actions.deliveryStatus(device, deliveryId);
+          _deliveries[deliveryId] = delivery;
+          if (!_isDisposed) notifyListeners();
+          if (delivery.isFinal) {
+            timer.cancel();
+            _deliveryPollers.remove(deliveryId);
+          }
+        } catch (exception) {
+          timer.cancel();
+          _deliveryPollers.remove(deliveryId);
+        }
+      },
+    );
+  }
+
+  String? _conversationReason(AgentSession session) {
+    if (session.conversation == null) return null;
+    return session.conversation!.reason;
+  }
+
   void clearActionError() {
     if (actionError == null) return;
     actionError = null;
@@ -275,6 +349,10 @@ class SessionController extends ChangeNotifier {
   void dispose() {
     _isDisposed = true;
     _timer?.cancel();
+    for (final Timer timer in _deliveryPollers.values) {
+      timer.cancel();
+    }
+    _deliveryPollers.clear();
     _api.close();
     super.dispose();
   }

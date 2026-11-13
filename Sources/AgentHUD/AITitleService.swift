@@ -7,9 +7,11 @@ struct AITitleRequest {
     let prompt: String
     let projectName: String
     let images: [SessionImageAttachment]
+    var previousPrompt: String = ""
+    var supportsVision: Bool = true
 
     var rawFingerprint: String {
-        let imageSources = images.map { attachment in
+        let imageSources = supportsVision ? images.map { attachment in
             switch attachment.source {
             case .localPath(let path):
                 return "path:\(path)"
@@ -18,9 +20,10 @@ struct AITitleRequest {
             case .unavailable:
                 return "unavailable"
             }
-        }
+        } : ["vision:off:\(images.count)"]
         return AITitleHash.sha256(
-            ([sessionID, prompt, projectName] + imageSources).joined(separator: "\u{001F}")
+            ([sessionID, prompt, previousPrompt, projectName, supportsVision ? "vision:on" : "vision:off"] + imageSources)
+                .joined(separator: "\u{001F}")
         )
     }
 }
@@ -45,6 +48,29 @@ struct URLSessionAITitleTransport: AITitleTransport {
         let (data, response) = try await session.data(for: request)
         let statusCode = (response as? HTTPURLResponse)?.statusCode ?? 0
         return AITitleHTTPResponse(data: data, statusCode: statusCode)
+    }
+}
+
+/// 判断某次用户输入是否值得请求 AI 标题。
+///
+/// 首轮提问只有本次输入，直接用本次生成；首轮就是“继续”这类续接语时没有可依据的任务内容，
+/// 请求 AI 只会得到臆造的标题，因此跳过并回退本地标题。
+enum AITitleEligibility {
+    static func previousPrompt(
+        currentPrompt: String?,
+        hasImages: Bool,
+        latestObjective: String?
+    ) -> String? {
+        let previous = latestObjective.map {
+            TextTools.normalizedWhitespace($0)
+        } ?? ""
+        if !previous.isEmpty, !TextTools.isContinuationPrompt(previous) {
+            return String(previous.prefix(2_000))
+        }
+        if let currentPrompt, TextTools.isContinuationPrompt(currentPrompt), !hasImages {
+            return nil
+        }
+        return ""
     }
 }
 
@@ -110,10 +136,12 @@ actor AITitleService {
             [
                 prepared.request.sessionID,
                 prepared.request.prompt,
+                prepared.request.previousPrompt,
                 prepared.request.projectName,
                 configuration.chatCompletionsURL?.absoluteString ?? "",
                 configuration.model,
-                prepared.imageFingerprint
+                prepared.imageFingerprint,
+                prepared.request.supportsVision ? "vision:on" : "vision:off"
             ].joined(separator: "\u{001E}")
         )
 
@@ -125,24 +153,11 @@ actor AITitleService {
         }
 
         do {
-            let request = try AITitleRequestFactory.makeURLRequest(
+            let title = try await fetchTitle(
                 prepared: prepared,
                 configuration: configuration,
                 apiKey: apiKey
             )
-            let response = try await transport.send(request)
-            guard (200..<300).contains(response.statusCode) else {
-                throw AITitleServiceError.httpStatus(response.statusCode)
-            }
-            let rawTitle = try AITitleResponseParser.title(from: response.data)
-            guard let title = AITitleOutputSanitizer.sanitize(
-                rawTitle,
-                originalPrompt: prepared.request.prompt,
-                projectName: prepared.request.projectName
-            ) else {
-                throw AITitleServiceError.invalidResponse
-            }
-
             titles[cacheKey] = CachedAITitle(title: title, createdAt: now())
             failures.removeValue(forKey: cacheKey)
             return title
@@ -152,6 +167,66 @@ actor AITitleService {
             )
             throw error
         }
+    }
+
+    /// 带图请求失败时自动去掉图片重试一次，避免不识别图片的模型完全拿不到标题。
+    private func fetchTitle(
+        prepared: PreparedAITitleRequest,
+        configuration: AIConfiguration,
+        apiKey: String
+    ) async throws -> String {
+        do {
+            return try await requestTitle(
+                prepared: prepared,
+                configuration: configuration,
+                apiKey: apiKey
+            )
+        } catch {
+            guard prepared.request.supportsVision, !prepared.imageDataURLs.isEmpty else {
+                throw error
+            }
+            let textOnly = try AITitleRequestFactory.prepare(
+                AITitleRequest(
+                    sessionID: prepared.request.sessionID,
+                    prompt: prepared.request.prompt,
+                    projectName: prepared.request.projectName,
+                    images: prepared.request.images,
+                    previousPrompt: prepared.request.previousPrompt,
+                    supportsVision: false
+                )
+            )
+            return try await requestTitle(
+                prepared: textOnly,
+                configuration: configuration,
+                apiKey: apiKey
+            )
+        }
+    }
+
+    private func requestTitle(
+        prepared: PreparedAITitleRequest,
+        configuration: AIConfiguration,
+        apiKey: String
+    ) async throws -> String {
+        let request = try AITitleRequestFactory.makeURLRequest(
+            prepared: prepared,
+            configuration: configuration,
+            apiKey: apiKey
+        )
+        let response = try await transport.send(request)
+        guard (200..<300).contains(response.statusCode) else {
+            throw AITitleServiceError.httpStatus(response.statusCode)
+        }
+        let rawTitle = try AITitleResponseParser.title(from: response.data)
+        guard let title = AITitleOutputSanitizer.sanitize(
+            rawTitle,
+            originalPrompt: prepared.request.prompt,
+            previousPrompt: prepared.request.previousPrompt,
+            projectName: prepared.request.projectName
+        ) else {
+            throw AITitleServiceError.invalidResponse
+        }
+        return title
     }
 
     func testConnection(
@@ -187,22 +262,31 @@ enum AITitleRequestFactory {
     private static let maximumImageBytes = 8 * 1024 * 1024
 
     static func prepare(_ request: AITitleRequest) throws -> PreparedAITitleRequest {
-        let prompt = TextTools.userPromptText(request.prompt, limit: 4_000)
-            .trimmingCharacters(in: .whitespacesAndNewlines)
+        let prompt = Self.removingImagePlaceholders(
+            TextTools.userPromptText(request.prompt, limit: 4_000)
+        ).trimmingCharacters(in: .whitespacesAndNewlines)
+        let previousPrompt = Self.removingImagePlaceholders(
+            TextTools.userPromptText(request.previousPrompt, limit: 2_000)
+        ).trimmingCharacters(in: .whitespacesAndNewlines)
         guard !prompt.isEmpty || !request.images.isEmpty else {
             throw AITitleServiceError.emptyPrompt
         }
 
         var imageDataURLs: [String] = []
         var imageHashes: [String] = []
-        for attachment in request.images.prefix(6) {
-            guard let dataURL = dataURL(for: attachment) else {
-                continue
+        if request.supportsVision {
+            for attachment in request.images.prefix(6) {
+                guard let dataURL = dataURL(for: attachment) else {
+                    continue
+                }
+                imageDataURLs.append(dataURL)
+                imageHashes.append(AITitleHash.sha256(dataURL))
             }
-            imageDataURLs.append(dataURL)
-            imageHashes.append(AITitleHash.sha256(dataURL))
         }
-        guard !prompt.isEmpty || !imageDataURLs.isEmpty else {
+        let imageFingerprint = request.supportsVision
+            ? imageHashes.joined(separator: ":")
+            : "vision-off:\(request.images.count)"
+        guard !prompt.isEmpty || !imageDataURLs.isEmpty || (!request.supportsVision && !request.images.isEmpty) else {
             throw AITitleServiceError.emptyPrompt
         }
 
@@ -211,10 +295,12 @@ enum AITitleRequestFactory {
                 sessionID: request.sessionID,
                 prompt: prompt,
                 projectName: request.projectName,
-                images: request.images
+                images: request.images,
+                previousPrompt: previousPrompt,
+                supportsVision: request.supportsVision
             ),
             imageDataURLs: imageDataURLs,
-            imageFingerprint: imageHashes.joined(separator: ":")
+            imageFingerprint: imageFingerprint
         )
     }
 
@@ -238,10 +324,28 @@ enum AITitleRequestFactory {
         let prompt = prepared.request.prompt.isEmpty
             ? "用户只发送了图片，请根据图片判断用户想完成的事情。"
             : prepared.request.prompt
+        let previousPrompt = prepared.request.previousPrompt
+        let isContinuation = TextTools.isContinuationPrompt(prompt)
+        let skippedImages = prepared.request.images.count
+        let imagesNotSent = prepared.imageDataURLs.isEmpty && skippedImages > 0
+
+        var contextLines = [projectContext]
+        if imagesNotSent {
+            contextLines.append("用户本次附带了 \(skippedImages) 张图片，但当前模型不识别图片内容，请只根据文字概括。\n")
+        }
+        if !previousPrompt.isEmpty {
+            contextLines.append("上一次输入：\n\(previousPrompt)\n")
+        }
+        contextLines.append(
+            isContinuation
+                ? "本次输入（属于对上一次输入的确认或继续，本身不含任务内容）：\n\(prompt)"
+                : "本次输入：\n\(prompt)"
+        )
+        let contextText = contextLines.joined().trimmingCharacters(in: .whitespacesAndNewlines)
 
         var userContent: [[String: Any]] = [[
             "type": "text",
-            "text": "\(projectContext)用户最近一次有效输入：\n\(prompt)"
+            "text": contextText
         ]]
         userContent.append(contentsOf: prepared.imageDataURLs.map { dataURL in
             [
@@ -250,17 +354,28 @@ enum AITitleRequestFactory {
             ]
         })
 
+        let goalInstruction: String
+        if isContinuation, !previousPrompt.isEmpty {
+            goalInstruction = "本次输入只是确认或继续，真正的任务目标在上一次输入里；请按上一次输入概括要做的事。"
+        } else if previousPrompt.isEmpty {
+            goalInstruction = "请概括本次输入要做的事。"
+        } else {
+            goalInstruction = "本次输入才是当前要做的任务；上一次输入只作背景参考，不要概括上一次的任务。"
+        }
+
         let body: [String: Any] = [
             "model": configuration.model,
-            "max_tokens": 512,
+            "max_tokens": 2048,
             "stream": false,
             "messages": [
                 [
                     "role": "system",
                     "content": """
-                    你是任务标题总结器。根据用户最近一次输入和图片，用大白话概括用户真正想做什么。
+                    你是任务标题总结器。根据用户的对话上下文和图片，用大白话概括用户真正想做什么。
+                    \(goalInstruction)
                     只输出一个中文标题，不要解释，不要引号、Markdown、句号或冒号。
                     标题约 6 到 16 个汉字；不要照抄原句；不要写项目名；不要使用“处理某项目任务”这类泛化模板。
+                    标题必须描述要做的事本身，禁止描述对话过程：不要以“用户”开头，不要出现“确认了”“同意了”“回复了”“提出了”“要求了”这类元叙述。
                     """
                 ],
                 [
@@ -277,6 +392,15 @@ enum AITitleRequestFactory {
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.httpBody = try JSONSerialization.data(withJSONObject: body)
         return request
+    }
+
+    /// 客户端会把图片附件替换成 `[Image #1]` 这样的占位符，它对模型没有信息量。
+    private static func removingImagePlaceholders(_ value: String) -> String {
+        value.replacingOccurrences(
+            of: #"\[Image #\d+\]"#,
+            with: " ",
+            options: .regularExpression
+        )
     }
 
     private static func dataURL(for attachment: SessionImageAttachment) -> String? {
@@ -324,6 +448,7 @@ enum AITitleOutputSanitizer {
     static func sanitize(
         _ raw: String,
         originalPrompt: String,
+        previousPrompt: String = "",
         projectName: String?
     ) -> String? {
         let firstLine = raw
@@ -360,6 +485,9 @@ enum AITitleOutputSanitizer {
         guard !containsTechnicalNoise(title) else {
             return nil
         }
+        guard !describesConversation(title) else {
+            return nil
+        }
 
         let lowercased = title.lowercased()
         if lowercased.contains("/users/")
@@ -378,18 +506,25 @@ enum AITitleOutputSanitizer {
         if let projectName {
             let normalizedProject = TextTools.normalizedWhitespace(projectName).lowercased()
             if normalizedProject.count >= 2, lowercased.contains(normalizedProject) {
-                return nil
+                // 项目名本身不是信息；但“修复 Agent-HUD 的等待栏目同步”这类标题仍有实质内容。
+                let remainder = lowercased.replacingOccurrences(of: normalizedProject, with: "")
+                if hanCharacterCount(remainder) <= 4 {
+                    return nil
+                }
             }
         }
 
         let normalizedPrompt = TextTools.normalizedWhitespace(originalPrompt)
-        if title == normalizedPrompt {
+        let normalizedPrevious = TextTools.normalizedWhitespace(previousPrompt)
+        if title == normalizedPrompt || (!normalizedPrevious.isEmpty && title == normalizedPrevious) {
             return nil
         }
-        if normalizedPrompt.count > title.count + 4,
-           normalizedPrompt.contains(title),
-           title.count >= 10 {
-            return nil
+        for source in [normalizedPrompt, normalizedPrevious] where !source.isEmpty {
+            if source.count > title.count + 4,
+               source.contains(title),
+               title.count >= 10 {
+                return nil
+            }
         }
         return title
     }
@@ -401,6 +536,20 @@ enum AITitleOutputSanitizer {
                 of: #"(?i)\.(md|swift|tsx?|jsx?|jsonl?|py|go|java|css|html|xml|yaml|yml)(?:$|[^a-z0-9])"#,
                 options: .regularExpression
             ) != nil
+    }
+
+    private static func describesConversation(_ value: String) -> Bool {
+        if value.range(
+            of: #"^(我|用户|他|她)(确认|同意|回复|提出|要求|批准|接受|认可)"#,
+            options: .regularExpression
+        ) != nil {
+            return true
+        }
+        let metaPhrases = [
+            "确认了", "同意了", "回复了", "提出了", "要求了",
+            "进行了确认", "完成了确认", "接受了", "批准了"
+        ]
+        return metaPhrases.contains { value.contains($0) }
     }
 
     private static func hanCharacterCount(_ value: String) -> Int {

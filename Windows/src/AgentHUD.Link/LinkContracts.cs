@@ -5,7 +5,8 @@ public sealed record LinkedDevice(
     string Name,
     string TokenHash,
     DateTimeOffset PairedAt,
-    DateTimeOffset? LastSeenAt);
+    DateTimeOffset? LastSeenAt,
+    bool ConversationEnabled = false);
 
 public sealed record PairingOffer(
     string Code,

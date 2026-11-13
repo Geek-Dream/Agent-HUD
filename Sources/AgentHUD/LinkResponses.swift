@@ -54,6 +54,24 @@ struct LinkImportantResponse: Codable {
     let isImportant: Bool
 }
 
+struct LinkMessageRequest: Codable {
+    let clientMessageId: String?
+    let text: String?
+}
+
+struct LinkMessageResponse: Codable {
+    let deliveryId: String
+    let clientMessageId: String
+    let status: String
+}
+
+struct LinkDeliveryResponse: Codable {
+    let deliveryId: String
+    let clientMessageId: String
+    let status: String
+    let error: String?
+}
+
 struct LinkErrorResponse: Codable {
     let error: String
 }

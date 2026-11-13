@@ -72,6 +72,11 @@ public static class AgentHudLinkRuntime
         return IsRunning ? _host!.RevokeDevice(deviceId) : Devices;
     }
 
+    public static bool SetConversationEnabled(string deviceId, bool enabled)
+    {
+        return IsRunning && _host!.SetConversationEnabled(deviceId, enabled);
+    }
+
     public static string ServiceAddressText()
     {
         if (!IsRunning)

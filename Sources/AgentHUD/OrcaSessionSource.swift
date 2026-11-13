@@ -160,12 +160,19 @@ enum OrcaSessionSource {
         let outcome = JSONTools.string(mainAgent["outcome"])
             ?? JSONTools.string(statusPayload["outcome"])
             ?? JSONTools.string(statusEntry?["turnEndDisposition"])
-        let status = rawState.map { mapStatus($0, outcome: outcome) }
-            ?? adapterSession?.status
-            ?? .unknown
-        let confidence: StatusConfidence = rawState == nil
-            ? adapterSession?.confidence ?? .low
-            : .high
+        let hookStatus = rawState.map { mapStatus($0, outcome: outcome) }
+        let status = effectiveStatus(
+            hookStatus: hookStatus,
+            adapterSession: adapterSession
+        )
+        let confidence: StatusConfidence
+        if adapterSession?.status == .waitingUser, status == .waitingUser {
+            confidence = adapterSession?.confidence ?? .medium
+        } else {
+            confidence = rawState == nil
+                ? adapterSession?.confidence ?? .low
+                : .high
+        }
 
         let tabPath = worktreePath(from: worktreeKey)
         let projectPath = JSONTools.string(providerSession["cwd"])
@@ -407,6 +414,20 @@ enum OrcaSessionSource {
         case .unknown:
             return fallback ?? "等待更多本地信号"
         }
+    }
+
+    private static func effectiveStatus(
+        hookStatus: AgentStatus?,
+        adapterSession: AgentSession?
+    ) -> AgentStatus {
+        // Orca can keep reporting `working` (or emit `done`) while Claude is
+        // actually blocked on AskUserQuestion/ExitPlanMode. The transcript has
+        // the definitive pending tool_use, so it must win over a non-failure
+        // hook status.
+        if adapterSession?.status == .waitingUser, hookStatus != .failed {
+            return .waitingUser
+        }
+        return hookStatus ?? adapterSession?.status ?? .unknown
     }
 
     private static func mapStatus(_ rawState: String, outcome: String?) -> AgentStatus {

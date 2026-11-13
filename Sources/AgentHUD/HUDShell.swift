@@ -5,7 +5,6 @@ import SwiftUI
 struct HUDShell: View {
     @ObservedObject var model: HUDViewModel
     @ObservedObject private var runPagination = SessionRunPagination()
-    @Environment(\.colorScheme) private var colorScheme
 
     var body: some View {
         GeometryReader { proxy in
@@ -39,7 +38,7 @@ struct HUDShell: View {
                     value: model.isExpanded
                 )
                 .allowsHitTesting(model.isExpanded)
-                .animation(HUDMetrics.pageAnimation, value: model.selectedSessionID)
+                .animation(HUDMetrics.motion(HUDMetrics.pageAnimation), value: model.selectedSessionID)
 
                 CollapsedHUDView(model: model)
                     .frame(
@@ -59,9 +58,9 @@ struct HUDShell: View {
             }
             .frame(width: proxy.size.width, height: proxy.size.height, alignment: .topTrailing)
             .compositingGroup()
-            .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+            .clipShape(RoundedRectangle(cornerRadius: HUDMetrics.Radius.panel, style: .continuous))
             .overlay {
-                RoundedRectangle(cornerRadius: 14, style: .continuous)
+                RoundedRectangle(cornerRadius: HUDMetrics.Radius.panel, style: .continuous)
                     .strokeBorder(
                         LinearGradient(
                             colors: [
@@ -75,34 +74,36 @@ struct HUDShell: View {
                     )
             }
             .clipped()
+            .contrast(model.panelContrast)
         }
         .preferredColorScheme(nil)
     }
 
     private var pageTransition: AnyTransition {
         .asymmetric(
-            insertion: .opacity.combined(with: .offset(x: 4)),
-            removal: .opacity.combined(with: .offset(x: -3))
+            insertion: .opacity
+                .combined(with: .offset(x: 18))
+                .combined(with: .scale(scale: 0.98, anchor: .topTrailing)),
+            removal: .opacity
+                .combined(with: .offset(x: -10))
+                .combined(with: .scale(scale: 0.99, anchor: .topTrailing))
         )
     }
 
     private var background: some View {
-        ZStack {
-            VisualEffectView(
-                material: .hudWindow,
-                blendingMode: .behindWindow,
-                opacity: 0.45
-            )
-            HUDTheme.windowTint
-            LinearGradient(
-                colors: colorScheme == .dark
-                    ? [Color.white.opacity(0.045), Color.clear]
-                    : [Color.white.opacity(0.20), Color.clear],
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
-            .allowsHitTesting(false)
+        Group {
+            switch model.visualTheme {
+            case .starlight:
+                StarlightBackground(opacity: model.panelOpacity)
+            case .classic:
+                classicBackground
+            }
         }
+    }
+
+    private var classicBackground: some View {
+        HUDTheme.windowTint
+            .opacity(model.panelOpacity)
     }
 }
 
@@ -475,7 +476,7 @@ private struct SessionDetailView: View {
 
             HStack(spacing: 7) {
                 ZStack {
-                    RoundedRectangle(cornerRadius: 7, style: .continuous)
+                    RoundedRectangle(cornerRadius: HUDMetrics.Radius.control, style: .continuous)
                         .fill(session.provider.accentColor.opacity(0.13))
                     Image(systemName: session.provider.symbolName)
                         .font(.system(size: 12, weight: .semibold))
@@ -538,14 +539,14 @@ private struct SessionDetailView: View {
         VStack(alignment: .leading, spacing: 10) {
             if model.privacyMode {
                 Text("任务标题已隐藏")
-                    .font(.system(size: 20, weight: .semibold))
+                    .font(HUDMetrics.Typography.display)
                     .lineLimit(2)
             } else if model.editingTitleSessionID == session.id {
                 titleEditor
             } else {
                 HStack(alignment: .firstTextBaseline, spacing: 8) {
                     Text(model.displayTitle(for: session))
-                        .font(.system(size: 20, weight: .semibold))
+                        .font(HUDMetrics.Typography.display)
                         .lineLimit(2)
                         .textSelection(.enabled)
 
@@ -556,12 +557,12 @@ private struct SessionDetailView: View {
                             model.beginTitleEditing(for: session)
                         } label: {
                             Image(systemName: "pencil")
-                                .font(.system(size: 11, weight: .semibold))
+                                .font(HUDMetrics.Typography.label)
                                 .foregroundStyle(HUDTheme.textSecondary)
                                 .frame(width: 24, height: 24)
                                 .background(
                                     HUDTheme.controlFill,
-                                    in: RoundedRectangle(cornerRadius: 6, style: .continuous)
+                                    in: RoundedRectangle(cornerRadius: HUDMetrics.Radius.control, style: .continuous)
                                 )
                         }
                         .buttonStyle(.plain)
@@ -582,10 +583,10 @@ private struct SessionDetailView: View {
                             ? "person.crop.circle"
                             : "sparkles"
                     )
-                    .font(.system(size: 9.5, weight: .semibold))
+                    .font(HUDMetrics.Typography.micro)
 
                     Text(model.titleSource(for: session).label)
-                        .font(.system(size: 10, weight: .medium))
+                        .font(HUDMetrics.Typography.caption)
 
                     if model.hasCustomTitle(for: session) {
                         Text("·")
@@ -593,7 +594,7 @@ private struct SessionDetailView: View {
                             model.clearCustomTitle(for: session)
                         }
                         .buttonStyle(.plain)
-                        .font(.system(size: 10, weight: .medium))
+                        .font(HUDMetrics.Typography.caption)
                         .foregroundStyle(AgentStatus.working.color)
                         .help("清除手动备注，恢复自动概括标题")
                     }
@@ -668,10 +669,10 @@ private struct SessionDetailView: View {
                 .frame(height: 30)
                 .background(
                     HUDTheme.controlFill,
-                    in: RoundedRectangle(cornerRadius: 6, style: .continuous)
+                    in: RoundedRectangle(cornerRadius: HUDMetrics.Radius.control, style: .continuous)
                 )
                 .overlay {
-                    RoundedRectangle(cornerRadius: 6, style: .continuous)
+                    RoundedRectangle(cornerRadius: HUDMetrics.Radius.control, style: .continuous)
                         .strokeBorder(HUDTheme.borderStrong, lineWidth: 0.8)
                 }
                 .onSubmit {
@@ -738,7 +739,7 @@ private struct SessionDetailView: View {
 
                     if let prompt, !prompt.images.isEmpty {
                         Label("\(prompt.images.count)", systemImage: "photo")
-                            .font(.system(size: 9.5, weight: .semibold))
+                            .font(HUDMetrics.Typography.micro)
                             .foregroundStyle(HUDTheme.textTertiary)
                     }
 
@@ -752,7 +753,7 @@ private struct SessionDetailView: View {
                     }
 
                     Image(systemName: expanded ? "chevron.up" : "chevron.down")
-                        .font(.system(size: 9, weight: .semibold))
+                        .font(HUDMetrics.Typography.micro)
                         .foregroundStyle(HUDTheme.textSecondary)
                         .frame(width: 18, height: 18)
                 }
@@ -776,7 +777,7 @@ private struct SessionDetailView: View {
                         .frame(maxWidth: .infinity, minHeight: 42, alignment: .leading)
                         .background(
                             AgentStatus.waitingUser.color.opacity(0.07),
-                            in: RoundedRectangle(cornerRadius: 7, style: .continuous)
+                            in: RoundedRectangle(cornerRadius: HUDMetrics.Radius.control, style: .continuous)
                         )
                     } else if let prompt,
                               !prompt.text.isEmpty || !prompt.images.isEmpty {
@@ -809,7 +810,7 @@ private struct SessionDetailView: View {
                         .frame(maxWidth: .infinity, minHeight: 42, alignment: .leading)
                         .background(
                             HUDTheme.controlFill,
-                            in: RoundedRectangle(cornerRadius: 7, style: .continuous)
+                            in: RoundedRectangle(cornerRadius: HUDMetrics.Radius.control, style: .continuous)
                         )
                     }
                 }
@@ -875,7 +876,7 @@ private struct SessionDetailView: View {
                                 .frame(height: 1)
 
                             Image(systemName: "chevron.down")
-                                .font(.system(size: 9, weight: .semibold))
+                                .font(HUDMetrics.Typography.micro)
                                 .foregroundStyle(HUDTheme.textSecondary)
 
                             Rectangle()
@@ -947,10 +948,10 @@ private struct AgentRowView: View {
     var body: some View {
         HStack(alignment: .top, spacing: 11) {
             ZStack {
-                RoundedRectangle(cornerRadius: 8, style: .continuous)
+                RoundedRectangle(cornerRadius: HUDMetrics.Radius.small, style: .continuous)
                     .fill(session.provider.accentColor.opacity(0.12))
                 Image(systemName: session.provider.symbolName)
-                    .font(.system(size: 13, weight: .semibold))
+                    .font(HUDMetrics.Typography.title)
                     .foregroundStyle(session.provider.accentColor)
             }
             .frame(width: 33, height: 33)
@@ -986,7 +987,7 @@ private struct AgentRowView: View {
                         }
                     } else {
                         Text(model.privacyMode ? "任务标题已隐藏" : model.displayTitle(for: session))
-                            .font(.system(size: 13, weight: .semibold))
+                            .font(HUDMetrics.Typography.title)
                             .foregroundStyle(.primary)
                             .lineLimit(1)
                             .truncationMode(.tail)
@@ -1001,7 +1002,7 @@ private struct AgentRowView: View {
                                     .frame(width: 18, height: 18)
                                     .background(
                                         HUDTheme.controlFill,
-                                        in: RoundedRectangle(cornerRadius: 4, style: .continuous)
+                                        in: RoundedRectangle(cornerRadius: HUDMetrics.Radius.micro, style: .continuous)
                                     )
                             }
                             .buttonStyle(.plain)
@@ -1027,7 +1028,7 @@ private struct AgentRowView: View {
                                 isImportant
                                     ? importantTint.opacity(0.13)
                                     : HUDTheme.controlFill,
-                                in: RoundedRectangle(cornerRadius: 5, style: .continuous)
+                                in: RoundedRectangle(cornerRadius: HUDMetrics.Radius.micro, style: .continuous)
                             )
                     }
                     .buttonStyle(.plain)
@@ -1039,7 +1040,7 @@ private struct AgentRowView: View {
 
                 HStack(spacing: 5) {
                     Text(session.provider.shortName)
-                        .font(.system(size: 8.5, weight: .bold, design: .monospaced))
+                        .font(HUDMetrics.Typography.agent)
                     Text("·")
                     Text(model.privacyMode ? "项目已隐藏" : session.projectName)
                     if let git = session.git {
@@ -1047,14 +1048,12 @@ private struct AgentRowView: View {
                         Text("\(git.changedFiles) 个改动")
                     }
                 }
-                .font(.system(size: 10.5, weight: .medium))
+                .font(HUDMetrics.Typography.caption)
                 .foregroundStyle(HUDTheme.textSecondary)
                 .lineLimit(1)
 
                 HStack(spacing: 5) {
-                    Circle()
-                        .fill(session.status.color)
-                        .frame(width: 5, height: 5)
+                    PulsingStatusDot(color: session.status.color, isPulsing: session.status.isRunning)
                     Text(model.privacyMode ? "当前动作已隐藏" : session.currentAction)
                         .lineLimit(1)
                         .truncationMode(.tail)
@@ -1067,7 +1066,7 @@ private struct AgentRowView: View {
             }
 
             Image(systemName: "chevron.right")
-                .font(.system(size: 9, weight: .semibold))
+                .font(HUDMetrics.Typography.micro)
                 .foregroundStyle(HUDTheme.textTertiary)
                 .padding(.top, 9)
         }
@@ -1075,33 +1074,48 @@ private struct AgentRowView: View {
         .padding(.vertical, 12)
         .contentShape(Rectangle())
         .background {
-            ZStack {
-                HUDTheme.surface.opacity(isHovered ? 0.72 : 0.34)
-                if showsStatusOutline {
-                    session.status.color.opacity(isHovered ? 0.07 : 0.04)
+            RoundedRectangle(cornerRadius: HUDMetrics.Radius.card, style: .continuous)
+                .fill(HUDTheme.surface.opacity(isHovered ? 0.72 : 0.34))
+                .overlay {
+                    if showsStatusOutline {
+                        RoundedRectangle(cornerRadius: HUDMetrics.Radius.card, style: .continuous)
+                            .fill(session.status.color.opacity(isHovered ? 0.06 : 0.03))
+                    }
                 }
+        }
+        .overlay(alignment: .leading) {
+            if showsStatusOutline {
+                Rectangle()
+                    .fill(session.status.color)
+                    .frame(width: 2.5)
+                    .padding(.vertical, 9)
             }
         }
         .overlay {
             if showsStatusOutline {
-                RoundedRectangle(cornerRadius: 9, style: .continuous)
+                RoundedRectangle(cornerRadius: HUDMetrics.Radius.card, style: .continuous)
                     .strokeBorder(
-                        session.status.color.opacity(isHovered ? 0.86 : 0.64),
-                        lineWidth: isHovered ? 1.3 : 1
-                    )
-                    .shadow(
-                        color: session.status.color.opacity(isHovered ? 0.52 : 0.34),
-                        radius: isHovered ? 10 : 7
-                    )
-                    .shadow(
-                        color: session.status.color.opacity(0.22),
-                        radius: 2
+                        session.status.color.opacity(isHovered ? 0.75 : 0.55),
+                        lineWidth: 1
                     )
                     .padding(.horizontal, 6)
                     .padding(.vertical, 5)
                     .allowsHitTesting(false)
             }
         }
+        .shadow(
+            color: showsStatusOutline
+                ? HUDTheme.Shadow.status(color: session.status.color, hovered: isHovered).color
+                : HUDTheme.Shadow.rowBase.color,
+            radius: showsStatusOutline
+                ? HUDTheme.Shadow.status(color: session.status.color, hovered: isHovered).radius
+                : HUDTheme.Shadow.rowBase.radius,
+            y: showsStatusOutline
+                ? HUDTheme.Shadow.status(color: session.status.color, hovered: isHovered).y
+                : HUDTheme.Shadow.rowBase.y
+        )
+        .scaleEffect(isHovered ? 1.005 : 1.0)
+        .animation(HUDMetrics.motion(.spring(response: 0.22, dampingFraction: 0.92)), value: isHovered)
         .opacity(isDeparting ? 0 : (isArriving && !arrivalVisible ? 0 : 1))
         .offset(
             x: isDeparting ? 118 : 0,
@@ -1171,6 +1185,18 @@ private struct AgentRowView: View {
 
 private let importantTint = HUDTheme.important
 
+private struct PulsingStatusDot: View {
+    let color: Color
+    let isPulsing: Bool
+
+    var body: some View {
+        Image(systemName: "circle.fill")
+            .font(.system(size: 5))
+            .foregroundStyle(color)
+            .symbolEffect(.pulse, options: .repeating, isActive: isPulsing)
+    }
+}
+
 private struct RowTitleActionButton: View {
     let symbol: String
     var tint: Color = HUDTheme.textSecondary
@@ -1185,7 +1211,7 @@ private struct RowTitleActionButton: View {
                 .frame(width: 20, height: 20)
                 .background(
                     HUDTheme.controlFill,
-                    in: RoundedRectangle(cornerRadius: 4, style: .continuous)
+                    in: RoundedRectangle(cornerRadius: HUDMetrics.Radius.micro, style: .continuous)
                 )
         }
         .buttonStyle(.plain)
@@ -1218,7 +1244,7 @@ private struct InlineTitleTextField: NSViewRepresentable {
         field.focusRingType = .none
         field.lineBreakMode = .byTruncatingTail
         field.wantsLayer = true
-        field.layer?.cornerRadius = 5
+        field.layer?.cornerRadius = HUDMetrics.Radius.control
         field.layer?.borderWidth = 0.8
         field.layer?.borderColor = NSColor.separatorColor.withAlphaComponent(0.7).cgColor
 
@@ -1289,11 +1315,11 @@ private struct TaskRunView: View {
             VStack(alignment: .leading, spacing: 9) {
                 HStack {
                     Text(run.completedAt.formatted(.dateTime.month().day().hour().minute()))
-                        .font(.system(size: 10.5, weight: .medium))
+                        .font(HUDMetrics.Typography.caption)
                         .foregroundStyle(HUDTheme.textSecondary)
                     Spacer()
                     Text("本地摘要")
-                        .font(.system(size: 9, weight: .semibold))
+                        .font(HUDMetrics.Typography.micro)
                         .foregroundStyle(HUDTheme.textTertiary)
                 }
 
@@ -1310,7 +1336,7 @@ private struct TaskRunView: View {
                 if !privacyMode, !run.actions.isEmpty {
                     VStack(alignment: .leading, spacing: 5) {
                         Text("执行过程")
-                            .font(.system(size: 9.5, weight: .semibold))
+                            .font(HUDMetrics.Typography.micro)
                             .foregroundStyle(HUDTheme.textTertiary)
                         ForEach(Array(run.actions.prefix(6)), id: \.self) { action in
                             HStack(alignment: .top, spacing: 6) {
@@ -1331,7 +1357,7 @@ private struct TaskRunView: View {
                 if !privacyMode, !run.filesChanged.isEmpty {
                     VStack(alignment: .leading, spacing: 5) {
                         Text("涉及文件")
-                            .font(.system(size: 9.5, weight: .semibold))
+                            .font(HUDMetrics.Typography.micro)
                             .foregroundStyle(HUDTheme.textTertiary)
                         ForEach(Array(run.filesChanged.prefix(5)), id: \.self) { path in
                             HStack(spacing: 6) {
@@ -1381,10 +1407,10 @@ private struct PromptImageGallery: View {
                     .frame(height: 27)
                     .background(
                         HUDTheme.controlFill,
-                        in: RoundedRectangle(cornerRadius: 5, style: .continuous)
+                        in: RoundedRectangle(cornerRadius: HUDMetrics.Radius.micro, style: .continuous)
                     )
                     .overlay {
-                        RoundedRectangle(cornerRadius: 5, style: .continuous)
+                        RoundedRectangle(cornerRadius: HUDMetrics.Radius.micro, style: .continuous)
                             .strokeBorder(HUDTheme.border, lineWidth: 0.8)
                     }
                 }
@@ -1404,9 +1430,9 @@ private struct SessionAttachmentImage: View {
             SessionAttachmentImageView(source: attachment.source)
             .frame(width: 214, height: 132)
             .background(HUDTheme.controlFill)
-            .clipShape(RoundedRectangle(cornerRadius: 7, style: .continuous))
+            .clipShape(RoundedRectangle(cornerRadius: HUDMetrics.Radius.control, style: .continuous))
             .overlay {
-                RoundedRectangle(cornerRadius: 7, style: .continuous)
+                RoundedRectangle(cornerRadius: HUDMetrics.Radius.control, style: .continuous)
                     .strokeBorder(HUDTheme.border, lineWidth: 0.8)
             }
 
@@ -1537,10 +1563,10 @@ private struct ImportantCompletionCallout: View {
                 Button(action: onReveal) {
                     HStack(spacing: 9) {
                         ZStack {
-                            RoundedRectangle(cornerRadius: 7, style: .continuous)
+                            RoundedRectangle(cornerRadius: HUDMetrics.Radius.control, style: .continuous)
                                 .fill(notice.provider.accentColor.opacity(0.18))
                             Image(systemName: notice.provider.symbolName)
-                                .font(.system(size: 11, weight: .semibold))
+                                .font(HUDMetrics.Typography.label)
                                 .foregroundStyle(notice.provider.accentColor)
                         }
                         .frame(width: 29, height: 29)
@@ -1548,7 +1574,7 @@ private struct ImportantCompletionCallout: View {
                         VStack(alignment: .leading, spacing: 4) {
                             HStack(spacing: 6) {
                                 Text(notice.provider.shortName)
-                                    .font(.system(size: 8.5, weight: .bold, design: .monospaced))
+                                    .font(HUDMetrics.Typography.agent)
                                     .foregroundStyle(notice.provider.accentColor)
 
                                 Image(systemName: "star.fill")
@@ -1583,7 +1609,7 @@ private struct ImportantCompletionCallout: View {
                                     .font(.system(size: 7.5, weight: .bold))
                                     .foregroundStyle(HUDTheme.textTertiary)
                             }
-                            .font(.system(size: 9.5, weight: .semibold))
+                            .font(HUDMetrics.Typography.micro)
                         }
                     }
                     .contentShape(Rectangle())
@@ -1599,7 +1625,7 @@ private struct ImportantCompletionCallout: View {
                         .frame(width: 20, height: 20)
                         .background(
                             HUDTheme.controlFill,
-                            in: RoundedRectangle(cornerRadius: 5, style: .continuous)
+                            in: RoundedRectangle(cornerRadius: HUDMetrics.Radius.micro, style: .continuous)
                         )
                 }
                 .buttonStyle(.plain)
@@ -1611,9 +1637,9 @@ private struct ImportantCompletionCallout: View {
             .padding(.vertical, 7)
             .background {
                 ZStack {
-                    RoundedRectangle(cornerRadius: 10, style: .continuous)
+                    RoundedRectangle(cornerRadius: HUDMetrics.Radius.card, style: .continuous)
                         .fill(HUDTheme.surfaceRaised)
-                    RoundedRectangle(cornerRadius: 10, style: .continuous)
+                    RoundedRectangle(cornerRadius: HUDMetrics.Radius.card, style: .continuous)
                         .fill(
                             LinearGradient(
                                 colors: [
@@ -1628,7 +1654,7 @@ private struct ImportantCompletionCallout: View {
                 }
             }
             .overlay {
-                RoundedRectangle(cornerRadius: 10, style: .continuous)
+                RoundedRectangle(cornerRadius: HUDMetrics.Radius.card, style: .continuous)
                     .strokeBorder(
                         LinearGradient(
                             colors: [
@@ -1740,30 +1766,11 @@ private struct OverviewStrip: View {
                     .padding(.vertical, 7)
                     .background {
                         if selected {
-                            RoundedRectangle(cornerRadius: 7, style: .continuous)
-                                .fill(
-                                    LinearGradient(
-                                        colors: [
-                                            filter.color.opacity(0.24),
-                                            filter.color.opacity(0.09)
-                                        ],
-                                        startPoint: .topLeading,
-                                        endPoint: .bottomTrailing
-                                    )
-                                )
+                            RoundedRectangle(cornerRadius: HUDMetrics.Radius.control, style: .continuous)
+                                .fill(filter.color.opacity(0.16))
                                 .overlay {
-                                    RoundedRectangle(cornerRadius: 7, style: .continuous)
-                                        .strokeBorder(
-                                            LinearGradient(
-                                                colors: [
-                                                    HUDTheme.borderStrong,
-                                                    filter.color.opacity(0.58)
-                                                ],
-                                                startPoint: .topLeading,
-                                                endPoint: .bottomTrailing
-                                            ),
-                                            lineWidth: 0.9
-                                        )
+                                    RoundedRectangle(cornerRadius: HUDMetrics.Radius.control, style: .continuous)
+                                        .strokeBorder(filter.color.opacity(0.42), lineWidth: 0.8)
                                 }
                                 .matchedGeometryEffect(
                                     id: "overview-selection",
@@ -1781,7 +1788,7 @@ private struct OverviewStrip: View {
                 .buttonStyle(.plain)
                 .overlay {
                     if filter == .all, highlightAll {
-                        RoundedRectangle(cornerRadius: 7, style: .continuous)
+                        RoundedRectangle(cornerRadius: HUDMetrics.Radius.control, style: .continuous)
                             .strokeBorder(
                                 AgentStatus.completed.color.opacity(0.88),
                                 lineWidth: 1.2
@@ -1806,7 +1813,7 @@ private struct OverviewStrip: View {
                 .fill(HUDTheme.divider)
                 .frame(height: 0.5)
         }
-        .animation(HUDMetrics.filterAnimation, value: selectedFilter)
+        .animation(HUDMetrics.motion(HUDMetrics.filterAnimation), value: selectedFilter)
     }
 }
 
@@ -1847,16 +1854,7 @@ private struct ProviderFilterStrip: View {
                     .background {
                         if selected {
                             Capsule()
-                                .fill(
-                                    LinearGradient(
-                                        colors: [
-                                            filter.accentColor.opacity(0.28),
-                                            filter.accentColor.opacity(0.1)
-                                        ],
-                                        startPoint: .topLeading,
-                                        endPoint: .bottomTrailing
-                                    )
-                                )
+                                .fill(filter.accentColor.opacity(0.18))
                                 .matchedGeometryEffect(
                                     id: "provider-selection",
                                     in: selectionNamespace
@@ -1870,22 +1868,8 @@ private struct ProviderFilterStrip: View {
                         Capsule()
                             .strokeBorder(
                                 selected
-                                    ? LinearGradient(
-                                        colors: [
-                                            HUDTheme.borderStrong,
-                                            filter.accentColor.opacity(0.62)
-                                        ],
-                                        startPoint: .topLeading,
-                                        endPoint: .bottomTrailing
-                                    )
-                                    : LinearGradient(
-                                        colors: [
-                                            HUDTheme.border,
-                                            HUDTheme.border
-                                        ],
-                                        startPoint: .top,
-                                        endPoint: .bottom
-                                    ),
+                                    ? filter.accentColor.opacity(0.45)
+                                    : HUDTheme.border,
                                 lineWidth: 0.8
                             )
                     }
@@ -1922,7 +1906,7 @@ private struct ProviderFilterStrip: View {
             Spacer(minLength: 2)
 
             Text("\(visibleCount) 个会话")
-                .font(.system(size: 10.5, weight: .medium))
+                .font(HUDMetrics.Typography.caption)
                 .foregroundStyle(HUDTheme.textSecondary)
                 .monospacedDigit()
                 .contentTransition(.numericText())
@@ -1930,7 +1914,7 @@ private struct ProviderFilterStrip: View {
         .padding(.horizontal, 14)
         .padding(.vertical, 8)
         .background(HUDTheme.surface.opacity(0.18))
-        .animation(HUDMetrics.filterAnimation, value: selectedFilter)
+        .animation(HUDMetrics.motion(HUDMetrics.filterAnimation), value: selectedFilter)
     }
 }
 
@@ -1962,7 +1946,7 @@ private struct StatusBadge: View {
                 .fill(status.color)
                 .frame(width: 5, height: 5)
             Text(status.shortLabel)
-                .font(.system(size: 9, weight: .semibold))
+                .font(HUDMetrics.Typography.micro)
                 .foregroundStyle(status.color)
         }
         .padding(.horizontal, 6)
@@ -1976,10 +1960,10 @@ private struct StatusBadge: View {
                 startPoint: .topLeading,
                 endPoint: .bottomTrailing
             ),
-            in: RoundedRectangle(cornerRadius: 5)
+            in: RoundedRectangle(cornerRadius: HUDMetrics.Radius.micro)
         )
         .overlay {
-            RoundedRectangle(cornerRadius: 5)
+            RoundedRectangle(cornerRadius: HUDMetrics.Radius.micro)
                 .strokeBorder(
                     LinearGradient(
                         colors: [
@@ -2003,7 +1987,7 @@ private struct PrivacyStrip: View {
             Image(systemName: "eye.slash.fill")
                 .font(.system(size: 10))
             Text("隐私模式已开启，标题、路径、原始输入、图片和总结均已隐藏")
-                .font(.system(size: 10.5, weight: .medium))
+                .font(HUDMetrics.Typography.caption)
             Spacer()
         }
         .foregroundStyle(AgentStatus.waitingUser.color)
@@ -2023,7 +2007,7 @@ private struct SectionTitle: View {
                 .font(.system(size: 10, weight: .semibold))
                 .foregroundStyle(HUDTheme.textSecondary)
             Text(title)
-                .font(.system(size: 11, weight: .semibold))
+                .font(HUDMetrics.Typography.label)
         }
     }
 }
@@ -2039,7 +2023,7 @@ private struct DetailFact: View {
             Text(text)
                 .lineLimit(1)
         }
-        .font(.system(size: 10, weight: .medium))
+        .font(HUDMetrics.Typography.caption)
         .foregroundStyle(HUDTheme.textSecondary)
     }
 }
@@ -2092,9 +2076,9 @@ private struct BrandMark: View {
 
     var body: some View {
         ZStack {
-            RoundedRectangle(cornerRadius: 8, style: .continuous)
+            RoundedRectangle(cornerRadius: HUDMetrics.Radius.small, style: .continuous)
                 .fill(HUDTheme.controlFill)
-            RoundedRectangle(cornerRadius: 8, style: .continuous)
+            RoundedRectangle(cornerRadius: HUDMetrics.Radius.small, style: .continuous)
                 .strokeBorder(HUDTheme.border)
             Image(systemName: "rectangle.3.group")
                 .font(.system(size: size * 0.43, weight: .semibold))
@@ -2111,7 +2095,7 @@ private struct BrandToggleButton: View {
     var body: some View {
         Button(action: action) {
             BrandMark(size: 28)
-                .contentShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+                .contentShape(RoundedRectangle(cornerRadius: HUDMetrics.Radius.small, style: .continuous))
         }
         .buttonStyle(.plain)
         .help(isExpanded ? "收起 AgentHUD" : "展开 AgentHUD")
@@ -2155,7 +2139,7 @@ private struct HUDIconButton: View {
                 .frame(width: 27, height: 27)
                 .background(
                     HUDTheme.controlFill,
-                    in: RoundedRectangle(cornerRadius: 6, style: .continuous)
+                    in: RoundedRectangle(cornerRadius: HUDMetrics.Radius.control, style: .continuous)
                 )
                 .contentShape(Rectangle())
         }
@@ -2179,4 +2163,115 @@ private func abbreviatedPath(_ path: String) -> String {
         return "~" + path.dropFirst(home.count)
     }
     return path
+}
+
+
+private struct StarlightBackground: View {
+    let opacity: Double
+
+    private static let stars: [Star] = {
+        var result: [Star] = []
+        var state: UInt64 = 0xC0FFEE1234ABCDEF
+        func nextUnit() -> Double {
+            state = state &* 6364136223846793005 &+ 1442695040888963407
+            let value = (state >> 11) & 0x1F_FFFF_FFFF_FFFF
+            return Double(value) / Double(0x1F_FFFF_FFFF_FFFF)
+        }
+        for index in 0..<96 {
+            let x = nextUnit()
+            let y = nextUnit()
+            let radius = 0.45 + nextUnit() * 1.55
+            let base = 0.18 + nextUnit() * 0.72
+            let phase = Double(index) * 0.73 + nextUnit() * .pi
+            result.append(Star(x: x, y: y, radius: radius, baseOpacity: base, phase: phase))
+        }
+        return result
+    }()
+
+    var body: some View {
+        ZStack {
+            LinearGradient(
+                colors: [
+                    Color(red: 0.05, green: 0.06, blue: 0.18).opacity(opacity),
+                    Color(red: 0.10, green: 0.08, blue: 0.24).opacity(opacity),
+                    Color(red: 0.03, green: 0.04, blue: 0.12).opacity(opacity)
+                ],
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+
+            RadialGradient(
+                colors: [
+                    Color(red: 0.34, green: 0.30, blue: 0.78).opacity(0.28 * opacity),
+                    Color.clear
+                ],
+                center: UnitPoint(x: 0.18, y: 0.12),
+                startRadius: 10,
+                endRadius: 320
+            )
+            .blendMode(.screen)
+            .allowsHitTesting(false)
+
+            RadialGradient(
+                colors: [
+                    Color(red: 0.18, green: 0.45, blue: 0.80).opacity(0.22 * opacity),
+                    Color.clear
+                ],
+                center: UnitPoint(x: 0.88, y: 0.18),
+                startRadius: 10,
+                endRadius: 280
+            )
+            .blendMode(.screen)
+            .allowsHitTesting(false)
+
+            RadialGradient(
+                colors: [
+                    Color(red: 0.62, green: 0.28, blue: 0.72).opacity(0.16 * opacity),
+                    Color.clear
+                ],
+                center: UnitPoint(x: 0.72, y: 0.82),
+                startRadius: 20,
+                endRadius: 360
+            )
+            .blendMode(.screen)
+            .allowsHitTesting(false)
+
+            if HUDMetrics.reduceMotion {
+                starCanvas(time: 0)
+            } else {
+                TimelineView(.animation(minimumInterval: 1.0 / 24.0)) { timeline in
+                    starCanvas(time: timeline.date.timeIntervalSinceReferenceDate)
+                }
+            }
+        }
+        .allowsHitTesting(false)
+    }
+
+    private func starCanvas(time: TimeInterval) -> some View {
+        Canvas { context, size in
+            for star in Self.stars {
+                let twinkle = HUDMetrics.reduceMotion
+                    ? 1.0
+                    : 0.72 + 0.28 * sin(time * 1.15 + star.phase)
+                let alpha = min(1.0, star.baseOpacity * twinkle * (0.55 + 0.45 * opacity))
+                let rect = CGRect(
+                    x: star.x * size.width - star.radius,
+                    y: star.y * size.height - star.radius,
+                    width: star.radius * 2,
+                    height: star.radius * 2
+                )
+                context.fill(Path(ellipseIn: rect), with: .color(Color.white.opacity(alpha)))
+            }
+        }
+        .blur(radius: 0.15)
+        .allowsHitTesting(false)
+    }
+
+    private struct Star {
+        let x: Double
+        let y: Double
+        let radius: Double
+        let baseOpacity: Double
+        let phase: Double
+    }
 }

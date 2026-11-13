@@ -63,6 +63,14 @@ public sealed partial class LinkSettingsDialog : ContentDialog
         }
     }
 
+    private void ConversationToggle_Toggled(object sender, RoutedEventArgs args)
+    {
+        if (sender is ToggleSwitch { Tag: string deviceId, IsOn: var enabled })
+        {
+            AgentHudLinkRuntime.SetConversationEnabled(deviceId, enabled);
+        }
+    }
+
     private async void RefreshOffer()
     {
         try

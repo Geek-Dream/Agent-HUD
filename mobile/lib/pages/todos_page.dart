@@ -173,13 +173,26 @@ class _TodoCard extends StatelessWidget {
       child: Container(
         margin: const EdgeInsets.only(bottom: HudSpacing.lg),
         decoration: BoxDecoration(
-          color: HudColors.surfaceRaised,
+          gradient: LinearGradient(
+            colors: [
+              HudColors.surfaceRaised,
+              todo.completed
+                  ? HudColors.surface
+                  : HudColors.todo.withValues(alpha: 0.06),
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
           borderRadius: BorderRadius.circular(HudRadii.panel),
           border: Border.all(
             color: todo.completed
                 ? HudColors.border
-                : HudColors.todo.withValues(alpha: 0.38),
+                : HudColors.todo.withValues(alpha: 0.42),
+            width: todo.completed ? 1.0 : 1.1,
           ),
+          boxShadow: todo.completed
+              ? HudElevation.card(HudColors.border)
+              : HudElevation.glow(HudColors.todo),
         ),
         child: InkWell(
           borderRadius: BorderRadius.circular(HudRadii.panel),

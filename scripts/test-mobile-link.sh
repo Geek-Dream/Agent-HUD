@@ -33,11 +33,18 @@ for module_map in "$ROOT_DIR"/.build/out/Intermediates.noindex/GeneratedModuleMa
 done
 swiftc \
     -I "$BUILD_DIR" -L "$BUILD_DIR" "${module_args[@]}" \
+    Sources/AgentHUD/Models.swift \
+    Sources/AgentHUD/Utilities.swift \
     Sources/AgentHUD/LinkModels.swift \
     Sources/AgentHUD/LinkDeviceStore.swift \
     Sources/AgentHUD/LinkPairingManager.swift \
     Sources/AgentHUD/LinkCertificate.swift \
     Sources/AgentHUD/LinkResponses.swift \
+    Sources/AgentHUD/AgentInputAdapter.swift \
+    Sources/AgentHUD/AgentRuntimeRegistry.swift \
+    Sources/AgentHUD/DeliveryStore.swift \
+    Sources/AgentHUD/CodexInputAdapter.swift \
+    Sources/AgentHUD/AgentInputDispatcher.swift \
     Sources/AgentHUD/LinkServer.swift \
     Tests/LinkServerFixture.swift \
     "$WORK_DIR/main.swift" \

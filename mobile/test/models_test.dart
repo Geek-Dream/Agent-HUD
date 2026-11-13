@@ -57,6 +57,47 @@ void main() {
         'https://[2409:8900::1234]:47653');
   });
 
+  test('preferIpv6 filters out IPv4 addresses', () {
+    const payload = '''
+      {
+        "v": 1,
+        "instanceId": "instance-one",
+        "addresses": ["192.168.1.5"],
+        "ipv6Addresses": ["2409:8900::1234", "fe80::1%en0"],
+        "port": 47653,
+        "fingerprint": "ABC123",
+        "sessionId": "session-one",
+        "secret": "one-time-secret",
+        "expiresAt": "2027-11-12T01:00:00Z"
+      }
+    ''';
+    final offer = PairingOffer.fromQr(payload, preferIpv6: true);
+    expect(offer.addresses, ['2409:8900::1234', 'fe80::1%en0']);
+  });
+
+  test('preferIpv6 throws when no IPv6 addresses are present', () {
+    const payload = '''
+      {
+        "v": 1,
+        "instanceId": "instance-one",
+        "addresses": ["192.168.1.5"],
+        "port": 47653,
+        "fingerprint": "ABC123",
+        "sessionId": "session-one",
+        "secret": "one-time-secret",
+        "expiresAt": "2027-11-12T01:00:00Z"
+      }
+    ''';
+    expect(
+      () => PairingOffer.fromQr(payload, preferIpv6: true),
+      throwsA(isA<FormatException>().having(
+        (error) => error.message,
+        'message',
+        contains('IPv6'),
+      )),
+    );
+  });
+
   test('maps monitoring session without requiring optional fields', () {
     final session = AgentSession.fromJson({
       'id': 'public-id',

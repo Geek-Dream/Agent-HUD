@@ -71,6 +71,17 @@ actor LinkDeviceStore {
         return true
     }
 
+    func device(deviceId: String) -> LinkedDevice? {
+        devices[deviceId]
+    }
+
+    func setConversationEnabled(deviceId: String, enabled: Bool) -> Bool {
+        guard devices[deviceId] != nil else { return false }
+        devices[deviceId]?.conversationEnabled = enabled
+        try? save()
+        return true
+    }
+
     @discardableResult
     func revoke(deviceId: String) -> Bool {
         guard devices.removeValue(forKey: deviceId) != nil else {

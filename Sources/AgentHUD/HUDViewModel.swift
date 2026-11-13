@@ -42,6 +42,31 @@ final class HUDViewModel: ObservableObject, LinkSnapshotProviding {
             }
         }
     }
+    @Published var panelOpacity: Double {
+        didSet {
+            let clamped = HUDPanelAppearance.clampedOpacity(panelOpacity)
+            if panelOpacity != clamped {
+                panelOpacity = clamped
+            } else {
+                UserDefaults.standard.set(clamped, forKey: "hud.panelOpacity")
+            }
+        }
+    }
+    @Published var panelContrast: Double {
+        didSet {
+            let clamped = HUDPanelAppearance.clampedContrast(panelContrast)
+            if panelContrast != clamped {
+                panelContrast = clamped
+            } else {
+                UserDefaults.standard.set(clamped, forKey: "hud.panelContrast")
+            }
+        }
+    }
+    @Published var visualTheme: HUDVisualTheme {
+        didSet {
+            UserDefaults.standard.set(visualTheme.rawValue, forKey: "hud.visualTheme")
+        }
+    }
     @Published var statusFilter: StatusFilter = .all {
         didSet {
             UserDefaults.standard.set(statusFilter.rawValue, forKey: "hud.statusFilter")
@@ -78,6 +103,11 @@ final class HUDViewModel: ObservableObject, LinkSnapshotProviding {
     private let importanceStore = SessionImportanceStore()
     private let secretStore = KeychainAISecretStore()
     private let aiTitleService = AITitleService()
+    private let inputDispatcher = AgentInputDispatcher(
+        registry: AgentRuntimeRegistry(),
+        deliveryStore: DeliveryStore(),
+        adapters: [CodexInputAdapter()]
+    )
     private var refreshLoop: Task<Void, Never>?
     private var refreshTask: Task<Void, Never>?
     private var aiRefreshTask: Task<Void, Never>?
@@ -99,6 +129,17 @@ final class HUDViewModel: ObservableObject, LinkSnapshotProviding {
             UserDefaults.standard.object(forKey: "hud.expandedHeight") as? Double
                 ?? ExpandedPanelSize.defaultHeight
         )
+        panelOpacity = HUDPanelAppearance.clampedOpacity(
+            UserDefaults.standard.object(forKey: "hud.panelOpacity") as? Double
+                ?? HUDPanelAppearance.defaultOpacity
+        )
+        panelContrast = HUDPanelAppearance.clampedContrast(
+            UserDefaults.standard.object(forKey: "hud.panelContrast") as? Double
+                ?? HUDPanelAppearance.defaultContrast
+        )
+        visualTheme = HUDVisualTheme(
+            rawValue: UserDefaults.standard.string(forKey: "hud.visualTheme") ?? ""
+        ) ?? .classic
         statusFilter = StatusFilter(
             rawValue: UserDefaults.standard.string(forKey: "hud.statusFilter") ?? ""
         ) ?? .all
@@ -257,6 +298,9 @@ final class HUDViewModel: ObservableObject, LinkSnapshotProviding {
             } else {
                 prompt = nil
             }
+            let capability = privacy
+                ? LinkConversationCapability(enabled: false, state: AgentInputState.offline.rawValue, reason: "隐私模式已开启")
+                : Self.capabilitySnapshot(inputDispatcher.capability(for: session))
             return LinkMonitoringSession(
                 id: session.id,
                 provider: session.provider.rawValue.capitalized,
@@ -279,7 +323,8 @@ final class HUDViewModel: ObservableObject, LinkSnapshotProviding {
                 titleSource: Self.protocolTitleSource(titleSource(for: session)),
                 hasCustomTitle: hasCustomTitle(for: session),
                 latestPrompt: prompt,
-                runs: runs
+                runs: runs,
+                conversation: capability
             )
         }
         return LinkMonitoringSnapshot(
@@ -314,6 +359,22 @@ final class HUDViewModel: ObservableObject, LinkSnapshotProviding {
         }
         monitoringRevision += 1
         return true
+    }
+
+    func sendMessage(sessionID: String, clientMessageId: String, text: String) async -> (deliveryId: String, status: AgentDeliveryStatus, error: AgentDeliveryError?) {
+        guard let session = sessions.first(where: { $0.id == sessionID }) else {
+            return ("", .failed, .sessionOffline)
+        }
+        return inputDispatcher.dispatch(
+            clientMessageId: clientMessageId,
+            text: text,
+            to: session,
+            publicSessionId: sessionID
+        )
+    }
+
+    func deliveryStatus(deliveryId: String) -> (status: AgentDeliveryStatus, error: AgentDeliveryError?)? {
+        inputDispatcher.status(deliveryId: deliveryId)
     }
 
     func promptImage(sessionID: String, index: Int) async -> LinkPromptImagePayload? {
@@ -351,6 +412,14 @@ final class HUDViewModel: ObservableObject, LinkSnapshotProviding {
                 .map(String.init) ?? "image/png"
             return LinkPromptImagePayload(data: data, contentType: contentType)
         }
+    }
+
+    private static func capabilitySnapshot(_ capability: AgentInputCapability) -> LinkConversationCapability {
+        LinkConversationCapability(
+            enabled: capability.enabled,
+            state: capability.state.rawValue,
+            reason: capability.reason
+        )
     }
 
     private static func protocolTitleSource(_ source: TaskTitleSource) -> String {
@@ -422,6 +491,14 @@ final class HUDViewModel: ObservableObject, LinkSnapshotProviding {
     func toggleImportance(for session: AgentSession) {
         importanceStore.toggle(session.id)
         importantSessionIDs = importanceStore.sessionIDs
+    }
+
+    func resetAppearanceToDefaults() {
+        expandedWidth = ExpandedPanelSize.defaultWidth
+        expandedHeight = ExpandedPanelSize.defaultHeight
+        panelOpacity = HUDPanelAppearance.defaultOpacity
+        panelContrast = HUDPanelAppearance.defaultContrast
+        visualTheme = .classic
     }
 
     func start() {
@@ -769,6 +846,18 @@ final class HUDViewModel: ObservableObject, LinkSnapshotProviding {
         }
     }
 
+    private static func previousObjective(for session: AgentSession) -> String {
+        for run in session.runs.reversed() {
+            let objective = TextTools.normalizedWhitespace(run.objective)
+            guard !objective.isEmpty,
+                  !TextTools.isContinuationPrompt(objective) else {
+                continue
+            }
+            return String(objective.prefix(2_000))
+        }
+        return ""
+    }
+
     private func resetCompletionTransitions() {
         completionTransitionTasks.values.forEach { $0.cancel() }
         completionTransitionTasks.removeAll()
@@ -803,16 +892,22 @@ final class HUDViewModel: ObservableObject, LinkSnapshotProviding {
             guard meaningfulText != nil || hasImages else {
                 return nil
             }
-            if let meaningfulText,
-               TextTools.isContinuationPrompt(meaningfulText),
-               !hasImages {
+
+            // 首轮只用本次输入；本轮是“确认/继续”但取不到上一轮目标时跳过，避免臆造标题。
+            guard let previousPrompt = AITitleEligibility.previousPrompt(
+                currentPrompt: meaningfulText,
+                hasImages: hasImages,
+                latestObjective: Self.previousObjective(for: session)
+            ) else {
                 return nil
             }
             return AITitleRequest(
                 sessionID: session.id,
                 prompt: meaningfulText ?? "",
                 projectName: session.projectName,
-                images: prompt.images
+                images: prompt.images,
+                previousPrompt: previousPrompt,
+                supportsVision: configuration.supportsVision
             )
         }
 
@@ -845,6 +940,10 @@ final class HUDViewModel: ObservableObject, LinkSnapshotProviding {
                     self.aiTitles[request.sessionID] = title
                     self.aiTitleKeys[request.sessionID] = request.rawFingerprint
                 } catch {
+                    self.aiTitles[request.sessionID] = TextTools.automaticTaskTitle(
+                        rawPrompt: request.prompt.isEmpty ? nil : request.prompt,
+                        projectName: request.projectName
+                    )
                     self.aiTitleKeys[request.sessionID] = request.rawFingerprint
                 }
             }
