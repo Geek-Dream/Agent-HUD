@@ -35,6 +35,7 @@ swiftc \
     -I "$BUILD_DIR" -L "$BUILD_DIR" "${module_args[@]}" \
     Sources/AgentHUD/Models.swift \
     Sources/AgentHUD/Utilities.swift \
+    Sources/AgentHUD/CommandRunner.swift \
     Sources/AgentHUD/LinkModels.swift \
     Sources/AgentHUD/LinkDeviceStore.swift \
     Sources/AgentHUD/LinkPairingManager.swift \

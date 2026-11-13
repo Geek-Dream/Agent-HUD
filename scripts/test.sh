@@ -13,6 +13,7 @@ swiftc \
     Sources/AgentHUD/AITitleService.swift \
     Sources/AgentHUD/Models.swift \
     Sources/AgentHUD/Utilities.swift \
+    Sources/AgentHUD/CommandRunner.swift \
     Sources/AgentHUD/SessionTitleStore.swift \
     Sources/AgentHUD/SessionImportanceStore.swift \
     Sources/AgentHUD/CodexAdapter.swift \

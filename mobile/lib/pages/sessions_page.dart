@@ -2,10 +2,10 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
+import '../hidden_mode_store.dart';
 import '../models.dart';
 import '../session_controller.dart';
 import '../theme.dart';
-import '../hidden_mode_store.dart';
 import '../widgets/hud_chips.dart';
 import 'session_detail_page.dart';
 import 'todos_page.dart';
@@ -34,10 +34,7 @@ class _SessionsPageState extends State<SessionsPage>
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     _pulse = AnimationController(vsync: this, duration: HudMotion.pulse);
-    _entrance = AnimationController(
-      vsync: this,
-      duration: HudMotion.entrance,
-    );
+    _entrance = AnimationController(vsync: this, duration: HudMotion.entrance);
     _controller = SessionController(widget.device);
     _controller.addListener(_changed);
     _controller.start();
@@ -111,9 +108,7 @@ class _SessionsPageState extends State<SessionsPage>
 
   void _openTodos() {
     Navigator.of(context).push(
-      HudSlidePageRoute<void>(
-        builder: (_) => const TodosPage(),
-      ),
+      HudSlidePageRoute<void>(builder: (_) => const TodosPage()),
     );
   }
 
@@ -125,9 +120,7 @@ class _SessionsPageState extends State<SessionsPage>
         _controller.lastUpdated == null &&
         _controller.sessions.isEmpty;
     if ((active || loading) && !_reduceMotion) {
-      if (!_pulse.isAnimating) {
-        _pulse.repeat(reverse: true);
-      }
+      if (!_pulse.isAnimating) _pulse.repeat(reverse: true);
     } else if (_pulse.isAnimating) {
       _pulse.stop();
       _pulse.value = 0;
@@ -162,7 +155,24 @@ class _SessionsPageState extends State<SessionsPage>
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.device.instanceName),
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              widget.device.instanceName,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+            const SizedBox(height: 1),
+            Text(
+              _subtitle(controller),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: HudText.caption.copyWith(fontSize: 11),
+            ),
+          ],
+        ),
         actions: [
           if (controller.status?.privacyMode == true)
             const Tooltip(
@@ -180,31 +190,24 @@ class _SessionsPageState extends State<SessionsPage>
             IconButton(
               tooltip: '待办',
               onPressed: _openTodos,
-              icon: const Icon(Icons.checklist_rounded, size: 21, color: HudColors.todo),
+              icon: const Icon(Icons.checklist_rounded, size: 21),
             ),
           IconButton(
             tooltip: '刷新',
             onPressed: () => controller.refresh(scan: true),
             icon: const Icon(Icons.refresh_rounded, size: 21),
           ),
-          const SizedBox(width: HudSpacing.xs),
+          const SizedBox(width: HudSpacing.md),
         ],
       ),
-      body: DecoratedBox(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [HudColors.background, HudColors.window],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
-        ),
+      body: HudScaffoldBackground(
         child: Column(
           children: [
             _Filters(controller: controller),
             _ErrorBanner(message: controller.error),
             Expanded(
               child: RefreshIndicator(
-                color: HudColors.working,
+                color: HudColors.textPrimary,
                 backgroundColor: HudColors.surfaceRaised,
                 onRefresh: () => controller.refresh(scan: true),
                 child: AnimatedSwitcher(
@@ -212,16 +215,7 @@ class _SessionsPageState extends State<SessionsPage>
                   switchInCurve: HudMotion.easeOut,
                   switchOutCurve: HudMotion.easeIn,
                   transitionBuilder: (child, animation) {
-                    return FadeTransition(
-                      opacity: animation,
-                      child: SlideTransition(
-                        position: Tween<Offset>(
-                          begin: const Offset(0, 0.012),
-                          end: Offset.zero,
-                        ).animate(animation),
-                        child: child,
-                      ),
-                    );
+                    return FadeTransition(opacity: animation, child: child);
                   },
                   child: showSkeleton
                       ? _SkeletonList(
@@ -241,9 +235,9 @@ class _SessionsPageState extends State<SessionsPage>
                               physics: const AlwaysScrollableScrollPhysics(),
                               padding: const EdgeInsets.fromLTRB(
                                 HudSpacing.xl,
-                                HudSpacing.sm,
+                                HudSpacing.md,
                                 HudSpacing.xl,
-                                HudSpacing.lg,
+                                HudSpacing.xl,
                               ),
                               itemCount: sessions.length,
                               findChildIndexCallback: (Key key) {
@@ -280,6 +274,18 @@ class _SessionsPageState extends State<SessionsPage>
       ),
     );
   }
+
+  static String _subtitle(SessionController controller) {
+    final int total = controller.totalCount;
+    final int active = controller.sessions
+        .where((session) => HudColors.isActive(session.status))
+        .length;
+    if (controller.lastUpdated == null) {
+      return controller.isRefreshing ? '正在连接…' : '尚未连接';
+    }
+    if (active > 0) return '$active 个进行中 · 共 $total 个会话';
+    return '$total 个会话 · 已同步';
+  }
 }
 
 class _FilterOption {
@@ -292,28 +298,20 @@ class _FilterOption {
 }
 
 const List<_FilterOption> _statusOptions = [
-  _FilterOption('All', '全部', HudColors.textPrimary,
-      icon: Icons.grid_view_rounded),
-  _FilterOption('Working', '工作', HudColors.working,
-      icon: Icons.graphic_eq_rounded),
-  _FilterOption('Waiting', '等待', HudColors.waiting, icon: Icons.help_rounded),
-  _FilterOption('Completed', '完成', HudColors.completed,
-      icon: Icons.check_rounded),
-  _FilterOption('Failed', '错误', HudColors.failed,
-      icon: Icons.priority_high_rounded),
-  _FilterOption('Todo', '待办', HudColors.todo,
-      icon: Icons.checklist_rounded),
+  _FilterOption('All', '全部', HudColors.textPrimary),
+  _FilterOption('Working', '进行中', HudColors.working),
+  _FilterOption('Waiting', '等待', HudColors.waiting),
+  _FilterOption('Completed', '已完成', HudColors.completed),
+  _FilterOption('Failed', '出错', HudColors.failed),
+  _FilterOption('Todo', '待办', HudColors.todo),
 ];
 
 const List<_FilterOption> _providerOptions = [
-  _FilterOption('All', '全部', HudColors.textPrimary, icon: Icons.apps_rounded),
-  _FilterOption('Codex', 'Codex', HudColors.codex,
-      icon: Icons.terminal_rounded),
-  _FilterOption('Claude', 'Claude', HudColors.claude,
-      icon: Icons.auto_awesome_rounded),
-  _FilterOption('Pi', 'Pi', HudColors.pi, icon: Icons.hexagon_outlined),
-  _FilterOption('OpenCode', 'OpenCode', HudColors.opencode,
-      icon: Icons.code_rounded),
+  _FilterOption('All', '全部来源', HudColors.textSecondary),
+  _FilterOption('Codex', 'Codex', HudColors.codex),
+  _FilterOption('Claude', 'Claude', HudColors.claude),
+  _FilterOption('Pi', 'Pi', HudColors.pi),
+  _FilterOption('OpenCode', 'OpenCode', HudColors.opencode),
 ];
 
 class _Filters extends StatelessWidget {
@@ -323,26 +321,23 @@ class _Filters extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-        color: HudColors.window,
-        border: Border(bottom: BorderSide(color: HudColors.divider)),
-      ),
-      padding: const EdgeInsets.only(top: HudSpacing.xs, bottom: HudSpacing.md),
+    return Padding(
+      padding: const EdgeInsets.only(bottom: HudSpacing.sm),
       child: Column(
         children: [
           _FilterRow(
-            tech: true,
             options: _statusOptions,
             selected: controller.statusFilter,
             count: controller.countForStatus,
             onSelected: controller.setStatusFilter,
           ),
+          const SizedBox(height: HudSpacing.xs),
           _FilterRow(
             options: _providerOptions,
             selected: controller.providerFilter,
             count: controller.countForProvider,
             onSelected: controller.setProviderFilter,
+            subtle: true,
           ),
         ],
       ),
@@ -356,81 +351,58 @@ class _FilterRow extends StatelessWidget {
     required this.selected,
     required this.count,
     required this.onSelected,
-    this.tech = false,
+    this.subtle = false,
   });
 
   final List<_FilterOption> options;
   final String selected;
   final int Function(String) count;
   final ValueChanged<String> onSelected;
-  final bool tech;
+  final bool subtle;
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      padding: const EdgeInsets.symmetric(
-        horizontal: HudSpacing.md,
-        vertical: HudSpacing.xxs,
-      ),
-      child: Row(
-        children: [
-          for (final _FilterOption option in options)
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 3),
-              child: _FilterPill(
-                option: option,
-                selected: option.value == selected,
-                count: count(option.value),
-                tech: tech,
-                onTap: () => onSelected(option.value),
-              ),
-            ),
-        ],
+    return SizedBox(
+      height: subtle ? 34 : 38,
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.symmetric(horizontal: HudSpacing.xl),
+        itemCount: options.length,
+        separatorBuilder: (_, __) => const SizedBox(width: HudSpacing.sm),
+        itemBuilder: (context, index) {
+          final _FilterOption option = options[index];
+          return _FilterChip(
+            option: option,
+            selected: option.value == selected,
+            count: count(option.value),
+            subtle: subtle,
+            onTap: () => onSelected(option.value),
+          );
+        },
       ),
     );
   }
 }
 
-class _FilterPill extends StatelessWidget {
-  const _FilterPill({
+class _FilterChip extends StatelessWidget {
+  const _FilterChip({
     required this.option,
     required this.selected,
     required this.count,
     required this.onTap,
-    this.tech = false,
+    this.subtle = false,
   });
 
   final _FilterOption option;
   final bool selected;
   final int count;
   final VoidCallback onTap;
-  final bool tech;
+  final bool subtle;
 
   @override
   Widget build(BuildContext context) {
-    final Color color = option.color;
-    final Color foreground = selected ? color : HudColors.textSecondary;
-    final TextStyle baseStyle = DefaultTextStyle.of(context).style;
-    final ShapeBorder shape = tech
-        ? HudChamferBorder(
-            cut: 6,
-            side: BorderSide(
-              color: selected
-                  ? color.withValues(alpha: 0.86)
-                  : HudColors.border,
-              width: selected ? 1.1 : 0.9,
-            ),
-          )
-        : StadiumBorder(
-            side: BorderSide(
-              color: selected
-                  ? color.withValues(alpha: 0.58)
-                  : HudColors.border,
-              width: selected ? 1.1 : 0.9,
-            ),
-          );
-
+    final Color accent = option.color;
+    final Color foreground = selected ? HudColors.textPrimary : HudColors.textTertiary;
     return Semantics(
       button: true,
       selected: selected,
@@ -438,92 +410,58 @@ class _FilterPill extends StatelessWidget {
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          customBorder: shape,
+          borderRadius: BorderRadius.circular(999),
           onTap: onTap,
           child: AnimatedContainer(
             duration: HudMotion.fast,
             curve: HudMotion.easeOut,
             padding: EdgeInsets.symmetric(
-              horizontal: tech ? 11 : 12,
-              vertical: 6.5,
+              horizontal: subtle ? 11 : 12,
+              vertical: subtle ? 6 : 7,
             ),
-            decoration: ShapeDecoration(
+            decoration: BoxDecoration(
               color: selected
-                  ? color.withValues(alpha: tech ? 0.22 : 0.18)
-                  : HudColors.controlFill,
-              shape: shape,
-              shadows: selected
-                  ? <BoxShadow>[
-                      BoxShadow(
-                        color: color.withValues(alpha: tech ? 0.45 : 0.28),
-                        blurRadius: tech ? 20 : 14,
-                        spreadRadius: tech ? 2 : 1,
-                      ),
-                      BoxShadow(
-                        color: color.withValues(alpha: tech ? 0.18 : 0.12),
-                        blurRadius: tech ? 8 : 6,
-                        spreadRadius: 0,
-                      ),
-                    ]
-                  : const <BoxShadow>[],
+                  ? HudColors.controlHover
+                  : (subtle ? Colors.transparent : HudColors.controlFill),
+              borderRadius: BorderRadius.circular(999),
+              border: Border.all(
+                color: selected
+                    ? HudColors.borderStrong
+                    : (subtle ? Colors.transparent : HudColors.border),
+              ),
             ),
-            child: Stack(
-              alignment: Alignment.center,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
               children: [
-                if (selected && tech)
-                  Positioned(
-                    top: 0,
-                    left: 9,
-                    right: 9,
-                    child: Container(
-                      height: 1.2,
-                      decoration: BoxDecoration(
-                        color: color.withValues(alpha: 0.9),
-                        boxShadow: <BoxShadow>[
-                          BoxShadow(
-                            color: color.withValues(alpha: 0.75),
-                            blurRadius: 6,
-                          ),
-                        ],
-                      ),
+                if (!subtle && option.value != 'All') ...[
+                  Container(
+                    width: 5,
+                    height: 5,
+                    decoration: BoxDecoration(
+                      color: selected ? accent : accent.withValues(alpha: 0.45),
+                      shape: BoxShape.circle,
                     ),
                   ),
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      option.icon ?? Icons.circle,
-                      size: 12,
-                      color: selected
-                          ? color
-                          : color.withValues(alpha: 0.62),
-                    ),
-                    const SizedBox(width: 5),
-                    AnimatedDefaultTextStyle(
-                      duration: HudMotion.fast,
-                      curve: HudMotion.easeOut,
-                      style: baseStyle.copyWith(
-                        fontSize: 12,
-                        fontWeight:
-                            selected ? FontWeight.w600 : FontWeight.w500,
-                        color: foreground,
-                      ),
-                      child: Text(option.label),
-                    ),
-                    const SizedBox(width: 5),
-                    AnimatedDefaultTextStyle(
-                      duration: HudMotion.fast,
-                      curve: HudMotion.easeOut,
-                      style: baseStyle.copyWith(
-                        fontSize: 10.5,
-                        fontWeight: FontWeight.w600,
-                        color: selected
-                            ? color.withValues(alpha: 0.9)
-                            : HudColors.textTertiary,
-                      ),
-                      child: Text('$count'),
-                    ),
-                  ],
+                  const SizedBox(width: 6),
+                ],
+                Text(
+                  option.label,
+                  style: TextStyle(
+                    fontSize: subtle ? 12 : 12.5,
+                    fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
+                    color: foreground,
+                  ),
+                ),
+                const SizedBox(width: 5),
+                Text(
+                  '$count',
+                  style: HudText.micro.copyWith(
+                    fontSize: 10,
+                    color: selected
+                        ? HudColors.textTertiary
+                        : HudColors.textTertiary.withValues(alpha: 0.7),
+                    fontFeatures: const [FontFeature.tabularFigures()],
+                  ),
                 ),
               ],
             ),
@@ -604,25 +542,12 @@ class _AnimatedSessionCard extends StatefulWidget {
 
 class _AnimatedSessionCardState extends State<_AnimatedSessionCard>
     with TickerProviderStateMixin {
-  late final AnimationController _transition;
   late final AnimationController _appear;
-  AgentSession? _previous;
 
   @override
   void initState() {
     super.initState();
-    _transition = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 560),
-    )..addStatusListener((AnimationStatus status) {
-        if (status == AnimationStatus.completed && mounted) {
-          setState(() => _previous = null);
-        }
-      });
-    _appear = AnimationController(
-      vsync: this,
-      duration: HudMotion.entrance,
-    );
+    _appear = AnimationController(vsync: this, duration: HudMotion.entrance);
     if (!widget.reduced && widget.entrance.value >= 0.999) {
       _appear.forward(from: 0);
     } else {
@@ -631,30 +556,17 @@ class _AnimatedSessionCardState extends State<_AnimatedSessionCard>
   }
 
   @override
-  void didUpdateWidget(covariant _AnimatedSessionCard oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.session.status == widget.session.status) return;
-    if (widget.reduced) {
-      _previous = null;
-      _transition.value = 1;
-      return;
-    }
-    _previous = oldWidget.session;
-    _transition.forward(from: 0);
-  }
-
-  @override
   void dispose() {
-    _transition.dispose();
     _appear.dispose();
     super.dispose();
   }
 
-  Widget _buildCard(AgentSession session) {
-    return Padding(
+  @override
+  Widget build(BuildContext context) {
+    final Widget card = Padding(
       padding: const EdgeInsets.only(bottom: HudSpacing.lg),
       child: _SessionCard(
-        session: session,
+        session: widget.session,
         pulse: widget.pulse,
         reduced: widget.reduced,
         canStar: widget.canStar,
@@ -662,54 +574,6 @@ class _AnimatedSessionCardState extends State<_AnimatedSessionCard>
         onOpen: widget.onOpen,
       ),
     );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final AgentSession? previous = _previous;
-    Widget card;
-    if (previous == null) {
-      card = _buildCard(widget.session);
-    } else {
-      card = AnimatedBuilder(
-        animation: _transition,
-        builder: (BuildContext context, Widget? child) {
-          final double value = _transition.value;
-          final double outgoing = Curves.easeInCubic.transform(
-            (value / 0.5).clamp(0.0, 1.0),
-          );
-          final double incoming = Curves.easeOutCubic.transform(
-            ((value - 0.42) / 0.58).clamp(0.0, 1.0),
-          );
-          return Stack(
-            clipBehavior: Clip.none,
-            children: [
-              Opacity(
-                opacity: incoming,
-                child: FractionalTranslation(
-                  translation: Offset(0, (1 - incoming) * 0.42),
-                  child: _buildCard(widget.session),
-                ),
-              ),
-              Positioned(
-                top: 0,
-                left: 0,
-                right: 0,
-                child: IgnorePointer(
-                  child: Opacity(
-                    opacity: (1 - outgoing) * 0.92,
-                    child: FractionalTranslation(
-                      translation: Offset(outgoing * 0.9, 0),
-                      child: _buildCard(previous),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          );
-        },
-      );
-    }
 
     if (widget.reduced) return card;
 
@@ -717,17 +581,6 @@ class _AnimatedSessionCardState extends State<_AnimatedSessionCard>
       parent: _appear,
       curve: HudMotion.easeOut,
     );
-    final Widget appeared = FadeTransition(
-      opacity: appear,
-      child: SlideTransition(
-        position: Tween<Offset>(
-          begin: const Offset(0, 0.09),
-          end: Offset.zero,
-        ).animate(appear),
-        child: card,
-      ),
-    );
-
     final double start = math.min(widget.index * 0.045, 0.35);
     final double end = math.min(start + 0.55, 1);
     final Animation<double> entrance = CurvedAnimation(
@@ -736,12 +589,15 @@ class _AnimatedSessionCardState extends State<_AnimatedSessionCard>
     );
     return FadeTransition(
       opacity: entrance,
-      child: SlideTransition(
-        position: Tween<Offset>(
-          begin: const Offset(0, 0.035),
-          end: Offset.zero,
-        ).animate(entrance),
-        child: appeared,
+      child: FadeTransition(
+        opacity: appear,
+        child: SlideTransition(
+          position: Tween<Offset>(
+            begin: const Offset(0, 0.025),
+            end: Offset.zero,
+          ).animate(appear),
+          child: card,
+        ),
       ),
     );
   }
@@ -767,255 +623,168 @@ class _SessionCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Color statusColor = HudColors.status(session.status);
-    final bool outlined =
-        HudColors.isActive(session.status) || session.status == 'Failed';
     final bool isActive = HudColors.isActive(session.status);
-    final Color borderColor = session.isImportant
-        ? HudColors.important.withValues(alpha: 0.55)
-        : outlined
-            ? statusColor.withValues(alpha: 0.38)
-            : HudColors.border;
+    final String? promptText = session.latestPrompt?.text
+        .replaceAll(RegExp(r'\s+'), ' ')
+        .trim();
 
-    return Container(
-      margin: const EdgeInsets.only(bottom: HudSpacing.lg),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(HudRadii.panel),
-        boxShadow: session.isImportant
-            ? HudElevation.glow(HudColors.important)
-            : outlined
-                ? HudElevation.card(statusColor.withValues(alpha: 0.25))
-                : HudElevation.card(HudColors.border),
+    return HudSurfaceCard(
+      onTap: onOpen,
+      color: session.isImportant
+          ? HudColors.important.withValues(alpha: 0.035)
+          : HudColors.surface.withValues(alpha: 0.82),
+      borderColor: session.isImportant
+          ? HudColors.important.withValues(alpha: 0.22)
+          : HudColors.border,
+      padding: const EdgeInsets.fromLTRB(
+        HudSpacing.xl,
+        HudSpacing.lg,
+        HudSpacing.lg,
+        HudSpacing.lg,
       ),
-      child: Material(
-        color: Colors.transparent,
-        borderRadius: BorderRadius.circular(HudRadii.panel),
-        clipBehavior: Clip.antiAlias,
-        child: Ink(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                HudColors.surfaceRaised,
-                session.isImportant
-                    ? HudColors.important.withValues(alpha: 0.09)
-                    : outlined
-                        ? statusColor.withValues(alpha: 0.07)
-                        : HudColors.surface,
-              ],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-            borderRadius: BorderRadius.circular(HudRadii.panel),
-            border: Border.all(
-              color: borderColor,
-              width: session.isImportant ? 1.2 : 1.0,
-            ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              HudProviderGlyph(provider: session.provider, size: 24),
+              const SizedBox(width: HudSpacing.md),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      session.title,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: HudText.title,
+                    ),
+                    const SizedBox(height: 3),
+                    Text(
+                      _metadata(session),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: HudText.caption.copyWith(fontSize: 11.5),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: HudSpacing.sm),
+              HudStatusPill(
+                status: session.status,
+                pulsing: isActive && !reduced,
+                dense: true,
+              ),
+            ],
           ),
-          child: InkWell(
-            onTap: onOpen,
-            highlightColor: HudColors.controlHover.withValues(alpha: 0.35),
-            splashColor: HudColors.controlFill.withValues(alpha: 0.45),
-            child: Stack(
-              children: [
-                Positioned.fill(
-                  child: IgnorePointer(
-                    child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: AnimatedContainer(
-                        duration: HudMotion.fast,
-                        width: session.isImportant ? 4 : 3,
-                        margin: EdgeInsets.symmetric(
-                          vertical: session.isImportant
-                              ? HudSpacing.md
-                              : HudSpacing.lg,
-                        ),
-                        decoration: BoxDecoration(
-                          color: (session.isImportant
-                                  ? HudColors.important
-                                  : statusColor)
-                              .withValues(alpha: session.isImportant ? 0.9 : 0.72),
-                          borderRadius: BorderRadius.circular(2),
-                          boxShadow: session.isImportant
-                              ? [
-                                  BoxShadow(
-                                    color: HudColors.important
-                                        .withValues(alpha: 0.4),
-                                    blurRadius: 6,
-                                    spreadRadius: 1,
-                                  ),
-                                ]
-                              : null,
-                        ),
+          const SizedBox(height: HudSpacing.lg),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: Text(
+                  session.currentAction.isEmpty
+                      ? '暂无进行中的动作'
+                      : session.currentAction,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: HudText.bodySecondary.copyWith(fontSize: 13),
+                ),
+              ),
+              const SizedBox(width: HudSpacing.md),
+              Text(
+                relativeTime(session.lastActivityAt),
+                style: HudText.caption.copyWith(
+                  fontSize: 11,
+                  color: HudColors.textTertiary,
+                ),
+              ),
+            ],
+          ),
+          if (promptText != null && promptText.isNotEmpty) ...[
+            const SizedBox(height: HudSpacing.md),
+            Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: HudSpacing.md,
+                vertical: 7,
+              ),
+              decoration: BoxDecoration(
+                color: HudColors.controlFill,
+                borderRadius: BorderRadius.circular(HudRadii.micro),
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      promptText,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: HudText.caption.copyWith(
+                        color: HudColors.textSecondary,
                       ),
                     ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(
-                    HudSpacing.xl,
-                    HudSpacing.lg,
-                    HudSpacing.md,
-                    HudSpacing.lg,
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Text(
-                              session.title,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: HudText.title.copyWith(fontSize: 15.5),
-                            ),
-                          ),
-                          if (canStar) _StarButton(session: session, onStar: onStar),
-                          const SizedBox(width: HudSpacing.xxs),
-                          AnimatedSwitcher(
-                            duration: HudMotion.fast,
-                            transitionBuilder: (child, animation) =>
-                                FadeTransition(
-                              opacity: animation,
-                              child: ScaleTransition(
-                                scale: animation,
-                                child: child,
-                              ),
-                            ),
-                            child: HudStatusPill(
-                              key: ValueKey<String>(session.status),
-                              status: session.status,
-                              pulsing: isActive && !reduced,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: HudSpacing.sm),
-                      Row(
-                        children: [
-                          HudProviderGlyph(provider: session.provider),
-                          const SizedBox(width: HudSpacing.sm),
-                          Expanded(
-                            child: Text(
-                              _metadata(session),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: HudText.caption,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: HudSpacing.md),
-                      Row(
-                        children: [
-                          HudStatusDot(
-                            color: statusColor,
-                            pulsing: isActive && !reduced,
-                          ),
-                          const SizedBox(width: HudSpacing.sm),
-                          Expanded(
-                            child: Text(
-                              session.currentAction,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style:
-                                  HudText.bodySecondary.copyWith(fontSize: 12.5),
-                            ),
-                          ),
-                          const SizedBox(width: HudSpacing.md),
-                          Text(
-                            relativeTime(session.lastActivityAt),
-                            style: HudText.caption.copyWith(
-                              fontSize: 11,
-                              color: HudColors.textTertiary,
-                            ),
-                          ),
-                          const SizedBox(width: HudSpacing.xxs),
-                          const Icon(
-                            Icons.chevron_right_rounded,
-                            size: 18,
-                            color: HudColors.textTertiary,
-                          ),
-                        ],
-                      ),
-                      if (session.latestPrompt != null &&
-                          !session.latestPrompt!.isEmpty) ...[
-                        const SizedBox(height: HudSpacing.md),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: HudSpacing.md,
-                            vertical: HudSpacing.sm,
-                          ),
-                          decoration: BoxDecoration(
-                            color: HudColors.controlFill,
-                            borderRadius: BorderRadius.circular(HudRadii.micro),
-                            border: Border.all(color: HudColors.divider),
-                          ),
-                          child: Row(
-                            children: [
-                              const Icon(
-                                Icons.format_quote_rounded,
-                                size: 12,
-                                color: HudColors.textTertiary,
-                              ),
-                              const SizedBox(width: HudSpacing.sm),
-                              Expanded(
-                                child: Text(
-                                  session.latestPrompt!.text
-                                      .replaceAll(RegExp(r'\s+'), ' ')
-                                      .trim(),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: HudText.caption.copyWith(
-                                    color: HudColors.textSecondary,
-                                  ),
-                                ),
-                              ),
-                              if (session.latestPrompt!.images.isNotEmpty) ...[
-                                const SizedBox(width: HudSpacing.sm),
-                                const Icon(
-                                  Icons.photo_outlined,
-                                  size: 12,
-                                  color: HudColors.textTertiary,
-                                ),
-                                const SizedBox(width: 2),
-                                Text(
-                                  '${session.latestPrompt!.images.length}',
-                                  style: HudText.caption.copyWith(fontSize: 10.5),
-                                ),
-                              ],
-                            ],
-                          ),
-                        ),
-                      ],
-                    ],
-                  ),
-                ),
-              ],
+                  if (session.latestPrompt!.images.isNotEmpty) ...[
+                    const SizedBox(width: HudSpacing.sm),
+                    Icon(
+                      Icons.image_outlined,
+                      size: 12,
+                      color: HudColors.textTertiary.withValues(alpha: 0.8),
+                    ),
+                    const SizedBox(width: 3),
+                    Text(
+                      '${session.latestPrompt!.images.length}',
+                      style: HudText.caption.copyWith(fontSize: 10.5),
+                    ),
+                  ],
+                ],
+              ),
             ),
+          ],
+          const SizedBox(height: HudSpacing.md),
+          Row(
+            children: [
+              if (canStar)
+                _StarButton(session: session, onStar: onStar)
+              else
+                const SizedBox(height: 28),
+              const Spacer(),
+              if (session.isImportant)
+                Text(
+                  '重要',
+                  style: HudText.caption.copyWith(
+                    fontSize: 10.5,
+                    color: HudColors.important,
+                  ),
+                ),
+              const SizedBox(width: HudSpacing.sm),
+              const Icon(
+                Icons.arrow_forward_rounded,
+                size: 15,
+                color: HudColors.textTertiary,
+              ),
+            ],
           ),
-        ),
+        ],
       ),
     );
   }
 
   static String _metadata(AgentSession session) {
-    final StringBuffer buffer = StringBuffer()
-      ..write(session.provider)
-      ..write(' · ')
-      ..write(session.projectName);
+    final List<String> parts = <String>[
+      session.provider,
+      session.projectName,
+    ];
+    if (session.gitBranch != null && session.gitBranch!.isNotEmpty) {
+      parts.add(session.gitBranch!);
+    }
     final int changes = session.gitChangedFiles ?? 0;
-    if (changes > 0) {
-      buffer
-        ..write(' · ')
-        ..write(changes)
-        ..write(' 个改动');
-    }
+    if (changes > 0) parts.add('$changes 个改动');
     if (session.hasCustomTitle) {
-      buffer
-        ..write(' · ')
-        ..write(titleSourceLabel(session.titleSource));
+      parts.add(titleSourceLabel(session.titleSource));
     }
-    return buffer.toString();
+    return parts.join('  ·  ');
   }
 }
 
@@ -1059,27 +828,23 @@ class _StarButtonState extends State<_StarButton>
   @override
   Widget build(BuildContext context) {
     return ScaleTransition(
-      scale: Tween<double>(begin: 1.0, end: 1.25).animate(
-        CurvedAnimation(parent: _controller, curve: Curves.elasticOut),
+      scale: Tween<double>(begin: 1.0, end: 1.2).animate(
+        CurvedAnimation(parent: _controller, curve: Curves.easeOutBack),
       ),
-      child: IconButton(
-        onPressed: widget.onStar,
-        tooltip:
-            widget.session.isImportant ? '取消重要' : '标记为重要',
-        visualDensity: VisualDensity.compact,
-        padding: EdgeInsets.zero,
-        constraints: const BoxConstraints.tightFor(
-          width: 30,
-          height: 30,
-        ),
-        iconSize: 17,
-        icon: Icon(
-          widget.session.isImportant
-              ? Icons.star_rounded
-              : Icons.star_outline_rounded,
-          color: widget.session.isImportant
-              ? HudColors.important
-              : HudColors.textTertiary,
+      child: InkResponse(
+        onTap: widget.onStar,
+        radius: 18,
+        child: Padding(
+          padding: const EdgeInsets.all(4),
+          child: Icon(
+            widget.session.isImportant
+                ? Icons.star_rounded
+                : Icons.star_outline_rounded,
+            size: 18,
+            color: widget.session.isImportant
+                ? HudColors.important
+                : HudColors.textTertiary,
+          ),
         ),
       ),
     );
@@ -1096,13 +861,13 @@ class _SkeletonList extends StatelessWidget {
     return AnimatedBuilder(
       animation: pulse,
       builder: (context, child) {
-        return Opacity(opacity: 0.42 + pulse.value * 0.4, child: child);
+        return Opacity(opacity: 0.35 + pulse.value * 0.3, child: child);
       },
       child: ListView(
         physics: const AlwaysScrollableScrollPhysics(),
         padding: const EdgeInsets.fromLTRB(
           HudSpacing.xl,
-          HudSpacing.sm,
+          HudSpacing.md,
           HudSpacing.xl,
           HudSpacing.lg,
         ),
@@ -1166,13 +931,13 @@ class _EmptyList extends StatelessWidget {
       physics: const AlwaysScrollableScrollPhysics(),
       padding: const EdgeInsets.only(bottom: 32),
       children: const [
-        SizedBox(height: 120),
+        SizedBox(height: 110),
         HudEntrance(
           child: Column(
             children: [
               Icon(
-                Icons.radar_rounded,
-                size: 34,
+                Icons.inbox_outlined,
+                size: 30,
                 color: HudColors.textTertiary,
               ),
               SizedBox(height: HudSpacing.lg),
@@ -1211,22 +976,21 @@ class _Footer extends StatelessWidget {
         HudSpacing.xl,
         HudSpacing.sm,
         HudSpacing.xl,
-        HudSpacing.xl,
-      ),
-      decoration: const BoxDecoration(
-        border: Border(top: BorderSide(color: HudColors.divider)),
+        HudSpacing.lg,
       ),
       child: Row(
         children: [
-          const Icon(
-            Icons.lock_outline_rounded,
-            size: 13,
+          Icon(
+            supportsActions
+                ? Icons.verified_user_outlined
+                : Icons.visibility_outlined,
+            size: 12,
             color: HudColors.textTertiary,
           ),
           const SizedBox(width: HudSpacing.sm),
           Text(
-            supportsActions ? '证书固定 · 可改名/星标' : '只读监控',
-            style: HudText.caption,
+            supportsActions ? '局域网直连 · 可操作' : '只读监控',
+            style: HudText.caption.copyWith(fontSize: 11),
           ),
           const Spacer(),
           AnimatedSwitcher(
@@ -1241,7 +1005,7 @@ class _Footer extends StatelessWidget {
             child: Text(
               timeText,
               key: ValueKey<String>(timeText),
-              style: HudText.caption,
+              style: HudText.caption.copyWith(fontSize: 11),
             ),
           ),
         ],

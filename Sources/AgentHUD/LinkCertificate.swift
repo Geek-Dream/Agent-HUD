@@ -53,16 +53,29 @@ struct LinkCertificate {
 enum LinkNetwork {
     struct IPv6Address {
         let value: String
+        let interfaceName: String
         let isGlobal: Bool
         let isUniqueLocal: Bool
+        let isLinkLocal: Bool
     }
 
+    /// 手机端会按顺序逐个尝试这些地址，所以最可能连通的地址必须排在最前面。
+    ///
+    /// - 链路本地地址（fe80::/10）在手机上无法使用：访问它需要 `%en0` 这样的网卡 zone，
+    ///   而 Dart 的 `Uri` 会把 `%` 编码成 `%25`，请求必然失败。
+    /// - `vmenet*` 是虚拟机内部网卡，局域网里的手机不可达。
+    /// - 全球单播地址优先于 ULA（fc00::/7）：ULA 通常来自 Internet 共享（bridge100）
+    ///   或虚拟机仅主机网络（bridge101），手机拿不到这些网段。
     static func ipv6Addresses() -> [String] {
         interfaceIPv6Addresses()
-            .filter { !$0.value.hasPrefix("::1") }
+            .filter { !$0.isLinkLocal && !$0.value.hasPrefix("::1") }
+            .filter { !$0.interfaceName.hasPrefix("vmenet") }
             .sorted {
-                if $0.isUniqueLocal != $1.isUniqueLocal { return $0.isUniqueLocal }
                 if $0.isGlobal != $1.isGlobal { return $0.isGlobal }
+                if $0.isUniqueLocal != $1.isUniqueLocal { return $0.isUniqueLocal }
+                let lhsBridge = $0.interfaceName.hasPrefix("bridge")
+                let rhsBridge = $1.interfaceName.hasPrefix("bridge")
+                if lhsBridge != rhsBridge { return !lhsBridge }
                 return $0.value < $1.value
             }
             .map(\.value)
@@ -100,7 +113,15 @@ enum LinkNetwork {
                 continue
             }
             let value = String(cString: text) + (isLinkLocal ? "%\(name)" : "")
-            output.append(IPv6Address(value: value, isGlobal: isGlobal, isUniqueLocal: isUniqueLocal))
+            output.append(
+                IPv6Address(
+                    value: value,
+                    interfaceName: name,
+                    isGlobal: isGlobal,
+                    isUniqueLocal: isUniqueLocal,
+                    isLinkLocal: isLinkLocal
+                )
+            )
         }
         return output
     }

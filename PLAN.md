@@ -2,9 +2,11 @@
 
 ## 状态
 
-**未完成。** 原记「已完成（2026-11-12）」为错误声明，于 2026-11-13 核查后更正。
+**进行中。** 原记「已完成（2026-11-12）」为错误声明，于 2026-11-13 核查后更正。
 
 核查结论：macOS 端编译失败，两端输入适配器都无法真正把文本送进目标会话，手机端存在静默丢消息与不显示投递结果的缺陷。既有 `./scripts/test.sh` 的 swiftc 文件清单不含 `LinkServer.swift` / `HUDViewModel.swift`，因此「23 项通过与对话功能无关」。详见下方「2026-11-13 核查更正」。
+
+**2026-11-13 最新进展**：macOS 编译已修复；Codex 投递通道已用 `codex queue` 重做，并完成真实在线会话端到端验证（含 HTTP 全链路）。详见文末「2026-11-13 通道打通与端到端验证」。
 
 ## 目标
 
@@ -121,7 +123,8 @@ Windows 可用：`@openai/codex` 的 optionalDependencies 含 `codex-win32-x64` 
 `codex queue` 排队消息能否被**正在运行的交互式 TUI 会话即时消费**。
 
 - 已验证：无效 thread → 退出码 1，报 `no rollout found for thread id ...`（可判定失败）。
-- 未验证：成功路径。若消息只进队列、需 `--resume` 才处理，则与 §3.2 冲突，方案不成立。
+- **已解决（2026-11-13）**：成功路径已验证通过——在线 TUI 会即时消费排队消息并调用模型回复，无需 `--resume`。见文末章节。
+
 
 规范 §12 阶段 0 门槛要求先验此条；当前实现顺序颠倒（UI 已完成、通道未验证），需按 §16 重排。
 
@@ -144,6 +147,56 @@ Windows 可用：`@openai/codex` 的 optionalDependencies 含 `codex-win32-x64` 
 - Windows 端无法本机构建（`dotnet` 不存在），只能静态审阅，须列为未验证项。
 
 ---
+
+# 2026-11-13 通道打通与端到端验证
+
+## 状态
+
+已完成（本轮范围）。macOS 编译恢复，Codex 投递通道真实可用，并通过「手机 HTTP 请求 → LinkServer → Dispatcher → 真实在线 Agent」全链路验证。
+
+## 本轮改动
+
+| 文件 | 改动 |
+|---|---|
+| `Sources/AgentHUD/CodexInputAdapter.swift` | 删除无效的 AppleScript 粘贴方案，改为官方 CLI `codex queue --thread <providerSessionID> --message <text>`（argv 传参，不经 shell，无注入面）。新增 `codex` 可执行文件解析与 PATH 补全（GUI 启动时 PATH 不含 `/opt/homebrew/bin`，`codex` 的 `#!/usr/bin/env node` 会失败）。新增 `isSessionAttached` 判活：用 `lsof -t <rollout 路径>` 确认仍有进程持有该会话日志文件——因为 `codex queue` 对已退出会话也返回 0，仅靠退出码会假成功。 |
+| `Sources/AgentHUD/CommandRunner.swift` | `BoundedProcess.run` 增加可选 `environment` 参数，默认行为不变。 |
+| `Sources/AgentHUD/LinkServer.swift` | 消息路由返回码按 §7.3 区分：`session_offline`/`agent_busy` → 409，`invalid_message` → 422，`provider_unsupported` → 501，`input_unavailable`/`delivery_failed` → 503；成功仍为 202。 |
+| `Tests/LinkServerFixture.swift` | 联调夹具可接入真实 `AgentInputDispatcher` + `CodexInputAdapter`（由 `HUD_E2E_THREAD_ID`/`HUD_E2E_ROLLOUT` 开启），新增 `enableConversation` 请求类型。未设环境变量时行为与原来完全一致。 |
+| `mobile/test/link_integration_test.dart` | 新增对话段：开启对话权限 → 发送消息 → 轮询投递状态至终态。 |
+| `scripts/test.sh`、`scripts/test-mobile-link.sh` | 编译清单补 `CommandRunner.swift`。 |
+
+## 验证方式与结果
+
+用隔离环境 `CODEX_HOME=/tmp/codex-queue-probe/home` 在 tmux 中启动真实 Codex TUI（不触碰用户现有会话），会话 ID `01a1d431-…`，然后分三层验证。
+
+1. **适配器直投**（编译独立 harness 调用真实 `CodexInputAdapter.deliver`）
+   - 在线会话：`success=true status=delivered`，TUI 内出现消息，模型回复 `OK-E2E`，日志 `response_item` 有 `output_text: " OK-E2E"` + `task_complete`。
+   - 已退出会话（旧 rollout，无进程持有）：`success=false error=sessionOffline`，未产生假成功。
+   - 无效 thread id：`success=false error=sessionOffline`。
+2. **HTTP 全链路**（`./scripts/test-mobile-link.sh`，Dart 客户端真实配对）
+   - 退出码 0；输出含 `FIXTURE_CONVERSATION_READY`、`FIXTURE_CODE_READY`、`FIXTURE_REVOKED`。
+   - 消息经 `POST /v1/sessions/{id}/messages` 进入 TUI（17:20 出现在会话中），投递状态轮询到 `delivered`。
+3. **回归**
+   - `./scripts/build-app.sh`：退出码 0，`build/AgentHUD.app` 生成。
+   - `./scripts/test.sh`：退出码 0，28 项通过。
+   - `cd mobile && flutter test`：退出码 0，9 passed / 1 skipped。
+
+## 顺带确认
+
+- `CodexAdapter` 已从 `session_meta.payload.id` 解析 `providerSessionID`，`sourcePath` 即 rollout 文件路径，`isSessionAttached` 无需额外探测 PID/TTY。
+- 不使用 `codex queue --resume`，符合 §3.2「不静默重启已退出的 Agent」。
+
+## 仍未完成（按规范条款）
+
+- 缺陷 5、6：手机端 `_lastClientMessageId` 未清空（第二条消息会被幂等拦截）、详情页不展示投递状态。
+- 缺陷 7 剩余部分：`link_api.dart` 仍丢弃非 2xx 响应体，手机端拿不到错误码。
+- 缺陷 8：`observed` 状态仍未产生。
+- 缺陷 9：`AgentRuntimeRegistry` 仍是死代码。
+- 缺陷 10：`GET /v1/deliveries/{id}` 未校验投递归属设备。
+- 缺陷 11：无 §14 审计记录。
+- 缺陷 3：Windows 端仍为 `SendKeys` 方案，未改 `codex queue`，未构建验证。
+- 步骤 9 剩余：`LinkServer.swift`、`HUDViewModel.swift` 仍不在 `scripts/test.sh` 编译清单内。
+- Claude Code / OpenCode 适配器未实现（Claude 无注入活跃 TUI 的通道）。
 
 # 增加「仅使用 IPv6」配对开关
 

@@ -3,9 +3,7 @@ import 'package:flutter/material.dart';
 import '../models.dart';
 import '../theme.dart';
 
-/// ---------------------------------------------------------------------------
-/// Provider icon mapping – semantic + recognizable at small sizes
-/// ---------------------------------------------------------------------------
+/// Provider icon mapping – semantic + recognizable at small sizes.
 IconData hudProviderIcon(String provider) {
   switch (provider) {
     case 'Codex':
@@ -21,9 +19,7 @@ IconData hudProviderIcon(String provider) {
   }
 }
 
-/// ---------------------------------------------------------------------------
-/// Status icon mapping – replaces plain dots with meaningful glyphs
-/// ---------------------------------------------------------------------------
+/// Status icon mapping.
 IconData hudStatusIcon(String status) {
   switch (status) {
     case 'Starting':
@@ -43,11 +39,9 @@ IconData hudStatusIcon(String status) {
   }
 }
 
-/// ---------------------------------------------------------------------------
-/// Provider glyph – rounded-square badge with gradient background
-/// ---------------------------------------------------------------------------
+/// Provider badge – quiet tinted square with a hairline ring.
 class HudProviderGlyph extends StatelessWidget {
-  const HudProviderGlyph({super.key, required this.provider, this.size = 18});
+  const HudProviderGlyph({super.key, required this.provider, this.size = 22});
 
   final String provider;
   final double size;
@@ -59,31 +53,14 @@ class HudProviderGlyph extends StatelessWidget {
       width: size,
       height: size,
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            color.withValues(alpha: 0.22),
-            color.withValues(alpha: 0.08),
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(size * 0.28),
-        border: Border.all(
-          color: color.withValues(alpha: 0.35),
-          width: 0.8,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: color.withValues(alpha: 0.12),
-            blurRadius: 6,
-            spreadRadius: 0.5,
-          ),
-        ],
+        color: color.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(size * 0.3),
+        border: Border.all(color: color.withValues(alpha: 0.22), width: 1),
       ),
       child: Center(
         child: Icon(
           hudProviderIcon(provider),
-          size: size * 0.52,
+          size: size * 0.54,
           color: color,
         ),
       ),
@@ -91,56 +68,74 @@ class HudProviderGlyph extends StatelessWidget {
   }
 }
 
-/// ---------------------------------------------------------------------------
-/// Status pill – compact badge with icon + label + optional pulse ring
-/// ---------------------------------------------------------------------------
+/// Provider name + glyph in one compact line.
+class HudProviderTag extends StatelessWidget {
+  const HudProviderTag({super.key, required this.provider, this.size = 18});
+
+  final String provider;
+  final double size;
+
+  @override
+  Widget build(BuildContext context) {
+    final Color color = HudColors.provider(provider);
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        HudProviderGlyph(provider: provider, size: size),
+        const SizedBox(width: HudSpacing.sm),
+        Text(
+          provider,
+          style: HudText.caption.copyWith(
+            color: color,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+/// Status pill – dot + label, no gradient, no glow.
 class HudStatusPill extends StatelessWidget {
   const HudStatusPill({
     super.key,
     required this.status,
     this.pulsing = false,
+    this.dense = false,
   });
 
   final String status;
   final bool pulsing;
+  final bool dense;
 
   @override
   Widget build(BuildContext context) {
     final Color color = HudColors.status(status);
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+      padding: EdgeInsets.symmetric(
+        horizontal: dense ? 7 : 8,
+        vertical: dense ? 3 : 4,
+      ),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            color.withValues(alpha: 0.14),
-            color.withValues(alpha: 0.06),
-          ],
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-        ),
-        borderRadius: BorderRadius.circular(HudRadii.micro),
-        border: Border.all(
-          color: color.withValues(alpha: 0.32),
-          width: 0.8,
-        ),
+        color: color.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(999),
+        border: Border.all(color: color.withValues(alpha: 0.2), width: 1),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (pulsing)
-            _PulseRing(color: color)
-          else
-            Icon(
-              hudStatusIcon(status),
-              size: 10,
-              color: color,
-            ),
-          const SizedBox(width: 4),
+          HudStatusDot(
+            color: color,
+            pulsing: pulsing,
+            size: dense ? 5 : 6,
+          ),
+          const SizedBox(width: 5),
           Text(
             statusLabel(status),
             style: TextStyle(
-              fontSize: 10.5,
+              fontSize: dense ? 10.5 : 11,
               fontWeight: FontWeight.w600,
+              letterSpacing: 0.1,
               color: color,
             ),
           ),
@@ -150,9 +145,7 @@ class HudStatusPill extends StatelessWidget {
   }
 }
 
-/// ---------------------------------------------------------------------------
-/// Animated status dot with glow ring for list items
-/// ---------------------------------------------------------------------------
+/// Status dot. Pulsing uses a soft expanding ring; static stays flat.
 class HudStatusDot extends StatelessWidget {
   const HudStatusDot({
     super.key,
@@ -171,17 +164,7 @@ class HudStatusDot extends StatelessWidget {
       return Container(
         width: size,
         height: size,
-        decoration: BoxDecoration(
-          color: color,
-          shape: BoxShape.circle,
-          boxShadow: [
-            BoxShadow(
-              color: color.withValues(alpha: 0.35),
-              blurRadius: 4,
-              spreadRadius: 1,
-            ),
-          ],
-        ),
+        decoration: BoxDecoration(color: color, shape: BoxShape.circle),
       );
     }
     return _AnimatedStatusDot(color: color, size: size);
@@ -207,7 +190,7 @@ class _AnimatedStatusDotState extends State<_AnimatedStatusDot>
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1600),
+      duration: HudMotion.pulse,
     )..repeat();
   }
 
@@ -224,15 +207,15 @@ class _AnimatedStatusDotState extends State<_AnimatedStatusDot>
       builder: (context, child) {
         final double t = _controller.value;
         return SizedBox(
-          width: widget.size + 6,
-          height: widget.size + 6,
+          width: widget.size + 5,
+          height: widget.size + 5,
           child: Stack(
             alignment: Alignment.center,
             children: [
               Opacity(
-                opacity: (1 - t) * 0.4,
+                opacity: (1 - t) * 0.28,
                 child: Transform.scale(
-                  scale: 1 + t * 1.2,
+                  scale: 1 + t * 1.4,
                   child: Container(
                     width: widget.size,
                     height: widget.size,
@@ -249,13 +232,6 @@ class _AnimatedStatusDotState extends State<_AnimatedStatusDot>
                 decoration: BoxDecoration(
                   color: widget.color,
                   shape: BoxShape.circle,
-                  boxShadow: [
-                    BoxShadow(
-                      color: widget.color.withValues(alpha: 0.45),
-                      blurRadius: 6,
-                      spreadRadius: 1.5,
-                    ),
-                  ],
                 ),
               ),
             ],
@@ -266,75 +242,51 @@ class _AnimatedStatusDotState extends State<_AnimatedStatusDot>
   }
 }
 
-/// ---------------------------------------------------------------------------
-/// Tiny pulse ring used inside status pill
-/// ---------------------------------------------------------------------------
-class _PulseRing extends StatefulWidget {
-  const _PulseRing({required this.color});
+/// Neutral key-value row used by detail sections.
+class HudFactRow extends StatelessWidget {
+  const HudFactRow({
+    super.key,
+    required this.label,
+    required this.value,
+    this.icon,
+    this.valueColor = HudColors.textPrimary,
+    this.mono = false,
+  });
 
-  final Color color;
-
-  @override
-  State<_PulseRing> createState() => _PulseRingState();
-}
-
-class _PulseRingState extends State<_PulseRing>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _controller;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 1400),
-    )..repeat();
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
+  final String label;
+  final String value;
+  final IconData? icon;
+  final Color valueColor;
+  final bool mono;
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: _controller,
-      builder: (context, child) {
-        final double t = _controller.value;
-        return SizedBox(
-          width: 10,
-          height: 10,
-          child: Stack(
-            alignment: Alignment.center,
-            children: [
-              Opacity(
-                opacity: (1 - t) * 0.35,
-                child: Transform.scale(
-                  scale: 1 + t * 0.6,
-                  child: Container(
-                    width: 8,
-                    height: 8,
-                    decoration: BoxDecoration(
-                      color: widget.color,
-                      shape: BoxShape.circle,
-                    ),
-                  ),
-                ),
-              ),
-              Container(
-                width: 5,
-                height: 5,
-                decoration: BoxDecoration(
-                  color: widget.color,
-                  shape: BoxShape.circle,
-                ),
-              ),
-            ],
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 7),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (icon != null) ...[
+            Icon(icon, size: 14, color: HudColors.textTertiary),
+            const SizedBox(width: HudSpacing.md),
+          ],
+          SizedBox(
+            width: 84,
+            child: Text(label, style: HudText.caption),
           ),
-        );
-      },
+          Expanded(
+            child: Text(
+              value,
+              textAlign: TextAlign.right,
+              style: (mono ? HudText.mono : HudText.bodySecondary).copyWith(
+                color: valueColor,
+                fontSize: mono ? 11.5 : 13,
+                fontFeatures: const [FontFeature.tabularFigures()],
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

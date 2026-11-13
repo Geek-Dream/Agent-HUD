@@ -1,34 +1,38 @@
 import 'package:flutter/material.dart';
 
 /// Shared visual tokens mirrored from the macOS and Windows HUD.
+///
+/// The mobile shell uses a restrained "dark workstation" palette: near-black
+/// neutral surfaces, one hairline border, and colour reserved for status,
+/// provider identity, and primary actions.
 class HudColors {
   const HudColors._();
 
-  static const background = Color(0xFF0B1120);
-  static const window = Color(0xFF101722);
-  static const surface = Color(0xFF151E2B);
-  static const surfaceRaised = Color(0xFF1B2533);
-  static const surfaceHover = Color(0xFF223041);
-  static const controlFill = Color(0x14FFFFFF);
-  static const controlHover = Color(0x24FFFFFF);
-  static const border = Color(0x2EFFFFFF);
-  static const borderStrong = Color(0x4DFFFFFF);
-  static const divider = Color(0x1FFFFFFF);
+  static const background = Color(0xFF08090C);
+  static const window = Color(0xFF0C0E13);
+  static const surface = Color(0xFF12151B);
+  static const surfaceRaised = Color(0xFF171B22);
+  static const surfaceHover = Color(0xFF1E232C);
+  static const controlFill = Color(0x0DFFFFFF);
+  static const controlHover = Color(0x1AFFFFFF);
+  static const border = Color(0x14FFFFFF);
+  static const borderStrong = Color(0x29FFFFFF);
+  static const divider = Color(0x0FFFFFFF);
 
-  static const textPrimary = Color(0xFFF7FAFF);
-  static const textSecondary = Color(0xFFD2DBE7);
-  static const textTertiary = Color(0xFF99A6B8);
+  static const textPrimary = Color(0xFFF3F5F9);
+  static const textSecondary = Color(0xFFB7BEC9);
+  static const textTertiary = Color(0xFF7C8492);
 
-  static const working = Color(0xFF54ADFF);
-  static const waiting = Color(0xFFFFC733);
-  static const completed = Color(0xFF45E694);
-  static const failed = Color(0xFFFF5E75);
-  static const codex = Color(0xFF54ADFF);
-  static const claude = Color(0xFFFF8C47);
-  static const pi = Color(0xFF7AE35C);
-  static const opencode = Color(0xFF4FD1C5);
-  static const important = Color(0xFFFFC233);
-  static const todo = Color(0xFFB86AFE);
+  static const working = Color(0xFF6AA6FF);
+  static const waiting = Color(0xFFF3C55C);
+  static const completed = Color(0xFF57D9A3);
+  static const failed = Color(0xFFFF7186);
+  static const codex = Color(0xFF7FB2FF);
+  static const claude = Color(0xFFFF9F6B);
+  static const pi = Color(0xFF8DDB7A);
+  static const opencode = Color(0xFF63D8CC);
+  static const important = Color(0xFFF3C55C);
+  static const todo = Color(0xFFB79CFF);
 
   static Color status(String value) {
     switch (value) {
@@ -70,11 +74,11 @@ class HudColors {
 class HudRadii {
   const HudRadii._();
 
-  static const double micro = 5;
-  static const double control = 7;
-  static const double card = 10;
-  static const double panel = 14;
-  static const double hero = 16;
+  static const double micro = 6;
+  static const double control = 10;
+  static const double card = 12;
+  static const double panel = 16;
+  static const double hero = 20;
 }
 
 class HudSpacing {
@@ -107,24 +111,24 @@ class HudElevation {
 
   static List<BoxShadow> card(Color base) => <BoxShadow>[
         BoxShadow(
-          color: base.withValues(alpha: 0.10),
-          blurRadius: 8,
-          offset: const Offset(0, 3),
+          color: base.withValues(alpha: 0.28),
+          blurRadius: 18,
+          offset: const Offset(0, 8),
         ),
       ];
 
   static List<BoxShadow> floating(Color base) => <BoxShadow>[
         BoxShadow(
-          color: base.withValues(alpha: 0.14),
-          blurRadius: 20,
-          offset: const Offset(0, 8),
+          color: base.withValues(alpha: 0.34),
+          blurRadius: 28,
+          offset: const Offset(0, 12),
         ),
       ];
 
   static List<BoxShadow> glow(Color color) => <BoxShadow>[
         BoxShadow(
-          color: color.withValues(alpha: 0.18),
-          blurRadius: 14,
+          color: color.withValues(alpha: 0.16),
+          blurRadius: 16,
           spreadRadius: 1,
         ),
       ];
@@ -150,47 +154,49 @@ class HudText {
   const HudText._();
 
   static const display = TextStyle(
-    fontSize: 22,
+    fontSize: 25,
     fontWeight: FontWeight.w700,
-    height: 1.22,
-    letterSpacing: -0.2,
+    height: 1.2,
+    letterSpacing: -0.5,
     color: HudColors.textPrimary,
   );
   static const title = TextStyle(
-    fontSize: 16,
+    fontSize: 16.5,
     fontWeight: FontWeight.w600,
     height: 1.3,
+    letterSpacing: -0.15,
     color: HudColors.textPrimary,
   );
   static const body = TextStyle(
-    fontSize: 13.5,
-    height: 1.5,
+    fontSize: 14,
+    height: 1.55,
     color: HudColors.textPrimary,
   );
   static const bodySecondary = TextStyle(
-    fontSize: 13,
+    fontSize: 13.5,
     height: 1.5,
     color: HudColors.textSecondary,
   );
   static const label = TextStyle(
-    fontSize: 12.5,
+    fontSize: 13,
     fontWeight: FontWeight.w600,
+    letterSpacing: 0.1,
     color: HudColors.textSecondary,
   );
   static const caption = TextStyle(
-    fontSize: 11.5,
-    height: 1.4,
+    fontSize: 12,
+    height: 1.45,
     color: HudColors.textTertiary,
   );
   static const micro = TextStyle(
     fontSize: 10.5,
     fontWeight: FontWeight.w600,
-    letterSpacing: 0.2,
+    letterSpacing: 0.3,
     color: HudColors.textTertiary,
   );
   static const mono = TextStyle(
     fontFamily: 'monospace',
-    fontSize: 11.5,
+    fontSize: 12,
     height: 1.4,
     color: HudColors.textSecondary,
   );
@@ -209,6 +215,7 @@ ThemeData buildHudTheme() {
     onSurface: HudColors.textPrimary,
     surfaceContainerHighest: HudColors.surfaceRaised,
     outline: HudColors.border,
+    outlineVariant: HudColors.divider,
     error: HudColors.failed,
     onError: const Color(0xFF2A0509),
   );
@@ -218,7 +225,7 @@ ThemeData buildHudTheme() {
     brightness: Brightness.dark,
     colorScheme: scheme,
     scaffoldBackgroundColor: HudColors.background,
-    splashFactory: InkRipple.splashFactory,
+    splashFactory: InkSparkle.splashFactory,
     visualDensity: VisualDensity.standard,
     pageTransitionsTheme: const PageTransitionsTheme(
       builders: <TargetPlatform, PageTransitionsBuilder>{
@@ -228,15 +235,18 @@ ThemeData buildHudTheme() {
       },
     ),
     appBarTheme: const AppBarTheme(
-      backgroundColor: HudColors.background,
+      backgroundColor: Colors.transparent,
       surfaceTintColor: Colors.transparent,
       foregroundColor: HudColors.textPrimary,
       elevation: 0,
       scrolledUnderElevation: 0,
       centerTitle: false,
+      toolbarHeight: 60,
+      titleSpacing: HudSpacing.xl,
       titleTextStyle: TextStyle(
-        fontSize: 18,
+        fontSize: 17,
         fontWeight: FontWeight.w600,
+        letterSpacing: -0.2,
         color: HudColors.textPrimary,
       ),
     ),
@@ -245,7 +255,7 @@ ThemeData buildHudTheme() {
       elevation: 0,
       margin: EdgeInsets.zero,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(HudRadii.hero),
+        borderRadius: BorderRadius.circular(HudRadii.panel),
         side: const BorderSide(color: HudColors.border),
       ),
     ),
@@ -254,13 +264,23 @@ ThemeData buildHudTheme() {
       thickness: 1,
       space: 1,
     ),
+    dialogTheme: DialogThemeData(
+      backgroundColor: HudColors.surfaceRaised,
+      surfaceTintColor: Colors.transparent,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(HudRadii.panel),
+        side: const BorderSide(color: HudColors.border),
+      ),
+      titleTextStyle: HudText.title.copyWith(fontSize: 18),
+      contentTextStyle: HudText.bodySecondary,
+    ),
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
-      fillColor: HudColors.surface,
+      fillColor: HudColors.controlFill,
       hintStyle: HudText.caption,
       contentPadding: const EdgeInsets.symmetric(
         horizontal: HudSpacing.lg,
-        vertical: HudSpacing.lg,
+        vertical: 14,
       ),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(HudRadii.control),
@@ -272,13 +292,15 @@ ThemeData buildHudTheme() {
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(HudRadii.control),
-        borderSide: const BorderSide(color: HudColors.working, width: 1.2),
+        borderSide: const BorderSide(color: HudColors.working, width: 1.3),
       ),
     ),
     filledButtonTheme: FilledButtonThemeData(
       style: FilledButton.styleFrom(
-        backgroundColor: HudColors.working,
-        foregroundColor: const Color(0xFF04121F),
+        backgroundColor: HudColors.textPrimary,
+        foregroundColor: HudColors.background,
+        disabledBackgroundColor: HudColors.controlFill,
+        disabledForegroundColor: HudColors.textTertiary,
         minimumSize: const Size(0, 48),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(HudRadii.control),
@@ -288,17 +310,23 @@ ThemeData buildHudTheme() {
     ),
     textButtonTheme: TextButtonThemeData(
       style: TextButton.styleFrom(
-        foregroundColor: HudColors.working,
+        foregroundColor: HudColors.textPrimary,
         textStyle: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
       ),
     ),
+    iconButtonTheme: IconButtonThemeData(
+      style: IconButton.styleFrom(
+        foregroundColor: HudColors.textSecondary,
+        highlightColor: HudColors.controlFill,
+      ),
+    ),
     floatingActionButtonTheme: FloatingActionButtonThemeData(
-      backgroundColor: HudColors.working,
-      foregroundColor: const Color(0xFF04121F),
+      backgroundColor: HudColors.textPrimary,
+      foregroundColor: HudColors.background,
       elevation: 0,
       highlightElevation: 0,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(HudRadii.hero),
+        borderRadius: BorderRadius.circular(HudRadii.control),
       ),
       extendedTextStyle: const TextStyle(
         fontSize: 15,
@@ -306,9 +334,9 @@ ThemeData buildHudTheme() {
       ),
     ),
     tabBarTheme: const TabBarThemeData(
-      labelColor: HudColors.working,
+      labelColor: HudColors.textPrimary,
       unselectedLabelColor: HudColors.textTertiary,
-      indicatorColor: HudColors.working,
+      indicatorColor: HudColors.textPrimary,
       indicatorSize: TabBarIndicatorSize.label,
       dividerColor: Colors.transparent,
       labelStyle: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
@@ -323,82 +351,148 @@ ThemeData buildHudTheme() {
       behavior: SnackBarBehavior.floating,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(HudRadii.control),
+        side: const BorderSide(color: HudColors.border),
       ),
+    ),
+    listTileTheme: const ListTileThemeData(
+      iconColor: HudColors.textSecondary,
+      textColor: HudColors.textPrimary,
     ),
   );
 }
 
-/// Chamfered "tech" panel used by status filters.
-class HudChamferBorder extends OutlinedBorder {
-  const HudChamferBorder({
-    this.cut = 6,
-    super.side = const BorderSide(),
+/// ---------------------------------------------------------------------------
+/// Page background – near-black vertical wash with one very soft top glow.
+/// ---------------------------------------------------------------------------
+class HudScaffoldBackground extends StatelessWidget {
+  const HudScaffoldBackground({super.key, required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return DecoratedBox(
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          colors: [HudColors.window, HudColors.background],
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          stops: [0, 0.55],
+        ),
+      ),
+      child: Stack(
+        children: [
+          Positioned(
+            top: -220,
+            left: -120,
+            right: -120,
+            height: 420,
+            child: IgnorePointer(
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  gradient: RadialGradient(
+                    colors: [
+                      HudColors.working.withValues(alpha: 0.07),
+                      HudColors.working.withValues(alpha: 0),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+          child,
+        ],
+      ),
+    );
+  }
+}
+
+/// ---------------------------------------------------------------------------
+/// Standard surface card: flat translucent fill, hairline border, soft shadow.
+/// ---------------------------------------------------------------------------
+class HudSurfaceCard extends StatelessWidget {
+  const HudSurfaceCard({
+    super.key,
+    required this.child,
+    this.padding = const EdgeInsets.all(HudSpacing.xl),
+    this.margin,
+    this.radius = HudRadii.panel,
+    this.color = HudColors.surface,
+    this.borderColor = HudColors.border,
+    this.onTap,
+    this.shadows,
   });
 
-  final double cut;
+  final Widget child;
+  final EdgeInsetsGeometry padding;
+  final EdgeInsetsGeometry? margin;
+  final double radius;
+  final Color color;
+  final Color borderColor;
+  final VoidCallback? onTap;
+  final List<BoxShadow>? shadows;
 
   @override
-  ShapeBorder scale(double t) => HudChamferBorder(
-        cut: cut * t,
-        side: side.scale(t),
-      );
-
-  @override
-  ShapeBorder? lerpFrom(ShapeBorder? a, double t) {
-    if (a is HudChamferBorder) {
-      return HudChamferBorder(
-        cut: a.cut + (cut - a.cut) * t,
-        side: BorderSide.lerp(a.side, side, t),
-      );
-    }
-    return super.lerpFrom(a, t);
-  }
-
-  @override
-  ShapeBorder? lerpTo(ShapeBorder? b, double t) {
-    if (b is HudChamferBorder) {
-      return HudChamferBorder(
-        cut: cut + (b.cut - cut) * t,
-        side: BorderSide.lerp(side, b.side, t),
-      );
-    }
-    return super.lerpTo(b, t);
-  }
-
-  @override
-  HudChamferBorder copyWith({BorderSide? side}) => HudChamferBorder(
-        cut: cut,
-        side: side ?? this.side,
-      );
-
-  @override
-  Path getOuterPath(Rect rect, {TextDirection? textDirection}) {
-    final double c = cut.clamp(0.0, rect.shortestSide / 2).toDouble();
-    return Path()
-      ..moveTo(rect.left + c, rect.top)
-      ..lineTo(rect.right - c, rect.top)
-      ..lineTo(rect.right, rect.top + c)
-      ..lineTo(rect.right, rect.bottom - c)
-      ..lineTo(rect.right - c, rect.bottom)
-      ..lineTo(rect.left + c, rect.bottom)
-      ..lineTo(rect.left, rect.bottom - c)
-      ..lineTo(rect.left, rect.top + c)
-      ..close();
-  }
-
-  @override
-  Path getInnerPath(Rect rect, {TextDirection? textDirection}) =>
-      getOuterPath(rect.deflate(side.width), textDirection: textDirection);
-
-  @override
-  void paint(Canvas canvas, Rect rect, {TextDirection? textDirection}) {
-    if (side.style == BorderStyle.none || side.width <= 0) return;
-    canvas.drawPath(
-      getOuterPath(
-        rect.deflate(side.width / 2),
-        textDirection: textDirection,
+  Widget build(BuildContext context) {
+    final BorderRadius borderRadius = BorderRadius.circular(radius);
+    return Container(
+      margin: margin,
+      decoration: BoxDecoration(
+        borderRadius: borderRadius,
+        boxShadow: shadows,
       ),
-      side.toPaint(),
+      child: Material(
+        color: Colors.transparent,
+        borderRadius: borderRadius,
+        clipBehavior: Clip.antiAlias,
+        child: Ink(
+          decoration: BoxDecoration(
+            color: color,
+            borderRadius: borderRadius,
+            border: Border.all(color: borderColor, width: 1),
+          ),
+          child: onTap == null
+              ? Padding(padding: padding, child: child)
+              : InkWell(
+                  onTap: onTap,
+                  highlightColor:
+                      HudColors.controlHover.withValues(alpha: 0.25),
+                  splashColor: HudColors.controlFill.withValues(alpha: 0.4),
+                  child: Padding(padding: padding, child: child),
+                ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Tiny neutral badge used for counts and secondary tags.
+class HudCountBadge extends StatelessWidget {
+  const HudCountBadge({
+    super.key,
+    required this.value,
+    this.color = HudColors.textTertiary,
+  });
+
+  final String value;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1.5),
+      decoration: BoxDecoration(
+        color: HudColors.controlFill,
+        borderRadius: BorderRadius.circular(HudRadii.micro),
+      ),
+      child: Text(
+        value,
+        style: HudText.micro.copyWith(
+          fontSize: 10,
+          color: color,
+          fontFeatures: const [FontFeature.tabularFigures()],
+        ),
+      ),
     );
   }
 }
@@ -421,7 +515,7 @@ class HudSlidePageRoute<T> extends PageRouteBuilder<T> {
               reverseCurve: HudMotion.easeIn,
             );
             final Animation<Offset> slide = Tween<Offset>(
-              begin: const Offset(1, 0),
+              begin: const Offset(0.16, 0),
               end: Offset.zero,
             ).animate(curved);
             final Animation<double> fade = CurvedAnimation(
@@ -457,7 +551,7 @@ class HudPageTransitionsBuilder extends PageTransitionsBuilder {
       reverseCurve: HudMotion.easeIn,
     );
     final slide = Tween<Offset>(
-      begin: const Offset(0, 0.025),
+      begin: const Offset(0, 0.02),
       end: Offset.zero,
     ).animate(curved);
     final fade = CurvedAnimation(

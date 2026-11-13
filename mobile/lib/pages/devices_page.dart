@@ -15,76 +15,71 @@ class DevicesPage extends StatelessWidget {
     final store = context.watch<DeviceStore>();
     return Scaffold(
       appBar: AppBar(title: const Text('AgentHUD')),
-      body: AnimatedSwitcher(
-        duration: HudMotion.base,
-        switchInCurve: HudMotion.easeOut,
-        switchOutCurve: HudMotion.easeIn,
-        transitionBuilder: (child, animation) {
-          return FadeTransition(opacity: animation, child: child);
-        },
-        child: store.isEmpty
-            ? const _EmptyDevices(key: ValueKey<String>('empty'))
-            : ListView(
-                key: const ValueKey<String>('devices'),
-                padding: const EdgeInsets.fromLTRB(
-                  HudSpacing.xl,
-                  HudSpacing.md,
-                  HudSpacing.xl,
-                  120,
-                ),
-                children: [
-                  Padding(
-                    padding:
-                        const EdgeInsets.symmetric(vertical: HudSpacing.lg),
-                    child: Row(
-                      children: [
-                        const Text('已关联电脑', style: HudText.title),
-                        const SizedBox(width: HudSpacing.md),
-                        _CountBadge(count: store.devices.length),
-                        const Spacer(),
-                        const Icon(
-                          Icons.lock_outline_rounded,
-                          size: 14,
-                          color: HudColors.textTertiary,
-                        ),
-                        const SizedBox(width: HudSpacing.xs),
-                        const Text('只读监控', style: HudText.caption),
-                      ],
-                    ),
+      body: HudScaffoldBackground(
+        child: AnimatedSwitcher(
+          duration: HudMotion.base,
+          switchInCurve: HudMotion.easeOut,
+          switchOutCurve: HudMotion.easeIn,
+          transitionBuilder: (child, animation) {
+            return FadeTransition(opacity: animation, child: child);
+          },
+          child: store.isEmpty
+              ? const _EmptyDevices(key: ValueKey<String>('empty'))
+              : ListView(
+                  key: const ValueKey<String>('devices'),
+                  padding: const EdgeInsets.fromLTRB(
+                    HudSpacing.xl,
+                    HudSpacing.md,
+                    HudSpacing.xl,
+                    120,
                   ),
-                  for (final LinkedDevice device in store.devices)
-                    _DeviceCard(device: device),
-                ],
-              ),
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(
+                        HudSpacing.xs,
+                        HudSpacing.sm,
+                        HudSpacing.xs,
+                        HudSpacing.lg,
+                      ),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  '已关联电脑',
+                                  style: HudText.display,
+                                ),
+                                const SizedBox(height: HudSpacing.xs),
+                                Text(
+                                  '${store.devices.length} 台设备 · 局域网直连监控',
+                                  style: HudText.caption,
+                                ),
+                              ],
+                            ),
+                          ),
+                          const Icon(
+                            Icons.lock_outline_rounded,
+                            size: 13,
+                            color: HudColors.textTertiary,
+                          ),
+                        ],
+                      ),
+                    ),
+                    for (final LinkedDevice device in store.devices)
+                      _DeviceCard(device: device),
+                  ],
+                ),
+        ),
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => Navigator.of(context).push(
           MaterialPageRoute<void>(builder: (_) => const PairingPage()),
         ),
-        icon: const Icon(Icons.add_link_rounded),
+        icon: const Icon(Icons.add_rounded, size: 20),
         label: const Text('关联电脑'),
-      ),
-    );
-  }
-}
-
-class _CountBadge extends StatelessWidget {
-  const _CountBadge({required this.count});
-
-  final int count;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
-      decoration: BoxDecoration(
-        color: HudColors.controlFill,
-        borderRadius: BorderRadius.circular(HudRadii.micro),
-        border: Border.all(color: HudColors.border),
-      ),
-      child: Text(
-        '$count',
-        style: HudText.micro.copyWith(color: HudColors.textSecondary),
       ),
     );
   }
@@ -100,93 +95,74 @@ class _DeviceCard extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(bottom: HudSpacing.lg),
       child: HudEntrance(
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(HudRadii.hero),
-            boxShadow: HudElevation.card(HudColors.border),
-          ),
-          child: Material(
-            color: Colors.transparent,
-            borderRadius: BorderRadius.circular(HudRadii.hero),
-            clipBehavior: Clip.antiAlias,
-            child: Ink(
-              decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  colors: [HudColors.surfaceRaised, HudColors.surface],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-                borderRadius: BorderRadius.circular(HudRadii.hero),
-                border: Border.all(color: HudColors.border),
-              ),
-              child: InkWell(
-                onTap: () => Navigator.of(context).push(
-                  MaterialPageRoute<void>(
-                    builder: (_) => SessionsPage(device: device),
-                  ),
-                ),
-                highlightColor: HudColors.controlHover.withValues(alpha: 0.35),
-                splashColor: HudColors.controlFill.withValues(alpha: 0.45),
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(
-                    HudSpacing.xl,
-                    HudSpacing.xl,
-                    HudSpacing.lg,
-                    HudSpacing.xl,
-                  ),
-                  child: Row(
-                    children: [
-                      const _DeviceGlyph(),
-                      const SizedBox(width: HudSpacing.lg),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: Text(
-                                    device.instanceName,
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: HudText.title.copyWith(fontSize: 15.5),
-                                  ),
-                                ),
-                                const SizedBox(width: HudSpacing.sm),
-                                _OnlineDot(),
-                              ],
-                            ),
-                            const SizedBox(height: HudSpacing.xs),
-                            Text(
-                              formatLinkAddress(
-                                  device.addresses.first, device.port),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: HudText.caption.copyWith(
-                                fontFamily: 'monospace',
-                                fontSize: 11,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      IconButton(
-                        tooltip: '移除设备',
-                        iconSize: 19,
-                        color: HudColors.textTertiary,
-                        onPressed: () => _confirmRemove(context),
-                        icon: const Icon(Icons.link_off_rounded),
-                      ),
-                      const Icon(
-                        Icons.chevron_right_rounded,
-                        size: 20,
-                        color: HudColors.textTertiary,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
+        child: HudSurfaceCard(
+          onTap: () => Navigator.of(context).push(
+            MaterialPageRoute<void>(
+              builder: (_) => SessionsPage(device: device),
             ),
+          ),
+          color: HudColors.surface.withValues(alpha: 0.82),
+          padding: const EdgeInsets.fromLTRB(
+            HudSpacing.xl,
+            HudSpacing.xl,
+            HudSpacing.md,
+            HudSpacing.xl,
+          ),
+          child: Row(
+            children: [
+              const _DeviceGlyph(),
+              const SizedBox(width: HudSpacing.xl),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            device.instanceName,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: HudText.title,
+                          ),
+                        ),
+                        const SizedBox(width: HudSpacing.sm),
+                        const _OnlineDot(),
+                      ],
+                    ),
+                    const SizedBox(height: 5),
+                    Text(
+                      formatLinkAddress(device.addresses.first, device.port),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: HudText.mono.copyWith(fontSize: 11),
+                    ),
+                  ],
+                ),
+              ),
+              PopupMenuButton<String>(
+                tooltip: '设备操作',
+                icon: const Icon(
+                  Icons.more_horiz_rounded,
+                  size: 20,
+                  color: HudColors.textTertiary,
+                ),
+                color: HudColors.surfaceRaised,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(HudRadii.control),
+                  side: const BorderSide(color: HudColors.border),
+                ),
+                onSelected: (value) {
+                  if (value == 'remove') _confirmRemove(context);
+                },
+                itemBuilder: (context) => const [
+                  PopupMenuItem<String>(
+                    value: 'remove',
+                    child: Text('移除这台电脑'),
+                  ),
+                ],
+              ),
+            ],
           ),
         ),
       ),
@@ -197,9 +173,8 @@ class _DeviceCard extends StatelessWidget {
     final bool? confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        backgroundColor: HudColors.surfaceRaised,
-        title: const Text('移除这台电脑？', style: HudText.title),
-        content: const Text('手机会删除本机保存的设备令牌。', style: HudText.bodySecondary),
+        title: const Text('移除这台电脑？'),
+        content: const Text('手机会删除本机保存的设备令牌。'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
@@ -224,30 +199,25 @@ class _DeviceGlyph extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 44,
-      height: 44,
+      width: 46,
+      height: 46,
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            HudColors.working.withValues(alpha: 0.24),
-            HudColors.working.withValues(alpha: 0.08),
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
+        color: HudColors.controlFill,
         borderRadius: BorderRadius.circular(HudRadii.card),
-        border: Border.all(color: HudColors.working.withValues(alpha: 0.32)),
+        border: Border.all(color: HudColors.border),
       ),
       child: const Icon(
-        Icons.desktop_windows_rounded,
+        Icons.desktop_windows_outlined,
         size: 21,
-        color: HudColors.working,
+        color: HudColors.textSecondary,
       ),
     );
   }
 }
 
 class _OnlineDot extends StatefulWidget {
+  const _OnlineDot();
+
   @override
   State<_OnlineDot> createState() => _OnlineDotState();
 }
@@ -261,7 +231,7 @@ class _OnlineDotState extends State<_OnlineDot>
     super.initState();
     _pulse = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 2000),
+      duration: HudMotion.pulse,
     )..repeat();
   }
 
@@ -284,12 +254,12 @@ class _OnlineDotState extends State<_OnlineDot>
             alignment: Alignment.center,
             children: [
               Opacity(
-                opacity: (1 - t) * 0.35,
+                opacity: (1 - t) * 0.25,
                 child: Transform.scale(
-                  scale: 1 + t * 0.8,
+                  scale: 1 + t * 0.9,
                   child: Container(
-                    width: 8,
-                    height: 8,
+                    width: 7,
+                    height: 7,
                     decoration: const BoxDecoration(
                       color: HudColors.completed,
                       shape: BoxShape.circle,
@@ -322,46 +292,39 @@ class _EmptyDevices extends StatelessWidget {
     return Center(
       child: HudEntrance(
         offset: const Offset(0, 0.02),
-        child: Padding(
-          padding: const EdgeInsets.all(36),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(32),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               Container(
-                width: 88,
-                height: 88,
+                width: 76,
+                height: 76,
                 decoration: BoxDecoration(
+                  color: HudColors.controlFill,
                   shape: BoxShape.circle,
-                  gradient: RadialGradient(
-                    colors: [
-                      HudColors.working.withValues(alpha: 0.2),
-                      HudColors.working.withValues(alpha: 0.02),
-                    ],
-                  ),
-                  border: Border.all(
-                    color: HudColors.working.withValues(alpha: 0.24),
-                  ),
+                  border: Border.all(color: HudColors.border),
                 ),
                 child: const Icon(
                   Icons.phonelink_rounded,
-                  size: 38,
-                  color: HudColors.working,
+                  size: 32,
+                  color: HudColors.textSecondary,
                 ),
               ),
               const SizedBox(height: HudSpacing.xxl),
               const Text('还没有关联电脑', style: HudText.display),
               const SizedBox(height: HudSpacing.md),
               const Text(
-                '在 Windows 或 macOS AgentHUD 中打开“手机关联”，使用手机扫码或输入验证码即可开始只读监控。',
+                '在 Windows 或 macOS AgentHUD 中打开“手机关联”，\n扫码或输入验证码即可开始监控。',
                 textAlign: TextAlign.center,
-                style: HudText.caption,
+                style: HudText.bodySecondary,
               ),
-              const SizedBox(height: HudSpacing.xl),
+              const SizedBox(height: HudSpacing.xxl),
               FilledButton.icon(
                 onPressed: () => Navigator.of(context).push(
                   MaterialPageRoute<void>(builder: (_) => const PairingPage()),
                 ),
-                icon: const Icon(Icons.add_link_rounded, size: 18),
+                icon: const Icon(Icons.add_rounded, size: 19),
                 label: const Text('立即关联'),
               ),
             ],

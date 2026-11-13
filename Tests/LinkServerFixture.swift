@@ -27,9 +27,31 @@ private final class LockedFixtureSnapshot: @unchecked Sendable {
 struct FixtureSnapshotProvider: LinkSnapshotProviding {
     private let snapshot = LockedFixtureSnapshot()
     var refreshCount: Int { snapshot.refreshCount }
+    var dispatcher: AgentInputDispatcher?
+    var conversationSession: AgentSession?
 
     func refreshMonitoringSnapshot() async {
         snapshot.refresh()
+    }
+
+    func sendMessage(
+        sessionID: String,
+        clientMessageId: String,
+        text: String
+    ) async -> (deliveryId: String, status: AgentDeliveryStatus, error: AgentDeliveryError?) {
+        guard let dispatcher, let conversationSession else {
+            return ("", .failed, .providerUnsupported)
+        }
+        return dispatcher.dispatch(
+            clientMessageId: clientMessageId,
+            text: text,
+            to: conversationSession,
+            publicSessionId: sessionID
+        )
+    }
+
+    func deliveryStatus(deliveryId: String) async -> (status: AgentDeliveryStatus, error: AgentDeliveryError?)? {
+        dispatcher?.status(deliveryId: deliveryId)
     }
 
     func monitoringSnapshot() async -> LinkMonitoringSnapshot {
@@ -85,7 +107,38 @@ func runLinkServerFixture() async throws {
         directory: directory,
         environment: Environment(name: "testing", arguments: ["fixture", "serve"])
     )
-    let provider = FixtureSnapshotProvider()
+    var provider = FixtureSnapshotProvider()
+    let environment = ProcessInfo.processInfo.environment
+    let conversationThread = environment["HUD_E2E_THREAD_ID"]
+    let conversationRollout = environment["HUD_E2E_ROLLOUT"]
+    if let conversationThread, let conversationRollout {
+        provider.dispatcher = AgentInputDispatcher(
+            registry: AgentRuntimeRegistry(),
+            deliveryStore: DeliveryStore(),
+            adapters: [CodexInputAdapter()]
+        )
+        provider.conversationSession = AgentSession(
+            id: "codex:\(conversationThread)",
+            provider: .codex,
+            providerSessionID: conversationThread,
+            projectName: "hud-link-e2e",
+            projectPath: "/tmp/hud-link-e2e/work",
+            title: "联调测试",
+            titleSource: .automatic,
+            status: .idle,
+            confidence: .high,
+            currentAction: "等待输入",
+            currentFiles: [],
+            startedAt: Date(),
+            lastActivityAt: Date(),
+            completedAt: nil,
+            runs: [],
+            latestUserPrompt: nil,
+            sourcePath: conversationRollout,
+            isLive: true,
+            git: nil
+        )
+    }
     try await server.start(provider: provider)
     defer { server.stop() }
 
@@ -111,6 +164,7 @@ func runLinkServerFixture() async throws {
         "ipv6Address": "::1",
         "port": offer.port,
         "fingerprint": offer.fingerprint,
+        "conversation": conversationThread != nil,
         "expectedSessionId": try LinkDeviceStore(directory: directory).publicSessionId(rawId: "codex:waiting")
     ]
     try JSONSerialization.data(withJSONObject: payload).write(to: output, options: .atomic)
@@ -125,11 +179,27 @@ func runLinkServerFixture() async throws {
         if FileManager.default.fileExists(atPath: stopOutput.path) {
             throw NSError(domain: "AgentHUD.Link.Fixture", code: 3)
         }
-        if let data = try? Data(contentsOf: requestOutput),
-           let result = try JSONSerialization.jsonObject(with: data) as? [String: Any],
-           let request = result["request"] as? Int, request > handledRequest,
-           let deviceId = result["deviceIdToRevoke"] as? String {
+        // 请求文件由测试端先截断再写入，轮询可能正好读到空文件；不能因此 fatal。
+        if let data = try? Data(contentsOf: requestOutput), !data.isEmpty,
+           let object = try? JSONSerialization.jsonObject(with: data),
+           let result = object as? [String: Any],
+           let request = result["request"] as? Int, request > handledRequest {
             handledRequest = request
+            if result["enableConversation"] as? Bool == true,
+               let deviceId = result["deviceId"] as? String {
+                await server.setConversationEnabled(deviceId: deviceId, enabled: true)
+                try Data("ready\n".utf8).write(
+                    to: URL(fileURLWithPath: output.path + ".conversationReady"),
+                    options: .atomic
+                )
+                print("FIXTURE_CONVERSATION_READY")
+                fflush(stdout)
+                continue
+            }
+            guard let deviceId = result["deviceIdToRevoke"] as? String else {
+                try await Task.sleep(for: .milliseconds(50))
+                continue
+            }
             if result["generateCode"] as? Bool == true {
                 let codeOffer = try await server.createPairingOffer()
                 let codeData = try JSONSerialization.data(withJSONObject: ["code": codeOffer.code])

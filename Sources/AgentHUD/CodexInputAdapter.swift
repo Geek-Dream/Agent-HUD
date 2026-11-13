@@ -4,6 +4,14 @@ import Foundation
 final class CodexInputAdapter: AgentInputAdapter {
     let provider: AgentProvider = .codex
 
+    private static let codexPathEntries = [
+        "/opt/homebrew/bin",
+        "/usr/local/bin",
+        "\(NSHomeDirectory())/.codex/bin",
+        "/usr/bin",
+        "/bin"
+    ]
+
     func canAcceptInput(for session: AgentSession) -> AgentInputCapability {
         guard session.isLive else {
             return AgentInputCapability(
@@ -42,8 +50,7 @@ final class CodexInputAdapter: AgentInputAdapter {
             )
         }
 
-        let terminalTitle = terminalTitle(for: session)
-        guard !terminalTitle.isEmpty else {
+        guard let executable = Self.codexExecutable() else {
             return AgentDeliveryResult(
                 success: false,
                 status: .failed,
@@ -51,68 +58,96 @@ final class CodexInputAdapter: AgentInputAdapter {
             )
         }
 
-        let _ = appleScriptEscape(text)
-        let script = """
-        tell application "System Events"
-            tell process "Terminal"
-                set frontmost to true
-                keystroke "v" using command down
-                delay 0.05
-                keystroke return
-            end tell
-        end tell
-        """
-
-        do {
-            let output = try await runAppleScript(script)
-            if output.contains("error") || output.contains("Error") {
-                return AgentDeliveryResult(
-                    success: false,
-                    status: .failed,
-                    error: .deliveryFailed
-                )
-            }
+        // `codex queue` reports success even for a thread whose TUI is gone, so
+        // verify that a process still holds the rollout file before queueing.
+        guard await Self.isSessionAttached(session) else {
             return AgentDeliveryResult(
-                success: true,
-                status: .delivered,
-                error: nil
+                success: false,
+                status: .failed,
+                error: .sessionOffline
             )
-        } catch {
+        }
+
+        let arguments = [
+            "queue",
+            "--thread", session.providerSessionID,
+            "--message", text
+        ]
+        let environment = Self.environmentWithCodexPath()
+        let result = await Task.detached(priority: .userInitiated) {
+            BoundedProcess.run(
+                executable: executable,
+                arguments: arguments,
+                timeout: 15,
+                environment: environment
+            )
+        }.value
+
+        guard let result else {
             return AgentDeliveryResult(
                 success: false,
                 status: .failed,
                 error: .deliveryFailed
             )
         }
+        guard result.status == 0 else {
+            let stderr = result.stderr.lowercased()
+            let error: AgentDeliveryError = stderr.contains("no rollout found")
+                ? .sessionOffline
+                : .deliveryFailed
+            return AgentDeliveryResult(success: false, status: .failed, error: error)
+        }
+        return AgentDeliveryResult(success: true, status: .delivered, error: nil)
     }
 
-    private func terminalTitle(for session: AgentSession) -> String {
-        let project = session.projectName
-        let objective = session.title
-        if project.isEmpty { return objective }
-        return "\(project) — \(objective)"
+    private static func codexExecutable() -> String? {
+        let candidates = [
+            "/opt/homebrew/bin/codex",
+            "/usr/local/bin/codex",
+            "\(NSHomeDirectory())/.codex/bin/codex"
+        ]
+        if let path = candidates.first(where: { FileManager.default.isExecutableFile(atPath: $0) }) {
+            return path
+        }
+        let entries = (ProcessInfo.processInfo.environment["PATH"] ?? "")
+            .split(separator: ":")
+            .map(String.init)
+        for entry in entries {
+            let candidate = "\(entry)/codex"
+            if FileManager.default.isExecutableFile(atPath: candidate) {
+                return candidate
+            }
+        }
+        return nil
     }
 
-    private func appleScriptEscape(_ text: String) -> String {
-        text
-            .replacingOccurrences(of: "\\", with: "\\\\")
-            .replacingOccurrences(of: "\"", with: "\\\"")
-            .replacingOccurrences(of: "\r", with: "\\r")
-            .replacingOccurrences(of: "\n", with: "\\n")
+    private static func environmentWithCodexPath() -> [String: String] {
+        var environment = ProcessInfo.processInfo.environment
+        var entries = (environment["PATH"] ?? "/usr/bin:/bin:/usr/sbin:/sbin")
+            .split(separator: ":")
+            .map(String.init)
+        for path in codexPathEntries where !entries.contains(path) {
+            entries.append(path)
+        }
+        environment["PATH"] = entries.joined(separator: ":")
+        return environment
     }
 
-    private func runAppleScript(_ source: String) async throws -> String {
-        try await Task.detached(priority: .userInitiated) {
-            let task = Process()
-            task.executableURL = URL(fileURLWithPath: "/usr/bin/osascript")
-            task.arguments = ["-e", source]
-            let pipe = Pipe()
-            task.standardOutput = pipe
-            task.standardError = pipe
-            try task.run()
-            task.waitUntilExit()
-            let data = pipe.fileHandleForReading.readDataToEndOfFile()
-            return String(decoding: data, as: UTF8.self)
+    private static func isSessionAttached(_ session: AgentSession) async -> Bool {
+        let path = session.sourcePath
+        guard !path.isEmpty, FileManager.default.fileExists(atPath: path) else {
+            return session.isLive
+        }
+        let result = await Task.detached(priority: .userInitiated) {
+            BoundedProcess.run(
+                executable: "/usr/sbin/lsof",
+                arguments: ["-t", "--", path],
+                timeout: 5
+            )
         }.value
+        guard let result, result.status == 0 else {
+            return false
+        }
+        return !result.stdout.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
 }

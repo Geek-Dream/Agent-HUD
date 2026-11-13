@@ -92,6 +92,42 @@ void main() {
       final detail = await api.session(localDevice, sessions.single.id);
       expect(detail.id, sessions.single.id);
 
+      if (fixture['conversation'] == true) {
+        step = 'enable conversation';
+        await File('$fixtureURL.request').writeAsString(jsonEncode({
+          'request': 1,
+          'enableConversation': true,
+          'deviceId': device.deviceId,
+        }));
+        for (var attempt = 0; attempt < 40; attempt++) {
+          if (await File('$fixtureURL.conversationReady').exists()) break;
+          await Future<void>.delayed(const Duration(milliseconds: 50));
+        }
+        expect(await File('$fixtureURL.conversationReady').exists(), isTrue);
+
+        step = 'send message';
+        final delivery = await api.sendMessage(
+          localDevice,
+          sessions.single.id,
+          'dart-e2e-1',
+          'HUD联调测试：请只回复 OK-E2E 四个字。',
+        );
+        expect(delivery.deliveryId, isNotEmpty);
+        expect(delivery.status, anyOf('accepted', 'delivered'));
+
+        step = 'delivery status';
+        var finalDelivery = delivery;
+        for (var attempt = 0; attempt < 100; attempt++) {
+          if (finalDelivery.isFinal) break;
+          await Future<void>.delayed(const Duration(milliseconds: 100));
+          finalDelivery =
+              await api.deliveryStatus(localDevice, delivery.deliveryId);
+        }
+        expect(finalDelivery.status, 'delivered');
+        await File('$fixtureURL.sent')
+            .writeAsString(jsonEncode({'deliveryId': delivery.deliveryId}));
+      }
+
       step = 'QR reuse rejection';
       final secondOffer = PairingOffer.fromQr(fixture['offer'] as String);
       await expectLater(
@@ -101,7 +137,7 @@ void main() {
       );
 
       await File('$fixtureURL.request').writeAsString(jsonEncode({
-        'request': 1,
+        'request': 2,
         'deviceIdToRevoke': device.deviceId,
         'generateCode': true,
       }));
@@ -129,7 +165,7 @@ void main() {
         port: port,
       );
       await File('$fixtureURL.request').writeAsString(jsonEncode({
-        'request': 2,
+        'request': 3,
         'deviceIdToRevoke': codeDevice.deviceId,
       }));
       for (var attempt = 0; attempt < 100; attempt++) {

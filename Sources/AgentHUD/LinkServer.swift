@@ -33,6 +33,11 @@ final class LinkServer {
     var fingerprint: String { certificate.fingerprint }
     var isRunning: Bool { application != nil }
 
+    /// IPv6 监听没有真正起来时不能广播地址，否则手机会去连一个不存在的监听。
+    var ipv6Addresses: [String] {
+        ipv6Application == nil ? [] : LinkNetwork.ipv6Addresses()
+    }
+
     func start(provider: LinkSnapshotProviding) async throws {
         guard application == nil else { return }
         snapshotProvider = provider
@@ -84,7 +89,7 @@ final class LinkServer {
             instanceId: devices.instanceId,
             instanceName: devices.instanceName,
             addresses: addresses,
-            ipv6Addresses: LinkNetwork.ipv6Addresses(),
+            ipv6Addresses: ipv6Addresses,
             port: port,
             fingerprint: fingerprint,
             sessionId: session.id,
@@ -173,7 +178,7 @@ final class LinkServer {
                 privacyMode: snapshot.privacyMode,
                 fingerprint: self.fingerprint,
                 addresses: LinkNetwork.localIPv4Addresses(),
-                ipv6Addresses: LinkNetwork.ipv6Addresses(),
+                ipv6Addresses: self.ipv6Addresses,
                 port: self.port
             )
             return Self.json(response, status: .ok)
@@ -371,7 +376,7 @@ final class LinkServer {
                 clientMessageId: clientMessageId,
                 text: text
             ) ?? ("", .failed, .providerUnsupported)
-            let statusCode: HTTPResponseStatus = result.error == nil ? .accepted : .conflict
+            let statusCode = Self.messageStatus(for: result.error)
             return Self.json(
                 LinkMessageResponse(
                     deliveryId: result.deliveryId,
@@ -401,6 +406,21 @@ final class LinkServer {
                 ),
                 status: .ok
             )
+        }
+    }
+
+    private static func messageStatus(for error: AgentDeliveryError?) -> HTTPResponseStatus {
+        switch error {
+        case nil:
+            return .accepted
+        case .sessionOffline?, .agentBusy?:
+            return .conflict
+        case .invalidMessage?:
+            return .unprocessableEntity
+        case .providerUnsupported?:
+            return .notImplemented
+        case .inputUnavailable?, .deliveryFailed?:
+            return .serviceUnavailable
         }
     }
 
@@ -436,7 +456,7 @@ final class LinkServer {
             capabilities: capabilities,
             fingerprint: fingerprint,
             addresses: LinkNetwork.localIPv4Addresses(),
-            ipv6Addresses: LinkNetwork.ipv6Addresses(),
+            ipv6Addresses: ipv6Addresses,
             port: port
         )
     }

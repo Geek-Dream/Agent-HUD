@@ -24,7 +24,7 @@ final class LinkSettingsModel: ObservableObject {
             code = offer.code
             expiresAt = offer.expiresAt
             serviceText = "监听端口 \(offer.port) · \(offer.addresses.joined(separator: " / "))"
-            ipv6Text = LinkNetwork.ipv6Addresses().joined(separator: "\n")
+            ipv6Text = server.ipv6Addresses.joined(separator: "\n")
             qrImage = Self.qrCode(payload: offer.payload)
             error = nil
         } catch {

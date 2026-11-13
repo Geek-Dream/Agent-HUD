@@ -1,5 +1,8 @@
 .DS_Store
 
+# Local build outputs
+.artifacts/
+
 # Swift
 .build/
 .swiftpm/

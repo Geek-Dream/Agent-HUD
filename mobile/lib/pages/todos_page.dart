@@ -104,17 +104,10 @@ class _TodosPageState extends State<TodosPage> {
             onPressed: _add,
             icon: const Icon(Icons.add_rounded, size: 22),
           ),
-          const SizedBox(width: HudSpacing.xs),
+          const SizedBox(width: HudSpacing.md),
         ],
       ),
-      body: DecoratedBox(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [HudColors.background, HudColors.window],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
-        ),
+      body: HudScaffoldBackground(
         child: _loading
             ? const Center(child: CircularProgressIndicator())
             : _todos.isEmpty
@@ -122,7 +115,7 @@ class _TodosPageState extends State<TodosPage> {
                 : ListView.builder(
                     padding: const EdgeInsets.fromLTRB(
                       HudSpacing.xl,
-                      HudSpacing.sm,
+                      HudSpacing.md,
                       HudSpacing.xl,
                       HudSpacing.lg,
                     ),
@@ -137,7 +130,7 @@ class _TodosPageState extends State<TodosPage> {
                       );
                     },
                   ),
-      ),
+          ),
     );
   }
 }

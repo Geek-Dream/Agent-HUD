@@ -150,6 +150,13 @@ class _PairingPageState extends State<PairingPage> {
     PairingOffer offer;
     try {
       offer = PairingOffer.fromQr(raw, preferIpv6: _useIpv6);
+    } on FormatException catch (error) {
+      // 把真实原因（例如勾选 IPv6 但没有可用 IPv6 地址）告诉用户，
+      // 否则一律显示「不是 AgentHUD 的二维码」，排查时会被误导。
+      _lastRejectedRaw = raw;
+      _lastRejectedAt = now;
+      _showScanNotice(error.message);
+      return;
     } catch (_) {
       _lastRejectedRaw = raw;
       _lastRejectedAt = now;

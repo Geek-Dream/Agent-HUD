@@ -53,7 +53,6 @@ class _SessionDetailPageState extends State<SessionDetailPage> {
         context: context,
         builder: (BuildContext dialogContext) {
           return AlertDialog(
-            backgroundColor: HudColors.surfaceRaised,
             title: const Text('重命名会话'),
             content: TextField(
               controller: text,
@@ -104,7 +103,6 @@ class _SessionDetailPageState extends State<SessionDetailPage> {
     );
   }
 
-
   Future<void> _sendMessage(AgentSession session) async {
     final String text = _messageController.text.trim();
     if (text.isEmpty || _sending) return;
@@ -133,8 +131,7 @@ class _SessionDetailPageState extends State<SessionDetailPage> {
   }
 
   Widget _buildMessageComposer(AgentSession session) {
-    final bool supportsConversation = widget.controller.supportsConversation;
-    if (!supportsConversation) {
+    if (!widget.controller.supportsConversation) {
       return const SizedBox.shrink();
     }
     final ConversationState? conversation = session.conversation;
@@ -147,61 +144,34 @@ class _SessionDetailPageState extends State<SessionDetailPage> {
         HudSpacing.xl,
         HudSpacing.md,
         HudSpacing.xl,
-        HudSpacing.xl,
+        HudSpacing.lg,
       ),
       decoration: BoxDecoration(
-        color: HudColors.surface,
-        border: Border(
-          top: BorderSide(color: HudColors.border),
-        ),
+        color: HudColors.window.withValues(alpha: 0.96),
+        border: const Border(top: BorderSide(color: HudColors.divider)),
       ),
       child: SafeArea(
+        top: false,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisSize: MainAxisSize.min,
           children: [
             if (waitingUser)
               Padding(
-                padding: const EdgeInsets.only(bottom: HudSpacing.sm),
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.info_outline_rounded,
-                      size: 13,
-                      color: HudColors.waiting,
-                    ),
-                    const SizedBox(width: HudSpacing.sm),
-                    Expanded(
-                      child: Text(
-                        'Agent 正在等待确认，你发送的内容将作为当前问题的回复。',
-                        style: HudText.caption.copyWith(
-                          color: HudColors.waiting,
-                        ),
-                      ),
-                    ),
-                  ],
+                padding: const EdgeInsets.only(bottom: HudSpacing.md),
+                child: _ComposerNotice(
+                  icon: Icons.pending_actions_rounded,
+                  color: HudColors.waiting,
+                  text: 'Agent 正在等待确认，你发送的内容将作为当前问题的回复。',
                 ),
               ),
             if (!canSend && reason != null)
               Padding(
-                padding: const EdgeInsets.only(bottom: HudSpacing.sm),
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.block_outlined,
-                      size: 13,
-                      color: HudColors.failed,
-                    ),
-                    const SizedBox(width: HudSpacing.sm),
-                    Expanded(
-                      child: Text(
-                        reason,
-                        style: HudText.caption.copyWith(
-                          color: HudColors.failed,
-                        ),
-                      ),
-                    ),
-                  ],
+                padding: const EdgeInsets.only(bottom: HudSpacing.md),
+                child: _ComposerNotice(
+                  icon: Icons.block_outlined,
+                  color: HudColors.failed,
+                  text: reason,
                 ),
               ),
             Row(
@@ -218,24 +188,10 @@ class _SessionDetailPageState extends State<SessionDetailPage> {
                     textInputAction: TextInputAction.newline,
                     style: HudText.body,
                     decoration: InputDecoration(
-                      hintText: canSend ? '输入任务…' : '当前无法发送',
-                      filled: true,
-                      fillColor: HudColors.controlFill,
+                      hintText: canSend ? '输入任务或回复…' : '当前无法发送',
                       contentPadding: const EdgeInsets.symmetric(
-                        horizontal: HudSpacing.lg,
-                        vertical: HudSpacing.md,
-                      ),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(HudRadii.control),
-                        borderSide: BorderSide(color: HudColors.border),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(HudRadii.control),
-                        borderSide: BorderSide(color: HudColors.border),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(HudRadii.control),
-                        borderSide: BorderSide(color: HudColors.working),
+                        horizontal: HudSpacing.xl,
+                        vertical: 13,
                       ),
                       counterText: '',
                     ),
@@ -243,25 +199,10 @@ class _SessionDetailPageState extends State<SessionDetailPage> {
                   ),
                 ),
                 const SizedBox(width: HudSpacing.md),
-                FilledButton(
-                  onPressed:
-                      canSend && !_sending ? () => _sendMessage(session) : null,
-                  style: FilledButton.styleFrom(
-                    minimumSize: const Size(48, 48),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(HudRadii.control),
-                    ),
-                  ),
-                  child: _sending
-                      ? const SizedBox(
-                          width: 18,
-                          height: 18,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            color: Colors.white,
-                          ),
-                        )
-                      : const Icon(Icons.send_rounded, size: 20),
+                _SendButton(
+                  enabled: canSend && !_sending,
+                  sending: _sending,
+                  onTap: () => _sendMessage(session),
                 ),
               ],
             ),
@@ -277,8 +218,7 @@ class _SessionDetailPageState extends State<SessionDetailPage> {
       animation: widget.controller,
       builder: (BuildContext context, Widget? child) {
         final AgentSession session =
-            widget.controller.sessionById(widget.session.id) ??
-                widget.session;
+            widget.controller.sessionById(widget.session.id) ?? widget.session;
         final Color statusColor = HudColors.status(session.status);
         final bool canEdit = widget.controller.supportsActions;
         final bool privacy = widget.controller.status?.privacyMode ?? false;
@@ -306,208 +246,208 @@ class _SessionDetailPageState extends State<SessionDetailPage> {
                   onPressed: () => _rename(session),
                   icon: const Icon(Icons.edit_rounded, size: 20),
                 ),
-              const SizedBox(width: HudSpacing.xs),
+              const SizedBox(width: HudSpacing.md),
             ],
           ),
-          body: DecoratedBox(
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                colors: [HudColors.background, HudColors.window],
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-              ),
-            ),
+          body: HudScaffoldBackground(
             child: Column(
               children: [
                 Expanded(
                   child: ListView(
                     padding: const EdgeInsets.fromLTRB(
                       HudSpacing.xl,
-                      HudSpacing.md,
+                      HudSpacing.sm,
                       HudSpacing.xl,
                       HudSpacing.xxl,
                     ),
                     children: [
                       HudEntrance(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      _HeroCard(session: session, statusColor: statusColor),
-                      const SizedBox(height: HudSpacing.lg),
-                      if (widget.controller.supportsPrompt)
-                        _PromptCard(
-                          controller: widget.controller,
-                          session: session,
-                          privacyMode: privacy,
-                        ),
-                      _SectionCard(
-                        title: '当前进度',
-                        icon: Icons.bolt_rounded,
-                        trailing:
-                            '置信度 ${_confidenceLabel(session.confidence)}',
                         child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
-                            Row(
-                              children: [
-                                Container(
-                                  width: 6,
-                                  height: 6,
-                                  decoration: BoxDecoration(
-                                    color: statusColor,
-                                    shape: BoxShape.circle,
-                                  ),
-                                ),
-                                const SizedBox(width: HudSpacing.sm),
-                                Text(
-                                  statusLabel(session.status),
-                                  style: HudText.label.copyWith(
-                                    color: statusColor,
-                                  ),
-                                ),
-                              ],
+                            _HeroCard(
+                              session: session,
+                              statusColor: statusColor,
                             ),
-                            const SizedBox(height: HudSpacing.md),
-                            Text(
-                              session.currentAction,
-                              style: HudText.body,
-                            ),
-                            if (session.currentFiles.isNotEmpty) ...[
-                              const SizedBox(height: HudSpacing.lg),
-                              for (final String file
-                                  in session.currentFiles.take(6))
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                    bottom: HudSpacing.sm,
-                                  ),
-                                  child: Row(
+                            const SizedBox(height: HudSpacing.xl),
+                            if (widget.controller.supportsPrompt)
+                              _PromptCard(
+                                controller: widget.controller,
+                                session: session,
+                                privacyMode: privacy,
+                              ),
+                            _SectionCard(
+                              title: '当前进度',
+                              trailing:
+                                  '置信度 ${_confidenceLabel(session.confidence)}',
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
                                     children: [
-                                      const Icon(
-                                        Icons.description_outlined,
-                                        size: 13,
-                                        color: HudColors.textTertiary,
+                                      HudStatusDot(
+                                        color: statusColor,
+                                        pulsing: false,
                                       ),
-                                      const SizedBox(width: HudSpacing.sm),
-                                      Expanded(
-                                        child: Text(
-                                          file,
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: HudText.mono,
+                                      const SizedBox(width: HudSpacing.md),
+                                      Text(
+                                        statusLabel(session.status),
+                                        style: HudText.label.copyWith(
+                                          color: statusColor,
+                                        ),
+                                      ),
+                                      const Spacer(),
+                                      Text(
+                                        relativeTime(session.lastActivityAt),
+                                        style: HudText.caption.copyWith(
+                                          fontSize: 11,
                                         ),
                                       ),
                                     ],
                                   ),
-                                ),
-                            ],
-                          ],
-                        ),
-                      ),
-                      if (session.summary != null &&
-                          session.summary!.isNotEmpty)
-                        _SectionCard(
-                          title: '最近总结',
-                          icon: Icons.checklist_rounded,
-                          child: Text(session.summary!, style: HudText.body),
-                        ),
-                      if (session.runs.isNotEmpty)
-                        _SectionCard(
-                          title: '完成记录',
-                          icon: Icons.history_rounded,
-                          child: _RunsList(runs: session.runs),
-                        ),
-                      if (session.gitBranch != null)
-                        _SectionCard(
-                          title: 'Git 上下文',
-                          icon: Icons.account_tree_outlined,
-                          child: Wrap(
-                            spacing: HudSpacing.sm,
-                            runSpacing: HudSpacing.sm,
-                            children: [
-                              _FactChip(
-                                icon: Icons.call_split_rounded,
-                                text: session.gitBranch!,
+                                  const SizedBox(height: HudSpacing.md),
+                                  Text(
+                                    session.currentAction.isEmpty
+                                        ? '暂无进行中的动作'
+                                        : session.currentAction,
+                                    style: HudText.body,
+                                  ),
+                                  if (session.currentFiles.isNotEmpty) ...[
+                                    const SizedBox(height: HudSpacing.lg),
+                                    for (final String file
+                                        in session.currentFiles.take(6))
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                          bottom: HudSpacing.sm,
+                                        ),
+                                        child: Row(
+                                          children: [
+                                            const Icon(
+                                              Icons.insert_drive_file_outlined,
+                                              size: 13,
+                                              color: HudColors.textTertiary,
+                                            ),
+                                            const SizedBox(width: HudSpacing.md),
+                                            Expanded(
+                                              child: Text(
+                                                file,
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                                style: HudText.mono.copyWith(
+                                                  fontSize: 11.5,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                  ],
+                                ],
                               ),
-                              _FactChip(
-                                icon: Icons.description_outlined,
-                                text: '${session.gitChangedFiles ?? 0} 个改动',
-                              ),
-                              if ((session.gitInsertions ?? 0) > 0 ||
-                                  (session.gitDeletions ?? 0) > 0)
-                                _FactChip(
-                                  icon: Icons.difference_rounded,
-                                  text:
-                                      '+${session.gitInsertions ?? 0} / -${session.gitDeletions ?? 0}',
-                                  color: HudColors.completed,
-                                ),
-                            ],
-                          ),
-                        ),
-                      _SectionCard(
-                        title: '时间',
-                        icon: Icons.schedule_rounded,
-                        child: Column(
-                          children: [
-                            _TimeRow(
-                              icon: Icons.play_arrow_rounded,
-                              label: '开始',
-                              value: _date(session.startedAt),
                             ),
+                            if (session.summary != null &&
+                                session.summary!.isNotEmpty)
+                              _SectionCard(
+                                title: '最近总结',
+                                child: Text(
+                                  session.summary!,
+                                  style: HudText.body,
+                                ),
+                              ),
+                            if (session.runs.isNotEmpty)
+                              _SectionCard(
+                                title: '完成记录',
+                                child: _RunsList(runs: session.runs),
+                              ),
+                            if (session.gitBranch != null)
+                              _SectionCard(
+                                title: 'Git 上下文',
+                                child: Column(
+                                  children: [
+                                    HudFactRow(
+                                      label: '分支',
+                                      value: session.gitBranch!,
+                                      mono: true,
+                                    ),
+                                    HudFactRow(
+                                      label: '改动文件',
+                                      value:
+                                          '${session.gitChangedFiles ?? 0} 个',
+                                    ),
+                                    if ((session.gitInsertions ?? 0) > 0 ||
+                                        (session.gitDeletions ?? 0) > 0)
+                                      HudFactRow(
+                                        label: '增删行数',
+                                        value:
+                                            '+${session.gitInsertions ?? 0}  /  -${session.gitDeletions ?? 0}',
+                                        valueColor: HudColors.completed,
+                                        mono: true,
+                                      ),
+                                  ],
+                                ),
+                              ),
+                            _SectionCard(
+                              title: '时间',
+                              child: Column(
+                                children: [
+                                  HudFactRow(
+                                    label: '开始',
+                                    value: _date(session.startedAt),
+                                  ),
+                                  HudFactRow(
+                                    label: '最近活动',
+                                    value: _date(session.lastActivityAt),
+                                  ),
+                                  if (session.completedAt != null)
+                                    HudFactRow(
+                                      label: '完成',
+                                      value: _date(session.completedAt!),
+                                      valueColor: HudColors.completed,
+                                    ),
+                                ],
+                              ),
+                            ),
+                            if (widget.controller.actionError != null)
+                              _ActionError(
+                                message: widget.controller.actionError!,
+                                onDismiss: widget.controller.clearActionError,
+                              ),
                             const SizedBox(height: HudSpacing.sm),
-                            _TimeRow(
-                              icon: Icons.bolt_rounded,
-                              label: '最近活动',
-                              value: _date(session.lastActivityAt),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  canEdit
+                                      ? Icons.verified_user_outlined
+                                      : Icons.visibility_outlined,
+                                  size: 12,
+                                  color: HudColors.textTertiary,
+                                ),
+                                const SizedBox(width: HudSpacing.sm),
+                                Flexible(
+                                  child: Text(
+                                    canEdit
+                                        ? '局域网直连 · 可重命名、星标与下发已授权的文本任务'
+                                        : '此页面仅用于只读监控，不会向电脑发送控制命令',
+                                    textAlign: TextAlign.center,
+                                    style: HudText.caption.copyWith(
+                                      fontSize: 11,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
-                            if (session.completedAt != null) ...[
-                              const SizedBox(height: HudSpacing.sm),
-                              _TimeRow(
-                                icon: Icons.check_rounded,
-                                label: '完成',
-                                value: _date(session.completedAt!),
-                                color: HudColors.completed,
-                              ),
-                            ],
                           ],
                         ),
-                      ),
-                      if (widget.controller.actionError != null)
-                        _ActionError(
-                          message: widget.controller.actionError!,
-                          onDismiss: widget.controller.clearActionError,
-                        ),
-                      const SizedBox(height: HudSpacing.sm),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Icon(
-                            Icons.shield_outlined,
-                            size: 13,
-                            color: HudColors.textTertiary,
-                          ),
-                          const SizedBox(width: HudSpacing.sm),
-                          Flexible(
-                            child: Text(
-                              canEdit
-                                  ? '局域网直连 · 可用于重命名、星标、查看与已授权的文本任务下发。'
-                                  : '此页面仅用于只读监控，不会向电脑发送控制命令。',
-                              textAlign: TextAlign.center,
-                              style: HudText.caption,
-                            ),
-                          ),
-                        ],
                       ),
                     ],
                   ),
                 ),
+                _buildMessageComposer(session),
               ],
             ),
           ),
-          _buildMessageComposer(session),
-        ],
-      ),
-    ),
-  );
+        );
       },
     );
   }
@@ -529,6 +469,83 @@ class _SessionDetailPageState extends State<SessionDetailPage> {
       DateFormat('yyyy-MM-dd HH:mm:ss').format(value.toLocal());
 }
 
+class _ComposerNotice extends StatelessWidget {
+  const _ComposerNotice({
+    required this.icon,
+    required this.color,
+    required this.text,
+  });
+
+  final IconData icon;
+  final Color color;
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Icon(icon, size: 13, color: color),
+        const SizedBox(width: HudSpacing.md),
+        Expanded(
+          child: Text(
+            text,
+            style: HudText.caption.copyWith(color: color),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _SendButton extends StatelessWidget {
+  const _SendButton({
+    required this.enabled,
+    required this.sending,
+    required this.onTap,
+  });
+
+  final bool enabled;
+  final bool sending;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedOpacity(
+      duration: HudMotion.fast,
+      opacity: enabled ? 1 : 0.4,
+      child: Material(
+        color: HudColors.textPrimary,
+        shape: const CircleBorder(),
+        child: InkWell(
+          customBorder: const CircleBorder(),
+          onTap: enabled ? onTap : null,
+          child: SizedBox(
+            width: 46,
+            height: 46,
+            child: Center(
+              child: sending
+                  ? const SizedBox(
+                      width: 17,
+                      height: 17,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: HudColors.background,
+                      ),
+                    )
+                  : const Icon(
+                      Icons.arrow_upward_rounded,
+                      size: 20,
+                      color: HudColors.background,
+                    ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class _HeroCard extends StatelessWidget {
   const _HeroCard({required this.session, required this.statusColor});
 
@@ -537,84 +554,23 @@ class _HeroCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return HudSurfaceCard(
       padding: const EdgeInsets.all(HudSpacing.xl),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            HudColors.surfaceRaised,
-            session.isImportant
-                ? HudColors.important.withValues(alpha: 0.1)
-                : statusColor.withValues(alpha: 0.07),
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(HudRadii.hero),
-        border: Border.all(
-          color: session.isImportant
-              ? HudColors.important.withValues(alpha: 0.5)
-              : statusColor.withValues(alpha: 0.34),
-        ),
-      ),
+      color: HudColors.surface.withValues(alpha: 0.86),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              HudProviderGlyph(provider: session.provider, size: 24),
-              const SizedBox(width: HudSpacing.md),
-              Text(
-                session.provider,
-                style: HudText.label.copyWith(
-                  color: HudColors.provider(session.provider),
-                ),
-              ),
-              if (session.isImportant) ...[
-                const SizedBox(width: HudSpacing.sm),
-                const Icon(
-                  Icons.star_rounded,
-                  size: 14,
-                  color: HudColors.important,
-                ),
-                const SizedBox(width: 2),
-                const Text(
-                  '重要',
-                  style: TextStyle(
-                    fontSize: 10.5,
-                    fontWeight: FontWeight.w600,
-                    color: HudColors.important,
-                  ),
-                ),
-              ],
+              HudProviderTag(provider: session.provider, size: 20),
               const Spacer(),
               HudStatusPill(status: session.status),
             ],
           ),
-          const SizedBox(height: HudSpacing.lg),
-          Text(session.title, style: HudText.display),
-          const SizedBox(height: HudSpacing.sm),
-          Row(
-            children: [
-              Icon(
-                session.hasCustomTitle
-                    ? Icons.edit_note_rounded
-                    : Icons.auto_awesome_rounded,
-                size: 13,
-                color: session.hasCustomTitle
-                    ? HudColors.important
-                    : HudColors.textTertiary,
-              ),
-              const SizedBox(width: HudSpacing.xs),
-              Text(
-                titleSourceLabel(session.titleSource),
-                style: HudText.caption.copyWith(
-                  color: session.hasCustomTitle
-                      ? HudColors.important
-                      : HudColors.textTertiary,
-                ),
-              ),
-            ],
+          const SizedBox(height: HudSpacing.xl),
+          Text(
+            session.title,
+            style: HudText.display,
           ),
           const SizedBox(height: HudSpacing.md),
           Row(
@@ -630,8 +586,22 @@ class _HeroCard extends StatelessWidget {
                   session.projectName,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: HudText.caption,
+                  style: HudText.bodySecondary.copyWith(fontSize: 12.5),
                 ),
+              ),
+              if (session.isImportant) ...[
+                const Icon(
+                  Icons.star_rounded,
+                  size: 13,
+                  color: HudColors.important,
+                ),
+                const SizedBox(width: 3),
+              ],
+              Text(
+                session.hasCustomTitle
+                    ? titleSourceLabel(session.titleSource)
+                    : '自动标题',
+                style: HudText.caption.copyWith(fontSize: 11),
               ),
             ],
           ),
@@ -664,63 +634,42 @@ class _PromptCardState extends State<_PromptCard> {
     final PromptSnapshot? prompt = widget.session.latestPrompt;
     final int imageCount = prompt?.images.length ?? 0;
 
-    return Container(
-      margin: const EdgeInsets.only(bottom: HudSpacing.lg),
-      decoration: BoxDecoration(
-        color: HudColors.surface,
-        borderRadius: BorderRadius.circular(HudRadii.panel),
-        border: Border.all(
-          color: prompt != null && !prompt.isEmpty
-              ? HudColors.working.withValues(alpha: 0.24)
-              : HudColors.border,
-        ),
-      ),
+    return HudSurfaceCard(
+      margin: const EdgeInsets.only(bottom: HudSpacing.xl),
+      padding: EdgeInsets.zero,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           InkWell(
-            borderRadius: BorderRadius.circular(HudRadii.panel),
             onTap: () => setState(() => _expanded = !_expanded),
             child: Padding(
               padding: const EdgeInsets.fromLTRB(
                 HudSpacing.xl,
                 HudSpacing.lg,
-                HudSpacing.xl,
+                HudSpacing.lg,
                 HudSpacing.lg,
               ),
               child: Row(
                 children: [
-                  const Icon(
-                    Icons.textsms_outlined,
-                    size: 14,
-                    color: HudColors.textSecondary,
-                  ),
-                  const SizedBox(width: HudSpacing.sm),
                   const Text('用户原始输入', style: HudText.label),
                   if (imageCount > 0) ...[
                     const SizedBox(width: HudSpacing.sm),
-                    Icon(
-                      Icons.photo_outlined,
-                      size: 12,
-                      color: HudColors.textTertiary,
-                    ),
-                    const SizedBox(width: 2),
-                    Text('$imageCount', style: HudText.caption),
+                    HudCountBadge(value: '图 $imageCount'),
                   ],
                   const Spacer(),
                   if (prompt?.sentAt != null)
                     Text(
                       DateFormat('MM-dd HH:mm')
                           .format(prompt!.sentAt!.toLocal()),
-                      style: HudText.caption.copyWith(fontSize: 10.5),
+                      style: HudText.caption.copyWith(fontSize: 11),
                     ),
-                  const SizedBox(width: HudSpacing.sm),
+                  const SizedBox(width: HudSpacing.xs),
                   Icon(
                     _expanded
-                        ? Icons.keyboard_arrow_up_rounded
-                        : Icons.keyboard_arrow_down_rounded,
-                    size: 18,
-                    color: HudColors.textSecondary,
+                        ? Icons.expand_less_rounded
+                        : Icons.expand_more_rounded,
+                    size: 19,
+                    color: HudColors.textTertiary,
                   ),
                 ],
               ),
@@ -760,11 +709,10 @@ class _PromptCardState extends State<_PromptCard> {
             decoration: BoxDecoration(
               color: HudColors.controlFill,
               borderRadius: BorderRadius.circular(HudRadii.control),
-              border: Border.all(color: HudColors.divider),
             ),
             child: SelectableText(
               prompt.text,
-              style: HudText.body.copyWith(fontSize: 13),
+              style: HudText.body.copyWith(fontSize: 13.5),
             ),
           ),
         if (imageCount > 0) ...[
@@ -800,10 +748,10 @@ class _PrivacyNotice extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(HudSpacing.lg),
       decoration: BoxDecoration(
-        color: HudColors.waiting.withValues(alpha: 0.08),
+        color: HudColors.waiting.withValues(alpha: 0.07),
         borderRadius: BorderRadius.circular(HudRadii.control),
         border: Border.all(
-          color: HudColors.waiting.withValues(alpha: 0.24),
+          color: HudColors.waiting.withValues(alpha: 0.18),
         ),
       ),
       child: Row(
@@ -813,7 +761,7 @@ class _PrivacyNotice extends StatelessWidget {
             size: 14,
             color: HudColors.waiting,
           ),
-          const SizedBox(width: HudSpacing.sm),
+          const SizedBox(width: HudSpacing.md),
           Expanded(
             child: Text(
               '隐私模式已隐藏原始输入与图片',
@@ -1123,44 +1071,48 @@ class _RunsList extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        for (final run in runs)
+        for (int index = 0; index < runs.length; index++) ...[
+          if (index > 0) const SizedBox(height: HudSpacing.md),
           Container(
-            margin: const EdgeInsets.only(bottom: HudSpacing.md),
             padding: const EdgeInsets.all(HudSpacing.lg),
             decoration: BoxDecoration(
               color: HudColors.controlFill,
               borderRadius: BorderRadius.circular(HudRadii.control),
-              border: Border.all(color: HudColors.divider),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Expanded(
                       child: Text(
-                        run.objective,
-                        style: HudText.label.copyWith(fontSize: 13),
+                        runs[index].objective,
+                        style: HudText.body.copyWith(fontSize: 13.5),
                       ),
                     ),
                     const SizedBox(width: HudSpacing.sm),
                     Text(
-                      DateFormat('MM-dd HH:mm').format(run.completedAt.toLocal()),
+                      DateFormat('MM-dd HH:mm')
+                          .format(runs[index].completedAt.toLocal()),
                       style: HudText.caption.copyWith(fontSize: 10.5),
                     ),
                   ],
                 ),
-                if (run.summary.isNotEmpty) ...[
+                if (runs[index].summary.isNotEmpty) ...[
                   const SizedBox(height: HudSpacing.sm),
-                  Text(run.summary, style: HudText.bodySecondary),
+                  Text(
+                    runs[index].summary,
+                    style: HudText.bodySecondary.copyWith(fontSize: 12.5),
+                  ),
                 ],
-                if (run.actions.isNotEmpty) ...[
-                  const SizedBox(height: HudSpacing.sm),
+                if (runs[index].actions.isNotEmpty) ...[
+                  const SizedBox(height: HudSpacing.md),
                   Wrap(
                     spacing: HudSpacing.sm,
                     runSpacing: HudSpacing.sm,
                     children: [
-                      for (final action in run.actions)
+                      for (final action in runs[index].actions)
                         _FactChip(
                           icon: Icons.bolt_rounded,
                           text: action,
@@ -1168,23 +1120,35 @@ class _RunsList extends StatelessWidget {
                     ],
                   ),
                 ],
-                if (run.filesChanged.isNotEmpty) ...[
-                  const SizedBox(height: HudSpacing.sm),
-                  Wrap(
-                    spacing: HudSpacing.sm,
-                    runSpacing: HudSpacing.sm,
-                    children: [
-                      for (final file in run.filesChanged)
-                        _FactChip(
-                          icon: Icons.description_outlined,
-                          text: file,
-                        ),
-                    ],
-                  ),
+                if (runs[index].filesChanged.isNotEmpty) ...[
+                  const SizedBox(height: HudSpacing.md),
+                  for (final file in runs[index].filesChanged)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 3),
+                      child: Row(
+                        children: [
+                          const Icon(
+                            Icons.insert_drive_file_outlined,
+                            size: 12,
+                            color: HudColors.textTertiary,
+                          ),
+                          const SizedBox(width: HudSpacing.sm),
+                          Expanded(
+                            child: Text(
+                              file,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: HudText.mono.copyWith(fontSize: 11),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                 ],
               ],
             ),
           ),
+        ],
       ],
     );
   }
@@ -1207,9 +1171,9 @@ class _ActionError extends StatelessWidget {
         HudSpacing.sm,
       ),
       decoration: BoxDecoration(
-        color: HudColors.failed.withValues(alpha: 0.08),
+        color: HudColors.failed.withValues(alpha: 0.07),
         borderRadius: BorderRadius.circular(HudRadii.control),
-        border: Border.all(color: HudColors.failed.withValues(alpha: 0.3)),
+        border: Border.all(color: HudColors.failed.withValues(alpha: 0.22)),
       ),
       child: Row(
         children: [
@@ -1218,7 +1182,7 @@ class _ActionError extends StatelessWidget {
             size: 14,
             color: HudColors.failed,
           ),
-          const SizedBox(width: HudSpacing.sm),
+          const SizedBox(width: HudSpacing.md),
           Expanded(
             child: Text(
               message,
@@ -1235,34 +1199,38 @@ class _ActionError extends StatelessWidget {
 class _SectionCard extends StatelessWidget {
   const _SectionCard({
     required this.title,
-    required this.icon,
     required this.child,
     this.trailing,
   });
 
   final String title;
-  final IconData icon;
   final Widget child;
   final String? trailing;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return HudSurfaceCard(
       margin: const EdgeInsets.only(bottom: HudSpacing.lg),
-      padding: const EdgeInsets.all(HudSpacing.xl),
-      decoration: BoxDecoration(
-        color: HudColors.surface,
-        borderRadius: BorderRadius.circular(HudRadii.panel),
-        border: Border.all(color: HudColors.border),
+      padding: const EdgeInsets.fromLTRB(
+        HudSpacing.xl,
+        HudSpacing.lg,
+        HudSpacing.xl,
+        HudSpacing.lg,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              Icon(icon, size: 14, color: HudColors.textSecondary),
-              const SizedBox(width: HudSpacing.sm),
-              Text(title, style: HudText.label),
+              Text(
+                title,
+                style: HudText.caption.copyWith(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: 0.6,
+                  color: HudColors.textTertiary,
+                ),
+              ),
               const Spacer(),
               if (trailing != null)
                 Text(
@@ -1271,7 +1239,7 @@ class _SectionCard extends StatelessWidget {
                 ),
             ],
           ),
-          const SizedBox(height: HudSpacing.lg),
+          const SizedBox(height: HudSpacing.md),
           child,
         ],
       ),
@@ -1297,12 +1265,11 @@ class _FactChip extends StatelessWidget {
       decoration: BoxDecoration(
         color: HudColors.controlFill,
         borderRadius: BorderRadius.circular(HudRadii.micro),
-        border: Border.all(color: HudColors.border),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 12, color: color),
+          Icon(icon, size: 11, color: color),
           const SizedBox(width: 5),
           Text(
             text,
@@ -1310,43 +1277,6 @@ class _FactChip extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-}
-
-class _TimeRow extends StatelessWidget {
-  const _TimeRow({
-    required this.icon,
-    required this.label,
-    required this.value,
-    this.color = HudColors.textTertiary,
-  });
-
-  final IconData icon;
-  final String label;
-  final String value;
-  final Color color;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Icon(icon, size: 14, color: color),
-        const SizedBox(width: HudSpacing.sm),
-        SizedBox(
-          width: 72,
-          child: Text(label, style: HudText.caption),
-        ),
-        Expanded(
-          child: Text(
-            value,
-            style: HudText.bodySecondary.copyWith(
-              fontSize: 12,
-              fontFeatures: const [FontFeature.tabularFigures()],
-            ),
-          ),
-        ),
-      ],
     );
   }
 }
