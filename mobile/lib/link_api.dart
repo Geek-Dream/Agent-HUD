@@ -77,9 +77,8 @@ class LinkApi implements MonitoringApi, SessionActionsApi {
 
   Future<LinkedDevice> completeQr(
     PairingOffer offer,
-    String deviceName, {
-    bool preferIpv6 = false,
-  }) async {
+    String deviceName,
+  ) async {
     final value = await _postOnAllAddresses(
       offer.addresses,
       offer.port,
@@ -91,7 +90,7 @@ class LinkApi implements MonitoringApi, SessionActionsApi {
         'deviceName': deviceName,
       },
     );
-    return LinkedDevice.fromPairing(value, preferIpv6: preferIpv6);
+    return LinkedDevice.fromPairing(value);
   }
 
   Future<LinkedDevice> completeCode({

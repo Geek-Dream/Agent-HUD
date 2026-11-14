@@ -30,6 +30,7 @@ class _PairingPageState extends State<PairingPage> {
 
   bool _handling = false;
   bool _useIpv6 = false;
+  int _mode = 0;
   String? _error;
   String? _scanNotice;
   String? _lastRejectedRaw;
@@ -176,7 +177,6 @@ class _PairingPageState extends State<PairingPage> {
       () => _api.completeQr(
         offer,
         LinkApi.defaultDeviceName,
-        preferIpv6: _useIpv6,
       ),
     );
   }
@@ -213,145 +213,54 @@ class _PairingPageState extends State<PairingPage> {
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 2,
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text('关联电脑'),
-          bottom: const TabBar(tabs: [Tab(text: '扫码关联'), Tab(text: '验证码')]),
-        ),
-        body: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(
-                HudSpacing.xxl,
-                HudSpacing.md,
-                HudSpacing.xxl,
-                0,
-              ),
-              child: Row(
-                children: [
-                  Checkbox(
-                    value: _useIpv6,
-                    onChanged: _handling
-                        ? null
-                        : (value) => setState(
-                              () => _useIpv6 = value ?? false,
-                            ),
-                  ),
-                  Expanded(
-                    child: GestureDetector(
-                      onTap: _handling
-                          ? null
-                          : () => setState(() => _useIpv6 = !_useIpv6),
-                      child: Text(
-                        '仅使用 IPv6 地址连接',
-                        style: HudText.bodySecondary,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Expanded(
-              child: TabBarView(
-                children: [
-                  _buildScanner(),
-                  _buildManualForm(),
-                ],
-              ),
-            ),
-          ],
-        ),
+    return Scaffold(
+      appBar: AppBar(
+        toolbarHeight: 64,
+        title: const Text('关联电脑'),
       ),
-    );
-  }
-
-  Widget _buildScanner() {
-    return Column(
-      children: [
-        Expanded(
-          child: Padding(
-            padding: const EdgeInsets.all(HudSpacing.xl),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(HudRadii.hero),
-              child: RepaintBoundary(
-                key: _scannerKey,
-                child: Stack(
-                  fit: StackFit.expand,
-                  children: [
-                    MobileScanner(
-                      key: ValueKey<int>(_scannerAttempt),
-                      onDetect: _onScan,
-                      tapToFocus: true,
-                      errorBuilder: (context, error) => _CameraError(
-                        error: error,
-                        onRetry: _restartScanner,
-                      ),
-                      placeholderBuilder: (context) => _CameraStarting(
-                        slow: _slowStart,
-                        onRetry: _restartScanner,
-                      ),
-                      overlayBuilder: (context, constraints) => IgnorePointer(
-                        child: Stack(
-                          fit: StackFit.expand,
-                          children: [
-                            DecoratedBox(
-                              decoration: BoxDecoration(
-                                borderRadius:
-                                    BorderRadius.circular(HudRadii.hero),
-                                border: Border.all(
-                                  color: HudColors.working
-                                      .withValues(alpha: 0.42),
-                                  width: 1.2,
-                                ),
-                              ),
-                            ),
-                            const Center(child: _ScanFrame()),
-                          ],
-                        ),
-                      ),
-                    ),
-                    if (_handling) _CaptureOverlay(),
-                  ],
+      body: HudScaffoldBackground(
+        child: SafeArea(
+          top: false,
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(
+                  HudSpacing.xl,
+                  HudSpacing.sm,
+                  HudSpacing.xl,
+                  HudSpacing.xl,
+                ),
+                child: _ModeSwitch(
+                  index: _mode,
+                  onChanged: _handling
+                      ? null
+                      : (value) => setState(() => _mode = value),
                 ),
               ),
-            ),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(
-            HudSpacing.xxl,
-            0,
-            HudSpacing.xxl,
-            HudSpacing.xxl,
-          ),
-          child: AnimatedSwitcher(
-            duration: HudMotion.base,
-            switchInCurve: HudMotion.easeOut,
-            switchOutCurve: HudMotion.easeIn,
-            transitionBuilder: (child, animation) => FadeTransition(
-              opacity: animation,
-              child: SizeTransition(
-                sizeFactor: animation,
-                alignment: Alignment.topCenter,
-                child: child,
+              Expanded(
+                child: AnimatedSwitcher(
+                  duration: HudMotion.base,
+                  switchInCurve: HudMotion.easeOut,
+                  switchOutCurve: HudMotion.easeIn,
+                  transitionBuilder: (child, animation) => FadeTransition(
+                    opacity: animation,
+                    child: child,
+                  ),
+                  child: _mode == 0
+                      ? KeyedSubtree(
+                          key: const ValueKey<String>('scan'),
+                          child: _buildScanner(),
+                        )
+                      : KeyedSubtree(
+                          key: const ValueKey<String>('code'),
+                          child: _buildManualForm(),
+                        ),
+                ),
               ),
-            ),
-            child: _scannerStatus(),
+            ],
           ),
         ),
-        if (_error != null)
-          Padding(
-            padding: const EdgeInsets.fromLTRB(
-              HudSpacing.xxl,
-              0,
-              HudSpacing.xxl,
-              HudSpacing.xxl,
-            ),
-            child: _InlineError(message: _error!),
-          ),
-      ],
+      ),
     );
   }
 
@@ -361,9 +270,9 @@ class _PairingPageState extends State<PairingPage> {
         key: ValueKey<String>('handling'),
         padding: EdgeInsets.symmetric(vertical: HudSpacing.md),
         child: SizedBox(
-          width: 24,
-          height: 24,
-          child: CircularProgressIndicator(strokeWidth: 2.4),
+          width: 22,
+          height: 22,
+          child: CircularProgressIndicator(strokeWidth: 2.2),
         ),
       );
     }
@@ -383,68 +292,196 @@ class _PairingPageState extends State<PairingPage> {
     );
   }
 
+  Widget _buildScanner() {
+    return Column(
+      children: [
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(
+              HudSpacing.xl,
+              0,
+              HudSpacing.xl,
+              HudSpacing.xl,
+            ),
+            child: HudSurfaceCard(
+              radius: HudRadii.hero,
+              color: const Color(0xFF05060A),
+              padding: EdgeInsets.zero,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(HudRadii.hero),
+                child: RepaintBoundary(
+                  key: _scannerKey,
+                  child: Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      MobileScanner(
+                        key: ValueKey<int>(_scannerAttempt),
+                        onDetect: _onScan,
+                        tapToFocus: true,
+                        errorBuilder: (context, error) => _CameraError(
+                          error: error,
+                          onRetry: _restartScanner,
+                        ),
+                        placeholderBuilder: (context) => _CameraStarting(
+                          slow: _slowStart,
+                          onRetry: _restartScanner,
+                        ),
+                        overlayBuilder: (context, constraints) =>
+                            const IgnorePointer(
+                          child: Stack(
+                            fit: StackFit.expand,
+                            children: [
+                              _ScanVignette(),
+                              Center(child: _ScanFrame()),
+                            ],
+                          ),
+                        ),
+                      ),
+                      if (_handling) _CaptureOverlay(),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(
+            HudSpacing.xxl,
+            0,
+            HudSpacing.xxl,
+            HudSpacing.lg,
+          ),
+          child: AnimatedSwitcher(
+            duration: HudMotion.base,
+            switchInCurve: HudMotion.easeOut,
+            switchOutCurve: HudMotion.easeIn,
+            transitionBuilder: (child, animation) => FadeTransition(
+              opacity: animation,
+              child: SizeTransition(
+                sizeFactor: animation,
+                alignment: Alignment.topCenter,
+                child: child,
+              ),
+            ),
+            child: _scannerStatus(),
+          ),
+        ),
+        _Ipv6Toggle(
+          value: _useIpv6,
+          enabled: !_handling,
+          onChanged: (value) => setState(() => _useIpv6 = value),
+        ),
+        if (_error != null)
+          Padding(
+            padding: const EdgeInsets.fromLTRB(
+              HudSpacing.xl,
+              HudSpacing.md,
+              HudSpacing.xl,
+              HudSpacing.lg,
+            ),
+            child: _InlineError(message: _error!),
+          ),
+        const SizedBox(height: HudSpacing.lg),
+      ],
+    );
+  }
+
   Widget _buildManualForm() {
     return ListView(
-      padding: const EdgeInsets.all(HudSpacing.xxl),
+      padding: const EdgeInsets.fromLTRB(
+        HudSpacing.xl,
+        0,
+        HudSpacing.xl,
+        HudSpacing.xxl,
+      ),
       children: [
-        _FieldLabel(_useIpv6 ? '电脑地址（IPv6）' : '电脑地址（IPv4 或 IPv6）'),
-        const SizedBox(height: HudSpacing.md),
-        TextField(
-          controller: _address,
-          keyboardType: TextInputType.url,
-          textInputAction: TextInputAction.next,
-          decoration: InputDecoration(
-            hintText: _useIpv6
-                ? '2409:…（无需方括号）'
-                : '192.168.1.5 或 2409:…（无需方括号）',
+        HudSurfaceCard(
+          padding: const EdgeInsets.fromLTRB(
+            HudSpacing.xl,
+            HudSpacing.lg,
+            HudSpacing.xl,
+            HudSpacing.xl,
           ),
-        ),
-        const SizedBox(height: HudSpacing.xl),
-        const _FieldLabel('监听端口'),
-        const SizedBox(height: HudSpacing.md),
-        TextField(
-          controller: _port,
-          keyboardType: TextInputType.number,
-          textInputAction: TextInputAction.next,
-          decoration: const InputDecoration(hintText: '以 Windows 配对页显示为准'),
-        ),
-        const SizedBox(height: HudSpacing.xl),
-        const _FieldLabel('六位验证码'),
-        const SizedBox(height: HudSpacing.md),
-        TextField(
-          controller: _code,
-          keyboardType: TextInputType.number,
-          textInputAction: TextInputAction.done,
-          maxLength: 6,
-          decoration: const InputDecoration(
-            hintText: '123456',
-            counterText: '',
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const _FieldLabel('电脑地址'),
+              const SizedBox(height: HudSpacing.md),
+              TextField(
+                controller: _address,
+                keyboardType: TextInputType.url,
+                textInputAction: TextInputAction.next,
+                decoration: InputDecoration(
+                  hintText: _useIpv6
+                      ? '2409:…（无需方括号）'
+                      : '192.168.1.5 或 2409:…（无需方括号）',
+                ),
+              ),
+              const SizedBox(height: HudSpacing.xl),
+              const _FieldLabel('监听端口'),
+              const SizedBox(height: HudSpacing.md),
+              TextField(
+                controller: _port,
+                keyboardType: TextInputType.number,
+                textInputAction: TextInputAction.next,
+                decoration: const InputDecoration(
+                  hintText: '以 Windows 配对页显示为准',
+                ),
+              ),
+              const SizedBox(height: HudSpacing.xl),
+              const _FieldLabel('六位验证码'),
+              const SizedBox(height: HudSpacing.md),
+              TextField(
+                controller: _code,
+                keyboardType: TextInputType.number,
+                textInputAction: TextInputAction.done,
+                maxLength: 6,
+                style: HudText.mono.copyWith(
+                  fontSize: 18,
+                  letterSpacing: 6,
+                  color: HudColors.textPrimary,
+                ),
+                decoration: const InputDecoration(
+                  hintText: '000000',
+                  counterText: '',
+                ),
+                onSubmitted: (_) => _submitManual(),
+              ),
+              const SizedBox(height: HudSpacing.xl),
+              SizedBox(
+                width: double.infinity,
+                child: FilledButton(
+                  onPressed: _handling ? null : _submitManual,
+                  child: _handling
+                      ? const SizedBox(
+                          width: 18,
+                          height: 18,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: HudColors.textTertiary,
+                          ),
+                        )
+                      : const Text('开始关联'),
+                ),
+              ),
+            ],
           ),
-          onSubmitted: (_) => _submitManual(),
         ),
         const SizedBox(height: HudSpacing.lg),
-        FilledButton.icon(
-          onPressed: _handling ? null : _submitManual,
-          icon: _handling
-              ? const SizedBox(
-                  width: 18,
-                  height: 18,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2,
-                    color: Color(0xFF04121F),
-                  ),
-                )
-              : const Icon(Icons.link_rounded, size: 19),
-          label: Text(_handling ? '正在关联…' : '开始关联'),
+        _Ipv6Toggle(
+          value: _useIpv6,
+          enabled: !_handling,
+          onChanged: (value) => setState(() => _useIpv6 = value),
         ),
         if (_error != null) ...[
           const SizedBox(height: HudSpacing.lg),
           _InlineError(message: _error!),
         ],
-        const SizedBox(height: HudSpacing.xxl),
-        const Text(
+        const SizedBox(height: HudSpacing.lg),
+        Text(
           '验证码两分钟内有效，最多尝试五次。首次连接后，App 会固定电脑证书指纹，后续请求都需要独立设备令牌。',
-          style: HudText.caption,
+          style: HudText.caption.copyWith(height: 1.6),
         ),
       ],
     );
@@ -622,27 +659,237 @@ class _CameraStarting extends StatelessWidget {
   }
 }
 
+/// Dims everything outside the capture window so the preview reads as one
+/// deliberate surface instead of a raw camera feed.
+class _ScanVignette extends StatelessWidget {
+  const _ScanVignette();
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomPaint(
+      painter: _ScanMaskPainter(
+        window: _ScanFrame.size,
+        radius: 22,
+        outside: const Color(0xB807080C),
+      ),
+    );
+  }
+}
+
+class _ScanMaskPainter extends CustomPainter {
+  const _ScanMaskPainter({
+    required this.window,
+    required this.radius,
+    required this.outside,
+  });
+
+  final double window;
+  final double radius;
+  final Color outside;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final RRect cutout = RRect.fromRectAndRadius(
+      Rect.fromCenter(
+        center: size.center(Offset.zero),
+        width: window,
+        height: window,
+      ),
+      Radius.circular(radius),
+    );
+    final Path mask = Path()
+      ..fillType = PathFillType.evenOdd
+      ..addRect(Offset.zero & size)
+      ..addRRect(cutout);
+    canvas.drawPath(mask, Paint()..color = outside);
+  }
+
+  @override
+  bool shouldRepaint(covariant _ScanMaskPainter oldDelegate) =>
+      oldDelegate.window != window ||
+      oldDelegate.radius != radius ||
+      oldDelegate.outside != outside;
+}
+
+/// Four hairline corner marks – no glow, no breathing animation.
 class _ScanFrame extends StatelessWidget {
   const _ScanFrame();
+
+  static const double size = 216;
+  static const double _arm = 30;
+
+  @override
+  Widget build(BuildContext context) {
+    final Color line = HudColors.textPrimary.withValues(alpha: 0.9);
+    return SizedBox(
+      width: size,
+      height: size,
+      child: CustomPaint(
+        painter: _CornerFramePainter(color: line, arm: _arm),
+      ),
+    );
+  }
+}
+
+class _CornerFramePainter extends CustomPainter {
+  const _CornerFramePainter({required this.color, required this.arm});
+
+  final Color color;
+  final double arm;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final Paint paint = Paint()
+      ..color = color
+      ..strokeWidth = 1.6
+      ..strokeCap = StrokeCap.round
+      ..style = PaintingStyle.stroke;
+    const double r = 14;
+    final double w = size.width;
+    final double h = size.height;
+
+    // Four rounded corner arcs with short arms.
+    final Path path = Path()
+      ..moveTo(0, arm)
+      ..lineTo(0, r)
+      ..arcToPoint(const Offset(r, 0), radius: const Radius.circular(r))
+      ..lineTo(arm, 0)
+      ..moveTo(w - arm, 0)
+      ..lineTo(w - r, 0)
+      ..arcToPoint(Offset(w, r), radius: const Radius.circular(r))
+      ..lineTo(w, arm)
+      ..moveTo(w, h - arm)
+      ..lineTo(w, h - r)
+      ..arcToPoint(Offset(w - r, h), radius: const Radius.circular(r))
+      ..lineTo(w - arm, h)
+      ..moveTo(arm, h)
+      ..lineTo(r, h)
+      ..arcToPoint(Offset(0, h - r), radius: const Radius.circular(r))
+      ..lineTo(0, h - arm);
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(covariant _CornerFramePainter oldDelegate) =>
+      oldDelegate.color != color || oldDelegate.arm != arm;
+}
+
+/// Segmented control used instead of the Material TabBar.
+class _ModeSwitch extends StatelessWidget {
+  const _ModeSwitch({required this.index, required this.onChanged});
+
+  final int index;
+  final ValueChanged<int>? onChanged;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 196,
-      height: 196,
+      height: 40,
+      padding: const EdgeInsets.all(3),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(HudRadii.hero),
-        border: Border.all(
-          color: HudColors.working.withValues(alpha: 0.72),
-          width: 2,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: HudColors.working.withValues(alpha: 0.22),
-            blurRadius: 18,
-            spreadRadius: 1,
-          ),
+        color: HudColors.controlFill,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: HudColors.border),
+      ),
+      child: Row(
+        children: [
+          for (int i = 0; i < 2; i += 1)
+            Expanded(
+              child: GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: onChanged == null ? null : () => onChanged!(i),
+                child: AnimatedContainer(
+                  duration: HudMotion.fast,
+                  curve: HudMotion.easeOut,
+                  decoration: BoxDecoration(
+                    color: index == i ? HudColors.textPrimary : Colors.transparent,
+                    borderRadius: BorderRadius.circular(9),
+                  ),
+                  child: Center(
+                    child: Text(
+                      i == 0 ? '扫码关联' : '验证码',
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight:
+                            index == i ? FontWeight.w600 : FontWeight.w500,
+                        color: index == i
+                            ? HudColors.background
+                            : HudColors.textTertiary,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
         ],
+      ),
+    );
+  }
+}
+
+/// Quiet row toggle for the IPv6 preference.
+class _Ipv6Toggle extends StatelessWidget {
+  const _Ipv6Toggle({
+    required this.value,
+    required this.enabled,
+    required this.onChanged,
+  });
+
+  final bool value;
+  final bool enabled;
+  final ValueChanged<bool> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: HudSpacing.xl),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(HudRadii.card),
+        onTap: enabled ? () => onChanged(!value) : null,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: HudSpacing.md,
+            vertical: HudSpacing.md,
+          ),
+          child: Row(
+            children: [
+              Icon(
+                Icons.lan_outlined,
+                size: 16,
+                color: value ? HudColors.working : HudColors.textTertiary,
+              ),
+              const SizedBox(width: HudSpacing.lg),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '仅使用 IPv6 地址连接',
+                      style: HudText.bodySecondary.copyWith(fontSize: 13),
+                    ),
+                    const SizedBox(height: 1),
+                    const Text(
+                      '电脑只上报了 IPv6 地址时开启',
+                      style: HudText.caption,
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: 24,
+                width: 40,
+                child: FittedBox(
+                  fit: BoxFit.contain,
+                  child: Switch(
+                    value: value,
+                    onChanged: enabled ? onChanged : null,
+                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

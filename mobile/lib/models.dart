@@ -6,9 +6,7 @@ List<String> _addresses(
 }) {
   final ipv4 = (value['addresses'] as List?) ?? const [];
   final ipv6 = (value['ipv6Addresses'] as List?) ?? const [];
-  final selected = preferIpv6
-      ? [...ipv6]
-      : [...ipv4, ...ipv6];
+  final selected = preferIpv6 ? [...ipv6] : [...ipv4, ...ipv6];
   return selected.whereType<String>().where((item) => item.isNotEmpty).toList();
 }
 
@@ -60,9 +58,7 @@ class PairingOffer {
     final addresses = _addresses(value, preferIpv6: preferIpv6);
     if (addresses.isEmpty) {
       throw FormatException(
-        preferIpv6
-            ? '配对信息中没有可用的 IPv6 地址'
-            : '配对信息中没有可用的局域网地址',
+        preferIpv6 ? '配对信息中没有可用的 IPv6 地址' : '配对信息中没有可用的局域网地址',
       );
     }
     return PairingOffer(
@@ -102,18 +98,27 @@ class LinkedDevice {
   Uri baseUri(String address) =>
       Uri(scheme: 'https', host: normalizeLinkAddress(address), port: port);
 
-  factory LinkedDevice.fromPairing(
-    Map<String, dynamic> value, {
-    bool preferIpv6 = false,
-  }) =>
-      LinkedDevice(
+  factory LinkedDevice.fromPairing(Map<String, dynamic> value) => LinkedDevice(
         deviceId: value['deviceId'] as String,
         token: value['token'] as String,
         instanceId: value['instanceId'] as String,
         instanceName: value['instanceName'] as String? ?? 'AgentHUD',
         fingerprint: value['fingerprint'] as String,
-        addresses: _addresses(value, preferIpv6: preferIpv6),
+        // 配对时勾选 IPv6 只决定「这一次先试哪个协议族」，设备必须同时保留
+        // IPv4 与 IPv6，否则电脑换网（IPv6 前缀或 IPv4 变化）后旧地址全废，
+        // 手机就再也连不上，只能重新扫码。
+        addresses: _addresses(value),
         port: value['port'] as int,
+      );
+
+  LinkedDevice copyWith({List<String>? addresses, int? port}) => LinkedDevice(
+        deviceId: deviceId,
+        token: token,
+        instanceId: instanceId,
+        instanceName: instanceName,
+        fingerprint: fingerprint,
+        addresses: addresses ?? this.addresses,
+        port: port ?? this.port,
       );
 
   factory LinkedDevice.fromJson(Map<String, dynamic> value) => LinkedDevice(
@@ -145,6 +150,7 @@ class MonitoringStatus {
     required this.serverTime,
     this.supportsRefresh = false,
     this.capabilities = const <String>{},
+    this.addresses = const <String>[],
   });
 
   final int revision;
@@ -154,6 +160,9 @@ class MonitoringStatus {
   final bool supportsRefresh;
   final Set<String> capabilities;
 
+  /// 电脑当前真实的局域网地址，用于在电脑换网后自动更新本地保存的地址。
+  final List<String> addresses;
+
   bool get supportsActions => capabilities.contains('write');
   bool get supportsPrompt => capabilities.contains('prompt');
   bool get supportsImages => capabilities.contains('images');
@@ -162,6 +171,7 @@ class MonitoringStatus {
   MonitoringStatus copyWith({
     bool? supportsRefresh,
     Set<String>? capabilities,
+    List<String>? addresses,
   }) =>
       MonitoringStatus(
         revision: revision,
@@ -170,6 +180,7 @@ class MonitoringStatus {
         serverTime: serverTime,
         supportsRefresh: supportsRefresh ?? this.supportsRefresh,
         capabilities: capabilities ?? this.capabilities,
+        addresses: addresses ?? this.addresses,
       );
 
   factory MonitoringStatus.fromJson(Map<String, dynamic> value) {
@@ -183,6 +194,7 @@ class MonitoringStatus {
       serverTime: DateTime.parse(value['serverTime'] as String),
       supportsRefresh: capabilities.contains('refresh'),
       capabilities: capabilities.toSet(),
+      addresses: _addresses(value),
     );
   }
 }
@@ -248,7 +260,8 @@ class TaskRun {
         id: value['id'] as String,
         objective: value['objective'] as String? ?? '',
         summary: value['summary'] as String? ?? '',
-        actions: (value['actions'] as List?)?.whereType<String>().toList() ?? const <String>[],
+        actions: (value['actions'] as List?)?.whereType<String>().toList() ??
+            const <String>[],
         filesChanged:
             (value['filesChanged'] as List?)?.whereType<String>().toList() ??
                 const <String>[],
@@ -314,7 +327,8 @@ class AgentSession {
   bool get canSendMessage {
     if (conversation == null) return false;
     return conversation!.enabled &&
-        (conversation!.state == 'ready' || conversation!.state == 'waitingUser');
+        (conversation!.state == 'ready' ||
+            conversation!.state == 'waitingUser');
   }
 
   AgentSession copyWith({
