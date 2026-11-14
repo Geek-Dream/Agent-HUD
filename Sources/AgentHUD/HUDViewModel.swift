@@ -67,6 +67,11 @@ final class HUDViewModel: ObservableObject, LinkSnapshotProviding {
             UserDefaults.standard.set(visualTheme.rawValue, forKey: "hud.visualTheme")
         }
     }
+    @Published var advancedAnimations: Bool {
+        didSet {
+            UserDefaults.standard.set(advancedAnimations, forKey: "hud.advancedAnimations")
+        }
+    }
     @Published var statusFilter: StatusFilter = .all {
         didSet {
             UserDefaults.standard.set(statusFilter.rawValue, forKey: "hud.statusFilter")
@@ -140,6 +145,7 @@ final class HUDViewModel: ObservableObject, LinkSnapshotProviding {
         visualTheme = HUDVisualTheme(
             rawValue: UserDefaults.standard.string(forKey: "hud.visualTheme") ?? ""
         ) ?? .classic
+        advancedAnimations = UserDefaults.standard.bool(forKey: "hud.advancedAnimations")
         statusFilter = StatusFilter(
             rawValue: UserDefaults.standard.string(forKey: "hud.statusFilter") ?? ""
         ) ?? .all
@@ -499,6 +505,7 @@ final class HUDViewModel: ObservableObject, LinkSnapshotProviding {
         panelOpacity = HUDPanelAppearance.defaultOpacity
         panelContrast = HUDPanelAppearance.defaultContrast
         visualTheme = .classic
+        advancedAnimations = false
     }
 
     func start() {

@@ -324,6 +324,17 @@ private struct AISettingsView: View {
                 .labelsHidden()
             }
 
+            Toggle(isOn: $displayModel.advancedAnimations) {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("高级动画")
+                        .font(.system(size: 11.5))
+                    Text("运行中的会话状态点会脉冲闪烁。效果更醒目，会话较多时占用更高；关闭可降低开销。")
+                        .font(.system(size: 10.5))
+                        .foregroundStyle(.secondary)
+                }
+            }
+            .toggleStyle(.switch)
+
             appearanceSlider(
                 title: "不透明度",
                 value: Binding(
