@@ -1172,3 +1172,97 @@ AI 生成的会话标题应反映会话真正要做的事，而不是只描述�
 | 空输入 | `<空>` | OK |
 
 `Tests/main.swift` 新增 `testAITitleEligibility` 六条断言；`scripts/test.sh` 23 → 27 项全过。
+
+# Windows 双端对话补齐 + 设置页统一（2026-11-14）
+
+## 目标
+
+1. 补齐 Windows 端双端对话投递，让手机也能向 Windows 上的 Codex 会话发消息（用户后期在 Windows 机器上验证）。
+2. 统一 macOS「手机关联」与「AI 标题与显示设置」两页视觉，优化按钮层级与连接区功能。
+
+## 改动
+
+### Windows（本地无 dotnet，未编译验证）
+
+- `Windows/src/AgentHUD.Windows/Services/CodexInputAdapter.cs`
+  - 删除 PowerShell `SendKeys` 键盘注入（不可靠、会把文本当快捷键解释）。
+  - 改为 `codex queue --thread <ProviderSessionId> --message <text>`，用 `ArgumentList` 传参避免 shell 拼接。
+  - 新增 `FindCodexExecutable()`：PATH 里的 `codex.exe` 优先，其次回溯 npm 的
+    `node_modules/@openai/codex/node_modules/@openai/codex-win32-{x64,arm64}/vendor/*/bin/codex.exe`。
+  - 新增 `IsSessionAttached()`：独占打开 rollout 文件，`IOException` 说明仍有进程持有该会话。
+    因为 `codex queue` 对已退出会话同样返回 0，不先探活会静默丢消息。
+  - 15 秒超时，超时后 `Kill(entireProcessTree: true)`。
+- `Windows/src/AgentHUD.Windows/ViewModels/MainViewModel.cs`
+  - 对话状态改为 camelCase（`ready` / `waitingUser`），此前是 PascalCase，手机端
+    `canSendMessage` 永远为 false，表现为「有输入框但按钮一直不可用」。
+- `Windows/src/AgentHUD.Link/AgentHudLinkHost.cs`
+  - 投递错误改为 camelCase（`sessionOffline`），此前是小写 `sessionoffline`，与 macOS 不一致。
+
+### macOS
+
+- `Sources/AgentHUD/LinkSettingsWindow.swift` 重写：
+  - 与 AI 设置页统一：38×38 图标头、17pt 标题 + 11.5pt 副标题、12pt 分区标题、
+    11pt 字段标签、24pt 内边距、`lock.shield` 页脚；窗口 440×680 → 520×720。
+  - 连接区：监听状态点（监听中/异常）、IPv4 地址逐条展示 + 复制、IPv6 单独分区。
+  - 配对区：二维码 250→200 加白底内衬、配对码倒计时（`TimelineView` 每秒刷新，过期变橙色）、
+    `生成新配对码` 主按钮（`.borderedProminent`）+ `刷新设备` 次按钮，刷新期间显示 `ProgressView` 并禁用。
+  - 设备区：卡片式容器、设备数统计、空态文案、`撤销` 与 `允许对话模式` 开关。
+
+## 验证结果
+
+- `./scripts/build-app.sh` → `Build complete! (162.03秒)`，exit 0。
+- `./scripts/test.sh` → 28 tests passed，exit 0。
+- `cd mobile && flutter test` → 10 passed / 1 skipped，exit 0。
+- SourceKit 报的 `LinkServer has no member ipv6Addresses` 是索引陈旧，实际编译通过（该属性在 `LinkServer.swift:37`）。
+
+## 未验证项
+
+- Windows 端完全没有编译与运行验证：本机无 `dotnet`。
+- Windows 的 `FileShare.None` 探活依赖 Codex 以写入方式持有 rollout 文件，未在真机确认。
+- 设置页 UI 改动只做了编译验证，未做截图比对。
+- 正在运行的 AgentHUD（旧构建）需要重启才能看到新设置页，本次未重启。
+
+## 未知工作状态（手机端「状态待确认」）修复
+
+### 根因
+
+`SessionScanner.scan()` 在 Orca 存在时会完全短路到 `OrcaSessionSource.scan()`。而 Orca 的
+`agent-hooks/last-status.db` 只保留最近的状态条目：更早的标签页没有对应行，就拿不到
+`providerSession.transcriptPath`，`adapterSession` 为 nil，`effectiveStatus` 最终落到
+`.unknown`。矛盾点在于该会话的 transcript 实际就在磁盘上，适配器能读出 `completed`。
+
+### 变更
+
+- `Sources/AgentHUD/OrcaSessionSource.swift`
+  - 新增私有 `TranscriptIndex`：每次 `makeSessions` 最多枚举一次目录，按 sessionId 建索引。
+    Claude 走 `~/.claude/projects/<项目>/<sessionId>.jsonl`；
+    Codex 走 `~/.codex/sessions/<年>/<月>/<日>/rollout-*-<sessionId>.jsonl`。
+  - `makeSession` 的 `transcriptPath` 改为「状态条目里的值 ?? 按会话 ID 补查」：
+    有条目时行为完全不变，只有缺失条目时才走磁盘兜底。
+  - 兜底不改变既有优先级（`hookStatus` 仍然优先于适配器结果），也不引入缓存或共享可变状态
+    （索引是每次扫描的局部实例，避免并发问题）。
+
+### 验证结果
+
+- 真实数据探针对照（同一时刻、同一份 Orca 数据）：
+  - 修复前（HEAD）：`unknown = 1`，`codex:01a1cdc6-8437-7520-8770-cd7a46a7fc14` 为 `unknown / low`。
+  - 修复后：`unknown = 0`，该会话为 `completed / high`，`protocolValue = "Completed"`，
+    `sourcePath = rollout-2026-11-12T11-21-41-01a1cdc6-….jsonl`。
+  - 扫描耗时 4.745s → 5.055s（冷启动）、1.763s → 1.931s（热缓存），约 +7%，
+    来自那一次 transcript 解析；有状态条目的会话本来就走同一条解析路径。
+- `./scripts/test.sh` → 28 tests passed，exit 0。
+- `cd mobile && flutter analyze` → No issues found。
+- `cd mobile && flutter test` → 10 passed / 1 skipped，exit 0。
+- `./scripts/test-mobile-link.sh` → 真实 LinkServer + 真实 HTTPS + Dart `LinkApi`
+  完成配对与状态拉取，`All tests passed!`。
+- `./scripts/build-app.sh` → `Build complete!`，exit 0。
+- 已重启 HUD（旧进程 07:35 构建 → 新进程 13:52 构建），`47653` 双栈监听正常；
+  模拟器 `10.0.2.2:47653` TCP 可达（对照端口正常拒绝）。
+
+### 未验证项
+
+- 手机端配对后的 UI 截图未取得：配对码只存在于 HUD 进程内存，本机未授予屏幕录制/辅助功能权限，
+  无法读取窗口；模拟器已安装真实 APK（14:19 构建）但未完成配对。
+- `unknown` 归零依赖本地 transcript 文件仍在磁盘上；若会话文件被清理，仍会退化为 `unknown`。
+- Windows 端未编译验证（本机无 `dotnet`）。
+
