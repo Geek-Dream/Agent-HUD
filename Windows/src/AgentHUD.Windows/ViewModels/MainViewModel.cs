@@ -2,6 +2,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using System.Text.Json;
 using AgentHUD.Core;
 using AgentHUD.Link;
 using Microsoft.UI.Xaml;
@@ -585,7 +586,7 @@ public sealed class MainViewModel : INotifyPropertyChanged, IMonitoringSnapshotS
                 privacy ? null : BuildPromptSnapshot(session),
                 runs,
                 privacy
-                    ? new ConversationCapability(false, InputState.Offline.ToString(), "隐私模式已开启")
+                    ? new ConversationCapability(false, InputStateText(InputState.Offline), "隐私模式已开启")
                     : BuildConversationCapability(session));
         }).ToArray();
         return new MonitoringSnapshot(_monitoringRevision, LastScannedAt, privacy, sessions);
@@ -596,9 +597,13 @@ public sealed class MainViewModel : INotifyPropertyChanged, IMonitoringSnapshotS
         var capability = _inputDispatcher.CapabilityFor(session);
         return new ConversationCapability(
             capability.Enabled,
-            capability.State.ToString(),
+            InputStateText(capability.State),
             capability.Reason);
     }
+
+    // 手机端按 camelCase 比较状态（ready / waitingUser），必须与 macOS 端一致。
+    private static string InputStateText(InputState state) =>
+        JsonNamingPolicy.CamelCase.ConvertName(state.ToString());
 
     public bool SetSessionTitle(string sessionId, string? title)
     {
