@@ -2,6 +2,9 @@ import Foundation
 
 enum GitReader {
     static func read(projectPath: String) -> GitContext? {
+        // 先单独取仓库根：这是唯一必须成功的一步。
+        // 注意不能与 --abbrev-ref HEAD 合并成一次调用：空仓库（还没有任何 commit）
+        // 时 HEAD 无法解析，合并后整条命令 exit 128，会把本来有效的仓库判定为失败。
         let rootResult = BoundedProcess.run(
             executable: "/usr/bin/git",
             arguments: ["-C", projectPath, "rev-parse", "--show-toplevel"],
@@ -16,45 +19,39 @@ enum GitReader {
             return nil
         }
 
-        let branchResult = BoundedProcess.run(
-            executable: "/usr/bin/git",
-            arguments: ["-C", repoRoot, "branch", "--show-current"],
-            timeout: 1.5
-        )
-        var branch = branchResult?.stdout.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
-
-        if branch.isEmpty {
-            let headResult = BoundedProcess.run(
-                executable: "/usr/bin/git",
-                arguments: ["-C", repoRoot, "rev-parse", "--abbrev-ref", "HEAD"],
-                timeout: 1.5
-            )
-            branch = headResult?.stdout.trimmingCharacters(in: .whitespacesAndNewlines) ?? "detached"
-        }
-
+        // 分支名从 status --branch 的 "# branch.head" 行读取，省掉单独的
+        // branch --show-current 调用；空仓库时该行缺失，回退为 detached。
         let statusResult = BoundedProcess.run(
             executable: "/usr/bin/git",
             arguments: ["-C", repoRoot, "status", "--porcelain=v2", "--branch"],
             timeout: 2
         )
-        let changedLines = statusResult?.stdout
-            .split(separator: "\n")
-            .filter { !$0.hasPrefix("#") && !$0.isEmpty } ?? []
+        let statusLines = statusResult?.stdout.split(separator: "\n") ?? []
+
+        var branch = "detached"
+        var changedFiles = 0
+        for line in statusLines {
+            if line.hasPrefix("# branch.head ") {
+                let name = line.dropFirst("# branch.head ".count)
+                    .trimmingCharacters(in: .whitespacesAndNewlines)
+                if !name.isEmpty, name != "(detached)" {
+                    branch = name
+                }
+            } else if !line.hasPrefix("#") && !line.isEmpty {
+                changedFiles += 1
+            }
+        }
 
         var insertions = 0
         var deletions = 0
-        for arguments in [
-            ["-C", repoRoot, "diff", "--numstat"],
-            ["-C", repoRoot, "diff", "--cached", "--numstat"]
-        ] {
-            guard let result = BoundedProcess.run(
-                executable: "/usr/bin/git",
-                arguments: arguments,
-                timeout: 2
-            ) else {
-                continue
-            }
-            for line in result.stdout.split(separator: "\n") {
+        // diff HEAD 等价于原先的 diff + diff --cached 两次调用之和。
+        // 空仓库时 HEAD 不存在，命令失败，增删数保持 0。
+        if let diffResult = BoundedProcess.run(
+            executable: "/usr/bin/git",
+            arguments: ["-C", repoRoot, "diff", "HEAD", "--numstat"],
+            timeout: 2
+        ), diffResult.status == 0 {
+            for line in diffResult.stdout.split(separator: "\n") {
                 let fields = line.split(separator: "\t")
                 guard fields.count >= 2 else { continue }
                 insertions += Int(fields[0]) ?? 0
@@ -64,11 +61,11 @@ enum GitReader {
 
         return GitContext(
             repoRoot: repoRoot,
-            branch: branch.isEmpty ? "detached" : branch,
-            changedFiles: changedLines.count,
+            branch: branch,
+            changedFiles: changedFiles,
             insertions: insertions,
             deletions: deletions,
-            isDirty: !changedLines.isEmpty
+            isDirty: changedFiles > 0
         )
     }
 }
