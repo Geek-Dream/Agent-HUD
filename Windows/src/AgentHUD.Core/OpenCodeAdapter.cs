@@ -60,14 +60,14 @@ public static class OpenCodeAdapter
                     .Where(part => JsonTools.String(part.Data, "type") == "text")
                     .Select(part => JsonTools.String(part.Data, "text"))
                     .Where(value => !string.IsNullOrWhiteSpace(value)));
-                var promptText = TextTools.UserPromptText(text);
-                if (string.IsNullOrWhiteSpace(promptText))
+                var userPromptText = TextTools.UserPromptText(text);
+                if (string.IsNullOrWhiteSpace(userPromptText))
                 {
                     continue;
                 }
 
                 latestPrompt = new UserPromptSnapshot(
-                    promptText,
+                    userPromptText,
                     message.Date,
                     Array.Empty<SessionImageAttachment>());
                 latestUserAt = message.Date;
@@ -93,7 +93,7 @@ public static class OpenCodeAdapter
                     currentFiles.Clear();
                 }
 
-                if (TextTools.MeaningfulPrompt(promptText) is { } prompt
+                if (TextTools.MeaningfulPrompt(userPromptText) is { } prompt
                     && (currentObjective is null || !TextTools.IsContinuationPrompt(prompt)))
                 {
                     currentObjective = prompt;

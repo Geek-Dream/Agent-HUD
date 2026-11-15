@@ -262,12 +262,12 @@ public static class SessionOutlinePolicy
 
 public static class ExpandedPanelSize
 {
-    public const double DefaultWidth = 424;
-    public const double DefaultHeight = 620;
-    public const double MinWidth = 360;
-    public const double MinHeight = 480;
-    public const double MaxWidth = 720;
-    public const double MaxHeight = 1000;
+    public const double DefaultWidth = 520;
+    public const double DefaultHeight = 900;
+    public const double MinWidth = 380;
+    public const double MinHeight = 620;
+    public const double MaxWidth = 760;
+    public const double MaxHeight = 1400;
 
     public static double ClampWidth(double value) =>
         Clamp(value, MinWidth, MaxWidth, DefaultWidth);

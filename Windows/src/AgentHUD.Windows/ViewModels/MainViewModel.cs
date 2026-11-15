@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using AgentHUD.Core;
 using AgentHUD.Link;
+using AgentHUD.Windows.Services;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
@@ -46,6 +47,7 @@ public sealed class MainViewModel : INotifyPropertyChanged, IMonitoringSnapshotS
     private int _runVisibleCount = 5;
     private string _lastFingerprint = string.Empty;
     private long _monitoringRevision;
+    private bool _hasScanned;
 
     public MainViewModel()
     {
@@ -174,6 +176,9 @@ public sealed class MainViewModel : INotifyPropertyChanged, IMonitoringSnapshotS
             _isLoading = value;
             OnPropertyChanged();
             OnPropertyChanged(nameof(LoadingVisibility));
+            // EmptyVisibility depends on IsLoading too; without this the empty
+            // state and the loading skeleton render on top of each other.
+            OnPropertyChanged(nameof(EmptyVisibility));
             OnPropertyChanged(nameof(RefreshGlyph));
         }
     }
@@ -279,8 +284,11 @@ public sealed class MainViewModel : INotifyPropertyChanged, IMonitoringSnapshotS
 
         try
         {
-            IsLoading = true;
+            // Only the very first scan surfaces a loading state; the 3s background
+            // refresh must stay invisible so the list does not blink or re-fade.
+            IsLoading = !_hasScanned;
             var snapshot = await Task.Run(() => _scanner.Scan());
+            _hasScanned = true;
             var previous = _sessions;
             var completionIds = SessionTransitionDetector.RunningCompletionIds(previous, snapshot.Sessions);
             var animatedIds = StatusFilter == StatusFilter.All
@@ -423,8 +431,9 @@ public sealed class MainViewModel : INotifyPropertyChanged, IMonitoringSnapshotS
             return;
         }
         _store.SetManualTitle(SelectedRow.Session.Id, null);
+        // RebuildRows updates the selected row in place, so the detail page
+        // keeps its scroll position instead of snapping back to the top.
         RebuildRows(force: true);
-        SelectedRow = CreateDetailRow(SelectedRow.Session);
     }
 
     public void LoadMoreRuns()
@@ -759,7 +768,6 @@ public sealed class MainViewModel : INotifyPropertyChanged, IMonitoringSnapshotS
 
     private void RebuildRows(bool force)
     {
-        var manual = _store.State.ManualTitles;
         var important = _store.State.ImportantSessionIds;
         var filtered = _sessions
             .Where(session =>
@@ -785,17 +793,13 @@ public sealed class MainViewModel : INotifyPropertyChanged, IMonitoringSnapshotS
         }
         _lastFingerprint = fingerprint;
 
-        var selectedId = SelectedRow?.Session.Id;
-        VisibleSessions.Clear();
-        foreach (var session in ordered)
-        {
-            VisibleSessions.Add(CreateRow(session));
-        }
+        ReconcileVisibleRows(ordered);
 
+        var selectedId = SelectedRow?.Session.Id;
         if (selectedId is not null)
         {
             var updated = _sessions.FirstOrDefault(session => session.Id == selectedId);
-            SelectedRow = updated is null ? null : CreateDetailRow(updated);
+            UpdateSelectedRow(updated);
         }
 
         NotifyCounts();
@@ -807,27 +811,95 @@ public sealed class MainViewModel : INotifyPropertyChanged, IMonitoringSnapshotS
         OnPropertyChanged(nameof(FooterText));
     }
 
-    private SessionRowViewModel CreateRow(AgentSession session)
+    /// <summary>
+    /// Applies the new ordering to the bound collection by id instead of
+    /// clearing and re-adding everything. A wholesale reset is what made the
+    /// list blink on every poll; inserting and moving individual rows lets the
+    /// ListView keep existing containers alive and animate only what changed.
+    /// </summary>
+    private void ReconcileVisibleRows(IReadOnlyList<AgentSession> ordered)
+    {
+        var wanted = new HashSet<string>(
+            ordered.Select(session => session.Id),
+            StringComparer.Ordinal);
+        for (var index = VisibleSessions.Count - 1; index >= 0; index--)
+        {
+            if (!wanted.Contains(VisibleSessions[index].Session.Id))
+            {
+                VisibleSessions.RemoveAt(index);
+            }
+        }
+
+        var byId = VisibleSessions.ToDictionary(row => row.Session.Id, StringComparer.Ordinal);
+        for (var index = 0; index < ordered.Count; index++)
+        {
+            var session = ordered[index];
+            if (byId.TryGetValue(session.Id, out var row))
+            {
+                row.Update(DescribeRow(session));
+                var current = VisibleSessions.IndexOf(row);
+                if (current >= 0 && current != index)
+                {
+                    VisibleSessions.Move(current, index);
+                }
+                continue;
+            }
+
+            row = CreateRow(session);
+            row.QueueEntrance(index);
+            VisibleSessions.Insert(index, row);
+            byId[session.Id] = row;
+        }
+    }
+
+    private void UpdateSelectedRow(AgentSession? session)
+    {
+        if (session is null)
+        {
+            SelectedRow = null;
+            return;
+        }
+
+        if (SelectedRow is not { } row)
+        {
+            SelectedRow = CreateDetailRow(session);
+            return;
+        }
+
+        // Updating in place keeps the detail page's scroll offset, animation
+        // state and decoded images instead of rebuilding the whole page.
+        row.Update(DescribeRow(session));
+        row.LoadPromptImages();
+        row.UpdateVisibleRuns(_runVisibleCount, PrivacyMode);
+        OnPropertyChanged(nameof(SelectedRunCountText));
+        OnPropertyChanged(nameof(LoadMoreVisibility));
+    }
+
+    private SessionRowSnapshot DescribeRow(AgentSession session)
     {
         var title = ResolveTitle(session);
-        var row = new SessionRowViewModel(
+        return new SessionRowSnapshot(
             session,
             PrivacyMode ? "任务标题已隐藏" : title.Value,
             title.Source,
             IsImportant(session),
             PrivacyMode);
-        return row;
+    }
+
+    private SessionRowViewModel CreateRow(AgentSession session)
+    {
+        var title = ResolveTitle(session);
+        return new SessionRowViewModel(
+            session,
+            PrivacyMode ? "任务标题已隐藏" : title.Value,
+            title.Source,
+            IsImportant(session),
+            PrivacyMode);
     }
 
     private SessionRowViewModel CreateDetailRow(AgentSession session)
     {
-        var title = ResolveTitle(session);
-        var row = new SessionRowViewModel(
-            session,
-            PrivacyMode ? "任务标题已隐藏" : title.Value,
-            title.Source,
-            IsImportant(session),
-            PrivacyMode);
+        var row = CreateRow(session);
         row.LoadPromptImages();
         row.UpdateVisibleRuns(_runVisibleCount, PrivacyMode);
         return row;
@@ -991,11 +1063,27 @@ public sealed class MainViewModel : INotifyPropertyChanged, IMonitoringSnapshotS
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 }
 
+/// <summary>
+/// Immutable description of one row. A fresh snapshot lets the row view model
+/// update in place, so the ListView never has to rebuild its containers.
+/// </summary>
+public sealed record SessionRowSnapshot(
+    AgentSession Session,
+    string DisplayTitle,
+    TitleSource TitleSource,
+    bool IsImportant,
+    bool PrivacyMode);
+
 public sealed class SessionRowViewModel : INotifyPropertyChanged
 {
-    private readonly List<TaskRun> _sortedRuns;
+    private List<TaskRun> _sortedRuns;
     private bool _isEditing;
     private string _editDraft;
+    private string _displayTitle;
+    private TitleSource _titleSource;
+    private bool _isImportant;
+    private bool _privacyMode;
+    private string _promptKey = string.Empty;
 
     public SessionRowViewModel(
         AgentSession session,
@@ -1005,10 +1093,10 @@ public sealed class SessionRowViewModel : INotifyPropertyChanged
         bool privacyMode)
     {
         Session = session;
-        DisplayTitle = displayTitle;
-        TitleSource = titleSource;
-        IsImportant = isImportant;
-        PrivacyMode = privacyMode;
+        _displayTitle = displayTitle;
+        _titleSource = titleSource;
+        _isImportant = isImportant;
+        _privacyMode = privacyMode;
         _editDraft = displayTitle;
         _sortedRuns = session.Runs.OrderByDescending(run => run.CompletedAt).ToList();
         Runs = new ObservableCollection<RunViewModel>();
@@ -1018,29 +1106,126 @@ public sealed class SessionRowViewModel : INotifyPropertyChanged
     public event PropertyChangedEventHandler? PropertyChanged;
     public event EventHandler? TitleCommitted;
 
-    public AgentSession Session { get; }
-    public string DisplayTitle { get; }
-    public TitleSource TitleSource { get; }
-    public bool IsImportant { get; }
-    public bool PrivacyMode { get; }
+    /// <summary>Position this row was inserted at, used to stagger its entrance.</summary>
+    public int EntranceIndex { get; private set; }
+
+    /// <summary>Set once the entrance animation has been requested for this row.</summary>
+    public bool EntrancePlayed { get; private set; }
+
+    public AgentSession Session { get; private set; }
+    public string DisplayTitle => _displayTitle;
+    public TitleSource TitleSource => _titleSource;
+    public bool IsImportant => _isImportant;
+    public bool PrivacyMode => _privacyMode;
     public ObservableCollection<RunViewModel> Runs { get; }
     public ObservableCollection<PromptImageViewModel> PromptImages { get; }
     public int TotalRunCount => _sortedRuns.Count;
     public bool HasMoreRuns => Runs.Count < _sortedRuns.Count;
+
+    /// <summary>
+    /// Requests the staggered entrance for a row that was just inserted. The
+    /// code-behind consumes this once when it realizes the container.
+    /// </summary>
+    public void QueueEntrance(int index)
+    {
+        EntranceIndex = Math.Max(0, index);
+        EntrancePlayed = false;
+    }
+
+    public void MarkEntrancePlayed() => EntrancePlayed = true;
+
+    /// <summary>
+    /// Applies a newer snapshot without replacing the instance, so bound
+    /// containers, scroll position and decoded images all survive a refresh.
+    /// </summary>
+    public void Update(SessionRowSnapshot snapshot)
+    {
+        var titleOrPrivacyChanged =
+            _displayTitle != snapshot.DisplayTitle
+            || _titleSource != snapshot.TitleSource
+            || _privacyMode != snapshot.PrivacyMode;
+
+        Session = snapshot.Session;
+        _displayTitle = snapshot.DisplayTitle;
+        _titleSource = snapshot.TitleSource;
+        _isImportant = snapshot.IsImportant;
+        _privacyMode = snapshot.PrivacyMode;
+        if (!_isEditing)
+        {
+            _editDraft = snapshot.DisplayTitle;
+        }
+
+        var runsChanged = !Session.Runs.SequenceEqual(_sortedRuns);
+        if (runsChanged)
+        {
+            _sortedRuns = Session.Runs.OrderByDescending(run => run.CompletedAt).ToList();
+        }
+
+        OnPropertyChanged(nameof(Session));
+        OnPropertyChanged(nameof(DisplayTitle));
+        OnPropertyChanged(nameof(TitleSource));
+        OnPropertyChanged(nameof(IsImportant));
+        OnPropertyChanged(nameof(PrivacyMode));
+        OnPropertyChanged(nameof(StarGlyph));
+        OnPropertyChanged(nameof(ProviderBrush));
+        OnPropertyChanged(nameof(ProviderTintBrush));
+        OnPropertyChanged(nameof(StatusBrush));
+        OnPropertyChanged(nameof(StatusTintBrush));
+        OnPropertyChanged(nameof(StatusLabel));
+        OnPropertyChanged(nameof(StatusLongLabel));
+        OnPropertyChanged(nameof(ConfidenceLabel));
+        OnPropertyChanged(nameof(ProjectName));
+        OnPropertyChanged(nameof(CurrentAction));
+        OnPropertyChanged(nameof(ActivityAge));
+        OnPropertyChanged(nameof(StartedAge));
+        OnPropertyChanged(nameof(DurationText));
+        OnPropertyChanged(nameof(GitText));
+        OnPropertyChanged(nameof(ProjectPath));
+        OnPropertyChanged(nameof(CurrentFilesText));
+        OnPropertyChanged(nameof(CurrentFilesVisibility));
+        OnPropertyChanged(nameof(PromptText));
+        OnPropertyChanged(nameof(PromptDateText));
+        OnPropertyChanged(nameof(TitleSourceText));
+        OnPropertyChanged(nameof(ManualTitleActionVisibility));
+        OnPropertyChanged(nameof(ImportantAccentVisibility));
+        OnPropertyChanged(nameof(StatusOutlineVisibility));
+        OnPropertyChanged(nameof(EditDraft));
+        if (titleOrPrivacyChanged || runsChanged)
+        {
+            OnPropertyChanged(nameof(TotalRunCount));
+        }
+    }
     public string StarGlyph => IsImportant ? "\uE735" : "\uE734";
     public string ProviderShortName => Session.Provider.ShortName();
     public string ProviderDisplayName => Session.Provider.DisplayName();
     public string ProviderInitials => Session.Provider switch
     {
-        AgentProvider.Codex => "Cx",
-        AgentProvider.Claude => "Cl",
-        AgentProvider.Pi => "Pi",
-        AgentProvider.OpenCode => "Oc",
-        _ => "Ag"
+        AgentProvider.Codex => "CX",
+        AgentProvider.Claude => "CL",
+        AgentProvider.Pi => "PI",
+        AgentProvider.OpenCode => "OC",
+        _ => "AG"
     };
     public Brush ProviderBrush => BrushForProvider(Session.Provider);
+    public Brush ProviderTintBrush => ThemeBrush(Session.Provider switch
+    {
+        AgentProvider.Codex => "HudCodexTintBrush",
+        AgentProvider.Claude => "HudClaudeTintBrush",
+        AgentProvider.Pi => "HudPiTintBrush",
+        AgentProvider.OpenCode => "HudOpenCodeTintBrush",
+        _ => "HudNeutralTintBrush"
+    });
     public Brush StatusBrush => BrushForStatus(Session.Status);
     public Brush StatusTintBrush => BrushForStatusTint(Session.Status);
+    public Brush CardEdgeBrush => ThemeBrush("HudCardEdgeBrush");
+    public Brush BadgeEdgeBrush => Session.Provider switch
+    {
+        AgentProvider.Codex => ThemeBrush("HudCodexEdgeBrush"),
+        AgentProvider.Claude => ThemeBrush("HudClaudeEdgeBrush"),
+        AgentProvider.Pi => ThemeBrush("HudPiEdgeBrush"),
+        AgentProvider.OpenCode => ThemeBrush("HudOpenCodeEdgeBrush"),
+        _ => ThemeBrush("HudCardBorderBrush")
+    };
     public string StatusLabel => Session.Status.ShortLabel();
     public string StatusLongLabel => Session.Status.Label();
     public string ConfidenceLabel => Session.Confidence.Label();
@@ -1067,6 +1252,15 @@ public sealed class SessionRowViewModel : INotifyPropertyChanged
         TitleSource == TitleSource.User ? Visibility.Visible : Visibility.Collapsed;
     public Visibility PromptImagesVisibility =>
         !PrivacyMode && PromptImages.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
+
+    /// <summary>
+    /// Paperclip badge shown on a row when the latest prompt carried images.
+    /// The row template always reserves the space; only the glyph shows.
+    /// </summary>
+    public Visibility AttachmentVisibility =>
+        !PrivacyMode && Session.LatestUserPrompt?.Images.Count > 0
+            ? Visibility.Visible
+            : Visibility.Collapsed;
     public Visibility CurrentFilesVisibility =>
         !PrivacyMode && Session.CurrentFiles.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
     public Visibility EmptyRunsVisibility =>
@@ -1139,6 +1333,18 @@ public sealed class SessionRowViewModel : INotifyPropertyChanged
         {
             return;
         }
+
+        // The row is updated in place now, so this may run repeatedly. Only
+        // (re)load when the prompt actually changed; otherwise the gallery
+        // would accumulate duplicate images on every poll.
+        var key = $"{Session.Id}\u001E{prompt.SentAt?.UtcTicks}\u001E{prompt.Images.Count}\u001E{prompt.Text.Length}";
+        if (key == _promptKey)
+        {
+            return;
+        }
+        _promptKey = key;
+
+        PromptImages.Clear();
         for (var index = 0; index < prompt.Images.Count; index++)
         {
             var image = new PromptImageViewModel(prompt.Images[index], index);
@@ -1146,15 +1352,36 @@ public sealed class SessionRowViewModel : INotifyPropertyChanged
             _ = image.LoadAsync();
         }
         OnPropertyChanged(nameof(PromptImagesVisibility));
+        OnPropertyChanged(nameof(AttachmentVisibility));
     }
 
     public void UpdateVisibleRuns(int count, bool privacyMode)
     {
-        Runs.Clear();
-        foreach (var run in _sortedRuns.Take(count))
+        var wanted = _sortedRuns.Take(count).ToArray();
+        var unchanged = wanted.Length == Runs.Count;
+        if (unchanged)
         {
-            Runs.Add(new RunViewModel(run, privacyMode));
+            for (var index = 0; index < wanted.Length; index++)
+            {
+                if (!ReferenceEquals(Runs[index].Run, wanted[index])
+                    || Runs[index].PrivacyMode != privacyMode)
+                {
+                    unchanged = false;
+                    break;
+                }
+            }
         }
+
+        if (!unchanged)
+        {
+            Runs.Clear();
+            foreach (var run in wanted)
+            {
+                Runs.Add(new RunViewModel(run, privacyMode));
+            }
+        }
+
+        OnPropertyChanged(nameof(TotalRunCount));
         OnPropertyChanged(nameof(HasMoreRuns));
         OnPropertyChanged(nameof(EmptyRunsVisibility));
         OnPropertyChanged(nameof(RunsVisibility));
@@ -1239,6 +1466,8 @@ public sealed class RunViewModel
 {
     public RunViewModel(TaskRun run, bool privacyMode)
     {
+        Run = run;
+        PrivacyMode = privacyMode;
         DateText = run.CompletedAt.ToLocalTime().ToString("MM-dd HH:mm");
         Objective = privacyMode ? "任务目标已隐藏" : run.Objective;
         Summary = privacyMode ? "完成总结已隐藏" : run.Summary;
@@ -1254,6 +1483,8 @@ public sealed class RunViewModel
             : Visibility.Visible;
     }
 
+    public TaskRun Run { get; }
+    public bool PrivacyMode { get; }
     public string DateText { get; }
     public string Objective { get; }
     public string Summary { get; }

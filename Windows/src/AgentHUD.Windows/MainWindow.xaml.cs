@@ -27,6 +27,8 @@ public sealed partial class MainWindow : Window
     private readonly AppWindow _appWindow;
     private readonly IntPtr _windowHandle;
     private readonly TrayIcon _trayIcon;
+    private readonly Dictionary<UIElement, (float FromScale, int DurationMs)> _panelMotion = new();
+    private readonly Dictionary<SessionRowViewModel, UIElement> _rowContainers = new();
     private readonly Microsoft.UI.Dispatching.DispatcherQueueTimer _positionSaveTimer;
     private CancellationTokenSource? _resizeAnimation;
     private CancellationTokenSource? _contentTransition;
@@ -95,6 +97,15 @@ public sealed partial class MainWindow : Window
         _appWindow.Changed += AppWindow_Changed;
         _appWindow.Closing += AppWindow_Closing;
         Closed += MainWindow_Closed;
+
+        // Drive every panel entrance from its own visibility change. Waiting for
+        // the change instead of pre-empting it means the first rendered frame is
+        // already at its start value, so nothing flashes into place.
+        RegisterPanelMotion(CollapsedPanel, fromScale: 0.985f, durationMs: 240);
+        RegisterPanelMotion(ExpandedPanel, fromScale: 0.975f, durationMs: 300);
+        RegisterPanelMotion(ListPanel, fromScale: 0.995f, durationMs: 280);
+        RegisterPanelMotion(DetailPanel, fromScale: 0.99f, durationMs: 300);
+        ApplyInitialPanelVisibility();
 
         UpdateFilterVisuals();
         _viewModel.Start();
@@ -222,22 +233,112 @@ public sealed partial class MainWindow : Window
         _contentTransition?.Cancel();
         _contentTransition?.Dispose();
         _contentTransition = new CancellationTokenSource();
-        var cancellationToken = _contentTransition.Token;
 
-        var expanded = _viewModel.IsExpanded;
-        var panel = expanded ? ExpandedPanel : CollapsedPanel;
-        panel.Opacity = 0;
-        var resizeTask = AnimateWindowSizeAsync(expanded);
-        await Task.WhenAll(
-            resizeTask,
-            AnimateElementAsync(
-                panel,
-                entering: true,
-                fromX: expanded ? 3 : 2,
-                durationMs: expanded ? 240 : 210));
-        if (cancellationToken.IsCancellationRequested)
+        // The panel itself animates in from its own visibility callback, which
+        // fires before this handler. Here we only drive the window resize so
+        // both motions share the same tick.
+        await AnimateWindowSizeAsync(_viewModel.IsExpanded);
+    }
+
+    /// <summary>
+    /// Plays the entrance for a panel the moment it becomes visible. Doing it
+    /// from the visibility change (rather than after the fact) guarantees the
+    /// very first frame is already at opacity 0, so nothing flashes.
+    /// </summary>
+    private void Panel_VisibilityChanged(DependencyObject sender, DependencyProperty property)
+    {
+        if (sender is not Panel panel)
         {
             return;
+        }
+
+        if (panel.Visibility == Visibility.Visible)
+        {
+            var expanded = ReferenceEquals(panel, ExpandedPanel);
+            _ = HudMotion.PlayEnterAsync(
+                panel,
+                fromX: 0f,
+                fromScale: expanded ? 0.975f : 0.985f,
+                durationMs: expanded ? 300 : 240);
+
+            if (expanded)
+            {
+                PlayDetailCardEntrance();
+            }
+        }
+        else
+        {
+            HudMotion.Reset(panel);
+        }
+    }
+
+    /// <summary>
+    /// Wires a panel so its entrance animation runs on visibility changes.
+    /// </summary>
+    private void RegisterPanelMotion(UIElement panel, float fromScale, int durationMs)
+    {
+        _panelMotion[panel] = (fromScale, durationMs);
+        panel.RegisterPropertyChangedCallback(
+            UIElement.VisibilityProperty,
+            (sender, property) => PlayPanelMotion((UIElement)sender));
+    }
+
+    private void PlayPanelMotion(UIElement panel)
+    {
+        if (panel.Visibility != Visibility.Visible)
+        {
+            HudMotion.Reset(panel);
+            return;
+        }
+
+        if (!_panelMotion.TryGetValue(panel, out var motion))
+        {
+            return;
+        }
+
+        _ = HudMotion.PlayEnterAsync(
+            panel,
+            fromX: 0f,
+            fromScale: motion.FromScale,
+            durationMs: motion.DurationMs);
+
+        if (ReferenceEquals(panel, DetailPanel))
+        {
+            PlayDetailCardEntrance();
+        }
+    }
+
+    /// <summary>
+    /// The list/detail pair is bound to the view model, but the very first
+    /// layout needs the detail page collapsed explicitly.
+    /// </summary>
+    private void ApplyInitialPanelVisibility()
+    {
+        DetailPanel.Visibility = _viewModel.IsShowingDetail
+            ? Visibility.Visible
+            : Visibility.Collapsed;
+        ListPanel.Visibility = _viewModel.IsShowingDetail
+            ? Visibility.Collapsed
+            : Visibility.Visible;
+    }
+
+    /// <summary>
+    /// Detail cards spread in with a small stagger so the page assembles
+    /// instead of appearing all at once.
+    /// </summary>
+    private void PlayDetailCardEntrance()
+    {
+        if (DetailPanel.Visibility != Visibility.Visible)
+        {
+            return;
+        }
+
+        for (var index = 0; index < DetailCardStack.Children.Count; index++)
+        {
+            if (DetailCardStack.Children[index] is UIElement card)
+            {
+                HudMotion.PlayCardEntrance(card, index);
+            }
         }
     }
 
@@ -429,6 +530,11 @@ public sealed partial class MainWindow : Window
         await completion.Task;
     }
 
+    /// <summary>
+    /// List out / detail in, running both motions at once so the panel never
+    /// sits empty between the two pages (the old code faded one out fully
+    /// before fading the other in, which read as a blink).
+    /// </summary>
     private async Task OpenRowAsync(SessionRowViewModel row)
     {
         if (row.IsEditing)
@@ -436,20 +542,22 @@ public sealed partial class MainWindow : Window
             return;
         }
 
-        await AnimateElementAsync(ListPanel, entering: false, fromX: -3, durationMs: 90);
         _viewModel.SelectSession(row);
-        await AnimateElementAsync(DetailPanel, entering: true, fromX: 3, durationMs: 170);
+        ListPanel.Visibility = Visibility.Collapsed;
+        DetailPanel.Visibility = Visibility.Visible;
+
+        await HudMotion.PlayEnterAsync(DetailPanel, fromX: 28f, fromScale: 0.985f, durationMs: 320);
     }
 
     private async void CollapseButton_Click(object sender, RoutedEventArgs e)
     {
-        await AnimateElementAsync(ExpandedPanel, entering: false, fromX: 7, durationMs: 110);
+        await HudMotion.PlayExitAsync(ExpandedPanel, toX: 12f, durationMs: 180);
         _viewModel.Collapse();
     }
 
     private async void ExpandButton_Click(object sender, RoutedEventArgs e)
     {
-        await AnimateElementAsync(CollapsedPanel, entering: false, fromX: 3, durationMs: 90);
+        await HudMotion.PlayExitAsync(CollapsedPanel, toX: 8f, durationMs: 150);
         _viewModel.Expand();
     }
 
@@ -461,11 +569,60 @@ public sealed partial class MainWindow : Window
         }
     }
 
+    /// <summary>
+    /// Fires as each row container is realized. Newly inserted rows play their
+    /// staggered slide-up entrance here, which is the only point where the
+    /// container actually exists and can be animated.
+    /// </summary>
+    private void SessionList_ContainerContentChanging(
+        ListViewBase sender,
+        ContainerContentChangingEventArgs args)
+    {
+        if (args.InRecycleQueue)
+        {
+            if (args.Item is SessionRowViewModel recycled)
+            {
+                _rowContainers.Remove(recycled);
+            }
+            return;
+        }
+
+        if (args.Item is not SessionRowViewModel row)
+        {
+            return;
+        }
+
+        _rowContainers[row] = args.ItemContainer;
+        if (row.EntrancePlayed)
+        {
+            return;
+        }
+
+        row.MarkEntrancePlayed();
+
+        // The container has no layout size on this pass, so defer the entrance
+        // until it does; otherwise the stagger resolves against a zero size.
+        args.RegisterUpdateCallback(static (_, updateArgs) =>
+        {
+            if (updateArgs.Item is SessionRowViewModel updatedRow
+                && updateArgs.ItemContainer is UIElement element)
+            {
+                HudMotion.PlayRowEntrance(element, updatedRow.EntranceIndex);
+            }
+        });
+    }
+
+    /// <summary>
+    /// Detail out / list in. Both panels swap on the same tick and the incoming
+    /// page pushes from the opposite edge, matching the iOS navigation feel.
+    /// </summary>
     private async void DetailBackButton_Click(object sender, RoutedEventArgs e)
     {
-        await AnimateElementAsync(DetailPanel, entering: false, fromX: 3, durationMs: 90);
         _viewModel.ShowList();
-        await AnimateElementAsync(ListPanel, entering: true, fromX: -3, durationMs: 150);
+        DetailPanel.Visibility = Visibility.Collapsed;
+        ListPanel.Visibility = Visibility.Visible;
+
+        await HudMotion.PlayEnterAsync(ListPanel, fromX: -24f, fromScale: 0.99f, durationMs: 300);
     }
 
     private async void StatusFilter_Click(object sender, RoutedEventArgs e)
@@ -476,13 +633,9 @@ public sealed partial class MainWindow : Window
             return;
         }
 
-        if (!_viewModel.IsShowingDetail)
-        {
-            await AnimateElementAsync(ListPanel, entering: false, fromX: -2, durationMs: 65);
-        }
-        _viewModel.SetStatusFilter(filter);
-        UpdateFilterVisuals();
-        await AnimateElementAsync(ListPanel, entering: true, fromX: 3, durationMs: 145);
+        await ApplyFilterChangeAsync(
+            () => _viewModel.SetStatusFilter(filter),
+            sender as UIElement);
     }
 
     private async void ProviderFilter_Click(object sender, RoutedEventArgs e)
@@ -493,13 +646,25 @@ public sealed partial class MainWindow : Window
             return;
         }
 
-        if (!_viewModel.IsShowingDetail)
-        {
-            await AnimateElementAsync(ListPanel, entering: false, fromX: -2, durationMs: 65);
-        }
-        _viewModel.SetProviderFilter(filter);
+        await ApplyFilterChangeAsync(
+            () => _viewModel.SetProviderFilter(filter),
+            sender as UIElement);
+    }
+
+    /// <summary>
+    /// Filter changes used to fade the whole list out and back in, which made
+    /// every click feel like a refresh. The list now updates in place and only
+    /// the tapped chip animates.
+    /// </summary>
+    private Task ApplyFilterChangeAsync(Action apply, UIElement? chip)
+    {
+        apply();
         UpdateFilterVisuals();
-        await AnimateElementAsync(ListPanel, entering: true, fromX: 3, durationMs: 145);
+        if (chip is not null)
+        {
+            HudMotion.PlayScalePop(chip);
+        }
+        return Task.CompletedTask;
     }
 
     private async void RefreshButton_Click(object sender, RoutedEventArgs e)
@@ -631,7 +796,9 @@ public sealed partial class MainWindow : Window
         UpdateFilterVisuals();
         if (_viewModel.IsShowingDetail)
         {
-            await AnimateElementAsync(DetailPanel, entering: true, fromX: 10, durationMs: 180);
+            ListPanel.Visibility = Visibility.Collapsed;
+            DetailPanel.Visibility = Visibility.Visible;
+            await HudMotion.PlayEnterAsync(DetailPanel, fromX: 28f, fromScale: 0.985f, durationMs: 320);
         }
     }
 
@@ -834,8 +1001,8 @@ public sealed partial class MainWindow : Window
         if (_usesSystemBackdrop && !highContrast)
         {
             var backdropColor = RootBorder.ActualTheme == ElementTheme.Dark
-                ? global::Windows.UI.Color.FromArgb(204, 16, 23, 34)
-                : global::Windows.UI.Color.FromArgb(210, 242, 245, 249);
+                ? global::Windows.UI.Color.FromArgb(214, 5, 13, 30)
+                : global::Windows.UI.Color.FromArgb(180, 242, 245, 249);
             RootBorder.Background = new SolidColorBrush(backdropColor);
             return;
         }
@@ -843,7 +1010,7 @@ public sealed partial class MainWindow : Window
         var color = highContrast
             ? new UISettings().GetColorValue(UIColorType.Background)
             : RootBorder.ActualTheme == ElementTheme.Dark
-                ? global::Windows.UI.Color.FromArgb(255, 16, 23, 34)
+                ? global::Windows.UI.Color.FromArgb(255, 5, 13, 30)
                 : global::Windows.UI.Color.FromArgb(255, 242, 245, 249);
         RootBorder.Background = new SolidColorBrush(color);
     }
@@ -890,12 +1057,11 @@ public sealed partial class MainWindow : Window
         SetFilterStyle(StatusCompletedButton, StatusFilter.Completed, selectedStyle, normalStyle);
         SetFilterStyle(StatusFailedButton, StatusFilter.Failed, selectedStyle, normalStyle);
 
-        var selectedProviderStyle = ResourceStyle("HudFilterSelectedButtonStyle");
-        SetFilterStyle(ProviderAllButton, ProviderFilter.All, selectedProviderStyle, normalStyle);
-        SetFilterStyle(ProviderCodexButton, ProviderFilter.Codex, selectedProviderStyle, normalStyle);
-        SetFilterStyle(ProviderClaudeButton, ProviderFilter.Claude, selectedProviderStyle, normalStyle);
-        SetFilterStyle(ProviderPiButton, ProviderFilter.Pi, selectedProviderStyle, normalStyle);
-        SetFilterStyle(ProviderOpenCodeButton, ProviderFilter.OpenCode, selectedProviderStyle, normalStyle);
+        SetProviderFilterStyle(ProviderAllButton, ProviderFilter.All, normalStyle);
+        SetProviderFilterStyle(ProviderCodexButton, ProviderFilter.Codex, normalStyle);
+        SetProviderFilterStyle(ProviderClaudeButton, ProviderFilter.Claude, normalStyle);
+        SetProviderFilterStyle(ProviderPiButton, ProviderFilter.Pi, normalStyle);
+        SetProviderFilterStyle(ProviderOpenCodeButton, ProviderFilter.OpenCode, normalStyle);
 
         StatusAllCount.Text = _viewModel.StatusCount(StatusFilter.All);
         StatusWorkingCount.Text = _viewModel.StatusCount(StatusFilter.Working);
@@ -924,6 +1090,50 @@ public sealed partial class MainWindow : Window
             _ => false
         };
         button.Style = selected ? selectedStyle : normalStyle;
+    }
+
+    private void SetProviderFilterStyle(Button button, ProviderFilter provider, Style normalStyle)
+    {
+        var selected = provider == _viewModel.ProviderFilter;
+
+        // Never fall back to `Style = null`: that reverts the button to the
+        // stock WinUI template (square corners, default border), which is what
+        // made the selected chip render as a plain block.
+        button.Style = normalStyle;
+
+        if (!selected)
+        {
+            button.ClearValue(Control.BackgroundProperty);
+            button.ClearValue(Control.BorderBrushProperty);
+            button.ClearValue(Control.BorderThicknessProperty);
+            return;
+        }
+
+        var tintBrushKey = provider switch
+        {
+            ProviderFilter.Codex => "HudCodexTintBrush",
+            ProviderFilter.Claude => "HudClaudeTintBrush",
+            ProviderFilter.Pi => "HudPiTintBrush",
+            ProviderFilter.OpenCode => "HudOpenCodeTintBrush",
+            _ => "HudNeutralTintBrush"
+        };
+        var brushKey = provider switch
+        {
+            ProviderFilter.Codex => "HudCodexBrush",
+            ProviderFilter.Claude => "HudClaudeBrush",
+            ProviderFilter.Pi => "HudPiBrush",
+            ProviderFilter.OpenCode => "HudOpenCodeBrush",
+            _ => "HudTextSecondaryBrush"
+        };
+        if (Microsoft.UI.Xaml.Application.Current.Resources.TryGetValue(tintBrushKey, out var tintValue)
+            && tintValue is SolidColorBrush tintBrush
+            && Microsoft.UI.Xaml.Application.Current.Resources.TryGetValue(brushKey, out var brushValue)
+            && brushValue is SolidColorBrush brush)
+        {
+            button.Background = tintBrush;
+            button.BorderBrush = brush;
+            button.BorderThickness = new Thickness(1);
+        }
     }
 
     private static Style ResourceStyle(string key) =>
@@ -1081,12 +1291,12 @@ public sealed partial class MainWindow : Window
         ShowHud();
         if (_viewModel.IsExpanded)
         {
-            await AnimateElementAsync(ExpandedPanel, entering: false, fromX: 3, durationMs: 90);
+            await HudMotion.PlayExitAsync(ExpandedPanel, toX: 12f, durationMs: 180);
             _viewModel.Collapse();
         }
         else
         {
-            await AnimateElementAsync(CollapsedPanel, entering: false, fromX: 3, durationMs: 90);
+            await HudMotion.PlayExitAsync(CollapsedPanel, toX: 8f, durationMs: 150);
             _viewModel.Expand();
         }
     }

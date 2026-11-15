@@ -15,6 +15,8 @@ Windows/.dotnet/
 Windows/**/bin/
 Windows/**/obj/
 Windows/artifacts/
+Windows/ui-build/
+Windows/*.log
 *.user
 *.suo
 

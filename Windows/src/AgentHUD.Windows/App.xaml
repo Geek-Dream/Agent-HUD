@@ -15,15 +15,15 @@
                     <SolidColorBrush x:Key="HudRaisedBrush" Color="#FFFFFFFF" />
                     <SolidColorBrush x:Key="HudControlFillBrush" Color="#14101826" />
                     <SolidColorBrush x:Key="HudControlHoverBrush" Color="#241D2938" />
-                    <SolidColorBrush x:Key="HudBorderBrush" Color="#38101826" />
-                    <SolidColorBrush x:Key="HudBorderStrongBrush" Color="#4A101826" />
-                    <SolidColorBrush x:Key="HudDividerBrush" Color="#30101826" />
+                    <SolidColorBrush x:Key="HudBorderBrush" Color="#1A101826" />
+                    <SolidColorBrush x:Key="HudBorderStrongBrush" Color="#2A101826" />
+                    <SolidColorBrush x:Key="HudDividerBrush" Color="#1A101826" />
                     <SolidColorBrush x:Key="HudTextPrimaryBrush" Color="#09111E" />
-                    <SolidColorBrush x:Key="HudTextSecondaryBrush" Color="#354052" />
-                    <SolidColorBrush x:Key="HudTextTertiaryBrush" Color="#5A6576" />
+                    <SolidColorBrush x:Key="HudTextSecondaryBrush" Color="#4A5568" />
+                    <SolidColorBrush x:Key="HudTextTertiaryBrush" Color="#6B7280" />
                     <SolidColorBrush x:Key="HudSelectionBrush" Color="#E3EDFC" />
                     <SolidColorBrush x:Key="HudSelectionBorderBrush" Color="#2F78D8" />
-                    <SolidColorBrush x:Key="HudShadowBrush" Color="#36111A2B" />
+                    <SolidColorBrush x:Key="HudShadowBrush" Color="#24111A2B" />
                     <SolidColorBrush x:Key="HudPrivacyBrush" Color="#FFF3CF" />
                     <SolidColorBrush x:Key="HudWorkingBrush" Color="#0053C7" />
                     <SolidColorBrush x:Key="HudWaitingBrush" Color="#8A4E00" />
@@ -38,38 +38,60 @@
                     <SolidColorBrush x:Key="HudWaitingTintBrush" Color="#278A4E00" />
                     <SolidColorBrush x:Key="HudCompletedTintBrush" Color="#26007347" />
                     <SolidColorBrush x:Key="HudFailedTintBrush" Color="#28B80F2B" />
-                    <SolidColorBrush x:Key="HudNeutralTintBrush" Color="#18111826" />
+                    <SolidColorBrush x:Key="HudNeutralTintBrush" Color="#10111826" />
+                    <SolidColorBrush x:Key="HudCodexTintBrush" Color="#1A0053C7" />
+                    <SolidColorBrush x:Key="HudClaudeTintBrush" Color="#1AA83A06" />
+                    <SolidColorBrush x:Key="HudPiTintBrush" Color="#1A176612" />
+                    <SolidColorBrush x:Key="HudOpenCodeTintBrush" Color="#1A00776B" />
+                    <SolidColorBrush x:Key="HudCardEdgeBrush" Color="#335B6B7A" />
+                    <SolidColorBrush x:Key="HudCodexEdgeBrush" Color="#330053C7" />
+                    <SolidColorBrush x:Key="HudClaudeEdgeBrush" Color="#33A83A06" />
+                    <SolidColorBrush x:Key="HudPiEdgeBrush" Color="#33176612" />
+                    <SolidColorBrush x:Key="HudOpenCodeEdgeBrush" Color="#3300776B" />
                 </ResourceDictionary>
-                <ResourceDictionary x:Key="Default">
-                    <SolidColorBrush x:Key="HudWindowBrush" Color="#101722" />
-                    <SolidColorBrush x:Key="HudSurfaceBrush" Color="#E619222F" />
-                    <SolidColorBrush x:Key="HudRaisedBrush" Color="#F21D2735" />
-                    <SolidColorBrush x:Key="HudControlFillBrush" Color="#24FFFFFF" />
-                    <SolidColorBrush x:Key="HudControlHoverBrush" Color="#38FFFFFF" />
-                    <SolidColorBrush x:Key="HudBorderBrush" Color="#42FFFFFF" />
-                    <SolidColorBrush x:Key="HudBorderStrongBrush" Color="#50FFFFFF" />
-                    <SolidColorBrush x:Key="HudDividerBrush" Color="#18FFFFFF" />
-                    <SolidColorBrush x:Key="HudTextPrimaryBrush" Color="#FFFFFF" />
-                    <SolidColorBrush x:Key="HudTextSecondaryBrush" Color="#D6DEE9" />
-                    <SolidColorBrush x:Key="HudTextTertiaryBrush" Color="#A9B5C5" />
-                    <SolidColorBrush x:Key="HudSelectionBrush" Color="#33465C" />
-                    <SolidColorBrush x:Key="HudSelectionBorderBrush" Color="#6B9FEF" />
+                                <ResourceDictionary x:Key="Default">
+                    <SolidColorBrush x:Key="HudWindowBrush" Color="#FF06101F" />
+                    <SolidColorBrush x:Key="HudSurfaceBrush" Color="#FF071120" />
+                    <SolidColorBrush x:Key="HudRaisedBrush" Color="#FF0B1526" />
+                    <SolidColorBrush x:Key="HudCardBgBrush" Color="#FF0A1424" />
+                    <SolidColorBrush x:Key="HudCardBorderBrush" Color="#FF1B2B49" />
+                    <SolidColorBrush x:Key="HudAccentBrush" Color="#FF3D8BFF" />
+                    <SolidColorBrush x:Key="HudOnlineBrush" Color="#FF3BF59B" />
+                    <SolidColorBrush x:Key="HudControlFillBrush" Color="#14FFFFFF" />
+                    <SolidColorBrush x:Key="HudControlHoverBrush" Color="#1FFFFFFF" />
+                    <SolidColorBrush x:Key="HudBorderBrush" Color="#FF1E2E4C" />
+                    <SolidColorBrush x:Key="HudBorderStrongBrush" Color="#8C3F6FE0" />
+                    <SolidColorBrush x:Key="HudDividerBrush" Color="#14FFFFFF" />
+                    <SolidColorBrush x:Key="HudTextPrimaryBrush" Color="#FFFFFFFF" />
+                    <SolidColorBrush x:Key="HudTextSecondaryBrush" Color="#FFA6B7D2" />
+                    <SolidColorBrush x:Key="HudTextTertiaryBrush" Color="#FF66799A" />
+                    <SolidColorBrush x:Key="HudSelectionBrush" Color="#33255FCB" />
+                    <SolidColorBrush x:Key="HudSelectionBorderBrush" Color="#FF67A8FF" />
                     <SolidColorBrush x:Key="HudShadowBrush" Color="#99000000" />
                     <SolidColorBrush x:Key="HudPrivacyBrush" Color="#44351B" />
-                    <SolidColorBrush x:Key="HudWorkingBrush" Color="#55ADFF" />
-                    <SolidColorBrush x:Key="HudWaitingBrush" Color="#FFCA4F" />
-                    <SolidColorBrush x:Key="HudCompletedBrush" Color="#45E594" />
-                    <SolidColorBrush x:Key="HudFailedBrush" Color="#FF667A" />
-                    <SolidColorBrush x:Key="HudCodexBrush" Color="#68B2FF" />
-                    <SolidColorBrush x:Key="HudClaudeBrush" Color="#FF9A62" />
-                    <SolidColorBrush x:Key="HudPiBrush" Color="#8BE879" />
-                    <SolidColorBrush x:Key="HudOpenCodeBrush" Color="#4FD1C5" />
-                    <SolidColorBrush x:Key="HudImportantBrush" Color="#FFD45E" />
-                    <SolidColorBrush x:Key="HudWorkingTintBrush" Color="#3055A7FF" />
-                    <SolidColorBrush x:Key="HudWaitingTintBrush" Color="#2EFFC857" />
-                    <SolidColorBrush x:Key="HudCompletedTintBrush" Color="#2B43E58D" />
-                    <SolidColorBrush x:Key="HudFailedTintBrush" Color="#2EFF667A" />
-                    <SolidColorBrush x:Key="HudNeutralTintBrush" Color="#1FFFFFFF" />
+                    <SolidColorBrush x:Key="HudWorkingBrush" Color="#FF5BB3FF" />
+                    <SolidColorBrush x:Key="HudWaitingBrush" Color="#FFF5C542" />
+                    <SolidColorBrush x:Key="HudCompletedBrush" Color="#FF3BF59B" />
+                    <SolidColorBrush x:Key="HudFailedBrush" Color="#FFFF6B7D" />
+                    <SolidColorBrush x:Key="HudCodexBrush" Color="#FF7CB6FF" />
+                    <SolidColorBrush x:Key="HudClaudeBrush" Color="#FFE88A52" />
+                    <SolidColorBrush x:Key="HudPiBrush" Color="#FF8FE87F" />
+                    <SolidColorBrush x:Key="HudOpenCodeBrush" Color="#FF5FD8C8" />
+                    <SolidColorBrush x:Key="HudImportantBrush" Color="#FFF7C948" />
+                    <SolidColorBrush x:Key="HudWorkingTintBrush" Color="#2E5BB3FF" />
+                    <SolidColorBrush x:Key="HudWaitingTintBrush" Color="#2EF5C542" />
+                    <SolidColorBrush x:Key="HudCompletedTintBrush" Color="#2E3BF59B" />
+                    <SolidColorBrush x:Key="HudFailedTintBrush" Color="#2EFF6B7D" />
+                    <SolidColorBrush x:Key="HudNeutralTintBrush" Color="#1AFFFFFF" />
+                    <SolidColorBrush x:Key="HudCodexTintBrush" Color="#2E7CB6FF" />
+                    <SolidColorBrush x:Key="HudClaudeTintBrush" Color="#2EE88A52" />
+                    <SolidColorBrush x:Key="HudPiTintBrush" Color="#2E8FE87F" />
+                    <SolidColorBrush x:Key="HudOpenCodeTintBrush" Color="#2E5FD8C8" />
+                    <SolidColorBrush x:Key="HudCardEdgeBrush" Color="#4A5FD8C8" />
+                    <SolidColorBrush x:Key="HudCodexEdgeBrush" Color="#4A7CB6FF" />
+                    <SolidColorBrush x:Key="HudClaudeEdgeBrush" Color="#4AE88A52" />
+                    <SolidColorBrush x:Key="HudPiEdgeBrush" Color="#4A8FE87F" />
+                    <SolidColorBrush x:Key="HudOpenCodeEdgeBrush" Color="#4A5FD8C8" />
                 </ResourceDictionary>
                 <ResourceDictionary x:Key="HighContrast">
                     <SolidColorBrush x:Key="HudWindowBrush" Color="#000000" />
@@ -101,14 +123,25 @@
                     <SolidColorBrush x:Key="HudCompletedTintBrush" Color="#FF0C301D" />
                     <SolidColorBrush x:Key="HudFailedTintBrush" Color="#FF3B1219" />
                     <SolidColorBrush x:Key="HudNeutralTintBrush" Color="#FF202020" />
+                    <SolidColorBrush x:Key="HudCodexTintBrush" Color="#FF10283F" />
+                    <SolidColorBrush x:Key="HudClaudeTintBrush" Color="#FF3B1200" />
+                    <SolidColorBrush x:Key="HudPiTintBrush" Color="#FF0C2A08" />
+                    <SolidColorBrush x:Key="HudOpenCodeTintBrush" Color="#FF002A26" />
+                    <SolidColorBrush x:Key="HudCardEdgeBrush" Color="#FFB8B8B8" />
+                    <SolidColorBrush x:Key="HudCodexEdgeBrush" Color="#FF66B7FF" />
+                    <SolidColorBrush x:Key="HudClaudeEdgeBrush" Color="#FFFFA36D" />
+                    <SolidColorBrush x:Key="HudPiEdgeBrush" Color="#FF98F08A" />
+                    <SolidColorBrush x:Key="HudOpenCodeEdgeBrush" Color="#FF70D7C8" />
                 </ResourceDictionary>
             </ResourceDictionary.ThemeDictionaries>
 
-            <CornerRadius x:Key="HudPanelRadius">14</CornerRadius>
-            <CornerRadius x:Key="HudHeroRadius">12</CornerRadius>
-            <CornerRadius x:Key="HudCardRadius">10</CornerRadius>
-            <CornerRadius x:Key="HudControlRadius">7</CornerRadius>
-            <CornerRadius x:Key="HudMicroRadius">5</CornerRadius>
+            <CornerRadius x:Key="HudPanelRadius">18</CornerRadius>
+            <CornerRadius x:Key="HudHeroRadius">13</CornerRadius>
+            <CornerRadius x:Key="HudCardRadius">11</CornerRadius>
+            <CornerRadius x:Key="HudTileRadius">14</CornerRadius>
+            <CornerRadius x:Key="HudControlRadius">9</CornerRadius>
+            <CornerRadius x:Key="HudMicroRadius">7</CornerRadius>
+            <CornerRadius x:Key="HudPillRadius">15</CornerRadius>
 
             <x:Double x:Key="HudSpacingXXS">2</x:Double>
             <x:Double x:Key="HudSpacingXS">4</x:Double>
@@ -119,9 +152,9 @@
             <x:Double x:Key="HudSpacingXXL">24</x:Double>
 
             <x:Double x:Key="HudFontSizeDisplay">20</x:Double>
-            <x:Double x:Key="HudFontSizeTitle">13</x:Double>
+            <x:Double x:Key="HudFontSizeTitle">16</x:Double>
             <x:Double x:Key="HudFontSizeBody">12</x:Double>
-            <x:Double x:Key="HudFontSizeLabel">11</x:Double>
+            <x:Double x:Key="HudFontSizeLabel">11.5</x:Double>
             <x:Double x:Key="HudFontSizeCaption">10.5</x:Double>
             <x:Double x:Key="HudFontSizeMicro">9.5</x:Double>
             <x:Double x:Key="HudFontSizeAgent">8.5</x:Double>
@@ -130,7 +163,6 @@
             <Duration x:Key="HudDurationExit">0:0:0.14</Duration>
             <Duration x:Key="HudDurationState">0:0:0.30</Duration>
             <Duration x:Key="HudDurationPage">0:0:0.18</Duration>
-
 
             <Style x:Key="HudIconButtonStyle" TargetType="Button">
                 <Setter Property="Width" Value="28" />
@@ -144,21 +176,103 @@
                 <Setter Property="FontFamily" Value="Segoe Fluent Icons" />
                 <Setter Property="FontSize" Value="12" />
                 <Setter Property="Foreground" Value="{ThemeResource HudTextSecondaryBrush}" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <ContentPresenter
+                                x:Name="ContentPresenter"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                Content="{TemplateBinding Content}"
+                                ContentTransitions="{TemplateBinding ContentTransitions}"
+                                CornerRadius="{TemplateBinding CornerRadius}"
+                                Padding="{TemplateBinding Padding}"
+                                AutomationProperties.AccessibilityView="Raw">
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup x:Name="CommonStates">
+                                        <VisualState x:Name="Normal">
+                                            <Storyboard>
+                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Background">
+                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="Transparent" />
+                                                </ObjectAnimationUsingKeyFrames>
+                                            </Storyboard>
+                                        </VisualState>
+                                        <VisualState x:Name="PointerOver">
+                                            <Storyboard>
+                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Background">
+                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource HudControlHoverBrush}" />
+                                                </ObjectAnimationUsingKeyFrames>
+                                            </Storyboard>
+                                        </VisualState>
+                                        <VisualState x:Name="Pressed">
+                                            <Storyboard>
+                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Background">
+                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource HudControlFillBrush}" />
+                                                </ObjectAnimationUsingKeyFrames>
+                                            </Storyboard>
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                            </ContentPresenter>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
             </Style>
 
             <Style x:Key="HudFilterButtonStyle" TargetType="Button">
-                <Setter Property="Height" Value="32" />
-                <Setter Property="Padding" Value="8,0" />
+                <Setter Property="Height" Value="30" />
+                <Setter Property="Padding" Value="9,0" />
                 <Setter Property="MinWidth" Value="0" />
                 <Setter Property="MinHeight" Value="0" />
                 <Setter Property="HorizontalContentAlignment" Value="Center" />
                 <Setter Property="VerticalContentAlignment" Value="Center" />
-                <Setter Property="CornerRadius" Value="8" />
+                <Setter Property="CornerRadius" Value="9" />
                 <Setter Property="Background" Value="Transparent" />
-                <Setter Property="BorderThickness" Value="0" />
-                <Setter Property="FontSize" Value="11.5" />
+                <Setter Property="BorderThickness" Value="1" />
+                <Setter Property="FontSize" Value="12.5" />
                 <Setter Property="FontWeight" Value="SemiBold" />
                 <Setter Property="Foreground" Value="{ThemeResource HudTextSecondaryBrush}" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <ContentPresenter
+                                x:Name="ContentPresenter"
+                                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                Content="{TemplateBinding Content}"
+                                ContentTemplate="{TemplateBinding ContentTemplate}"
+                                ContentTransitions="{TemplateBinding ContentTransitions}"
+                                CornerRadius="{TemplateBinding CornerRadius}"
+                                Padding="{TemplateBinding Padding}">
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup x:Name="CommonStates">
+                                        <VisualState x:Name="Normal" />
+                                        <VisualState x:Name="PointerOver">
+                                            <Storyboard>
+                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Background">
+                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource HudControlHoverBrush}" />
+                                                </ObjectAnimationUsingKeyFrames>
+                                            </Storyboard>
+                                        </VisualState>
+                                        <VisualState x:Name="Pressed">
+                                            <Storyboard>
+                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Background">
+                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource HudControlFillBrush}" />
+                                                </ObjectAnimationUsingKeyFrames>
+                                            </Storyboard>
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                            </ContentPresenter>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
             </Style>
 
             <Style
@@ -172,8 +286,8 @@
             </Style>
 
             <Style x:Key="HudTinyButtonStyle" TargetType="Button">
-                <Setter Property="Width" Value="23" />
-                <Setter Property="Height" Value="23" />
+                <Setter Property="Width" Value="24" />
+                <Setter Property="Height" Value="24" />
                 <Setter Property="Padding" Value="0" />
                 <Setter Property="MinWidth" Value="0" />
                 <Setter Property="MinHeight" Value="0" />
