@@ -727,8 +727,13 @@ class _HeroCard extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      HudProviderTag(provider: session.provider, size: 20),
-                      const Spacer(),
+                      Flexible(
+                        child: HudProviderTag(
+                          provider: session.provider,
+                          size: 20,
+                        ),
+                      ),
+                      const SizedBox(width: HudSpacing.md),
                       HudStatusPill(
                         status: session.status,
                         dense: true,
@@ -747,35 +752,46 @@ class _HeroCard extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 12),
-                  Wrap(
-                    spacing: 8,
-                    runSpacing: 6,
-                    crossAxisAlignment: WrapCrossAlignment.center,
-                    children: [
-                      if (session.projectName.isNotEmpty)
-                        _HeroMeta(
-                          icon: Icons.folder_outlined,
-                          text: session.projectName,
-                        ),
-                      if (session.gitBranch != null &&
-                          session.gitBranch!.isNotEmpty)
-                        _HeroMeta(
-                          icon: Icons.call_split_rounded,
-                          text: session.gitBranch!,
-                          mono: true,
-                        ),
-                      if ((session.gitChangedFiles ?? 0) > 0)
-                        _HeroMeta(
-                          icon: Icons.difference_outlined,
-                          text: '${session.gitChangedFiles} 个改动',
-                        ),
-                      if (session.isImportant)
-                        _HeroMeta(
-                          icon: Icons.star_rounded,
-                          text: '重要',
-                          color: HudColors.important,
-                        ),
-                    ],
+                  LayoutBuilder(
+                    builder: (BuildContext context, BoxConstraints box) {
+                      // Wrap 会给子项无界宽度，超长分支名会把行撑破，
+                      // 因此显式把可用宽度传给每个 meta 胶囊。
+                      final double maxWidth = box.maxWidth;
+                      return Wrap(
+                        spacing: 8,
+                        runSpacing: 6,
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        children: [
+                          if (session.projectName.isNotEmpty)
+                            _HeroMeta(
+                              icon: Icons.folder_outlined,
+                              text: session.projectName,
+                              maxWidth: maxWidth,
+                            ),
+                          if (session.gitBranch != null &&
+                              session.gitBranch!.isNotEmpty)
+                            _HeroMeta(
+                              icon: Icons.call_split_rounded,
+                              text: session.gitBranch!,
+                              mono: true,
+                              maxWidth: maxWidth,
+                            ),
+                          if ((session.gitChangedFiles ?? 0) > 0)
+                            _HeroMeta(
+                              icon: Icons.difference_outlined,
+                              text: '${session.gitChangedFiles} 个改动',
+                              maxWidth: maxWidth,
+                            ),
+                          if (session.isImportant)
+                            _HeroMeta(
+                              icon: Icons.star_rounded,
+                              text: '重要',
+                              color: HudColors.important,
+                              maxWidth: maxWidth,
+                            ),
+                        ],
+                      );
+                    },
                   ),
                 ],
               ),
@@ -793,6 +809,7 @@ class _HeroMeta extends StatelessWidget {
     required this.text,
     this.mono = false,
     this.color,
+    this.maxWidth,
   });
 
   final IconData icon;
@@ -800,30 +817,40 @@ class _HeroMeta extends StatelessWidget {
   final bool mono;
   final Color? color;
 
+  /// 单行可占用的最大宽度；超出时尾部省略而不是撑破布局。
+  final double? maxWidth;
+
   @override
   Widget build(BuildContext context) {
     final Color tint = color ?? HudColors.textTertiary;
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(
-        color: HudColors.controlFill,
-        borderRadius: BorderRadius.circular(7),
-        border: Border.all(color: HudColors.border),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 11, color: tint),
-          const SizedBox(width: 5),
-          Text(
-            text,
-            style: (mono ? HudText.mono : HudText.caption).copyWith(
-              fontSize: mono ? 10.5 : 11,
-              color: color ?? HudColors.textSecondary,
-              height: 1.2,
+    return ConstrainedBox(
+      constraints: BoxConstraints(maxWidth: maxWidth ?? double.infinity),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        decoration: BoxDecoration(
+          color: HudColors.controlFill,
+          borderRadius: BorderRadius.circular(7),
+          border: Border.all(color: HudColors.border),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, size: 11, color: tint),
+            const SizedBox(width: 5),
+            Flexible(
+              child: Text(
+                text,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: (mono ? HudText.mono : HudText.caption).copyWith(
+                  fontSize: mono ? 10.5 : 11,
+                  color: color ?? HudColors.textSecondary,
+                  height: 1.2,
+                ),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -864,17 +891,29 @@ class _PromptCardState extends State<_PromptCard> {
               onTap: () => setState(() => _expanded = !_expanded),
               child: Row(
                 children: [
-                  Text('用户原始输入', style: HudText.overline),
+                  Flexible(
+                    child: Text(
+                      '用户原始输入',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: HudText.overline,
+                    ),
+                  ),
                   if (imageCount > 0) ...[
                     const SizedBox(width: HudSpacing.sm),
                     HudCountBadge(value: '图 $imageCount'),
                   ],
                   const Spacer(),
                   if (prompt?.sentAt != null)
-                    Text(
-                      DateFormat('MM-dd HH:mm')
-                          .format(prompt!.sentAt!.toLocal()),
-                      style: HudText.caption.copyWith(fontSize: 10.5),
+                    Flexible(
+                      child: Text(
+                        DateFormat('MM-dd HH:mm')
+                            .format(prompt!.sentAt!.toLocal()),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.right,
+                        style: HudText.caption.copyWith(fontSize: 10.5),
+                      ),
                     ),
                   const SizedBox(width: 2),
                   Icon(

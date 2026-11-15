@@ -66,6 +66,36 @@ void main() {
       expect(status.privacyMode, isFalse);
       expect(status.supportsRefresh, isTrue);
 
+      step = 'device health probe';
+      expect(await api.probe(localDevice), isTrue);
+      final expiredDevice = LinkedDevice(
+        deviceId: localDevice.deviceId,
+        token: 'revoked-token',
+        instanceId: localDevice.instanceId,
+        instanceName: localDevice.instanceName,
+        fingerprint: localDevice.fingerprint,
+        addresses: [address],
+        port: port,
+      );
+      // 授权失效（401）也算「连得上」：电脑在线，只是需要重新关联。
+      expect(await api.probe(expiredDevice), isTrue);
+      final unreachableDevice = LinkedDevice(
+        deviceId: localDevice.deviceId,
+        token: localDevice.token,
+        instanceId: localDevice.instanceId,
+        instanceName: localDevice.instanceName,
+        fingerprint: localDevice.fingerprint,
+        addresses: ['127.0.0.1'],
+        port: 1,
+      );
+      expect(
+        await api.probe(
+          unreachableDevice,
+          timeout: const Duration(milliseconds: 500),
+        ),
+        isFalse,
+      );
+
       final initialResult = await api.sessions(localDevice);
       final sessionsEtag = initialResult.etag;
       expect(sessionsEtag, isNotNull);

@@ -28,6 +28,18 @@ class LinkApiException implements Exception {
   String toString() => message;
 }
 
+/// 轻量可达性探测：只回答「这台电脑现在能不能连上」，不做完整状态解析。
+///
+/// 设备列表页用它把「在线」从装饰性文案变成真实状态。
+abstract interface class DeviceHealthApi {
+  Future<bool> probe(
+    LinkedDevice device, {
+    Duration timeout = const Duration(seconds: 4),
+  });
+
+  void close();
+}
+
 abstract interface class MonitoringApi {
   Future<MonitoringStatus> status(LinkedDevice device);
   Future<SessionFetchResult> sessions(LinkedDevice device, {String? etag});
@@ -70,7 +82,7 @@ abstract interface class SessionActionsApi {
   );
 }
 
-class LinkApi implements MonitoringApi, SessionActionsApi {
+class LinkApi implements MonitoringApi, SessionActionsApi, DeviceHealthApi {
   final Map<String, HttpClient> _clients = {};
 
   /// 上次成功的地址（按 地址集合+端口+指纹 归档）。电脑会同时上报多个地址，
@@ -122,6 +134,37 @@ class LinkApi implements MonitoringApi, SessionActionsApi {
       onAttempt: onAttempt,
     );
     return LinkedDevice.fromPairing(value);
+  }
+
+  @override
+  Future<bool> probe(
+    LinkedDevice device, {
+    Duration timeout = const Duration(seconds: 4),
+  }) async {
+    try {
+      await _tryAddresses(
+        device.addresses,
+        device.port,
+        '/v1/status',
+        device.fingerprint,
+        (client, uri) async {
+          final request = await client.getUrl(uri);
+          request.headers.set(
+            HttpHeaders.authorizationHeader,
+            'Bearer ${device.authorization}',
+          );
+          return _readResponse(request);
+        },
+        timeout: timeout,
+      );
+      return true;
+    } on LinkApiException catch (exception) {
+      // 401 说明电脑在线、只是授权失效，仍然算「连得上」，让用户进会话页
+      // 看到明确的「请重新关联」，而不是被误判成电脑关机。
+      return exception.statusCode == 401;
+    } catch (_) {
+      return false;
+    }
   }
 
   @override

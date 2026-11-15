@@ -83,11 +83,15 @@ class HudProviderTag extends StatelessWidget {
       children: [
         HudProviderGlyph(provider: provider, size: size),
         const SizedBox(width: HudSpacing.sm),
-        Text(
-          provider,
-          style: HudText.caption.copyWith(
-            color: color,
-            fontWeight: FontWeight.w600,
+        Flexible(
+          child: Text(
+            provider,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: HudText.caption.copyWith(
+              color: color,
+              fontWeight: FontWeight.w600,
+            ),
           ),
         ),
       ],

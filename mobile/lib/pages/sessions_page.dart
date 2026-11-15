@@ -1219,11 +1219,15 @@ class _Footer extends StatelessWidget {
             color: HudColors.textTertiary,
           ),
           const SizedBox(width: HudSpacing.sm),
-          Text(
-            supportsActions ? '局域网直连 · 可操作' : '只读监控',
-            style: HudText.caption.copyWith(fontSize: 11),
+          Flexible(
+            child: Text(
+              supportsActions ? '局域网直连 · 可操作' : '只读监控',
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: HudText.caption.copyWith(fontSize: 11),
+            ),
           ),
-          const Spacer(),
+          const SizedBox(width: HudSpacing.sm),
           AnimatedSwitcher(
             duration: HudMotion.fast,
             layoutBuilder: (current, previous) => Stack(

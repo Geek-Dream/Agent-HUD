@@ -1730,3 +1730,66 @@ if (response.statusCode < 200 || response.statusCode >= 300) {
 
 - 手机真机/模拟器上的投递状态展示与错误文案。
 - Windows 端零改动，不声称验证。
+
+## 手机端小屏 / 大字号布局与真实在线态（2026-11-15）
+
+### 用户需求（原话）
+> 她好了提交代码了，现在你可以优化手机端了，就是基于mac的手机端，目前有些问题需要优化，我后天有模拟器
+
+### 结论先说
+模拟器不用等到后天：本机已有 `emulator-5554`（1080×2400 / 420dpi，Android 16 API 36），
+本轮全部实机核验都在它上面完成。
+
+### 修掉的真实缺陷（每条都有修复前后的溢出数字或实机证据）
+
+| 位置 | 修复前实测 | 处理 |
+|---|---|---|
+| `session_detail_page.dart` `_HeroMeta` | 超长 git 分支名撑破胶囊行：320 宽默认字号溢出 246px、360 → 206px、412 → 154px；1.3 倍字号 → 382/342/290px | `Wrap` 外套 `LayoutBuilder`，把可用宽度传给每个胶囊；文字 `maxLines: 1` + 省略号 |
+| 同文件 `_HeroCard` 顶部行 | provider 标签与状态胶囊挤在一起 | provider 标签改 `Flexible` |
+| 同文件 `_PromptCard` 标题行 | 320 宽 @1.6 溢出 30–38px | 两侧文字改 `Flexible` + 省略号 |
+| `hud_chips.dart` `HudProviderTag` | 320 宽 @1.6 溢出 38px | 文字改 `Flexible` + 省略号 |
+| `sessions_page.dart` `_Footer` | 320@1.3 溢出 65px、360@1.3 25px、@1.6 → 141/101/49px | 左侧文案改 `Flexible` + 省略号 |
+| 会话详情不可发送态 | 320@1.6 溢出 37px | 随上述改动消失 |
+| `devices_page.dart` 在线状态 | 恒亮绿点 + 固定「在线」文案，电脑关机也照样显示在线 | 改为 15s 周期真实探测：检测中 / 在线 / 连不上 |
+
+`link_api.dart` 新增 `DeviceHealthApi.probe()`：打 `/v1/status`、默认 4s 超时，
+**401 视为在线**（授权失效 ≠ 电脑关机），只有连不上才算离线。
+`devices_page.dart` 顺带修掉 `addresses` 为空时 `first` 崩溃（改为显示「未记录地址」）。
+
+`pairing_page.dart` 删除从未被调用的截图死代码（`_captureScreenshot`、`_deleteCapturedFile`、
+`_capturedPath`、`_scannerKey`、`RepaintBoundary` 及其 4 个 import），`RepaintBoundary` 只服务该截图。
+之后 `path_provider` 在 `mobile/` 已无任何引用，从 `pubspec.yaml` 移除。
+
+### 新增回归测试
+
+- `mobile/test/layout_test.dart`（新文件，56 条 + 2 条在线态）：3 尺寸（320×568 / 360×640 / 412×915）
+  × 3 字号（1.0 / 1.3 / 1.6）× 6 页面（会话列表 / 详情含超长分支名 / 详情不可发送 / 待办 / 设备列表 / 配对页）。
+  断言方式：hook `FlutterError.onError`，渲染期间出现含 `overflowed` 的错误即失败。
+  必须 `FlutterSecureStorage.setMockInitialValues({})`，否则 `DeviceStore.upsert` 在测试里挂死。
+- `mobile/test/link_integration_test.dart` 新增 3 条真实链路断言：正常设备 `probe` = true、
+  被吊销 token（401）仍 = true、连不通的端口 = false。
+
+### 验证结果（真实输出）
+
+- `flutter analyze --no-fatal-infos --no-fatal-warnings` → `No issues found!`
+- `flutter test` → **68 通过 / 1 跳过**（`layout_test.dart` 58 条全过）
+- `./scripts/test-mobile-link.sh` → exit 0，真实 `LinkServer` + Dart `LinkApi` 断言通过
+- 模拟器 `emulator-5554`：
+  - 设备页 `uiautomator dump` 显示 `MacBook Pro / 连不上 / 192.168.1.24:47825`，不再是假绿点
+  - 详情页 `uiautomator dump` 卡片宽度 996px 落在 1080 屏内；`logcat` 全量 grep `RenderFlex|overflowed|EXCEPTION CAUGHT` 零命中
+  - 把系统字号临时调到 1.6 后重测详情页，依旧零溢出；测完已恢复 `font_scale 1.0`
+
+### 未验证项
+
+- 视觉观感（颜色、间距是否「好看」）无法由本模型判定，需用户亲眼看。
+- 15s 周期探测在真实断网/休眠/切后台场景下的耗电与重连表现，只在模拟器验证过。
+- 配对扫码页的相机取景未在模拟器验证（模拟器无真实相机）。
+- Windows 端零改动。
+
+### 已知但本轮未动（等用户点头）
+
+1. `mobile/lib/hidden_mode_store.dart` 是死代码（全仓库仅自引用）。
+2. 待办 `todos_page.dart` / `todo_store.dart` 纯手机本地存储，mac 端 `Sources/AgentHUD/` 无对应实现，**两端不同步**。
+3. mac 端无 OpenCode 输入适配器（`HUDViewModel.swift:114` 只注册 `CodexInputAdapter()`），
+   OpenCode 会话在手机端无法发消息（`unsupported`）。
+4. Windows Build CI 历史失败（`Test core`），本机无 dotnet，无法复现。

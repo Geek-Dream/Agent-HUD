@@ -1,14 +1,20 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../device_store.dart';
+import '../link_api.dart';
 import '../models.dart';
 import '../theme.dart';
 import 'pairing_page.dart';
 import 'sessions_page.dart';
 
 class DevicesPage extends StatelessWidget {
-  const DevicesPage({super.key});
+  const DevicesPage({super.key, this.healthApi});
+
+  /// 测试注入用：设备卡片的可达性探测实现。
+  final DeviceHealthApi? healthApi;
 
   @override
   Widget build(BuildContext context) {
@@ -75,7 +81,10 @@ class DevicesPage extends StatelessWidget {
                               ),
                             ),
                             for (final LinkedDevice device in store.devices)
-                              _DeviceCard(device: device),
+                              _DeviceCard(
+                                device: device,
+                                healthApi: healthApi,
+                              ),
                             const SizedBox(height: HudSpacing.lg),
                             const _DevicesHint(),
                           ],
@@ -162,17 +171,72 @@ class _DevicesHeader extends StatelessWidget {
   }
 }
 
-class _DeviceCard extends StatelessWidget {
-  const _DeviceCard({required this.device});
+/// 电脑是否在线必须是真实探测的结果。
+///
+/// 之前这里是恒亮的绿点 + 「在线」文案，电脑关机、拔网线都照样显示在线，
+/// 用户点进去才发现连不上。现在进页面先探一次，之后每 15 秒复探一次。
+class _DeviceCard extends StatefulWidget {
+  const _DeviceCard({required this.device, this.healthApi});
 
   final LinkedDevice device;
 
+  /// 测试注入用；正式运行时由本卡片自己创建 LinkApi。
+  final DeviceHealthApi? healthApi;
+
+  @override
+  State<_DeviceCard> createState() => _DeviceCardState();
+}
+
+enum _HealthState { checking, online, offline }
+
+class _DeviceCardState extends State<_DeviceCard> {
+  static const Duration _probeInterval = Duration(seconds: 15);
+
+  late final DeviceHealthApi _api;
+  late final bool _ownsApi;
+  Timer? _timer;
+  _HealthState _health = _HealthState.checking;
+
+  LinkedDevice get device => widget.device;
+
+  @override
+  void initState() {
+    super.initState();
+    _ownsApi = widget.healthApi == null;
+    _api = widget.healthApi ?? LinkApi();
+    unawaited(_probe());
+    _timer = Timer.periodic(_probeInterval, (_) => unawaited(_probe()));
+  }
+
+  @override
+  void didUpdateWidget(covariant _DeviceCard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.device.id != widget.device.id) {
+      setState(() => _health = _HealthState.checking);
+      unawaited(_probe());
+    }
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    if (_ownsApi) _api.close();
+    super.dispose();
+  }
+
+  Future<void> _probe() async {
+    final bool reachable = await _api.probe(device);
+    if (!mounted) return;
+    final _HealthState next =
+        reachable ? _HealthState.online : _HealthState.offline;
+    if (next != _health) setState(() => _health = next);
+  }
+
   @override
   Widget build(BuildContext context) {
-    final String address = formatLinkAddress(
-      device.addresses.first,
-      device.port,
-    );
+    final String address = device.addresses.isEmpty
+        ? '未记录地址'
+        : formatLinkAddress(device.addresses.first, device.port);
     return Padding(
       padding: const EdgeInsets.only(bottom: HudSpacing.md),
       child: HudEntrance(
@@ -207,15 +271,7 @@ class _DeviceCard extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(width: HudSpacing.md),
-                        const _OnlineDot(),
-                        const SizedBox(width: 6),
-                        Text(
-                          '在线',
-                          style: HudText.caption.copyWith(
-                            fontSize: 10.5,
-                            color: HudColors.completed.withValues(alpha: 0.9),
-                          ),
-                        ),
+                        _HealthBadge(state: _health),
                       ],
                     ),
                     const SizedBox(height: 6),
@@ -401,14 +457,47 @@ class _DeviceGlyph extends StatelessWidget {
   }
 }
 
-class _OnlineDot extends StatefulWidget {
-  const _OnlineDot();
+/// 真实可达性徽标：探测中 / 在线 / 离线。
+class _HealthBadge extends StatelessWidget {
+  const _HealthBadge({required this.state});
+
+  final _HealthState state;
 
   @override
-  State<_OnlineDot> createState() => _OnlineDotState();
+  Widget build(BuildContext context) {
+    final (Color color, String label) = switch (state) {
+      _HealthState.checking => (HudColors.textTertiary, '检测中'),
+      _HealthState.online => (HudColors.completed, '在线'),
+      _HealthState.offline => (HudColors.failed, '连不上'),
+    };
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        _StatusDot(color: color, pulsing: state == _HealthState.online),
+        const SizedBox(width: 6),
+        Text(
+          label,
+          style: HudText.caption.copyWith(
+            fontSize: 10.5,
+            color: color.withValues(alpha: 0.9),
+          ),
+        ),
+      ],
+    );
+  }
 }
 
-class _OnlineDotState extends State<_OnlineDot>
+class _StatusDot extends StatefulWidget {
+  const _StatusDot({required this.color, required this.pulsing});
+
+  final Color color;
+  final bool pulsing;
+
+  @override
+  State<_StatusDot> createState() => _StatusDotState();
+}
+
+class _StatusDotState extends State<_StatusDot>
     with SingleTickerProviderStateMixin {
   late final AnimationController _pulse;
 
@@ -418,7 +507,21 @@ class _OnlineDotState extends State<_OnlineDot>
     _pulse = AnimationController(
       vsync: this,
       duration: HudMotion.pulse,
-    )..repeat();
+    );
+    if (widget.pulsing) _pulse.repeat();
+  }
+
+  @override
+  void didUpdateWidget(covariant _StatusDot oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.pulsing == oldWidget.pulsing) return;
+    if (widget.pulsing) {
+      _pulse.repeat();
+    } else {
+      _pulse
+        ..stop()
+        ..value = 0;
+    }
   }
 
   @override
@@ -429,6 +532,13 @@ class _OnlineDotState extends State<_OnlineDot>
 
   @override
   Widget build(BuildContext context) {
+    if (!widget.pulsing) {
+      return SizedBox(
+        width: 12,
+        height: 12,
+        child: Center(child: _dot(widget.color, 6)),
+      );
+    }
     return SizedBox(
       width: 12,
       height: 12,
@@ -443,31 +553,23 @@ class _OnlineDotState extends State<_OnlineDot>
                 opacity: (1 - t) * 0.25,
                 child: Transform.scale(
                   scale: 1 + t * 0.9,
-                  child: Container(
-                    width: 7,
-                    height: 7,
-                    decoration: const BoxDecoration(
-                      color: HudColors.completed,
-                      shape: BoxShape.circle,
-                    ),
-                  ),
+                  child: _dot(widget.color, 7),
                 ),
               ),
               child!,
             ],
           );
         },
-        child: Container(
-          width: 6,
-          height: 6,
-          decoration: const BoxDecoration(
-            color: HudColors.completed,
-            shape: BoxShape.circle,
-          ),
-        ),
+        child: _dot(widget.color, 6),
       ),
     );
   }
+
+  static Widget _dot(Color color, double size) => Container(
+        width: size,
+        height: size,
+        decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+      );
 }
 
 class _EmptyDevices extends StatelessWidget {

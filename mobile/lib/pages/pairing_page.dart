@@ -1,12 +1,8 @@
 import 'dart:async';
 import 'dart:io';
-import 'dart:typed_data';
-import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -27,7 +23,6 @@ class _PairingPageState extends State<PairingPage> {
   final TextEditingController _address = TextEditingController();
   final TextEditingController _port = TextEditingController();
   final TextEditingController _code = TextEditingController();
-  final GlobalKey _scannerKey = GlobalKey();
 
   bool _handling = false;
   bool _useIpv6 = false;
@@ -42,7 +37,6 @@ class _PairingPageState extends State<PairingPage> {
   DateTime? _lastRejectedAt;
   int _scannerAttempt = 0;
   bool _slowStart = false;
-  String? _capturedPath;
   Timer? _startupTimer;
   Timer? _noticeTimer;
 
@@ -59,7 +53,6 @@ class _PairingPageState extends State<PairingPage> {
     _address.dispose();
     _port.dispose();
     _code.dispose();
-    _deleteCapturedFile();
     super.dispose();
   }
 
@@ -73,7 +66,6 @@ class _PairingPageState extends State<PairingPage> {
   void _restartScanner() {
     _startupTimer?.cancel();
     _noticeTimer?.cancel();
-    _deleteCapturedFile();
     setState(() {
       _scannerAttempt++;
       _slowStart = false;
@@ -96,43 +88,6 @@ class _PairingPageState extends State<PairingPage> {
     _noticeTimer = Timer(const Duration(milliseconds: 2600), () {
       if (mounted) setState(() => _scanNotice = null);
     });
-  }
-
-  /// Capture a screenshot of the scanner preview and save to temp directory.
-  Future<void> _captureScreenshot() async {
-    try {
-      final RenderObject? renderObject =
-          _scannerKey.currentContext?.findRenderObject();
-      if (renderObject is! RenderRepaintBoundary) return;
-
-      final ui.Image image = await renderObject.toImage(pixelRatio: 2.0);
-      final ByteData? byteData =
-          await image.toByteData(format: ui.ImageByteFormat.png);
-      image.dispose();
-      if (byteData == null) return;
-
-      final Directory tempDir = await getTemporaryDirectory();
-      final String path =
-          '${tempDir.path}/agent_hud_scan_${DateTime.now().millisecondsSinceEpoch}.png';
-      final File file = File(path);
-      await file.writeAsBytes(byteData.buffer.asUint8List());
-
-      if (mounted) setState(() => _capturedPath = path);
-    } catch (_) {
-      // Screenshot is best-effort; do not block pairing on failure.
-    }
-  }
-
-  /// Delete the captured screenshot file if it exists.
-  void _deleteCapturedFile() {
-    final String? path = _capturedPath;
-    if (path == null) return;
-    _capturedPath = null;
-    try {
-      File(path).deleteSync();
-    } catch (_) {
-      // Ignore cleanup errors.
-    }
   }
 
   void _onScan(BarcodeCapture capture) {
@@ -181,8 +136,6 @@ class _PairingPageState extends State<PairingPage> {
       return;
     }
 
-    // Freeze the UI by capturing a screenshot and entering handling state.
-    _captureScreenshot();
     _checkLan(offer.addresses);
     _finish(
       () => _api.completeQr(
@@ -196,8 +149,8 @@ class _PairingPageState extends State<PairingPage> {
 
   void _onAttempt(String host, int port, int index, int total) {
     if (!mounted) return;
-    setState(() => _attemptText =
-        '正在连接 ${formatLinkAddress(host, port)}（$index/$total）');
+    setState(() =>
+        _attemptText = '正在连接 ${formatLinkAddress(host, port)}（$index/$total）');
   }
 
   Future<void> _checkLan(List<String> targets) async {
@@ -211,10 +164,8 @@ class _PairingPageState extends State<PairingPage> {
   Future<String?> _lanWarningFor(List<String> targets) async {
     // 电脑会同时上报真实网卡和虚拟机/网桥地址。只要其中任意一个与手机同网段，
     // 就说明确实在同一个局域网；只比对第一个地址会产生误报。
-    final List<String> targetIPv4 = targets
-        .map(normalizeLinkAddress)
-        .where(_isIPv4Literal)
-        .toList();
+    final List<String> targetIPv4 =
+        targets.map(normalizeLinkAddress).where(_isIPv4Literal).toList();
     if (targetIPv4.isEmpty) return null;
     List<String> local;
     try {
@@ -275,12 +226,10 @@ class _PairingPageState extends State<PairingPage> {
     });
     try {
       final LinkedDevice device = await action();
-      _deleteCapturedFile();
       if (!mounted) return;
       await context.read<DeviceStore>().upsert(device);
       if (mounted) Navigator.of(context).pop();
     } catch (error) {
-      _deleteCapturedFile();
       if (!mounted) return;
       // 失败原因必须留在屏幕上，并记住这张二维码：否则它会一直躺在取景框里
       // 被反复重试（每次最长约 60 秒），用户只会看到「扫了半天没反应」。
@@ -422,37 +371,34 @@ class _PairingPageState extends State<PairingPage> {
               padding: EdgeInsets.zero,
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(HudRadii.hero),
-                child: RepaintBoundary(
-                  key: _scannerKey,
-                  child: Stack(
-                    fit: StackFit.expand,
-                    children: [
-                      MobileScanner(
-                        key: ValueKey<int>(_scannerAttempt),
-                        onDetect: _onScan,
-                        tapToFocus: true,
-                        errorBuilder: (context, error) => _CameraError(
-                          error: error,
-                          onRetry: _restartScanner,
-                        ),
-                        placeholderBuilder: (context) => _CameraStarting(
-                          slow: _slowStart,
-                          onRetry: _restartScanner,
-                        ),
-                        overlayBuilder: (context, constraints) =>
-                            const IgnorePointer(
-                          child: Stack(
-                            fit: StackFit.expand,
-                            children: [
-                              _ScanVignette(),
-                              Center(child: _ScanFrame()),
-                            ],
-                          ),
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    MobileScanner(
+                      key: ValueKey<int>(_scannerAttempt),
+                      onDetect: _onScan,
+                      tapToFocus: true,
+                      errorBuilder: (context, error) => _CameraError(
+                        error: error,
+                        onRetry: _restartScanner,
+                      ),
+                      placeholderBuilder: (context) => _CameraStarting(
+                        slow: _slowStart,
+                        onRetry: _restartScanner,
+                      ),
+                      overlayBuilder: (context, constraints) =>
+                          const IgnorePointer(
+                        child: Stack(
+                          fit: StackFit.expand,
+                          children: [
+                            _ScanVignette(),
+                            Center(child: _ScanFrame()),
+                          ],
                         ),
                       ),
-                      if (_handling) _CaptureOverlay(),
-                    ],
-                  ),
+                    ),
+                    if (_handling) _CaptureOverlay(),
+                  ],
                 ),
               ),
             ),
@@ -949,7 +895,8 @@ class _ModeSwitch extends StatelessWidget {
                   duration: HudMotion.fast,
                   curve: HudMotion.easeOut,
                   decoration: BoxDecoration(
-                    color: index == i ? HudColors.textPrimary : Colors.transparent,
+                    color:
+                        index == i ? HudColors.textPrimary : Colors.transparent,
                     borderRadius: BorderRadius.circular(9),
                   ),
                   child: Center(
@@ -1096,8 +1043,7 @@ class _InlineNotice extends StatelessWidget {
 class _RemoteHintCard extends StatelessWidget {
   const _RemoteHintCard();
 
-  static const String _storeURL =
-      'market://details?id=com.tailscale.ipn';
+  static const String _storeURL = 'market://details?id=com.tailscale.ipn';
   static const String _fallbackURL =
       'https://play.google.com/store/apps/details?id=com.tailscale.ipn';
 
