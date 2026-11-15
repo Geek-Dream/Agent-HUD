@@ -181,11 +181,29 @@ class _PairingPageState extends State<PairingPage> {
       return null;
     }
     if (local.isEmpty) return null;
-    final bool same = targetIPv4
+    // 组网地址（Tailscale 一类）不在同一局域网的假设范围内：它们能否连通
+    // 取决于双方是否加入同一张私网，与 WiFi 无关。对这类地址做网段推断
+    // 只会给出错误的「不在同一网段」提示。
+    final List<String> lanTargets =
+        targetIPv4.where((target) => !_isCarrierGradeNAT(target)).toList();
+    if (lanTargets.isEmpty) return null;
+    final bool same = lanTargets
         .any((target) => local.any((mine) => _sameSubnet(mine, target)));
     if (same) return null;
-    return '手机地址 ${local.first} 与电脑地址 ${targetIPv4.first} 不在同一网段，'
+    return '手机地址 ${local.first} 与电脑地址 ${lanTargets.first} 不在同一网段，'
         '可能没有连同一个 WiFi。';
+  }
+
+  /// RFC 6598 的 `100.64.0.0/10`，Tailscale / ZeroTier 一类组网使用。
+  ///
+  /// `/10` 不是整字节边界：第二段落在 64–127 才属于该网段。
+  static bool _isCarrierGradeNAT(String value) {
+    final List<String> parts = value.split('.');
+    if (parts.length != 4) return false;
+    final int? first = int.tryParse(parts[0]);
+    final int? second = int.tryParse(parts[1]);
+    if (first == null || second == null) return false;
+    return first == 100 && second >= 64 && second <= 127;
   }
 
   /// 只有真正的点分十进制 IPv4 才能做网段比较。

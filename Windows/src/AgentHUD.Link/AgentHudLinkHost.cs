@@ -123,6 +123,7 @@ public sealed class AgentHudLinkHost : IAsyncDisposable
                 privacyMode = snapshot.PrivacyMode,
                 fingerprint = Fingerprint,
                 addresses = LinkNetwork.LocalIPv4Addresses(),
+                remoteAddresses = LinkNetwork.RemoteIPv4Addresses(),
                 port = Port
             });
         });
@@ -314,12 +315,14 @@ public sealed class AgentHudLinkHost : IAsyncDisposable
 
         var session = _pairing.CreateSession();
         var addresses = LinkNetwork.LocalIPv4Addresses();
+        var remoteAddresses = LinkNetwork.RemoteIPv4Addresses();
         var payload = JsonSerializer.Serialize(new
         {
             v = 1,
             instanceId = _devices.InstanceId,
             instanceName = _devices.InstanceName,
             addresses,
+            remoteAddresses,
             port = Port,
             fingerprint = Fingerprint,
             sessionId = session.Id,
@@ -331,6 +334,7 @@ public sealed class AgentHudLinkHost : IAsyncDisposable
             payload,
             session.ExpiresAt,
             addresses,
+            remoteAddresses,
             Port,
             Fingerprint);
     }
@@ -375,6 +379,7 @@ public sealed class AgentHudLinkHost : IAsyncDisposable
             capabilities,
             Fingerprint,
             LinkNetwork.LocalIPv4Addresses(),
+            LinkNetwork.RemoteIPv4Addresses(),
             Port);
     }
 

@@ -92,6 +92,44 @@ void main() {
     expect(offer.addresses, ['192.168.1.5']);
   });
 
+  test('keeps mesh remote addresses from the QR payload as a last resort', () {
+    const payload = '''
+      {
+        "v": 1,
+        "instanceId": "instance-one",
+        "addresses": ["192.168.1.5"],
+        "remoteAddresses": ["100.118.247.95"],
+        "port": 49351,
+        "fingerprint": "ABC123",
+        "sessionId": "session-one",
+        "secret": "one-time-secret",
+        "expiresAt": "2027-11-12T01:00:00Z"
+      }
+    ''';
+    final offer = PairingOffer.fromQr(payload);
+    // 局域网地址优先，组网地址排在最后：同一个 WiFi 时不该先等它超时。
+    expect(offer.addresses, ['192.168.1.5', '100.118.247.95']);
+    expect(formatLinkAddress(offer.addresses.last, offer.port),
+        '100.118.247.95:49351');
+  });
+
+  test('ignores remote addresses when the payload omits them', () {
+    const payload = '''
+      {
+        "v": 1,
+        "instanceId": "instance-one",
+        "addresses": ["192.168.1.5"],
+        "port": 49351,
+        "fingerprint": "ABC123",
+        "sessionId": "session-one",
+        "secret": "one-time-secret",
+        "expiresAt": "2027-11-12T01:00:00Z"
+      }
+    ''';
+    final offer = PairingOffer.fromQr(payload);
+    expect(offer.addresses, ['192.168.1.5']);
+  });
+
   test('maps monitoring session without requiring optional fields', () {
     final session = AgentSession.fromJson({
       'id': 'public-id',

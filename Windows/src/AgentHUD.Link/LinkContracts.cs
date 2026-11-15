@@ -13,6 +13,7 @@ public sealed record PairingOffer(
     string Payload,
     DateTimeOffset ExpiresAt,
     IReadOnlyList<string> Addresses,
+    IReadOnlyList<string> RemoteAddresses,
     int Port,
     string Fingerprint);
 
@@ -25,6 +26,7 @@ public sealed record PairingResult(
     IReadOnlyList<string> Capabilities,
     string Fingerprint,
     IReadOnlyList<string> Addresses,
+    IReadOnlyList<string> RemoteAddresses,
     int Port);
 
 public sealed record PairCompleteRequest(

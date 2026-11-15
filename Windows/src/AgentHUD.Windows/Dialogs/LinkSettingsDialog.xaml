@@ -25,6 +25,47 @@
                 FontSize="10.5"
                 TextWrapping="Wrap" />
 
+            <!-- 远程连接：检测到组网地址（如 Tailscale 的 100.64/10）时显示。
+                 手机在移动数据下也能通过这些地址连接，不要求同一个 WiFi。 -->
+            <Border
+                x:Name="RemotePanel"
+                Padding="10"
+                Background="{ThemeResource HudControlFillBrush}"
+                CornerRadius="8"
+                Visibility="Collapsed">
+                <StackPanel Spacing="6">
+                    <TextBlock
+                        FontSize="11"
+                        FontWeight="SemiBold"
+                        Text="远程连接（组网地址）" />
+                    <TextBlock
+                        x:Name="RemoteAddressText"
+                        FontFamily="Consolas"
+                        FontSize="12"
+                        Foreground="{ThemeResource HudTextPrimaryBrush}"
+                        IsTextSelectionEnabled="True"
+                        TextWrapping="Wrap" />
+                    <TextBlock
+                        Foreground="{ThemeResource HudTextSecondaryBrush}"
+                        FontSize="10"
+                        Text="手机与这台电脑登录同一个组网账号后，用上面的地址即可远程连接。"
+                        TextWrapping="Wrap" />
+                </StackPanel>
+            </Border>
+
+            <Border
+                x:Name="RemoteHintPanel"
+                Padding="10"
+                Background="{ThemeResource HudControlFillBrush}"
+                CornerRadius="8"
+                Visibility="Collapsed">
+                <TextBlock
+                    Foreground="{ThemeResource HudTextSecondaryBrush}"
+                    FontSize="10.5"
+                    Text="没有检测到组网地址。如需在没有同一 WiFi 的情况下远程连接，可安装 Tailscale（电脑和手机登录同一账号），装好后这里会自动出现一个 100. 开头的地址。"
+                    TextWrapping="Wrap" />
+            </Border>
+
             <Border
                 HorizontalAlignment="Center"
                 Padding="12"

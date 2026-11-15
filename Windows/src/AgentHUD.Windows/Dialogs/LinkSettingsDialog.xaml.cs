@@ -79,6 +79,7 @@ public sealed partial class LinkSettingsDialog : ContentDialog
             _expiresAt = offer.ExpiresAt;
             CodeText.Text = offer.Code;
             ServiceText.Text = AgentHudLinkRuntime.ServiceAddressText();
+            RefreshRemoteAddresses(offer.RemoteAddresses);
             StatusText.Text = string.Empty;
             UpdateExpiryText();
 
@@ -98,7 +99,33 @@ public sealed partial class LinkSettingsDialog : ContentDialog
             CodeText.Text = "------";
             ExpiresText.Text = string.Empty;
             ServiceText.Text = AgentHudLinkRuntime.ServiceAddressText();
+            RefreshRemoteAddresses(Array.Empty<string>());
             StatusText.Text = error.Message;
+        }
+    }
+
+    /// <summary>
+    /// 组网地址（Tailscale 的 100.64/10）与局域网地址分开显示。
+    ///
+    /// 手机在移动数据下只能通过组网地址连接，而这类地址原本会被局域网地址
+    /// 挤出候选列表，用户根本不知道该往手机里填什么。
+    /// </summary>
+    private void RefreshRemoteAddresses(IReadOnlyList<string> remoteAddresses)
+    {
+        var port = AgentHudLinkRuntime.CurrentPort;
+        if (remoteAddresses.Count > 0 && port > 0)
+        {
+            RemoteAddressText.Text = string.Join(
+                Environment.NewLine,
+                remoteAddresses.Select(address => $"{address}:{port}"));
+            RemotePanel.Visibility = Visibility.Visible;
+            RemoteHintPanel.Visibility = Visibility.Collapsed;
+        }
+        else
+        {
+            RemoteAddressText.Text = string.Empty;
+            RemotePanel.Visibility = Visibility.Collapsed;
+            RemoteHintPanel.Visibility = Visibility.Visible;
         }
     }
 

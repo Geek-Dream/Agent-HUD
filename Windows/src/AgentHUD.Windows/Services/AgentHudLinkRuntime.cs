@@ -10,6 +10,9 @@ public static class AgentHudLinkRuntime
 
     public static string? LastError { get; private set; }
     public static bool IsRunning => _host?.IsRunning == true;
+
+    /// <summary>当前监听端口；服务未启动时为 0。</summary>
+    public static int CurrentPort => IsRunning ? _host!.Port : 0;
     public static string? InstanceName => _host?.Devices.InstanceName;
     public static IReadOnlyList<LinkedDevice> Devices =>
         IsRunning ? _host!.Devices.Devices : Array.Empty<LinkedDevice>();

@@ -11,6 +11,7 @@ This document is the compatibility contract for the Windows, Flutter, and future
 - Clients pin the hex-encoded SHA-256 certificate fingerprint.
 - The Windows service listens on a dynamically assigned port on LAN interfaces.
 - `addresses` in pairing responses contains IPv4 addresses without a URL scheme. Clients construct `https://ADDRESS:PORT`.
+- `remoteAddresses` is an optional sibling of `addresses` carrying RFC 6598 carrier-grade NAT addresses (`100.64.0.0/10`), which Tailscale and similar mesh VPNs use for their virtual adapters. These are never mixed into `addresses`: they are only reachable when the phone has joined the same mesh network, so clients must not treat them as same-LAN candidates. Clients that do not understand the field ignore it and keep working with `addresses` alone.
 - macOS can also include optional `ipv6Addresses` in pairing and status responses. IPv6-capable clients append these as fallback connection candidates without changing the existing IPv4 behavior. IPv6 literal URLs use brackets, for example `https://[2409:...]:47653`; API host values do not include brackets. Link-local candidates include their interface scope.
 - macOS listens separately on IPv4 and IPv6 on the same port. If IPv6 cannot be bound, IPv4 monitoring continues to work. A globally routable IPv6 address does not imply that a carrier or router permits inbound connections.
 - REST JSON uses camelCase property names and ISO-8601 timestamps.
@@ -32,6 +33,7 @@ The QR image contains a JSON object:
   "instanceId": "windows-instance-id",
   "instanceName": "WL-PC",
   "addresses": ["192.168.1.5"],
+  "remoteAddresses": ["100.118.247.95"],
   "port": 61051,
   "fingerprint": "UPPERCASE_SHA256_HEX",
   "sessionId": "one-time-session-id",
@@ -81,6 +83,7 @@ Content-Type: application/json
   "capabilities": ["monitor"],
   "fingerprint": "UPPERCASE_SHA256_HEX",
   "addresses": ["192.168.1.5"],
+  "remoteAddresses": ["100.118.247.95"],
   "port": 61051
 }
 ```

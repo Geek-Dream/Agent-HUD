@@ -6,9 +6,15 @@ List<String> _addresses(
 }) {
   final ipv4 = (value['addresses'] as List?) ?? const [];
   final ipv6 = (value['ipv6Addresses'] as List?) ?? const [];
+  // 组网地址（Tailscale 一类，RFC 6598 的 100.64/10）。电脑和手机在同一个
+  // WiFi 时用不到它，但手机切到移动数据后只能靠它——所以必须保留，
+  // 且排在局域网地址之后，避免在同网时白等一次超时。
+  final remote = (value['remoteAddresses'] as List?) ?? const [];
   // 勾选 IPv6 只决定「先试谁」，不能把 IPv4 丢掉：电脑没上报 IPv6 时
   // 仍然要能用 IPv4 完成配对，否则用户看到的就是扫码后毫无反应。
-  final selected = preferIpv6 ? [...ipv6, ...ipv4] : [...ipv4, ...ipv6];
+  final selected = preferIpv6
+      ? [...ipv6, ...ipv4, ...remote]
+      : [...ipv4, ...ipv6, ...remote];
   return selected.whereType<String>().where((item) => item.isNotEmpty).toList();
 }
 
