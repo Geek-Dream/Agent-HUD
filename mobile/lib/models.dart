@@ -6,7 +6,9 @@ List<String> _addresses(
 }) {
   final ipv4 = (value['addresses'] as List?) ?? const [];
   final ipv6 = (value['ipv6Addresses'] as List?) ?? const [];
-  final selected = preferIpv6 ? [...ipv6] : [...ipv4, ...ipv6];
+  // 勾选 IPv6 只决定「先试谁」，不能把 IPv4 丢掉：电脑没上报 IPv6 时
+  // 仍然要能用 IPv4 完成配对，否则用户看到的就是扫码后毫无反应。
+  final selected = preferIpv6 ? [...ipv6, ...ipv4] : [...ipv4, ...ipv6];
   return selected.whereType<String>().where((item) => item.isNotEmpty).toList();
 }
 
@@ -57,9 +59,7 @@ class PairingOffer {
     }
     final addresses = _addresses(value, preferIpv6: preferIpv6);
     if (addresses.isEmpty) {
-      throw FormatException(
-        preferIpv6 ? '配对信息中没有可用的 IPv6 地址' : '配对信息中没有可用的局域网地址',
-      );
+      throw const FormatException('配对信息中没有可用的地址');
     }
     return PairingOffer(
       instanceId: value['instanceId'] as String,

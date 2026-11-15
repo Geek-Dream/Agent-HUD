@@ -64,6 +64,28 @@ enum LinkNetwork {
         let isLinkLocal: Bool
     }
 
+    /// 远程组网（Tailscale / ZeroTier 一类）的 IPv4 地址。
+    ///
+    /// `100.64.0.0/10` 是 RFC 6598 的运营商级 NAT 保留段，Tailscale 复用它作为
+    /// 虚拟网卡地址。这类地址在任何网络下都可达（只要对端在同一张私网里），
+    /// 所以配对窗口要单独列出来——否则用户根本不知道该往手机里填什么。
+    static func remoteIPv4Addresses() -> [String] {
+        interfaceIPv4Addresses()
+            .map(\.value)
+            .filter(isCarrierGradeNAT)
+            .uniqued()
+    }
+
+    static func isCarrierGradeNAT(_ address: String) -> Bool {
+        let parts = address.split(separator: ".")
+        guard parts.count == 4,
+              let first = UInt8(parts[0]),
+              let second = UInt8(parts[1]) else {
+            return false
+        }
+        return first == 100 && (64...127).contains(second)
+    }
+
     /// 手机端会按顺序逐个尝试这些地址，所以最可能连通的地址必须排在最前面。
     ///
     /// - 链路本地地址（fe80::/10）在手机上无法使用：访问它需要 `%en0` 这样的网卡 zone，

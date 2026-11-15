@@ -8,6 +8,7 @@ import 'package:flutter/rendering.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../device_store.dart';
 import '../link_api.dart';
@@ -33,6 +34,10 @@ class _PairingPageState extends State<PairingPage> {
   int _mode = 0;
   String? _error;
   String? _scanNotice;
+  String? _attemptText;
+  String? _lanWarning;
+  bool _needsManualRetry = false;
+  String? _failedRaw;
   String? _lastRejectedRaw;
   DateTime? _lastRejectedAt;
   int _scannerAttempt = 0;
@@ -75,6 +80,10 @@ class _PairingPageState extends State<PairingPage> {
       _handling = false;
       _error = null;
       _scanNotice = null;
+      _attemptText = null;
+      _lanWarning = null;
+      _needsManualRetry = false;
+      _failedRaw = null;
       _lastRejectedRaw = null;
       _lastRejectedAt = null;
     });
@@ -141,6 +150,9 @@ class _PairingPageState extends State<PairingPage> {
     _startupTimer?.cancel();
     final String raw = barcode.rawValue!;
     final DateTime now = DateTime.now();
+    // 同一个失败过的二维码不再自动重试（每次最多要等一轮超时），但换一张新码
+    // 必须立刻可用，否则用户会以为扫码又「没反应」了。
+    if (raw == _failedRaw) return;
     final DateTime? rejectedAt = _lastRejectedAt;
     if (raw == _lastRejectedRaw &&
         rejectedAt != null &&
@@ -152,8 +164,6 @@ class _PairingPageState extends State<PairingPage> {
     try {
       offer = PairingOffer.fromQr(raw, preferIpv6: _useIpv6);
     } on FormatException catch (error) {
-      // 把真实原因（例如勾选 IPv6 但没有可用 IPv6 地址）告诉用户，
-      // 否则一律显示「不是 AgentHUD 的二维码」，排查时会被误导。
       _lastRejectedRaw = raw;
       _lastRejectedAt = now;
       _showScanNotice(error.message);
@@ -173,15 +183,87 @@ class _PairingPageState extends State<PairingPage> {
 
     // Freeze the UI by capturing a screenshot and entering handling state.
     _captureScreenshot();
+    _checkLan(offer.addresses);
     _finish(
       () => _api.completeQr(
         offer,
         LinkApi.defaultDeviceName,
+        onAttempt: _onAttempt,
       ),
+      failedRaw: raw,
     );
   }
 
-  Future<void> _finish(Future<LinkedDevice> Function() action) async {
+  void _onAttempt(String host, int port, int index, int total) {
+    if (!mounted) return;
+    setState(() => _attemptText =
+        '正在连接 ${formatLinkAddress(host, port)}（$index/$total）');
+  }
+
+  Future<void> _checkLan(List<String> targets) async {
+    final String? warning = await _lanWarningFor(targets);
+    if (!mounted || warning == null) return;
+    setState(() => _lanWarning = warning);
+  }
+
+  /// 手机与电脑不在同一网段时，连接会一路超时到 60 秒左右；先算出来直接告诉用户，
+  /// 比让他在「正在关联」里干等有用得多。只对 IPv4 做推断，IPv6 不做猜测。
+  Future<String?> _lanWarningFor(List<String> targets) async {
+    // 电脑会同时上报真实网卡和虚拟机/网桥地址。只要其中任意一个与手机同网段，
+    // 就说明确实在同一个局域网；只比对第一个地址会产生误报。
+    final List<String> targetIPv4 = targets
+        .map(normalizeLinkAddress)
+        .where(_isIPv4Literal)
+        .toList();
+    if (targetIPv4.isEmpty) return null;
+    List<String> local;
+    try {
+      final interfaces = await NetworkInterface.list(
+        type: InternetAddressType.IPv4,
+        includeLoopback: false,
+      );
+      local = interfaces
+          .expand((interface) => interface.addresses)
+          .map((address) => address.address)
+          .toList();
+    } on Object {
+      return null;
+    }
+    if (local.isEmpty) return null;
+    final bool same = targetIPv4
+        .any((target) => local.any((mine) => _sameSubnet(mine, target)));
+    if (same) return null;
+    return '手机地址 ${local.first} 与电脑地址 ${targetIPv4.first} 不在同一网段，'
+        '可能没有连同一个 WiFi。';
+  }
+
+  /// 只有真正的点分十进制 IPv4 才能做网段比较。
+  ///
+  /// 组网主机名（如 `my-mac.tailnet-xxx.ts.net`）同样由四段点分组成，按字符串
+  /// 直接比较会被当成 IPv4，导致远程连接被误报成「不在同一网段」。
+  static bool _isIPv4Literal(String value) {
+    final List<String> parts = value.split('.');
+    if (parts.length != 4) return false;
+    for (final String part in parts) {
+      if (part.isEmpty || part.length > 3) return false;
+      final int? octet = int.tryParse(part);
+      if (octet == null || octet < 0 || octet > 255) return false;
+      if (part.length > 1 && part.startsWith('0')) return false;
+    }
+    return true;
+  }
+
+  static bool _sameSubnet(String left, String right) {
+    final List<String> a = left.split('.');
+    final List<String> b = right.split('.');
+    if (a.length != 4 || b.length != 4) return false;
+    return a[0] == b[0] && a[1] == b[1] && a[2] == b[2];
+  }
+
+  Future<void> _finish(
+    Future<LinkedDevice> Function() action, {
+    String? failedRaw,
+  }) async {
     if (_handling) return;
     _noticeTimer?.cancel();
     _startupTimer?.cancel();
@@ -189,6 +271,7 @@ class _PairingPageState extends State<PairingPage> {
       _handling = true;
       _error = null;
       _scanNotice = null;
+      _attemptText = null;
     });
     try {
       final LinkedDevice device = await action();
@@ -199,16 +282,28 @@ class _PairingPageState extends State<PairingPage> {
     } catch (error) {
       _deleteCapturedFile();
       if (!mounted) return;
-      setState(() => _error = error.toString());
-      await Future<void>.delayed(const Duration(seconds: 2));
-      if (mounted) {
-        setState(() {
-          _handling = false;
-          _error = null;
-        });
-        _armStartupTimer();
-      }
+      // 失败原因必须留在屏幕上，并记住这张二维码：否则它会一直躺在取景框里
+      // 被反复重试（每次最长约 60 秒），用户只会看到「扫了半天没反应」。
+      setState(() {
+        _handling = false;
+        _attemptText = null;
+        _error = error.toString();
+        _needsManualRetry = true;
+        _failedRaw = failedRaw;
+      });
     }
+  }
+
+  void _retry() {
+    setState(() {
+      _error = null;
+      _attemptText = null;
+      _lanWarning = null;
+      _needsManualRetry = false;
+      _failedRaw = null;
+      _lastRejectedRaw = null;
+      _lastRejectedAt = null;
+    });
   }
 
   @override
@@ -234,7 +329,15 @@ class _PairingPageState extends State<PairingPage> {
                   index: _mode,
                   onChanged: _handling
                       ? null
-                      : (value) => setState(() => _mode = value),
+                      : (value) => setState(() {
+                            _mode = value;
+                            // 扫码页和验证码页各有一份提示位置，切页时清掉旧提示，
+                            // 否则会看到上一次页面残留的错误。
+                            _error = null;
+                            _lanWarning = null;
+                            _needsManualRetry = false;
+                            _attemptText = null;
+                          }),
                 ),
               ),
               Expanded(
@@ -266,14 +369,24 @@ class _PairingPageState extends State<PairingPage> {
 
   Widget _scannerStatus() {
     if (_handling) {
-      return const Padding(
-        key: ValueKey<String>('handling'),
-        padding: EdgeInsets.symmetric(vertical: HudSpacing.md),
-        child: SizedBox(
-          width: 22,
-          height: 22,
-          child: CircularProgressIndicator(strokeWidth: 2.2),
-        ),
+      return Column(
+        key: const ValueKey<String>('handling'),
+        children: [
+          const Padding(
+            padding: EdgeInsets.symmetric(vertical: HudSpacing.md),
+            child: SizedBox(
+              width: 22,
+              height: 22,
+              child: CircularProgressIndicator(strokeWidth: 2.2),
+            ),
+          ),
+          if (_attemptText != null)
+            Text(
+              _attemptText!,
+              textAlign: TextAlign.center,
+              style: HudText.caption,
+            ),
+        ],
       );
     }
     if (_scanNotice != null) {
@@ -372,6 +485,16 @@ class _PairingPageState extends State<PairingPage> {
           enabled: !_handling,
           onChanged: (value) => setState(() => _useIpv6 = value),
         ),
+        if (_lanWarning != null)
+          Padding(
+            padding: const EdgeInsets.fromLTRB(
+              HudSpacing.xl,
+              HudSpacing.md,
+              HudSpacing.xl,
+              0,
+            ),
+            child: _InlineNotice(message: _lanWarning!),
+          ),
         if (_error != null)
           Padding(
             padding: const EdgeInsets.fromLTRB(
@@ -381,6 +504,22 @@ class _PairingPageState extends State<PairingPage> {
               HudSpacing.lg,
             ),
             child: _InlineError(message: _error!),
+          ),
+        if (_needsManualRetry)
+          Padding(
+            padding: const EdgeInsets.fromLTRB(
+              HudSpacing.xl,
+              0,
+              HudSpacing.xl,
+              HudSpacing.lg,
+            ),
+            child: SizedBox(
+              width: double.infinity,
+              child: OutlinedButton(
+                onPressed: _retry,
+                child: const Text('重新尝试'),
+              ),
+            ),
           ),
         const SizedBox(height: HudSpacing.lg),
       ],
@@ -474,6 +613,10 @@ class _PairingPageState extends State<PairingPage> {
           enabled: !_handling,
           onChanged: (value) => setState(() => _useIpv6 = value),
         ),
+        if (_lanWarning != null) ...[
+          const SizedBox(height: HudSpacing.lg),
+          _InlineNotice(message: _lanWarning!),
+        ],
         if (_error != null) ...[
           const SizedBox(height: HudSpacing.lg),
           _InlineError(message: _error!),
@@ -483,6 +626,8 @@ class _PairingPageState extends State<PairingPage> {
           '验证码两分钟内有效，最多尝试五次。首次连接后，App 会固定电脑证书指纹，后续请求都需要独立设备令牌。',
           style: HudText.caption.copyWith(height: 1.6),
         ),
+        const SizedBox(height: HudSpacing.lg),
+        const _RemoteHintCard(),
       ],
     );
   }
@@ -494,12 +639,14 @@ class _PairingPageState extends State<PairingPage> {
       setState(() => _error = '请填写正确的地址、端口和六位验证码');
       return;
     }
+    _checkLan([address]);
     _finish(
       () => _api.completeCode(
         address: address,
         port: port,
         code: _code.text.trim(),
         deviceName: LinkApi.defaultDeviceName,
+        onAttempt: _onAttempt,
       ),
     );
   }
@@ -864,12 +1011,12 @@ class _Ipv6Toggle extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      '仅使用 IPv6 地址连接',
+                      '优先使用 IPv6 地址连接',
                       style: HudText.bodySecondary.copyWith(fontSize: 13),
                     ),
                     const SizedBox(height: 1),
                     const Text(
-                      '电脑只上报了 IPv6 地址时开启',
+                      '电脑上报了 IPv6 时先试 IPv6，没有就自动回退到 IPv4',
                       style: HudText.caption,
                     ),
                   ],
@@ -903,6 +1050,121 @@ class _FieldLabel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Text(text, style: HudText.label);
+  }
+}
+
+/// 橙色提示：用于「可能不在同一局域网」这类需要用户自己动手排查的情况。
+class _InlineNotice extends StatelessWidget {
+  const _InlineNotice({required this.message});
+
+  final String message;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: HudSpacing.lg,
+        vertical: HudSpacing.md,
+      ),
+      decoration: BoxDecoration(
+        color: HudColors.waiting.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(HudRadii.control),
+        border: Border.all(color: HudColors.waiting.withValues(alpha: 0.32)),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Icon(
+            Icons.wifi_off_rounded,
+            size: 15,
+            color: HudColors.waiting,
+          ),
+          const SizedBox(width: HudSpacing.sm),
+          Expanded(
+            child: Text(
+              message,
+              style: HudText.caption.copyWith(color: HudColors.waiting),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// 不在同一局域网时的引导：手机和电脑都要在同一个组网里才能远程连接。
+class _RemoteHintCard extends StatelessWidget {
+  const _RemoteHintCard();
+
+  static const String _storeURL =
+      'market://details?id=com.tailscale.ipn';
+  static const String _fallbackURL =
+      'https://play.google.com/store/apps/details?id=com.tailscale.ipn';
+
+  Future<void> _openStore() async {
+    // 先试应用商店的深链，失败再退回网页版；两者都失败时静默忽略，
+    // 用户仍可自己去商店搜 Tailscale。
+    if (await launchUrl(Uri.parse(_storeURL),
+        mode: LaunchMode.externalApplication)) {
+      return;
+    }
+    await launchUrl(Uri.parse(_fallbackURL),
+        mode: LaunchMode.externalApplication);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: HudSpacing.lg,
+        vertical: HudSpacing.md,
+      ),
+      decoration: BoxDecoration(
+        color: HudColors.surface,
+        borderRadius: BorderRadius.circular(HudRadii.card),
+        border: Border.all(color: HudColors.border),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const Icon(
+                Icons.public_rounded,
+                size: 15,
+                color: HudColors.textTertiary,
+              ),
+              const SizedBox(width: HudSpacing.sm),
+              Text('不在同一个 WiFi？', style: HudText.bodySecondary),
+            ],
+          ),
+          const SizedBox(height: HudSpacing.sm),
+          Text(
+            '手机和电脑都装好 Tailscale 并登录同一账号后，'
+            '电脑的配对窗口会出现一个 100. 开头的远程地址，把它填到上面的「电脑地址」即可。',
+            style: HudText.caption.copyWith(height: 1.6),
+          ),
+          const SizedBox(height: HudSpacing.sm),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: TextButton.icon(
+              onPressed: _openStore,
+              icon: const Icon(Icons.download_rounded, size: 15),
+              label: const Text('获取 Tailscale'),
+              style: TextButton.styleFrom(
+                foregroundColor: HudColors.working,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: HudSpacing.md,
+                  vertical: HudSpacing.xs,
+                ),
+                minimumSize: Size.zero,
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
 

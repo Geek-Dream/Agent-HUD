@@ -29,6 +29,19 @@ func testLinkCertificateFingerprintAndStatusProtocol() throws {
     )
 }
 
+func testLinkRemoteAddressDetection() throws {
+    // Tailscale 复用 RFC 6598 的 100.64.0.0/10 作为组网地址段。
+    try expect(LinkNetwork.isCarrierGradeNAT("100.64.0.1"), "100.64.0.1 must be remote")
+    try expect(LinkNetwork.isCarrierGradeNAT("100.101.102.103"), "100.101.102.103 must be remote")
+    try expect(LinkNetwork.isCarrierGradeNAT("100.127.255.254"), "100.127.255.254 must be remote")
+    try expect(!LinkNetwork.isCarrierGradeNAT("100.63.0.1"), "100.63.0.1 is below the CGNAT range")
+    try expect(!LinkNetwork.isCarrierGradeNAT("100.128.0.1"), "100.128.0.1 is above the CGNAT range")
+    try expect(!LinkNetwork.isCarrierGradeNAT("192.168.1.8"), "LAN address must not be remote")
+    try expect(!LinkNetwork.isCarrierGradeNAT("10.211.55.2"), "bridge address must not be remote")
+    try expect(!LinkNetwork.isCarrierGradeNAT("my-mac.tailnet-xxx.ts.net"), "hostname must not be remote")
+    try expect(!LinkNetwork.isCarrierGradeNAT("100.64.0"), "short address must not be remote")
+}
+
 func testLinkPairing() async throws {
     let directory = FileManager.default.temporaryDirectory
         .appendingPathComponent("AgentHUD-LinkTests-\(UUID().uuidString)", isDirectory: true)

@@ -10,6 +10,7 @@ final class LinkSettingsModel: ObservableObject {
     @Published var port = 0
     @Published var addresses: [String] = []
     @Published var ipv6Addresses: [String] = []
+    @Published var remoteAddresses: [String] = []
     @Published var copiedAddress: String?
     @Published var isRefreshing = false
     @Published var error: String?
@@ -32,6 +33,7 @@ final class LinkSettingsModel: ObservableObject {
             port = offer.port
             addresses = offer.addresses
             ipv6Addresses = server.ipv6Addresses
+            remoteAddresses = LinkNetwork.remoteIPv4Addresses()
             qrImage = Self.qrCode(payload: offer.payload)
             error = nil
         } catch {
@@ -200,13 +202,66 @@ private struct LinkSettingsView: View {
                 }
             }
 
+            field("监听端口") {
+                if model.port == 0 {
+                    Text("局域网服务尚未启动")
+                        .font(.system(size: 11))
+                        .foregroundStyle(.secondary)
+                } else {
+                    HStack(spacing: 8) {
+                        Text(verbatim: String(model.port))
+                            .font(.system(size: 11, design: .monospaced))
+                            .textSelection(.enabled)
+                        Spacer()
+                        Button(model.copiedAddress == "\(model.port)" ? "已复制" : "复制") {
+                            Task { await model.copy("\(model.port)") }
+                        }
+                        .font(.system(size: 10.5))
+                        .buttonStyle(.borderless)
+                    }
+                    Text("手动配对时填这个端口，与上面的地址一起使用。")
+                        .font(.system(size: 10.5))
+                        .foregroundStyle(.secondary)
+                }
+            }
+
+            field("远程连接") {
+                if model.remoteAddresses.isEmpty {
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text("不在同一局域网时（例如手机在家里、电脑在公司），需要先装 Tailscale 组网。")
+                            .font(.system(size: 11))
+                            .foregroundStyle(.secondary)
+                            .fixedSize(horizontal: false, vertical: true)
+                        Button("下载 Tailscale") {
+                            if let url = URL(string: "https://tailscale.com/download") {
+                                NSWorkspace.shared.open(url)
+                            }
+                        }
+                        .font(.system(size: 10.5))
+                        .buttonStyle(.borderless)
+                        Text("装好并登录同一账号后，这里会自动出现远程地址。")
+                            .font(.system(size: 10.5))
+                            .foregroundStyle(.secondary)
+                    }
+                } else {
+                    VStack(alignment: .leading, spacing: 4) {
+                        ForEach(model.remoteAddresses, id: \.self) { address in
+                            addressRow(address)
+                        }
+                        Text("这是组网地址，任何网络下都能连。手机填它和上面的端口即可。")
+                            .font(.system(size: 10.5))
+                            .foregroundStyle(.secondary)
+                    }
+                }
+            }
+
             if !model.ipv6Addresses.isEmpty {
                 field("IPv6 候选地址") {
                     VStack(alignment: .leading, spacing: 4) {
                         ForEach(model.ipv6Addresses, id: \.self) { address in
                             addressRow(address)
                         }
-                        Text("是否可路由取决于网络与防火墙配置。")
+                        Text(verbatim: "端口同样是 \(model.port)；是否可路由取决于网络与运营商/路由器是否放行入站。")
                             .font(.system(size: 10.5))
                             .foregroundStyle(.secondary)
                     }

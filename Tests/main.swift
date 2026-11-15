@@ -1746,8 +1746,9 @@ do {
     try testAIConfiguration()
     try testAISecretEnvironmentFallback()
     try testLinkCertificateFingerprintAndStatusProtocol()
+    try testLinkRemoteAddressDetection()
     try await testLinkPairing()
-    print("28 tests passed (adapter, OpenCode, AI title, session presentation, appearance and LAN protocol smoke tests)")
+    print("29 tests passed (adapter, OpenCode, AI title, session presentation, appearance and LAN protocol smoke tests)")
 } catch {
     fputs("Adapter smoke tests failed: \(error)\n", stderr)
     exit(1)

@@ -1266,3 +1266,298 @@ AI 生成的会话标题应反映会话真正要做的事，而不是只描述�
 - `unknown` 归零依赖本地 transcript 文件仍在磁盘上；若会话文件被清理，仍会退化为 `unknown`。
 - Windows 端未编译验证（本机无 `dotnet`）。
 
+
+## mac / 手机配对与连接体验修复（2026-11-15）
+
+### 现象
+- mac HUD 与手机扫码配对流：扫码后长时间无反应，失败提示 2 秒即消失。
+- mac HUD 配对页不显示监听端口，手动输入无法完成配对。
+- 手机与电脑不在同一局域网时无任何提示。
+- mac 局域网连接比 Windows 明显卡顿。
+
+### 实测结论（只读验证）
+- mac 服务双栈监听正常（lsof: *:47653 IPv4/IPv6）；本机 25 次 /v1/status 17–54ms，keep-alive 可复用。
+- 模拟器 nc 到 192.168.1.8:47653 / 10.0.2.2:47653 均可达，TLS 握手有响应。
+- 用与 app 相同的 CIQRCodeGenerator+7x+200pt 缩放离线复现二维码，103 模块，400/600px 均被系统 QR 识别器解码成功。
+- 防火墙已关闭；主线程采样为空闲等待。
+=> 服务、二维码、链路均正常，问题集中在手机端交互与超时策略，以及 mac 页面缺端口。
+
+### 变更范围
+- macOS：Sources/AgentHUD/LinkSettingsWindow.swift（新增端口显示与复制）。
+- 手机：mobile/lib/models.dart、link_api.dart、pages/pairing_page.dart、test/models_test.dart。
+- 不修改 Windows 任何代码。
+
+### 验证
+- swift build / ./scripts/build-app.sh、./scripts/test.sh。
+- cd mobile && flutter analyze && flutter test。
+- ./scripts/test-mobile-link.sh（真实 LinkServer + Dart LinkApi 端到端配对）。
+
+## mac 桌面端渲染卡顿修复（2026-11-15，已批准）
+
+### 现象
+- 会话较多时 HUD 浮窗卡顿，鼠标拖动、展开收起都发滞。
+
+### 实测结论（只读验证）
+- 运行中 HUD（PID 59923）连续采样 CPU：56% / 62% / 78% / 152% / 61%。
+- `sample` 2 秒：主线程 724/2000 个样本落在
+  `CA::Transaction::commit → CALayer::display → CoreText 字形绘制`，即持续重绘文本，
+  不是 IO 等待（与上一节「主线程采样为空闲等待」的结论相反，时间点不同）。
+- 全仓库唯一的无限循环动画：`HUDShell.swift:1196`
+  `.symbolEffect(.pulse, options: .repeating)`，由每行 `PulsingStatusDot`
+  （`HUDShell.swift:1056`，条件 `session.status.isRunning`）驱动。工作会话越多，
+  同时在跑的持续动画越多。Windows 端 XAML 只有骨架屏 pulse，无逐行脉冲。
+- `visibleSessionRows` 在同一次 body 求值中被计算 3 次（`:221`、`:229`、`:247`），
+  每次都要 filter + sort。
+
+**[订正]** 上面「导致面板按屏幕刷新率持续重绘文字」的机制描述不准确，已由独立审查推翻：
+`symbolEffect(.pulse, options: .repeating)` 是渲染服务器（render server）驱动的符号特效，
+**不会重新求值 SwiftUI body，也不逐帧重绘兄弟 Text**。真实成本模型是：
+N 行 × 各自一个常驻连续动画 = N 个并发动画事务 + 半透明窗口的持续合成开销，
+随行数线性放大。修复方向仍然正确，但机制表述以此为准。
+
+### 变更范围（只动 1 个文件）
+- `Sources/AgentHUD/HUDShell.swift`
+  1. `PulsingStatusDot`：删除 `.symbolEffect(.pulse, options: .repeating)`，改为静态实心点
+     （运行中 6pt、静止 5pt），与 Windows 端无逐行动画的做法对齐。
+  2. `ExpandedHUDView.body`：`visibleSessionRows` 只求值一次并在三处复用。
+- 不修改 Windows、手机端、`HUDViewModel.swift`、`LinkSettingsWindow.swift`
+  （后两者由并行会话修改中，按 MA1/MA3 避开）。
+
+### 验证
+- `./scripts/test.sh`、`./scripts/build-app.sh` → exit 0。
+- 重启 HUD 后 `sample` 主线程栈对比基线（同一指标、同一测量方式）。
+
+### 过程中修正的两个错误
+1. 第一版用 `@State` + `onChange` 实现呼吸，构建失败：本机 CLT 工具链缺少
+   `SwiftUIMacros.StateMacro` 插件（全仓库此前只用 `@ObservedObject`，无 `@State`）。
+   第二版改用 `phaseAnimator`（无宏），可编译，但对 CPU 无改善，故最终改为静态点。
+2. 一度用 `ps -o %cpu` 判断「CPU 降到接近 0」，这是误读：macOS 的 `%cpu` 是进程
+   生命周期的衰减平均值，不是瞬时值。改用 `ps -o time` 累计 CPU 时间差测量。
+
+### 执行结果
+- `./scripts/build-app.sh` → `Build complete! (25.17秒)`，exit 0。
+- `./scripts/test.sh` → `28 tests passed`，exit 0。
+- 重启后 `sample` 5 秒主线程栈：3194 个样本中 2852（89%）落在
+  `__CFRunLoopServiceMachPort → mach_msg`（空闲等待），
+  落到 `CA::Transaction::commit` 的只剩 130 个（4%），且其下主要是
+  `NSWindow layoutIfNeeded`（布局），不再是 `CALayer::display → CoreText` 逐帧文字重绘。
+  → **主线程持续重绘已终止，渲染卡顿的根因已消除。**
+- 累计 CPU 时间 60 秒窗口：旧代码约 36%，本次约 33–37%，**总体 CPU 基本未变**。
+  原因见下条：剩余 CPU 不在渲染，而在后台。
+
+### 新发现（未修，需另立任务）
+- 剩余 CPU 热点在后台线程，不在主线程：
+  `HUDViewModel.performRefresh() HUDViewModel.swift:552 → SessionScanner.scan()
+  → attachGitContexts() SessionScanner.swift:166 → cachedGit() :181 → GitReader.read()
+  → BoundedProcess.run()`。
+- `GitReader.read()` 每次调用最多起 **5 个 `git` 子进程**
+  （`rev-parse --show-toplevel`、`branch --show-current`，空则再 `rev-parse --abbrev-ref`、
+  `status --porcelain=v2`、`diff --numstat`、`diff --cached --numstat`）。
+- 缓存 TTL 在 `SessionScanner.swift:177`：有值 8 秒、无值 30 秒；刷新循环 3 秒一次
+  （`HUDViewModel.swift:512`）。因此每个项目每 ~8 秒重新跑一整套 git 子进程。
+- 这与「会话多就卡」直接相关：项目越多，同时 spawn 的 git 越多。
+- 未修原因：会涉及 `SessionScanner.swift` / `GitReader.swift`，超出本次已批准范围。
+
+### 未验证项
+- 折叠态与展开态都测过主线程栈，但**展开态未在「大量会话」下单独测**：
+  `SessionScanner.swift` 服务端上限 24，本机当前会话数未构造到上限。
+- 视觉观感（静态 5pt 点取代原脉冲点）需人工确认，无截图权限。
+- 未在 Windows 端验证任何内容（本机无 dotnet，且按约束不改 Windows）。
+
+### 独立审查（Fusion 503 → 本地对抗审查，已完成）
+Fusion 返回 `HTTP 503`，按规则转本地对抗性审查并真实执行。逐条结论：
+
+1. **无遗漏无限动画源**：`symbolEffect` / `repeatForever` / `phaseAnimator` 全目录归零。
+   残留 `StarlightBackground:2244` 的 24fps `TimelineView` 仅 starlight 主题触发（当前配置
+   为 classic，未触发），且是单层背景 Canvas、成本不随会话数增长 → 不需一并处理。
+   `LinkSettingsWindow.swift:268` 的 1Hz `TimelineView` 只在配对窗口打开时存在 → 不需处理。
+2. **无信息丢失**：`StatusBadge:1941` 已渲染 5pt 彩点 + `shortLabel` 文字
+   （`Models.swift:70-82`：启动/工作/等待/空闲/完成/出错）；被删的脉冲只是"运行中"的冗余提示。
+3. **无布局抖动**：`StatusDot` 尺寸固定 5pt；`HStack(spacing:5)` 默认 `.center` 对齐，
+   不参与文字基线；与 `StatusBadge:1947` 的 5×5 圆点一致。
+4. **rows 复用语义等价**：`visibleSessionRows`（`HUDViewModel.swift:177`）是纯计算属性，
+   同一轮 body 内三次读取本就返回同一数组；`SessionRowPresentation.id` 未变，
+   不会引起 `LazyVStack` 重建。唯一差异是跳过 `isLoading` 分支的短路，无行为影响。
+5. **无其他逐行无限动画**：两处 `ProgressView` 都是单实例（`:281` 表头刷新态、
+   `:2036` 空态），不随会话数缩放。
+
+**审查推翻了我的一处结论**：见上文「[订正]」——动画成本模型不是"逐帧重绘文字"。
+
+### 执行结果（已完成）
+
+- mac：`LinkSettingsWindow.swift` 新增「监听端口」区（`Text(verbatim:)` 避免千分位），IPv6 区注明同一端口。
+- 手机 `models.dart`：`preferIpv6` 改为「IPv6 优先 + IPv4 回退」，不再因缺少 IPv6 抛错。
+- 手机 `link_api.dart`：新增失败地址记忆（`_preferredAddress`）与 `onAttempt` 进度回调；错误文案改为列出已尝试的 `地址:端口`。
+- 手机 `pairing_page.dart`：连接进度文案、同网段预检（`NetworkInterface.list`）、失败后暂停自动重试并常驻「重新尝试」按钮。
+- `mobile/test/models_test.dart`：按新语义重写两条 IPv6 用例。
+
+### 验证结果
+- `./scripts/build-app.sh` → `Build complete! (169.14秒)`。
+- `./scripts/test.sh` → 28 tests passed。
+- `flutter analyze` → No issues found。
+- `flutter test` → 10 passed / 1 skipped。
+- `./scripts/test-mobile-link.sh` → 真实 LinkServer + HTTPS + Dart LinkApi 端到端 `All tests passed!`。
+- 重启 HUD 后截图确认端口 `47653` 正常显示、二维码正常渲染。
+
+### 未验证项
+- 手机真机与 mac 的实际局域网配对未复现（配对码在进程内存，需人工用手机扫）。
+- 同网段预检只覆盖 IPv4；IPv6 场景不做推断。
+- Windows 端未编译（本机无 dotnet），本次未修改 Windows 任何文件。
+
+### 审计闭环（strict）
+- behavior：flutter test，10 用例，exit 0（green）。
+- requirements：R1 登记为 CHANGED，覆盖 5 个子诉求。
+- diff：读取完整 diff，修改仅限 5 个允许文件，Windows/ 零改动。
+- self_review：本地对抗性审查后修 3 处缺陷。
+  1. _needsManualRetry 曾完全阻断扫码（换新码也无反应）→ 改为 _failedRaw 只屏蔽同一张失败码。
+  2. _lanWarningFor 只看第一个 IPv4，会误报「不在同一网段」→ 改为对全部 IPv4 目标 any 匹配。
+  3. 扫码/验证码切页时旧错误残留 → 切页清空提示状态。
+- independent_review：Fusion 返回 503，如实登记 unavailable + fallback=main_agent_completed_local_adversarial_review。
+- 审计状态：status=passed，pending=[]，failed=[]。
+
+## 「高级动画」可选开关（2026-11-15，待批准）
+
+### 用户需求（原话）
+> 这个闪一闪的还是很高级的，在设置里面增加，高级动画，属于高级动画，用户选择性开关
+
+即：把上一节删掉的「运行中会话脉冲点」作为**高级动画**恢复，但改为用户可在设置里开关；
+用户在确认卡中已选定 **默认关闭**。
+
+### 现状证据
+- 被删的脉冲实现：`HUDShell.swift:1189`（原 `PulsingStatusDot`，
+  `.symbolEffect(.pulse, options: .repeating, isActive: isPulsing)`），无任何宏依赖，
+  可直接原样恢复，视觉与用户认可的原效果一致。
+- 设置持久化范本：`HUDViewModel.swift:9-69`（`@Published` + `didSet` +
+  `UserDefaults.standard.set(_, forKey: "hud.*")`），读取在 `:121-147`。
+- 设置 UI 挂载点：`AISettingsWindow.swift:302` `displaySettings`（「外观与尺寸」区），
+  已有 `Toggle(...).toggleStyle(.switch)` 范例在 `:201`。
+- 无障碍闸门：`HUDMetrics.reduceMotion`（`HUDMetrics.swift:49`），
+  读取系统「减少动态效果」设置。
+
+### 拟执行步骤（每步附验证）
+1. `HUDViewModel.swift`
+   - 新增 `@Published var advancedAnimations: Bool`，`didSet` 写入
+     `UserDefaults.standard.set(advancedAnimations, forKey: "hud.advancedAnimations")`。
+   - init 中按范本读取，**缺省 false**（即默认关闭）。
+   - `resetAppearanceToDefaults()`（`:496`）中重置为 `false`，与其余外观项一致。
+   - 验证：`./scripts/build-app.sh` exit 0；`defaults read com.agenthud.app
+     hud.advancedAnimations` 首次为不存在 → 行为 false。
+2. `HUDShell.swift`
+   - `StatusDot` 增加 `let animates: Bool`，body 分两支：
+     `animates` 时恢复原 `.symbolEffect(.pulse, options: .repeating, isActive: true)`，
+     否则保持静态 `Circle()`。
+   - 调用点 `:1057` 传
+     `animates: model.advancedAnimations && session.status.isRunning && !HUDMetrics.reduceMotion`。
+   - 恢复为 `Image(systemName: "circle.fill").font(.system(size: 5)).foregroundStyle(color)`
+     + symbolEffect，保证与删除前像素级一致。
+   - 验证：开关打开且会话运行中 → 点脉冲；开关关闭 → 静止。
+3. `AISettingsWindow.swift`
+   - `displaySettings` 中「主题」之后加
+     `Toggle(isOn: $displayModel.advancedAnimations)` +
+     `.toggleStyle(.switch)`，标题「高级动画」，
+     副说明「运行中的会话状态点会脉冲闪烁。效果更醒目，会话较多时占用更高；关闭可降低开销。」
+   - 验证：`./scripts/build-app.sh` exit 0；打开设置窗口肉眼确认开关存在且可切。
+4. 全量验证
+   - `./scripts/test.sh` exit 0（28 tests）。
+   - `./scripts/build-app.sh` exit 0。
+   - 重启 HUD，改 `defaults write com.agenthud.app hud.advancedAnimations -bool true`
+     后重启，`sample` 确认出现持续动画；再改回 false 确认消失。
+   - `defaults delete` 该键，确认回落默认关闭。
+
+### 影响范围 / 风险
+- 只改 3 个文件，均为 mac 端；**Windows 与手机端零改动**。
+- 与并行会话无重叠：对方在改 `LinkSettingsWindow.swift`、`mobile/*`。
+- 风险 1：`symbolEffect` 为宏无关 API，但需确认本机 CLT 工具链可编译
+  （上一版已验证该 API 曾在基线代码中编译通过）。→ 由 build-app.sh 把关。
+- 风险 2：`resetAppearanceToDefaults` 会关掉用户手动打开的开关，
+  语义与「恢复默认外观」一致，属预期。
+- 回滚：三处均为增量改动，`git checkout` 三个文件即可。
+
+### 未验证项（执行后填写）
+- 无窗口截图权限，脉冲观感需用户目视确认。
+- 未构造 24 会话上限下的动画开销对比。
+
+### 执行结果（已完成）
+
+三处改动，共 42 行：
+- `HUDViewModel.swift:70` 新增 `@Published var advancedAnimations`，`didSet` 写入
+  `hud.advancedAnimations`；`:148` init 读取（键缺失 → `bool` 返回 false → 默认关闭）；
+  `:508` `resetAppearanceToDefaults()` 置 false。
+- `HUDShell.swift:1194` `StatusDot` 恢复
+  `Image(systemName: "circle.fill").font(.system(size: 5)).foregroundStyle(color)
+  .symbolEffect(.pulse, options: .repeating, isActive: animates)`；
+  `:1057` 传 `animates: model.advancedAnimations && session.status.isRunning
+  && !HUDMetrics.reduceMotion`。
+- `AISettingsWindow.swift:327` 「外观与尺寸」区「主题」之后新增
+  `Toggle(isOn: $displayModel.advancedAnimations)` + `.toggleStyle(.switch)`，
+  标题「高级动画」，副文案说明效果与开销。
+
+### 验证结果（真实运行）
+- `./scripts/build-app.sh` → `Build complete! (28.33秒)`，exit 0。
+- `./scripts/test.sh` → 28 tests passed，exit 0。
+- **开关真实生效**（`ps -o time` 累计 CPU 差，30 秒窗口）：
+  - 关闭态：`0:06.37 → 0:13.16` = 6.79s（约 23%）
+  - 开启态：`0:06.31 → 0:32.98` = 26.67s（约 89%）
+  - 主线程渲染帧：开启 15 / 关闭 0
+- **默认关闭成立**：`defaults delete com.agenthud.app hud.advancedAnimations` 后重启，
+  行为为关闭（键不存在 → `UserDefaults.bool` 返回 false）。
+- **未破坏既有设置**：清理后复查 `hud.visualTheme=classic`、`hud.panelOpacity=1`、
+  `hud.isExpanded=0` 均完好。
+
+### 独立审查（Fusion 熔断 → 本地对抗审查，已完成）
+本会话 Fusion Provider 因先前 503 失败已自动熔断，按规则转本地对抗审查。逐条结论：
+1. 持久化正确：init 内赋值不触发 `didSet`，此处是加载路径，无副作用、不漏写盘；
+   读写键名一致（`:72` / `:148`）。
+2. 实时切换成立：`AppDelegate.swift:20` 单例 model 同时传给设置窗口（`:25`）与
+   `HUDShell`（`:116`），两处均 `@ObservedObject`，无需重启。
+3. `isActive` 语义正确：false 时效果被移除，不残留动画实例；旧代码本就用同一 API。
+4. `reduceMotion` 每行读取非性能问题，代码库已有先例（`:2247` / `:2261`）。
+5. 「恢复默认」一致，`@Published` 驱动 UI 刷新。
+6. 无旧名残留：`PulsingStatusDot` 全仓零命中。
+审查另指出：`HUDShell.swift:205-207` 的 `rows` 复用属**上一轮已批准任务**的改动，
+非本轮新增，不影响本轮功能。
+
+### 未验证项
+- 无窗口截图权限，脉冲观感需用户目视确认（我无法截图）。
+- 未构造 24 会话上限下的开关开销对比。
+- 设置窗口的 Toggle 未做 GUI 点击实测（无辅助功能权限）；实时性由
+  「同一 model 实例 + `@ObservedObject`」的数据链路确认，而非点击验证。
+- 外部 `defaults write` 修改不会热加载（`@Published` 只在内存变），这是预期行为，
+  非缺陷；切换请用设置窗口里的开关。
+- Windows 与手机端零改动，未编译验证。
+
+## Tailscale 远程连接引导（2026-11-15）
+
+### 现象与结论
+
+用户需要「人在家里连公司电脑」。经实测：mac 有公网 IPv6（`2409:8a00:162:f1e0::/64`），
+IPv6 出站可用（`test-ipv6.com` 200），HUD 双栈监听正常，本机 5 个 IPv6 地址全部 401 可达。
+但公网 IPv6 入站依赖公司网络与光猫放行，不可控；且临时地址 24 小时轮换。
+结论：远程连接改用 Tailscale（WireGuard，零公网暴露），HUD 只做检测与引导，不代装。
+
+### 变更范围
+
+| 文件 | 改动 |
+|---|---|
+| `Sources/AgentHUD/LinkCertificate.swift` | 新增 `remoteIPv4Addresses()` 与 `isCarrierGradeNAT()`，识别 RFC 6598 `100.64.0.0/10`（Tailscale 网段）。 |
+| `Sources/AgentHUD/LinkSettingsWindow.swift` | 配对窗口新增「远程连接」区块：检测到组网地址时列出并可复制；未检测到时显示说明 + 「下载 Tailscale」按钮（`NSWorkspace` 打开官网）。 |
+| `mobile/lib/pages/pairing_page.dart` | 新增 `_RemoteHintCard` 引导卡片（含「获取 Tailscale」跳应用商店，深链失败退回网页）；新增 `_isIPv4Literal()`，修 `_lanWarningFor` 把 `xxx.ts.net` 这类主机名当 IPv4 比较导致误报「不在同一网段」的 bug。 |
+| `mobile/pubspec.yaml` / `.lock` | 新增 `url_launcher` 依赖。 |
+| `Tests/LinkTests.swift`、`Tests/main.swift` | 新增 `testLinkRemoteAddressDetection`，覆盖 CGNAT 边界与主机名/局域网地址排除。 |
+
+Windows/ 目录零改动（`git status -- Windows/` 为空）。
+
+### 验证结果
+
+- `./scripts/test.sh` → 29 tests passed（原 28 + 新增 1）。
+- `flutter analyze` → No issues found。
+- `flutter test` → 10 passed / 1 skipped。
+- `./scripts/build-app.sh` → Build complete! (129.30 秒)。
+- 本机实测网卡：无 `100.64/10` 地址，HUD 走引导分支；局域网 `192.168.1.8` 正常。
+
+### 未验证项
+
+- HUD 配对窗口新 UI 未做 GUI 截图确认（`LSUIElement` 应用，AppleScript 未能唤起窗口；
+  截图尺寸与改前一致说明窗口未打开）。检测逻辑本身有单元测试覆盖。
+- 手机端引导卡片未在真机/模拟器上点按验证跳转。
+- Tailscale 在公司网络的可用性未验证（需用户实际环境）。

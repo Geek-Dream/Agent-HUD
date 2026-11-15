@@ -68,6 +68,11 @@ abstract interface class SessionActionsApi {
 
 class LinkApi implements MonitoringApi, SessionActionsApi {
   final Map<String, HttpClient> _clients = {};
+
+  /// 上次成功的地址（按 地址集合+端口+指纹 归档）。电脑会同时上报多个地址，
+  /// 其中虚拟机/网桥地址在手机侧永远连不通；每次都从头重试会让每个请求都
+  /// 先吃满一次连接超时，表现就是「能用但很卡」。
+  final Map<String, String> _preferredAddress = {};
   bool _closed = false;
   static String get defaultDeviceName {
     final system = Platform.operatingSystem;
@@ -77,8 +82,9 @@ class LinkApi implements MonitoringApi, SessionActionsApi {
 
   Future<LinkedDevice> completeQr(
     PairingOffer offer,
-    String deviceName,
-  ) async {
+    String deviceName, {
+    void Function(String host, int port, int index, int total)? onAttempt,
+  }) async {
     final value = await _postOnAllAddresses(
       offer.addresses,
       offer.port,
@@ -89,6 +95,7 @@ class LinkApi implements MonitoringApi, SessionActionsApi {
         'secret': offer.secret,
         'deviceName': deviceName,
       },
+      onAttempt: onAttempt,
     );
     return LinkedDevice.fromPairing(value);
   }
@@ -98,6 +105,7 @@ class LinkApi implements MonitoringApi, SessionActionsApi {
     required int port,
     required String code,
     required String deviceName,
+    void Function(String host, int port, int index, int total)? onAttempt,
   }) async {
     // The short-lived, attempt-limited code authenticates this first exchange.
     // The returned certificate fingerprint is pinned for every later request.
@@ -107,6 +115,7 @@ class LinkApi implements MonitoringApi, SessionActionsApi {
       '/v1/pair/verify-code',
       null,
       {'code': code, 'deviceName': deviceName},
+      onAttempt: onAttempt,
     );
     return LinkedDevice.fromPairing(value);
   }
@@ -262,6 +271,7 @@ class LinkApi implements MonitoringApi, SessionActionsApi {
     String? fingerprint,
     Map<String, dynamic> body, {
     String? authorization,
+    void Function(String host, int port, int index, int total)? onAttempt,
   }) async {
     return (await _tryAddresses<_ApiResponse>(
       addresses,
@@ -278,6 +288,7 @@ class LinkApi implements MonitoringApi, SessionActionsApi {
         request.write(jsonEncode(body));
         return _readResponse(request);
       },
+      onAttempt: onAttempt,
     ))!
         .body!;
   }
@@ -307,17 +318,26 @@ class LinkApi implements MonitoringApi, SessionActionsApi {
     String? fingerprint,
     Future<T?> Function(HttpClient client, Uri uri) action, {
     Duration timeout = const Duration(seconds: 9),
+    void Function(String host, int port, int index, int total)? onAttempt,
   }) async {
     Object? lastError;
-    for (final address in addresses.map(normalizeLinkAddress)) {
+    final preferredKey = '${addresses.join(',')}|$port|${fingerprint ?? 'pairing'}';
+    final ordered = _orderedAddresses(addresses, preferredKey);
+    final attempted = <String>[];
+    for (var index = 0; index < ordered.length; index += 1) {
+      final address = ordered[index];
       final key = '$address:$port:${fingerprint ?? 'pairing'}';
       final client =
           _clients.putIfAbsent(key, () => _pinnedClient(fingerprint));
+      attempted.add(formatLinkAddress(address, port));
+      onAttempt?.call(address, port, index + 1, ordered.length);
       try {
         if (_closed) throw const LinkApiException('连接已关闭');
-        return await action(client,
+        final result = await action(client,
                 Uri(scheme: 'https', host: address, port: port, path: path))
             .timeout(timeout);
+        _preferredAddress[preferredKey] = address;
+        return result;
       } on TimeoutException catch (error) {
         lastError = error;
       } on SocketException catch (error) {
@@ -332,7 +352,17 @@ class LinkApi implements MonitoringApi, SessionActionsApi {
       _clients.remove(key)?.close(force: true);
     }
     throw LinkApiException(
-        '无法连接电脑，请检查 IPv4/IPv6 地址、端口及网络是否可达。${lastError ?? ''}');
+        '连不上电脑（已尝试 ${attempted.join('、')}）。'
+        '请确认手机和电脑在同一个局域网，或改用电脑上显示的地址与端口重试。'
+        '${lastError == null ? '' : '\n$lastError'}');
+  }
+
+  List<String> _orderedAddresses(List<String> addresses, String preferredKey) {
+    final normalized = addresses.map(normalizeLinkAddress).toList();
+    final preferred = _preferredAddress[preferredKey];
+    if (preferred == null || normalized.length < 2) return normalized;
+    if (!normalized.contains(preferred)) return normalized;
+    return [preferred, ...normalized.where((item) => item != preferred)];
   }
 
   Future<_ApiResponse> _readResponse(HttpClientRequest request) async {
