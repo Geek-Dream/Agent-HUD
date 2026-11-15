@@ -221,6 +221,11 @@ public static partial class TextTools
             return project is null ? "处理项目任务" : $"处理{project}项目任务";
         }
 
+        if (IsAlreadyConciseTitle(cleaned, Math.Min(limit, 28)))
+        {
+            return Limit(cleaned, limit);
+        }
+
         var actionName = InferAction(cleaned);
         var objectName = InferObject(cleaned);
         if (!string.IsNullOrWhiteSpace(objectName) && objectName != project)
@@ -401,6 +406,33 @@ public static partial class TextTools
 
     private static string Limit(string value, int limit) =>
         value.Length <= limit ? value : value[..limit];
+
+    private static bool IsAlreadyConciseTitle(string value, int limit)
+    {
+        if (value.Length > limit)
+        {
+            return false;
+        }
+
+        var clearActionPrefixes = new[]
+        {
+            "完善", "设计", "实现", "修复", "优化", "检查", "查询",
+            "添加", "新增", "创建", "启动", "梳理", "验证", "调整",
+            "完成", "处理", "分析", "排查", "定位", "读取", "阅读", "理解",
+            "增加"
+        };
+        if (!clearActionPrefixes.Any(value.StartsWith))
+        {
+            return false;
+        }
+
+        var vagueTerms = new[]
+        {
+            "这个", "那个", "东西", "一下", "刚刚", "为什么", "为啥",
+            "问题", "不可", "不能", "无法", "对不上", "不好", "太丑", "太淡"
+        };
+        return !vagueTerms.Any(value.Contains);
+    }
 
     [GeneratedRegex(@"\s+")]
     private static partial Regex WhitespaceRegex();
