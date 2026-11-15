@@ -15,10 +15,14 @@ class _ApiResponse {
 }
 
 class LinkApiException implements Exception {
-  const LinkApiException(this.message, {this.statusCode});
+  const LinkApiException(this.message, {this.statusCode, this.body});
 
   final String message;
   final int? statusCode;
+
+  /// 服务端在非 2xx 响应里返回的 JSON 体。投递失败时里面带有 `deliveryId`
+  /// 和 `status`，手机端需要它才能继续轮询投递状态。
+  final Map<String, dynamic>? body;
 
   @override
   String toString() => message;
@@ -238,18 +242,29 @@ class LinkApi implements MonitoringApi, SessionActionsApi {
     String clientMessageId,
     String text,
   ) async {
-    final value = await _postOnAllAddresses(
-      device.addresses,
-      device.port,
-      '/v1/sessions/${Uri.encodeComponent(id)}/messages',
-      device.fingerprint,
-      {
-        'clientMessageId': clientMessageId,
-        'text': text,
-      },
-      authorization: device.authorization,
-    );
-    return MessageDelivery.fromJson(value);
+    try {
+      final value = await _postOnAllAddresses(
+        device.addresses,
+        device.port,
+        '/v1/sessions/${Uri.encodeComponent(id)}/messages',
+        device.fingerprint,
+        {
+          'clientMessageId': clientMessageId,
+          'text': text,
+        },
+        authorization: device.authorization,
+      );
+      return MessageDelivery.fromJson(value);
+    } on LinkApiException catch (error) {
+      // 投递失败时服务端用非 2xx 返回，但响应体仍是消息投递记录。
+      // 有 deliveryId 就交给调用方继续轮询，错误码由 /v1/deliveries/{id} 提供。
+      final body = error.body;
+      final deliveryId = body?['deliveryId'];
+      if (deliveryId is String && deliveryId.isNotEmpty) {
+        return MessageDelivery.fromJson(body!);
+      }
+      rethrow;
+    }
   }
 
   @override
@@ -377,8 +392,11 @@ class LinkApi implements MonitoringApi, SessionActionsApi {
       throw const LinkApiException('配对信息或设备授权已失效，请重新关联。', statusCode: 401);
     }
     if (response.statusCode < 200 || response.statusCode >= 300) {
-      throw LinkApiException('电脑返回错误（${response.statusCode}）。',
-          statusCode: response.statusCode);
+      throw LinkApiException(
+        _errorMessage(response.statusCode, body),
+        statusCode: response.statusCode,
+        body: _decodeJsonMap(body),
+      );
     }
     final value = jsonDecode(body);
     if (value is! Map<String, dynamic>) {
@@ -430,5 +448,25 @@ class LinkApi implements MonitoringApi, SessionActionsApi {
       };
     }
     return client;
+  }
+
+  /// 非 2xx 响应体解析成 Map；不是 JSON 对象时返回 null，不让解析失败掩盖原始错误。
+  static Map<String, dynamic>? _decodeJsonMap(String body) {
+    if (body.isEmpty) return null;
+    try {
+      final value = jsonDecode(body);
+      return value is Map<String, dynamic> ? value : null;
+    } on FormatException {
+      return null;
+    }
+  }
+
+  /// 优先使用服务端返回的错误码，没有时回退到状态码文案。
+  static String _errorMessage(int statusCode, String body) {
+    final error = _decodeJsonMap(body)?['error'];
+    if (error is String && error.isNotEmpty) {
+      return '电脑返回错误：$error（$statusCode）。';
+    }
+    return '电脑返回错误（$statusCode）。';
   }
 }

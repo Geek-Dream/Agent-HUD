@@ -25,7 +25,7 @@ class SessionDetailPage extends StatefulWidget {
 class _SessionDetailPageState extends State<SessionDetailPage> {
   final TextEditingController _messageController = TextEditingController();
   final FocusNode _messageFocus = FocusNode();
-  String? _lastClientMessageId;
+  String? _lastDeliveryId;
   bool _sending = false;
 
   @override
@@ -106,9 +106,10 @@ class _SessionDetailPageState extends State<SessionDetailPage> {
   Future<void> _sendMessage(AgentSession session) async {
     final String text = _messageController.text.trim();
     if (text.isEmpty || _sending) return;
-    final String clientMessageId = _lastClientMessageId ??
-        DateTime.now().millisecondsSinceEpoch.toString();
-    _lastClientMessageId = clientMessageId;
+    // 每次发送都必须用新的幂等 ID，否则服务端会命中上一条的幂等缓存，
+    // 第二条消息永远投不出去。
+    final String clientMessageId =
+        DateTime.now().microsecondsSinceEpoch.toString();
     setState(() => _sending = true);
     try {
       final MessageDelivery? delivery = await widget.controller.sendMessage(
@@ -120,8 +121,13 @@ class _SessionDetailPageState extends State<SessionDetailPage> {
         _showActionError();
         return;
       }
-      if (delivery != null && delivery.status != 'failed' && mounted) {
-        _messageController.clear();
+      if (delivery != null) {
+        if (mounted) {
+          setState(() => _lastDeliveryId = delivery.deliveryId);
+        }
+        if (delivery.status != 'failed' && mounted) {
+          _messageController.clear();
+        }
       }
     } finally {
       if (mounted) {
@@ -129,6 +135,78 @@ class _SessionDetailPageState extends State<SessionDetailPage> {
       }
     }
   }
+
+  /// 最近一条消息的投递状态。没有可展示的内容时返回空列表（不占位）。
+  List<Widget> _deliveryNotice(SessionController controller) {
+    final String? deliveryId = _lastDeliveryId;
+    if (deliveryId == null) return const <Widget>[];
+    final MessageDelivery? delivery = controller.deliveryStatus(deliveryId);
+    final String? pollError = controller.deliveryError(deliveryId);
+    if (delivery == null && pollError == null) {
+      return const <Widget>[];
+    }
+    final (IconData icon, Color color, String text) = _describeDelivery(
+      delivery,
+      pollError,
+    );
+    return <Widget>[
+      Padding(
+        padding: const EdgeInsets.only(bottom: HudSpacing.md),
+        child: _ComposerNotice(icon: icon, color: color, text: text),
+      ),
+    ];
+  }
+
+  static (IconData, Color, String) _describeDelivery(
+    MessageDelivery? delivery,
+    String? pollError,
+  ) {
+    if (pollError != null) {
+      return (Icons.error_outline_rounded, HudColors.failed, pollError);
+    }
+    switch (delivery!.status) {
+      case 'accepted':
+        return (
+          Icons.schedule_rounded,
+          HudColors.waiting,
+          '已发送，等待电脑处理…',
+        );
+      case 'delivered':
+        return (
+          Icons.mark_email_read_outlined,
+          HudColors.completed,
+          '已投递到会话',
+        );
+      case 'observed':
+        return (
+          Icons.play_circle_outline_rounded,
+          HudColors.completed,
+          'Agent 已开始处理',
+        );
+      case 'failed':
+        return (
+          Icons.error_outline_rounded,
+          HudColors.failed,
+          '发送失败：${_deliveryErrorLabel(delivery.error)}',
+        );
+      default:
+        return (
+          Icons.hourglass_empty_rounded,
+          HudColors.textSecondary,
+          '投递状态：${delivery.status}',
+        );
+    }
+  }
+
+  static String _deliveryErrorLabel(String? error) => switch (error) {
+        'sessionOffline' => '会话已经离线',
+        'providerUnsupported' => '该 Agent 不支持输入',
+        'inputUnavailable' => '输入通道暂时不可用',
+        'agentBusy' => 'Agent 正在处理上一条消息',
+        'invalidMessage' => '消息内容为空或过长',
+        'deliveryFailed' => '投递失败',
+        _ => error ?? '未知原因',
+      };
 
   Widget _buildMessageComposer(AgentSession session) {
     if (!widget.controller.supportsConversation) {
@@ -183,6 +261,7 @@ class _SessionDetailPageState extends State<SessionDetailPage> {
                   text: reason,
                 ),
               ),
+            ..._deliveryNotice(widget.controller),
             Row(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [

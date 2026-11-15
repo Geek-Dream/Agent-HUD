@@ -1574,3 +1574,159 @@ Windows/ 目录零改动（`git status -- Windows/` 为空）。
 | Android APK CI（tag） | success（run 43668529999） |
 | Release | `v0.1.1-beta.5` prerelease，附件 `app-release.apk` 65.2 MB |
 | Windows Build CI | failure，**历史遗留**：失败步骤 `Test core`，自 `5b65b43`(11-12 07:59) 起连续 8 次；本次提交 `Windows/` 改动数为 0，本机无 dotnet 无法复现，GitHub 日志接口 403 取不到明细 |
+
+---
+
+# 手机端对话链路缺陷修复 + 发布 v0.1.1-beta.7（2026-11-15，待批准）
+
+## 状态
+
+待审批。用户已选：先修缺陷再发 beta.7。
+
+## 已核实的前置事实
+
+- `main` 与 `origin/main` 完全一致（`0 0`），工作区干净，HEAD `71b6fd3`。
+- `mobile/pubspec.yaml` 当前 `0.1.1-beta.6+12`；`v0.1.1-beta.6` Release 已发布且 APK 附件在。
+- 基线：`./scripts/test.sh` exit 0（29 tests passed）；`flutter analyze --no-fatal-infos --no-fatal-warnings` exit 0（No issues found）。
+
+## 缺陷现状（已读源码核实，非文档转述）
+
+### 缺陷 A：第二条消息被幂等拦截
+
+`mobile/lib/pages/session_detail_page.dart:109-111`
+
+```dart
+final String clientMessageId = _lastClientMessageId ??
+    DateTime.now().millisecondsSinceEpoch.toString();
+_lastClientMessageId = clientMessageId;
+```
+
+`_lastClientMessageId` 赋值后永不清空。第二条消息复用同一 ID，
+服务端 `DeliveryStore.find(clientMessageId:)` 命中幂等缓存直接返回旧记录，
+第二条消息实际从未投递，但界面仍会清空输入框。
+
+判定：`_lastClientMessageId` 全文仅 3 处引用，无其他读取点，是纯残留。
+正确做法是每次发送生成新 ID，该字段应删除。
+
+### 缺陷 B：非 2xx 响应体被丢弃（**修 C 的前置**）
+
+`mobile/lib/link_api.dart:379-382`
+
+```dart
+if (response.statusCode < 200 || response.statusCode >= 300) {
+  throw LinkApiException('电脑返回错误（${response.statusCode}）。',
+      statusCode: response.statusCode);
+}
+```
+
+**关键发现**：投递失败时服务端返回的是非 2xx + `LinkMessageResponse`
+（`LinkServer.swift` 走 `messageStatus(for:)`，409/422/501/503），
+响应体里有 `deliveryId` 和 `status`，**没有** `error` 字段。
+而 `_readResponse` 一遇非 2xx 就抛异常并丢弃 body，导致手机端：
+1. 拿不到 deliveryId → 无法轮询投递状态；
+2. 拿不到错误码（错误码实际只在后续 `GET /v1/deliveries/{id}` 里返回）。
+
+所以修 B 是修 C 的必要条件，不能拆开。
+
+### 缺陷 C：投递状态完全不展示
+
+- `mobile/lib/pages/session_detail_page.dart` 对 `deliveryStatus` 的引用数为 **0**
+  （`delivery` 变量仅用于 `delivery.status != 'failed'` 判断）。
+- `session_controller.dart:327-334` 的 `_pollDelivery` 在异常分支
+  `timer.cancel()` 后静默丢弃，用户看不到任何失败原因。
+- `MessageDelivery.error` 字段已存在（`models.dart`），但无人读取。
+
+## 实施步骤
+
+### 步骤 1：`link_api.dart` — 让非 2xx 也带 body 抛出
+
+- `LinkApiException` 增加 `final Map<String, dynamic>? body;`（可选，向后兼容）。
+- `_readResponse` 非 2xx 分支：先读 body，尝试 `jsonDecode` 成 Map，
+  一并塞进异常；解析失败则为 null（不因解析失败覆盖原始错误）。
+- 错误文案优先用 body 里的 `error` 字段（服务端错误码），
+  回退到现有「电脑返回错误（code）」。
+- 验证：`flutter analyze` exit 0；新增单测覆盖非 2xx + body 场景。
+
+### 步骤 2：`session_controller.dart` — 投递异常可见
+
+- `_pollDelivery` 异常分支改为：记录 `actionError = '投递状态查询失败：…'`，
+  并 `notifyListeners()`，不再静默 cancel。
+- 验证：`session_controller_test.dart` 增加轮询异常用例。
+
+### 步骤 3：`session_detail_page.dart` — 删除复用的幂等 ID + 展示投递状态
+
+- 删除 `_lastClientMessageId` 字段与两处读写，每次发送都用新 ID。
+- 发送后记录当前 `deliveryId`，在输入栏上方渲染一行状态：
+  - `accepted` → 「已发送，等待电脑处理…」
+  - `delivered` → 「已投递到会话」
+  - `observed` → 「Agent 已开始处理」
+  - `failed` → 「发送失败」+ 错误码中文映射
+- 状态通过 `widget.controller.deliveryStatus(deliveryId)` 读取，
+  `AnimatedBuilder` 已在监听 controller，无需额外 setState。
+- 错误码中文映射：`sessionOffline`/`providerUnsupported`/`inputUnavailable`/
+  `agentBusy`/`invalidMessage`/`deliveryFailed` → 对应中文文案。
+- 验证：`flutter analyze` exit 0；无 widget test 环境，靠人工 + integration 测试。
+
+### 步骤 4：版本发布
+
+- `mobile/pubspec.yaml`：`0.1.1-beta.6+12` → `0.1.1-beta.7+13`。
+- 提交、推送、打 tag `v0.1.1-beta.7`、推 tag。
+- 轮询 CI 确认 APK 附件上传，记录 SHA-256。
+
+## 拟执行命令（逐条审批）
+
+### A 组：源码修改（写文件，改源码）
+
+1. 编辑 `mobile/lib/link_api.dart` — 加 `body` 字段与解析。
+2. 编辑 `mobile/lib/session_controller.dart` — 轮询异常可见化。
+3. 编辑 `mobile/lib/pages/session_detail_page.dart` — 删幂等 ID、加投递状态行。
+4. 编辑 `mobile/test/session_controller_test.dart` — 新增用例。
+
+### B 组：验证（只读 + 写入 .dart_tool 缓存）
+
+5. `cd mobile && flutter analyze --no-fatal-infos --no-fatal-warnings` — 静态分析。
+6. `cd mobile && flutter test` — 单元测试。
+7. `./scripts/test.sh` — macOS 回归（应仍为 29 passed）。
+8. `./scripts/test-mobile-link.sh` — 真实 LinkServer + Dart 端到端（**系统操作**：临时启动本地 HTTPS 服务 + 写临时文件）。
+
+### C 组：提交与发布（**远程写入，需明确批准**）
+
+9. `git diff --check` — 空白检查；只读。
+10. `git add -- mobile/lib mobile/test mobile/pubspec.yaml PLAN.md` — 暂存。
+11. `git diff --cached --stat` — 核对暂存范围；只读。
+12. `git commit -m "fix(mobile): 修复消息幂等复用与投递状态不可见"` — 创建提交。
+13. `git push origin main` — **推送远程**。
+14. `git tag -a v0.1.1-beta.7 -m "AgentHUD v0.1.1-beta.7"` — 创建标签。
+15. `git push origin v0.1.1-beta.7` — **推送标签，触发 APK 构建**。
+16. 轮询 GitHub Release 附件，记录 APK 大小与 SHA-256。
+
+## 边界
+
+- **不改 macOS `LinkServer.swift` / `LinkResponses.swift`**：当前协议已足够，
+  错误码通过 `GET /v1/deliveries/{id}` 获取，`LinkMessageResponse` 无需加字段。
+- **不改 Windows 任何文件**：`AgentHudLinkHost.cs` 的错误码已是 camelCase，
+  且本机无 dotnet 无法验证。
+- 不改 `models.dart`（`MessageDelivery` 字段已够用）。
+- 不修 `observed` 状态未产出、`AgentRuntimeRegistry` 死代码、
+  `GET /v1/deliveries/{id}` 归属校验 —— 这三项属 macOS 端协议层，超出本轮范围。
+- 不修 Windows CI 红灯（历史遗留，本机无法复现）。
+- 不强制推送、不改旧 Release。
+
+## 风险
+
+- **风险 1**：`LinkApiException` 加字段会影响所有 catch 点。
+  缓解：新字段可选带默认值，现有调用点无需改动；`flutter analyze` 把关。
+- **风险 2**：投递状态行会改变详情页布局，可能与既有视觉不一致。
+  缓解：沿用现有 `_ComposerNotice` 组件，不改样式体系。
+- **风险 3**：无 widget test 环境，界面改动只能靠 `flutter analyze` + 集成测试验证，
+  真实观感需用户确认。
+
+## 回滚
+
+三个源码文件均为增量改动：`git checkout -- mobile/lib mobile/test` 即可回退。
+若已推送，用新提交 revert，不 reset 远程。
+
+## 未验证项（执行后填写）
+
+- 手机真机/模拟器上的投递状态展示与错误文案。
+- Windows 端零改动，不声称验证。

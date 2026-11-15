@@ -42,6 +42,7 @@ class SessionController extends ChangeNotifier {
   bool get supportsConversation => status?.supportsConversation ?? false;
 
   final Map<String, MessageDelivery> _deliveries = {};
+  final Map<String, String> _deliveryErrors = {};
   final Map<String, Timer> _deliveryPollers = {};
 
   List<AgentSession> get sessions {
@@ -315,6 +316,9 @@ class SessionController extends ChangeNotifier {
 
   MessageDelivery? deliveryStatus(String deliveryId) => _deliveries[deliveryId];
 
+  /// 轮询投递状态失败的原因；成功查询后清除。
+  String? deliveryError(String deliveryId) => _deliveryErrors[deliveryId];
+
   void _pollDelivery(String deliveryId) {
     _deliveryPollers[deliveryId]?.cancel();
     _deliveryPollers[deliveryId] = Timer.periodic(
@@ -329,6 +333,7 @@ class SessionController extends ChangeNotifier {
           final MessageDelivery delivery =
               await actions.deliveryStatus(device, deliveryId);
           _deliveries[deliveryId] = delivery;
+          _deliveryErrors.remove(deliveryId);
           if (!_isDisposed) notifyListeners();
           if (delivery.isFinal) {
             timer.cancel();
@@ -337,6 +342,10 @@ class SessionController extends ChangeNotifier {
         } catch (exception) {
           timer.cancel();
           _deliveryPollers.remove(deliveryId);
+          if (_isDisposed) return;
+          _deliveryErrors[deliveryId] =
+              '投递状态查询失败：${SessionController._message(exception)}';
+          notifyListeners();
         }
       },
     );
