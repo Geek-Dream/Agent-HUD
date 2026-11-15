@@ -281,11 +281,14 @@ public sealed class AgentHudLinkHost : IAsyncDisposable
                 return Results.NotFound(new { error = "not_found" });
             }
             var (deliveryStatus, error) = status.Value;
+            // 与 macOS 端保持一致：枚举取值按 camelCase 输出（如 sessionOffline）。
             return Results.Ok(new DeliveryResponse(
                 id,
                 string.Empty,
-                deliveryStatus.ToString().ToLowerInvariant(),
-                error?.ToString().ToLowerInvariant()));
+                JsonNamingPolicy.CamelCase.ConvertName(deliveryStatus.ToString()),
+                error is null
+                    ? null
+                    : JsonNamingPolicy.CamelCase.ConvertName(error.Value.ToString())));
         });
 
         _app = app;

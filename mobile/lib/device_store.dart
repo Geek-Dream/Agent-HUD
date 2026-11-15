@@ -6,7 +6,8 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'models.dart';
 
 class DeviceStore extends ChangeNotifier {
-  DeviceStore({FlutterSecureStorage? storage}) : _storage = storage ?? const FlutterSecureStorage();
+  DeviceStore({FlutterSecureStorage? storage})
+      : _storage = storage ?? const FlutterSecureStorage();
 
   static const _key = 'agenthud.linkedDevices.v1';
   final FlutterSecureStorage _storage;
@@ -21,13 +22,15 @@ class DeviceStore extends ChangeNotifier {
       final values = jsonDecode(raw) as List;
       _devices
         ..clear()
-        ..addAll(values.map((item) => LinkedDevice.fromJson(item as Map<String, dynamic>)));
+        ..addAll(values.map(
+            (item) => LinkedDevice.fromJson(item as Map<String, dynamic>)));
     }
     notifyListeners();
   }
 
   Future<void> upsert(LinkedDevice device) async {
-    _devices.removeWhere((item) => item.id == device.id || item.instanceId == device.instanceId);
+    _devices.removeWhere(
+        (item) => item.id == device.id || item.instanceId == device.instanceId);
     _devices.insert(0, device);
     await _save();
   }

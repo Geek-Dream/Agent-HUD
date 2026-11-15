@@ -205,7 +205,8 @@ private struct ExpandedHUDView: View {
     @ObservedObject var model: HUDViewModel
 
     var body: some View {
-        VStack(spacing: 0) {
+        let rows = model.visibleSessionRows
+        return VStack(spacing: 0) {
             expandedHeader
 
             if model.privacyMode {
@@ -218,7 +219,7 @@ private struct ExpandedHUDView: View {
             Group {
                 if model.isLoading && model.sessions.isEmpty {
                     LoadingState()
-                } else if model.visibleSessionRows.isEmpty {
+                } else if rows.isEmpty {
                     EmptyState(
                         statusFilter: model.statusFilter,
                         providerFilter: model.providerFilter
@@ -226,7 +227,7 @@ private struct ExpandedHUDView: View {
                 } else {
                     ScrollView {
                         LazyVStack(spacing: 0) {
-                            ForEach(model.visibleSessionRows) { row in
+                            ForEach(rows) { row in
                                 AgentRowView(
                                     model: model,
                                     session: row.session,
@@ -244,7 +245,7 @@ private struct ExpandedHUDView: View {
                         }
                         .animation(
                             HUDMetrics.listAnimation,
-                            value: model.visibleSessionRows.map(\.id)
+                            value: rows.map(\.id)
                         )
                     }
                 }
@@ -1053,7 +1054,12 @@ private struct AgentRowView: View {
                 .lineLimit(1)
 
                 HStack(spacing: 5) {
-                    PulsingStatusDot(color: session.status.color, isPulsing: session.status.isRunning)
+                    StatusDot(
+                        color: session.status.color,
+                        animates: model.advancedAnimations
+                            && session.status.isRunning
+                            && !HUDMetrics.reduceMotion
+                    )
                     Text(model.privacyMode ? "当前动作已隐藏" : session.currentAction)
                         .lineLimit(1)
                         .truncationMode(.tail)
@@ -1185,15 +1191,17 @@ private struct AgentRowView: View {
 
 private let importantTint = HUDTheme.important
 
-private struct PulsingStatusDot: View {
+private struct StatusDot: View {
     let color: Color
-    let isPulsing: Bool
+    let animates: Bool
 
     var body: some View {
+        // 脉冲（高级动画）是逐行常驻动画，会话越多开销越大，
+        // 因此默认关闭、由用户在设置里按需开启；关闭时保持静态实心点。
         Image(systemName: "circle.fill")
             .font(.system(size: 5))
             .foregroundStyle(color)
-            .symbolEffect(.pulse, options: .repeating, isActive: isPulsing)
+            .symbolEffect(.pulse, options: .repeating, isActive: animates)
     }
 }
 

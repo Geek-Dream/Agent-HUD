@@ -11,6 +11,7 @@ class FakeMonitoringApi implements MonitoringApi {
   int closeCount = 0;
   bool supportsRefresh = true;
   bool supportsConditionalRequests = true;
+  List<String> addresses = const [];
 
   @override
   Future<MonitoringStatus> status(LinkedDevice device) async {
@@ -21,6 +22,7 @@ class FakeMonitoringApi implements MonitoringApi {
       privacyMode: false,
       serverTime: DateTime.utc(2026, 11, 12),
       supportsRefresh: supportsRefresh,
+      addresses: addresses,
     );
   }
 
@@ -117,6 +119,26 @@ void main() {
     expect(api.refreshCount, 0);
     expect(api.sessionsCount, 2);
     expect(controller.sessions, hasLength(1));
+    controller.dispose();
+  });
+
+  test('server reported addresses replace stale ones', () async {
+    final api = FakeMonitoringApi()..addresses = ['192.168.9.9'];
+    LinkedDevice? updated;
+    final controller = SessionController(
+      device,
+      api: api,
+      onDeviceUpdated: (value) => updated = value,
+    );
+
+    await controller.refresh(scan: true);
+    expect(controller.device.addresses, ['192.168.9.9']);
+    expect(updated?.addresses, ['192.168.9.9']);
+
+    updated = null;
+    await controller.refresh();
+    expect(updated, isNull);
+
     controller.dispose();
   });
 

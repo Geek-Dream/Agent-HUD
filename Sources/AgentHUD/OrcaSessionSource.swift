@@ -65,6 +65,7 @@ enum OrcaSessionSource {
             workspacePayload["sleepingAgentSessionsByPaneKey"]
         ) ?? [:]
         let collapsedProjects = collapsedProjectKeys(uiPayload)
+        let transcripts = TranscriptIndex()
         var sessionsByID: [String: AgentSession] = [:]
 
         for (worktreeKey, value) in tabsByWorktree {
@@ -110,6 +111,7 @@ enum OrcaSessionSource {
                     worktreeKey: worktreeKey,
                     statusEntry: status,
                     sleepingEntry: sleeping,
+                    transcripts: transcripts,
                     now: now
                 )
 
@@ -135,11 +137,16 @@ enum OrcaSessionSource {
         worktreeKey: String,
         statusEntry: [String: Any]?,
         sleepingEntry: [String: Any]?,
+        transcripts: TranscriptIndex,
         now: Date
     ) -> AgentSession {
         let statusPayload = JSONTools.dictionary(statusEntry?["payload"]) ?? [:]
         let providerSession = JSONTools.dictionary(statusEntry?["providerSession"]) ?? [:]
+        // Orca 只保留最近的 status 条目，更早的标签页没有条目，也就拿不到
+        // transcriptPath，适配器不会跑，状态会错误地退化成 unknown。这里按会话 ID
+        // 在本地会话目录里补查一次，让这些标签页也能拿到真实状态。
         let transcriptPath = JSONTools.string(providerSession["transcriptPath"])
+            ?? transcripts.path(sessionID: providerSessionID)
         let adapterSession = transcriptSession(
             provider: provider,
             transcriptPath: transcriptPath,
@@ -295,6 +302,96 @@ enum OrcaSessionSource {
             isLive: true,
             git: nil
         )
+    }
+
+    /// Orca 的 `last-status.db` 只保留最近的条目，更早的标签页没有条目，也就没有
+    /// `transcriptPath`，适配器不会执行，状态会被错误地退化成 `unknown`。
+    ///
+    /// 这里按会话 ID 在本地会话目录里补查一次：Claude 是
+    /// `~/.claude/projects/<项目>/<sessionId>.jsonl`，Codex 是
+    /// `~/.codex/sessions/<年>/<月>/<日>/rollout-<时间>-<sessionId>.jsonl`。
+    ///
+    /// 目录在一次扫描内只枚举一次并复用，且只有真的缺 `transcriptPath` 时才碰磁盘。
+    final class TranscriptIndex {
+        private static let codexFileNamePattern =
+            "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\\.jsonl$"
+
+        private var index: [String: String]?
+
+        func path(sessionID: String) -> String? {
+            if index == nil {
+                index = build()
+            }
+            return index?[sessionID]
+        }
+
+        private func build() -> [String: String] {
+            let home = FileManager.default.homeDirectoryForCurrentUser
+            var result: [String: String] = [:]
+            var budget = 50000
+            collect(
+                in: home.appendingPathComponent(".claude/projects", isDirectory: true),
+                depth: 1,
+                budget: &budget,
+                into: &result
+            ) { name in
+                name.hasSuffix(".jsonl") ? String(name.dropLast(".jsonl".count)) : nil
+            }
+            collect(
+                in: home.appendingPathComponent(".codex/sessions", isDirectory: true),
+                depth: 3,
+                budget: &budget,
+                into: &result
+            ) { name in
+                guard let range = name.range(
+                    of: Self.codexFileNamePattern,
+                    options: .regularExpression
+                ) else {
+                    return nil
+                }
+                return String(name[range].dropLast(".jsonl".count))
+            }
+            return result
+        }
+
+        private func collect(
+            in directory: URL,
+            depth: Int,
+            budget: inout Int,
+            into result: inout [String: String],
+            sessionID: (String) -> String?
+        ) {
+            guard depth >= 0, budget > 0 else {
+                return
+            }
+            guard let entries = try? FileManager.default.contentsOfDirectory(
+                at: directory,
+                includingPropertiesForKeys: [.isDirectoryKey],
+                options: [.skipsHiddenFiles]
+            ) else {
+                return
+            }
+            for entry in entries {
+                guard budget > 0 else {
+                    return
+                }
+                budget -= 1
+                let isDirectory = (try? entry.resourceValues(
+                    forKeys: [.isDirectoryKey]
+                ).isDirectory) ?? false
+                if isDirectory {
+                    collect(
+                        in: entry,
+                        depth: depth - 1,
+                        budget: &budget,
+                        into: &result,
+                        sessionID: sessionID
+                    )
+                } else if let id = sessionID(entry.lastPathComponent), result[id] == nil {
+                    result[id] = entry.path
+                }
+            }
+        }
     }
 
     private static func transcriptSession(

@@ -174,7 +174,10 @@ final class SessionScanner {
         let cached = gitCache[path]
         cacheLock.unlock()
 
-        if let cached, now.timeIntervalSince(cached.checkedAt) < (cached.value == nil ? 30 : 8) {
+        // git 改动数不是秒级数据：刷新循环 3 秒一次，若 TTL 只有 8 秒，
+        // 每个项目几乎每轮都要重跑 git 子进程，项目多时开销线性放大。
+        // 无仓库结果缓存更久（30s → 60s），有仓库结果 30s。
+        if let cached, now.timeIntervalSince(cached.checkedAt) < (cached.value == nil ? 60 : 30) {
             return cached.value
         }
 

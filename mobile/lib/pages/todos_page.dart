@@ -95,42 +95,116 @@ class _TodosPageState extends State<TodosPage> {
 
   @override
   Widget build(BuildContext context) {
+    final int remaining = _todos.where((todo) => !todo.completed).length;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('待办'),
+        toolbarHeight: 74,
+        titleSpacing: HudSpacing.xl,
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              '待办',
+              style: HudText.title.copyWith(
+                fontSize: 20,
+                fontWeight: FontWeight.w700,
+                letterSpacing: -0.35,
+              ),
+            ),
+            const SizedBox(height: 2),
+            Text(
+              _loading
+                  ? '正在读取…'
+                  : remaining == 0
+                      ? (_todos.isEmpty ? '还没有记录' : '全部完成 · 共 ${_todos.length} 条')
+                      : '$remaining 条未完成 · 共 ${_todos.length} 条',
+              style: HudText.caption.copyWith(fontSize: 11.5),
+            ),
+          ],
+        ),
+        bottom: const PreferredSize(
+          preferredSize: Size.fromHeight(1),
+          child: Divider(height: 1, color: HudColors.divider),
+        ),
         actions: [
-          IconButton(
+          _HeaderIcon(
             tooltip: '新增待办',
+            icon: Icons.add_rounded,
             onPressed: _add,
-            icon: const Icon(Icons.add_rounded, size: 22),
           ),
-          const SizedBox(width: HudSpacing.md),
+          const SizedBox(width: HudSpacing.lg),
         ],
       ),
       body: HudScaffoldBackground(
-        child: _loading
-            ? const Center(child: CircularProgressIndicator())
-            : _todos.isEmpty
-                ? _EmptyTodos(onAdd: _add)
-                : ListView.builder(
-                    padding: const EdgeInsets.fromLTRB(
-                      HudSpacing.xl,
-                      HudSpacing.md,
-                      HudSpacing.xl,
-                      HudSpacing.lg,
-                    ),
-                    itemCount: _todos.length,
-                    itemBuilder: (context, index) {
-                      final todo = _todos[index];
-                      return _TodoCard(
-                        todo: todo,
-                        onToggle: () => _toggle(todo),
-                        onEdit: () => _edit(todo),
-                        onDelete: () => _delete(todo),
-                      );
-                    },
+        child: AnimatedSwitcher(
+          duration: HudMotion.base,
+          switchInCurve: HudMotion.easeOut,
+          switchOutCurve: HudMotion.easeIn,
+          transitionBuilder: (child, animation) =>
+              FadeTransition(opacity: animation, child: child),
+          child: _loading
+              ? const Center(
+                  key: ValueKey<String>('loading'),
+                  child: SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(strokeWidth: 2),
                   ),
+                )
+              : _todos.isEmpty
+                  ? _EmptyTodos(key: const ValueKey<String>('empty'), onAdd: _add)
+                  : ListView.builder(
+                      key: const ValueKey<String>('list'),
+                      padding: const EdgeInsets.fromLTRB(
+                        HudSpacing.xl,
+                        HudSpacing.lg,
+                        HudSpacing.xl,
+                        HudSpacing.xxl,
+                      ),
+                      itemCount: _todos.length,
+                      itemBuilder: (context, index) {
+                        final todo = _todos[index];
+                        return _TodoCard(
+                          todo: todo,
+                          onToggle: () => _toggle(todo),
+                          onEdit: () => _edit(todo),
+                          onDelete: () => _delete(todo),
+                        );
+                      },
+                    ),
+        ),
+      ),
+    );
+  }
+}
+
+class _HeaderIcon extends StatelessWidget {
+  const _HeaderIcon({
+    required this.tooltip,
+    required this.icon,
+    required this.onPressed,
+  });
+
+  final String tooltip;
+  final IconData icon;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return Tooltip(
+      message: tooltip,
+      child: InkResponse(
+        onTap: onPressed,
+        radius: 20,
+        child: SizedBox(
+          width: 36,
+          height: 36,
+          child: Center(
+            child: Icon(icon, size: 21, color: HudColors.textSecondary),
           ),
+        ),
+      ),
     );
   }
 }
@@ -155,90 +229,86 @@ class _TodoCard extends StatelessWidget {
       direction: DismissDirection.endToStart,
       background: Container(
         alignment: Alignment.centerRight,
+        margin: const EdgeInsets.only(bottom: HudSpacing.md),
         padding: const EdgeInsets.only(right: HudSpacing.xl),
         decoration: BoxDecoration(
-          color: HudColors.failed.withValues(alpha: 0.15),
-          borderRadius: BorderRadius.circular(HudRadii.panel),
+          color: HudColors.failed.withValues(alpha: 0.14),
+          borderRadius: BorderRadius.circular(16),
         ),
-        child: const Icon(Icons.delete_outline_rounded, color: HudColors.failed),
+        child: const Icon(
+          Icons.delete_outline_rounded,
+          color: HudColors.failed,
+        ),
       ),
       onDismissed: (_) => onDelete(),
-      child: Container(
-        margin: const EdgeInsets.only(bottom: HudSpacing.lg),
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              HudColors.surfaceRaised,
-              todo.completed
-                  ? HudColors.surface
-                  : HudColors.todo.withValues(alpha: 0.06),
-            ],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: HudSpacing.md),
+        child: HudSurfaceCard(
+          padding: const EdgeInsets.fromLTRB(6, 6, 10, 6),
+          radius: 16,
+          color: HudColors.surface.withValues(
+            alpha: todo.completed ? 0.4 : 0.86,
           ),
-          borderRadius: BorderRadius.circular(HudRadii.panel),
-          border: Border.all(
-            color: todo.completed
-                ? HudColors.border
-                : HudColors.todo.withValues(alpha: 0.42),
-            width: todo.completed ? 1.0 : 1.1,
-          ),
-          boxShadow: todo.completed
-              ? HudElevation.card(HudColors.border)
-              : HudElevation.glow(HudColors.todo),
-        ),
-        child: InkWell(
-          borderRadius: BorderRadius.circular(HudRadii.panel),
           onTap: onEdit,
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(
-              HudSpacing.xl,
-              HudSpacing.lg,
-              HudSpacing.md,
-              HudSpacing.lg,
-            ),
-            child: Row(
-              children: [
-                IconButton(
-                  onPressed: onToggle,
-                  icon: Icon(
-                    todo.completed
-                        ? Icons.check_circle_rounded
-                        : Icons.radio_button_unchecked_rounded,
-                    color: todo.completed
-                        ? HudColors.completed
-                        : HudColors.todo,
-                  ),
-                  visualDensity: VisualDensity.compact,
-                  padding: EdgeInsets.zero,
-                  constraints: const BoxConstraints.tightFor(width: 32, height: 32),
+          child: Row(
+            children: [
+              IconButton(
+                onPressed: onToggle,
+                visualDensity: VisualDensity.compact,
+                padding: EdgeInsets.zero,
+                constraints:
+                    const BoxConstraints.tightFor(width: 40, height: 40),
+                icon: Icon(
+                  todo.completed
+                      ? Icons.check_circle_rounded
+                      : Icons.radio_button_unchecked_rounded,
+                  size: 21,
+                  color: todo.completed
+                      ? HudColors.completed
+                      : HudColors.textTertiary,
                 ),
-                const SizedBox(width: HudSpacing.sm),
-                Expanded(
-                  child: Text(
-                    todo.title,
-                    style: HudText.title.copyWith(
-                      fontSize: 14.5,
-                      decoration: todo.completed
-                          ? TextDecoration.lineThrough
-                          : null,
-                      color: todo.completed
-                          ? HudColors.textTertiary
-                          : HudColors.textPrimary,
-                    ),
+              ),
+              const SizedBox(width: HudSpacing.sm),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 6),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        todo.title,
+                        style: HudText.body.copyWith(
+                          fontSize: 14.5,
+                          height: 1.35,
+                          decoration: todo.completed
+                              ? TextDecoration.lineThrough
+                              : null,
+                          decorationColor: HudColors.textTertiary,
+                          color: todo.completed
+                              ? HudColors.textTertiary
+                              : HudColors.textPrimary,
+                        ),
+                      ),
+                      if (todo.description.isNotEmpty) ...[
+                        const SizedBox(height: 3),
+                        Text(
+                          todo.description,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: HudText.caption,
+                        ),
+                      ],
+                    ],
                   ),
                 ),
-                if (todo.description.isNotEmpty)
-                  Padding(
-                    padding: const EdgeInsets.only(right: HudSpacing.sm),
-                    child: Icon(
-                      Icons.notes_rounded,
-                      size: 14,
-                      color: HudColors.textTertiary,
-                    ),
-                  ),
-              ],
-            ),
+              ),
+              const SizedBox(width: HudSpacing.sm),
+              Icon(
+                Icons.chevron_right_rounded,
+                size: 18,
+                color: HudColors.textTertiary.withValues(alpha: 0.5),
+              ),
+            ],
           ),
         ),
       ),
@@ -247,31 +317,66 @@ class _TodoCard extends StatelessWidget {
 }
 
 class _EmptyTodos extends StatelessWidget {
-  const _EmptyTodos({required this.onAdd});
+  const _EmptyTodos({super.key, required this.onAdd});
 
   final VoidCallback onAdd;
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            Icons.checklist_rounded,
-            size: 40,
-            color: HudColors.textTertiary.withValues(alpha: 0.4),
-          ),
-          const SizedBox(height: HudSpacing.lg),
-          Text('暂无待办', style: HudText.label),
-          const SizedBox(height: HudSpacing.sm),
-          TextButton.icon(
-            onPressed: onAdd,
-            icon: const Icon(Icons.add_rounded, size: 16),
-            label: const Text('添加一个'),
-          ),
-        ],
+    return ListView(
+      physics: const AlwaysScrollableScrollPhysics(),
+      padding: const EdgeInsets.fromLTRB(
+        HudSpacing.xl,
+        HudSpacing.xxl,
+        HudSpacing.xl,
+        HudSpacing.xxl,
       ),
+      children: [
+        HudEntrance(
+          child: Column(
+            children: [
+              Container(
+                width: 64,
+                height: 64,
+                decoration: BoxDecoration(
+                  color: HudColors.controlFill,
+                  shape: BoxShape.circle,
+                  border: Border.all(color: HudColors.border),
+                ),
+                child: Icon(
+                  Icons.checklist_rounded,
+                  size: 28,
+                  color: HudColors.textTertiary.withValues(alpha: 0.8),
+                ),
+              ),
+              const SizedBox(height: HudSpacing.xxl),
+              Text(
+                '还没有待办',
+                style: HudText.title.copyWith(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: -0.2,
+                ),
+              ),
+              const SizedBox(height: HudSpacing.sm),
+              Text(
+                '把接下来要做的事记在这里，\n左滑可以删除。',
+                textAlign: TextAlign.center,
+                style: HudText.caption.copyWith(height: 1.6),
+              ),
+              const SizedBox(height: HudSpacing.xxl),
+              SizedBox(
+                width: 168,
+                child: FilledButton.icon(
+                  onPressed: onAdd,
+                  icon: const Icon(Icons.add_rounded, size: 18),
+                  label: const Text('新增待办'),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }
@@ -303,7 +408,6 @@ class _TodoEditorDialogState extends State<_TodoEditorDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      backgroundColor: HudColors.surfaceRaised,
       title: Text(widget.initial == null ? '新增待办' : '编辑待办'),
       content: TextField(
         controller: _controller,

@@ -6,11 +6,16 @@ import 'link_api.dart';
 import 'models.dart';
 
 class SessionController extends ChangeNotifier {
-  SessionController(this.device, {MonitoringApi? api})
+  SessionController(this._device, {MonitoringApi? api, this.onDeviceUpdated})
       : _api = api ?? LinkApi();
 
-  final LinkedDevice device;
+  LinkedDevice _device;
   final MonitoringApi _api;
+
+  /// 电脑在 /v1/status 里报告了新的局域网地址时回调，用于把地址写回本地存储。
+  final void Function(LinkedDevice device)? onDeviceUpdated;
+
+  LinkedDevice get device => _device;
   Timer? _timer;
   bool _isDisposed = false;
   int _consecutiveFailures = 0;
@@ -113,6 +118,7 @@ class SessionController extends ChangeNotifier {
         }
       }
       status = current;
+      _adoptAddresses(current.addresses);
       final result = await _api.sessions(device, etag: _sessionsEtag);
       if (result.sessions != null) _sessions = result.sessions!;
       _sessionsEtag = result.etag;
@@ -137,6 +143,21 @@ class SessionController extends ChangeNotifier {
     _nextRetryAt = DateTime.now().add(
       Duration(seconds: _consecutiveFailures >= 3 ? 5 : 2),
     );
+  }
+
+  /// 电脑换网后 /v1/status 会带回新地址，这里同步到本地，避免继续用失效的旧地址。
+  void _adoptAddresses(List<String> latest) {
+    if (latest.isEmpty || _sameAddresses(latest, _device.addresses)) return;
+    _device = _device.copyWith(addresses: latest);
+    onDeviceUpdated?.call(_device);
+  }
+
+  static bool _sameAddresses(List<String> left, List<String> right) {
+    if (left.length != right.length) return false;
+    for (var index = 0; index < left.length; index += 1) {
+      if (left[index] != right[index]) return false;
+    }
+    return true;
   }
 
   Future<bool> renameSession(AgentSession session, String title) async {

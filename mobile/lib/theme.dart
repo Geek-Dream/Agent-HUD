@@ -9,30 +9,30 @@ class HudColors {
   const HudColors._();
 
   static const background = Color(0xFF08090C);
-  static const window = Color(0xFF0C0E13);
-  static const surface = Color(0xFF12151B);
-  static const surfaceRaised = Color(0xFF171B22);
-  static const surfaceHover = Color(0xFF1E232C);
-  static const controlFill = Color(0x0DFFFFFF);
-  static const controlHover = Color(0x1AFFFFFF);
+  static const window = Color(0xFF0C0E12);
+  static const surface = Color(0xFF14171D);
+  static const surfaceRaised = Color(0xFF1B1F27);
+  static const surfaceHover = Color(0xFF262B35);
+  static const controlFill = Color(0x0FFFFFFF);
+  static const controlHover = Color(0x21FFFFFF);
   static const border = Color(0x14FFFFFF);
-  static const borderStrong = Color(0x29FFFFFF);
-  static const divider = Color(0x0FFFFFFF);
+  static const borderStrong = Color(0x30FFFFFF);
+  static const divider = Color(0x12FFFFFF);
 
-  static const textPrimary = Color(0xFFF3F5F9);
-  static const textSecondary = Color(0xFFB7BEC9);
-  static const textTertiary = Color(0xFF7C8492);
+  static const textPrimary = Color(0xFFF7F9FD);
+  static const textSecondary = Color(0xFFB6BECB);
+  static const textTertiary = Color(0xFF7B8492);
 
-  static const working = Color(0xFF6AA6FF);
-  static const waiting = Color(0xFFF3C55C);
-  static const completed = Color(0xFF57D9A3);
-  static const failed = Color(0xFFFF7186);
-  static const codex = Color(0xFF7FB2FF);
-  static const claude = Color(0xFFFF9F6B);
-  static const pi = Color(0xFF8DDB7A);
-  static const opencode = Color(0xFF63D8CC);
-  static const important = Color(0xFFF3C55C);
-  static const todo = Color(0xFFB79CFF);
+  static const working = Color(0xFF5E9BFF);
+  static const waiting = Color(0xFFF0C462);
+  static const completed = Color(0xFF4FD1A0);
+  static const failed = Color(0xFFFF6B7F);
+  static const codex = Color(0xFF74A9FF);
+  static const claude = Color(0xFFFF9A62);
+  static const pi = Color(0xFF86D96E);
+  static const opencode = Color(0xFF4FD6CA);
+  static const important = Color(0xFFF0C462);
+  static const todo = Color(0xFFB49BFF);
 
   static Color status(String value) {
     switch (value) {
@@ -192,6 +192,14 @@ class HudText {
     fontSize: 10.5,
     fontWeight: FontWeight.w600,
     letterSpacing: 0.3,
+    color: HudColors.textTertiary,
+  );
+  /// Small uppercase-ish label that introduces a group of content.
+  static const overline = TextStyle(
+    fontSize: 11,
+    fontWeight: FontWeight.w700,
+    height: 1.2,
+    letterSpacing: 0.8,
     color: HudColors.textTertiary,
   );
   static const mono = TextStyle(
@@ -365,50 +373,86 @@ ThemeData buildHudTheme() {
 /// Page background – near-black vertical wash with one very soft top glow.
 /// ---------------------------------------------------------------------------
 class HudScaffoldBackground extends StatelessWidget {
-  const HudScaffoldBackground({super.key, required this.child});
+  const HudScaffoldBackground({
+    super.key,
+    required this.child,
+    this.accent,
+    this.scrollable = false,
+  });
 
   final Widget child;
 
+  /// Optional status colour that tints the top spotlight, so each screen keeps
+  /// the same structure while the accent follows the current context.
+  final Color? accent;
+
+  /// When true the spotlight scrolls with the content instead of staying
+  /// pinned, which avoids a visible seam on long scroll views.
+  final bool scrollable;
+
   @override
   Widget build(BuildContext context) {
+    final Color glow = accent ?? HudColors.working;
+    final Widget layers = Stack(
+      children: [
+        Positioned(
+          top: -180,
+          left: -60,
+          right: -60,
+          height: 380,
+          child: IgnorePointer(
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                gradient: RadialGradient(
+                  colors: [
+                    glow.withValues(alpha: 0.10),
+                    glow.withValues(alpha: 0),
+                  ],
+                  stops: const [0, 1],
+                ),
+              ),
+            ),
+          ),
+        ),
+        Positioned.fill(
+          child: IgnorePointer(
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Colors.white.withValues(alpha: 0.012),
+                    Colors.transparent,
+                  ],
+                  stops: const [0, 0.4],
+                ),
+              ),
+            ),
+          ),
+        ),
+        child,
+      ],
+    );
+
     return DecoratedBox(
       decoration: const BoxDecoration(
         gradient: LinearGradient(
           colors: [HudColors.window, HudColors.background],
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          stops: [0, 0.55],
+          stops: [0, 0.6],
         ),
       ),
-      child: Stack(
-        children: [
-          Positioned(
-            top: -220,
-            left: -120,
-            right: -120,
-            height: 420,
-            child: IgnorePointer(
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  gradient: RadialGradient(
-                    colors: [
-                      HudColors.working.withValues(alpha: 0.07),
-                      HudColors.working.withValues(alpha: 0),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ),
-          child,
-        ],
-      ),
+      child: scrollable ? layers : ClipRect(child: layers),
     );
   }
 }
 
 /// ---------------------------------------------------------------------------
-/// Standard surface card: flat translucent fill, hairline border, soft shadow.
+/// Standard surface card: vertical gradient fill, hairline ring, inner top
+/// highlight, and an optional accent hairline. Elevation comes from contrast,
+/// not from drop shadows, which keeps the mobile UI crisp on dark OLED screens.
 /// ---------------------------------------------------------------------------
 class HudSurfaceCard extends StatelessWidget {
   const HudSurfaceCard({
@@ -421,6 +465,9 @@ class HudSurfaceCard extends StatelessWidget {
     this.borderColor = HudColors.border,
     this.onTap,
     this.shadows,
+    this.accent,
+    this.highlight = true,
+    this.gradient,
   });
 
   final Widget child;
@@ -432,9 +479,28 @@ class HudSurfaceCard extends StatelessWidget {
   final VoidCallback? onTap;
   final List<BoxShadow>? shadows;
 
+  /// Optional left-edge status hairline, e.g. for a working session.
+  final Color? accent;
+
+  /// Whether to paint the 1px inner highlight along the top edge.
+  final bool highlight;
+
+  /// Overrides the default [color] gradient.
+  final Gradient? gradient;
+
   @override
   Widget build(BuildContext context) {
     final BorderRadius borderRadius = BorderRadius.circular(radius);
+    final Gradient fill = gradient ??
+        LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            Color.alphaBlend(HudColors.controlFill, color),
+            color,
+          ],
+        );
+
     return Container(
       margin: margin,
       decoration: BoxDecoration(
@@ -447,19 +513,56 @@ class HudSurfaceCard extends StatelessWidget {
         clipBehavior: Clip.antiAlias,
         child: Ink(
           decoration: BoxDecoration(
-            color: color,
+            gradient: fill,
             borderRadius: borderRadius,
             border: Border.all(color: borderColor, width: 1),
           ),
-          child: onTap == null
-              ? Padding(padding: padding, child: child)
-              : InkWell(
-                  onTap: onTap,
-                  highlightColor:
-                      HudColors.controlHover.withValues(alpha: 0.25),
-                  splashColor: HudColors.controlFill.withValues(alpha: 0.4),
-                  child: Padding(padding: padding, child: child),
+          child: Stack(
+            children: [
+              if (highlight)
+                Positioned(
+                  top: 0,
+                  left: radius * 0.9,
+                  right: radius * 0.9,
+                  child: IgnorePointer(
+                    child: Container(
+                      height: 1,
+                      color: Colors.white.withValues(alpha: 0.06),
+                    ),
+                  ),
                 ),
+              if (accent != null)
+                Positioned(
+                  left: 0,
+                  top: 0,
+                  bottom: 0,
+                  child: IgnorePointer(
+                    child: Container(
+                      width: 2,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            accent!.withValues(alpha: 0.9),
+                            accent!.withValues(alpha: 0.15),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              onTap == null
+                  ? Padding(padding: padding, child: child)
+                  : InkWell(
+                      onTap: onTap,
+                      highlightColor:
+                          HudColors.controlHover.withValues(alpha: 0.25),
+                      splashColor: HudColors.controlFill.withValues(alpha: 0.4),
+                      child: Padding(padding: padding, child: child),
+                    ),
+            ],
+          ),
         ),
       ),
     );

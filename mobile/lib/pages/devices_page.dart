@@ -14,64 +14,76 @@ class DevicesPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final store = context.watch<DeviceStore>();
     return Scaffold(
-      appBar: AppBar(title: const Text('AgentHUD')),
       body: HudScaffoldBackground(
-        child: AnimatedSwitcher(
-          duration: HudMotion.base,
-          switchInCurve: HudMotion.easeOut,
-          switchOutCurve: HudMotion.easeIn,
-          transitionBuilder: (child, animation) {
-            return FadeTransition(opacity: animation, child: child);
-          },
-          child: store.isEmpty
-              ? const _EmptyDevices(key: ValueKey<String>('empty'))
-              : ListView(
-                  key: const ValueKey<String>('devices'),
-                  padding: const EdgeInsets.fromLTRB(
-                    HudSpacing.xl,
-                    HudSpacing.md,
-                    HudSpacing.xl,
-                    120,
-                  ),
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(
-                        HudSpacing.xs,
-                        HudSpacing.sm,
-                        HudSpacing.xs,
-                        HudSpacing.lg,
-                      ),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Text(
-                                  '已关联电脑',
-                                  style: HudText.display,
-                                ),
-                                const SizedBox(height: HudSpacing.xs),
-                                Text(
-                                  '${store.devices.length} 台设备 · 局域网直连监控',
-                                  style: HudText.caption,
-                                ),
-                              ],
+        child: SafeArea(
+          bottom: false,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const _DevicesHeader(),
+              Expanded(
+                child: AnimatedSwitcher(
+                  duration: HudMotion.base,
+                  switchInCurve: HudMotion.easeOut,
+                  switchOutCurve: HudMotion.easeIn,
+                  transitionBuilder: (child, animation) {
+                    return FadeTransition(opacity: animation, child: child);
+                  },
+                  child: store.isEmpty
+                      ? const _EmptyDevices(key: ValueKey<String>('empty'))
+                      : ListView(
+                          key: const ValueKey<String>('devices'),
+                          padding: const EdgeInsets.fromLTRB(
+                            HudSpacing.xl,
+                            0,
+                            HudSpacing.xl,
+                            120,
+                          ),
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(
+                                HudSpacing.xs,
+                                HudSpacing.md,
+                                HudSpacing.xs,
+                                HudSpacing.md,
+                              ),
+                              child: Row(
+                                children: [
+                                  Text(
+                                    '已关联电脑',
+                                    style: HudText.overline,
+                                  ),
+                                  const SizedBox(width: HudSpacing.md),
+                                  HudCountBadge(
+                                    value: '${store.devices.length}',
+                                  ),
+                                  const Spacer(),
+                                  Icon(
+                                    Icons.lock_outline_rounded,
+                                    size: 12,
+                                    color: HudColors.textTertiary
+                                        .withValues(alpha: 0.8),
+                                  ),
+                                  const SizedBox(width: 5),
+                                  Text(
+                                    '局域网直连',
+                                    style: HudText.caption.copyWith(
+                                      fontSize: 10.5,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                          const Icon(
-                            Icons.lock_outline_rounded,
-                            size: 13,
-                            color: HudColors.textTertiary,
-                          ),
-                        ],
-                      ),
-                    ),
-                    for (final LinkedDevice device in store.devices)
-                      _DeviceCard(device: device),
-                  ],
+                            for (final LinkedDevice device in store.devices)
+                              _DeviceCard(device: device),
+                            const SizedBox(height: HudSpacing.lg),
+                            const _DevicesHint(),
+                          ],
+                        ),
                 ),
+              ),
+            ],
+          ),
         ),
       ),
       floatingActionButton: FloatingActionButton.extended(
@@ -85,6 +97,71 @@ class DevicesPage extends StatelessWidget {
   }
 }
 
+class _DevicesHeader extends StatelessWidget {
+  const _DevicesHeader();
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(
+        HudSpacing.xl,
+        HudSpacing.lg,
+        HudSpacing.xl,
+        HudSpacing.md,
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Container(
+            width: 38,
+            height: 38,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  HudColors.working.withValues(alpha: 0.22),
+                  HudColors.working.withValues(alpha: 0.06),
+                ],
+              ),
+              borderRadius: BorderRadius.circular(11),
+              border: Border.all(
+                color: HudColors.working.withValues(alpha: 0.28),
+              ),
+            ),
+            child: const Icon(
+              Icons.grid_view_rounded,
+              size: 18,
+              color: HudColors.working,
+            ),
+          ),
+          const SizedBox(width: HudSpacing.lg),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'AgentHUD',
+                  style: HudText.display.copyWith(
+                    fontSize: 22,
+                    letterSpacing: -0.6,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  '手机端监控台',
+                  style: HudText.caption.copyWith(fontSize: 11),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class _DeviceCard extends StatelessWidget {
   const _DeviceCard({required this.device});
 
@@ -92,8 +169,12 @@ class _DeviceCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final String address = formatLinkAddress(
+      device.addresses.first,
+      device.port,
+    );
     return Padding(
-      padding: const EdgeInsets.only(bottom: HudSpacing.lg),
+      padding: const EdgeInsets.only(bottom: HudSpacing.md),
       child: HudEntrance(
         child: HudSurfaceCard(
           onTap: () => Navigator.of(context).push(
@@ -101,47 +182,58 @@ class _DeviceCard extends StatelessWidget {
               builder: (_) => SessionsPage(device: device),
             ),
           ),
-          color: HudColors.surface.withValues(alpha: 0.82),
-          padding: const EdgeInsets.fromLTRB(
-            HudSpacing.xl,
-            HudSpacing.xl,
-            HudSpacing.md,
-            HudSpacing.xl,
-          ),
+          color: HudColors.surfaceRaised.withValues(alpha: 0.72),
+          radius: 18,
+          padding: const EdgeInsets.fromLTRB(16, 16, 6, 16),
           child: Row(
             children: [
               const _DeviceGlyph(),
-              const SizedBox(width: HudSpacing.xl),
+              const SizedBox(width: 14),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
                       children: [
-                        Expanded(
+                        Flexible(
                           child: Text(
                             device.instanceName,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            style: HudText.title,
+                            style: HudText.title.copyWith(
+                              fontSize: 16,
+                              letterSpacing: -0.2,
+                            ),
                           ),
                         ),
-                        const SizedBox(width: HudSpacing.sm),
+                        const SizedBox(width: HudSpacing.md),
                         const _OnlineDot(),
+                        const SizedBox(width: 6),
+                        Text(
+                          '在线',
+                          style: HudText.caption.copyWith(
+                            fontSize: 10.5,
+                            color: HudColors.completed.withValues(alpha: 0.9),
+                          ),
+                        ),
                       ],
                     ),
-                    const SizedBox(height: 5),
+                    const SizedBox(height: 6),
                     Text(
-                      formatLinkAddress(device.addresses.first, device.port),
+                      address,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: HudText.mono.copyWith(fontSize: 11),
+                      style: HudText.mono.copyWith(
+                        fontSize: 11,
+                        color: HudColors.textTertiary,
+                      ),
                     ),
                   ],
                 ),
               ),
               PopupMenuButton<String>(
                 tooltip: '设备操作',
+                padding: EdgeInsets.zero,
                 icon: const Icon(
                   Icons.more_horiz_rounded,
                   size: 20,
@@ -150,7 +242,7 @@ class _DeviceCard extends StatelessWidget {
                 color: HudColors.surfaceRaised,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(HudRadii.control),
-                  side: const BorderSide(color: HudColors.border),
+                  side: const BorderSide(color: HudColors.borderStrong),
                 ),
                 onSelected: (value) {
                   if (value == 'remove') _confirmRemove(context);
@@ -161,6 +253,14 @@ class _DeviceCard extends StatelessWidget {
                     child: Text('移除这台电脑'),
                   ),
                 ],
+              ),
+              Padding(
+                padding: const EdgeInsets.only(right: HudSpacing.md, left: 2),
+                child: Icon(
+                  Icons.chevron_right_rounded,
+                  size: 18,
+                  color: HudColors.textTertiary.withValues(alpha: 0.45),
+                ),
               ),
             ],
           ),
@@ -193,22 +293,108 @@ class _DeviceCard extends StatelessWidget {
   }
 }
 
+class _DevicesHint extends StatelessWidget {
+  const _DevicesHint();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.fromLTRB(16, 14, 16, 6),
+      decoration: BoxDecoration(
+        color: HudColors.surface.withValues(alpha: 0.45),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: HudColors.divider),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: const [
+          _HintRow(
+            icon: Icons.bolt_rounded,
+            title: '实时进度',
+            text: '查看每个会话当前在做什么，无需切回电脑。',
+          ),
+          _HintRow(
+            icon: Icons.alt_route_rounded,
+            title: '局域网直连',
+            text: '数据只在手机与电脑之间传输，不经过云端。',
+          ),
+          _HintRow(
+            icon: Icons.send_rounded,
+            title: '远程下发',
+            text: '在电脑授权后，可直接回复或下发文字任务。',
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _HintRow extends StatelessWidget {
+  const _HintRow({
+    required this.icon,
+    required this.title,
+    required this.text,
+  });
+
+  final IconData icon;
+  final String title;
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: 26,
+            height: 26,
+            decoration: BoxDecoration(
+              color: HudColors.controlFill,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Icon(icon, size: 14, color: HudColors.textSecondary),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: HudText.label.copyWith(fontSize: 12.5),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  text,
+                  style: HudText.caption.copyWith(fontSize: 11.5),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class _DeviceGlyph extends StatelessWidget {
   const _DeviceGlyph();
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 46,
-      height: 46,
+      width: 44,
+      height: 44,
       decoration: BoxDecoration(
         color: HudColors.controlFill,
-        borderRadius: BorderRadius.circular(HudRadii.card),
-        border: Border.all(color: HudColors.border),
+        borderRadius: BorderRadius.circular(13),
+        border: Border.all(color: HudColors.borderStrong),
       ),
       child: const Icon(
         Icons.desktop_windows_outlined,
-        size: 21,
+        size: 20,
         color: HudColors.textSecondary,
       ),
     );

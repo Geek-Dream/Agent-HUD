@@ -51,12 +51,39 @@ struct LinkCertificate {
 }
 
 enum LinkNetwork {
+    struct IPv4Address {
+        let value: String
+        let interfaceName: String
+    }
+
     struct IPv6Address {
         let value: String
         let interfaceName: String
         let isGlobal: Bool
         let isUniqueLocal: Bool
         let isLinkLocal: Bool
+    }
+
+    /// 远程组网（Tailscale / ZeroTier 一类）的 IPv4 地址。
+    ///
+    /// `100.64.0.0/10` 是 RFC 6598 的运营商级 NAT 保留段，Tailscale 复用它作为
+    /// 虚拟网卡地址。这类地址在任何网络下都可达（只要对端在同一张私网里），
+    /// 所以配对窗口要单独列出来——否则用户根本不知道该往手机里填什么。
+    static func remoteIPv4Addresses() -> [String] {
+        interfaceIPv4Addresses()
+            .map(\.value)
+            .filter(isCarrierGradeNAT)
+            .uniqued()
+    }
+
+    static func isCarrierGradeNAT(_ address: String) -> Bool {
+        let parts = address.split(separator: ".")
+        guard parts.count == 4,
+              let first = UInt8(parts[0]),
+              let second = UInt8(parts[1]) else {
+            return false
+        }
+        return first == 100 && (64...127).contains(second)
     }
 
     /// 手机端会按顺序逐个尝试这些地址，所以最可能连通的地址必须排在最前面。
@@ -126,22 +153,71 @@ enum LinkNetwork {
         return output
     }
 
+    /// 手机端会按顺序逐个尝试这些地址，所以最可能连通的地址必须排在最前面。
+    ///
+    /// Parallels / Internet 共享会额外暴露 `bridge100`（10.211.55.x）、
+    /// `bridge101`（10.37.129.x）这类网桥地址，它们在局域网里对手机不可达。
+    /// 只按字符串排序时这些 10.x 会排在 `192.168.x` 前面，手机每次请求都要先在
+    /// 它们身上耗掉连接超时，界面就会长时间停在「正在刷新」。这里保留全部地址，
+    /// 只把虚拟网卡的地址排到后面。
     static func localIPv4Addresses() -> [String] {
-        Host.current().addresses
-            .filter { address in
-                let parts = address.split(separator: ".")
-                return parts.count == 4
-                    && parts.allSatisfy { UInt8($0) != nil }
-                    && !address.hasPrefix("127.")
-                    && !address.hasPrefix("169.254.")
-            }
+        interfaceIPv4Addresses()
+            .filter { isIPv4($0.value) }
             .sorted { lhs, rhs in
-                if isPrivate(lhs) != isPrivate(rhs) { return isPrivate(lhs) }
-                return lhs < rhs
+                let lhsVirtual = isVirtualInterface(lhs.interfaceName)
+                let rhsVirtual = isVirtualInterface(rhs.interfaceName)
+                if lhsVirtual != rhsVirtual { return !lhsVirtual }
+                if isPrivate(lhs.value) != isPrivate(rhs.value) {
+                    return isPrivate(lhs.value)
+                }
+                return lhs.value < rhs.value
             }
+            .map(\.value)
             .uniqued()
             .prefix(6)
             .map { $0 }
+    }
+
+    static func interfaceIPv4Addresses() -> [IPv4Address] {
+        var interfaces: UnsafeMutablePointer<ifaddrs>?
+        guard getifaddrs(&interfaces) == 0, let first = interfaces else { return [] }
+        defer { freeifaddrs(interfaces) }
+        var output: [IPv4Address] = []
+        for pointer in sequence(first: first, next: { $0.pointee.ifa_next }) {
+            let interface = pointer.pointee
+            guard let address = interface.ifa_addr,
+                  address.pointee.sa_family == sa_family_t(AF_INET),
+                  let interfaceName = interface.ifa_name else {
+                continue
+            }
+            var buffer = [CChar](repeating: 0, count: Int(INET_ADDRSTRLEN))
+            var value = address.withMemoryRebound(to: sockaddr_in.self, capacity: 1) {
+                $0.pointee.sin_addr
+            }
+            guard inet_ntop(AF_INET, &value, &buffer, socklen_t(INET_ADDRSTRLEN)) != nil else {
+                continue
+            }
+            output.append(
+                IPv4Address(
+                    value: String(cString: buffer),
+                    interfaceName: String(cString: interfaceName)
+                )
+            )
+        }
+        return output
+    }
+
+    private static func isIPv4(_ address: String) -> Bool {
+        let parts = address.split(separator: ".")
+        return parts.count == 4
+            && parts.allSatisfy { UInt8($0) != nil }
+            && !address.hasPrefix("127.")
+            && !address.hasPrefix("169.254.")
+    }
+
+    private static func isVirtualInterface(_ name: String) -> Bool {
+        let prefixes = ["bridge", "vmenet", "vmnet", "utun", "awdl", "llw", "anpi", "gif", "stf", "ap1"]
+        return prefixes.contains { name.hasPrefix($0) }
     }
 
     private static func isPrivate(_ address: String) -> Bool {
