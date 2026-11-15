@@ -4,13 +4,19 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:AgentHUD.Windows">
 
-    <Border
-        x:Name="RootBorder"
-        Background="Transparent"
-        BorderBrush="{ThemeResource HudBorderStrongBrush}"
-        BorderThickness="1.5"
-        CornerRadius="{ThemeResource HudPanelRadius}"
-        ActualThemeChanged="RootBorder_ActualThemeChanged">
+    <Grid Background="{ThemeResource HudRimBackdropBrush}">
+        <!-- Composition host: the neon rim is drawn with GPU primitives
+             (ShapeVisual + geoms + drop shadows) in MainWindow.xaml.cs. -->
+        <Grid x:Name="BackdropHost" Background="{ThemeResource HudWindowBrush}" />
+        <Grid x:Name="GlowHost" IsHitTestVisible="False" />
+        <Border
+            x:Name="RootBorder"
+            Margin="8"
+            Background="Transparent"
+            BorderBrush="{ThemeResource HudRimHairlineBrush}"
+            BorderThickness="1"
+            CornerRadius="{ThemeResource HudPanelRadius}"
+            ActualThemeChanged="RootBorder_ActualThemeChanged">
         <Border.Resources>
             <Storyboard
                 x:Key="LoadingPulseStoryboard"
@@ -38,7 +44,7 @@
                     Duration="0:0:1.05" />
             </Storyboard>
         </Border.Resources>
-        <Grid x:Name="RootGrid">
+        <Grid x:Name="RootGrid" Padding="6,4">
             <Grid
                 x:Name="CollapsedPanel"
                 Visibility="{Binding CollapsedVisibility}">
@@ -210,23 +216,39 @@
                         Grid.Column="0"
                         Orientation="Horizontal"
                         Spacing="12">
-                        <Border
-                            Width="34"
-                            Height="34"
-                            VerticalAlignment="Center"
-                            CornerRadius="11">
-                            <Border.Background>
-                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                    <GradientStop Offset="0" Color="#FF6D8CFF" />
-                                    <GradientStop Offset="1" Color="#FF8B5CF6" />
-                                </LinearGradientBrush>
-                            </Border.Background>
-                            <FontIcon
-                                FontFamily="Segoe Fluent Icons"
-                                FontSize="17"
-                                Foreground="#FFFFFFFF"
-                                Glyph="&#xE734;" />
-                        </Border>
+                        <Grid Width="52" Height="52" VerticalAlignment="Center">
+                            <!-- Four-point sparkle with a strong outer glow, as in the
+                                 reference art: no tile, just the star and its halo. -->
+                            <Ellipse
+                                Width="52"
+                                Height="52"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center">
+                                <Ellipse.Fill>
+                                    <RadialGradientBrush>
+                                        <GradientStop Offset="0" Color="#D8AEE6FF" />
+                                        <GradientStop Offset="0.35" Color="#A87EC8FF" />
+                                        <GradientStop Offset="0.68" Color="#5A3E7FE0" />
+                                        <GradientStop Offset="1" Color="#0A2E5AB0" />
+                                    </RadialGradientBrush>
+                                </Ellipse.Fill>
+                            </Ellipse>
+                            <Path
+                                Width="34"
+                                Height="34"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Data="M 15,0 C 16.2,8.4 21.6,13.8 30,15 C 21.6,16.2 16.2,21.6 15,30 C 13.8,21.6 8.4,16.2 0,15 C 8.4,13.8 13.8,8.4 15,0 Z"
+                                Stretch="Uniform">
+                                <Path.Fill>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                        <GradientStop Offset="0" Color="#FFFFFFFF" />
+                                        <GradientStop Offset="0.45" Color="#FFB3E6FF" />
+                                        <GradientStop Offset="1" Color="#FFC9A6FF" />
+                                    </LinearGradientBrush>
+                                </Path.Fill>
+                            </Path>
+                        </Grid>
                         <StackPanel
                             VerticalAlignment="Center"
                             Spacing="1">
@@ -281,7 +303,7 @@
                             <FontIcon
                                 FontFamily="Segoe Fluent Icons"
                                 FontSize="12"
-                                Glyph="&#xE70E;" />
+                                Glyph="&#xE735;" />
                         </Button>
                         <Button
                             Click="PrivacyButton_Click"
@@ -290,7 +312,7 @@
                             <FontIcon
                                 FontFamily="Segoe Fluent Icons"
                                 FontSize="12"
-                                Glyph="{Binding PrivacyGlyph}" />
+                                Glyph="&#xE701;" />
                         </Button>
                         <Button
                             Click="LinkButton_Click"
@@ -308,7 +330,7 @@
                             <FontIcon
                                 FontFamily="Segoe Fluent Icons"
                                 FontSize="12"
-                                Glyph="&#xE713;" />
+                                Glyph="&#xE712;" />
                         </Button>
                         <Button
                             Click="HideButton_Click"
@@ -335,8 +357,7 @@
                         Margin="16,10,16,6"
                         Padding="5"
                         Background="{ThemeResource HudControlFillBrush}"
-                        BorderBrush="{ThemeResource HudBorderBrush}"
-                        BorderThickness="1"
+                        BorderThickness="0"
                         CornerRadius="24">
                         <Grid
                             x:Name="StatusFilterStrip"
@@ -363,7 +384,7 @@
                                     <TextBlock Text="全部" />
                                     <Border
                                         Padding="5,2"
-                                        Background="{ThemeResource HudNeutralTintBrush}"
+                                        Background="Transparent"
                                         CornerRadius="{ThemeResource HudPillRadius}">
                                         <TextBlock
                                             x:Name="StatusAllCount"
@@ -388,7 +409,7 @@
                                     <TextBlock Text="工作" />
                                     <Border
                                         Padding="5,2"
-                                        Background="{ThemeResource HudWorkingTintBrush}"
+                                        Background="Transparent"
                                         CornerRadius="{ThemeResource HudPillRadius}">
                                         <TextBlock
                                             x:Name="StatusWorkingCount"
@@ -413,7 +434,7 @@
                                     <TextBlock Text="等待" />
                                     <Border
                                         Padding="5,2"
-                                        Background="{ThemeResource HudWaitingTintBrush}"
+                                        Background="Transparent"
                                         CornerRadius="{ThemeResource HudPillRadius}">
                                         <TextBlock
                                             x:Name="StatusWaitingCount"
@@ -438,7 +459,7 @@
                                     <TextBlock Text="完成" />
                                     <Border
                                         Padding="5,2"
-                                        Background="{ThemeResource HudCompletedTintBrush}"
+                                        Background="Transparent"
                                         CornerRadius="{ThemeResource HudPillRadius}">
                                         <TextBlock
                                             x:Name="StatusCompletedCount"
@@ -463,7 +484,7 @@
                                     <TextBlock Text="错误" />
                                     <Border
                                         Padding="5,2"
-                                        Background="{ThemeResource HudFailedTintBrush}"
+                                        Background="Transparent"
                                         CornerRadius="{ThemeResource HudPillRadius}">
                                         <TextBlock
                                             x:Name="StatusFailedCount"
@@ -497,7 +518,7 @@
                                         <TextBlock Text="全部" />
                                         <Border
                                             Padding="5,2"
-                                            Background="{ThemeResource HudNeutralTintBrush}"
+                                            Background="Transparent"
                                             CornerRadius="{ThemeResource HudPillRadius}">
                                             <TextBlock
                                                 x:Name="ProviderAllCount"
@@ -516,7 +537,7 @@
                                         <TextBlock Text="Codex" Foreground="{ThemeResource HudCodexBrush}" />
                                         <Border
                                             Padding="5,2"
-                                            Background="{ThemeResource HudCodexTintBrush}"
+                                            Background="Transparent"
                                             CornerRadius="{ThemeResource HudPillRadius}">
                                             <TextBlock
                                                 x:Name="ProviderCodexCount"
@@ -535,7 +556,7 @@
                                         <TextBlock Text="Claude" Foreground="{ThemeResource HudClaudeBrush}" />
                                         <Border
                                             Padding="5,2"
-                                            Background="{ThemeResource HudClaudeTintBrush}"
+                                            Background="Transparent"
                                             CornerRadius="{ThemeResource HudPillRadius}">
                                             <TextBlock
                                                 x:Name="ProviderClaudeCount"
@@ -554,7 +575,7 @@
                                         <TextBlock Text="Pi" Foreground="{ThemeResource HudPiBrush}" />
                                         <Border
                                             Padding="5,2"
-                                            Background="{ThemeResource HudPiTintBrush}"
+                                            Background="Transparent"
                                             CornerRadius="{ThemeResource HudPillRadius}">
                                             <TextBlock
                                                 x:Name="ProviderPiCount"
@@ -573,7 +594,7 @@
                                         <TextBlock Text="OpenCode" Foreground="{ThemeResource HudOpenCodeBrush}" />
                                         <Border
                                             Padding="5,2"
-                                            Background="{ThemeResource HudOpenCodeTintBrush}"
+                                            Background="Transparent"
                                             CornerRadius="{ThemeResource HudPillRadius}">
                                             <TextBlock
                                                 x:Name="ProviderOpenCodeCount"
@@ -833,14 +854,13 @@
                                                             </Button>
                                                             <Border
                                                                 Padding="11,4"
-                                                                Background="{Binding StatusTintBrush}"
-                                                                BorderBrush="{Binding StatusBrush}"
-                                                                BorderThickness="1"
+                                                                Background="{Binding StatusBrush}"
+                                                                BorderThickness="0"
                                                                 CornerRadius="{ThemeResource HudPillRadius}">
                                                                 <TextBlock
                                                                     FontSize="12"
                                                                     FontWeight="SemiBold"
-                                                                    Foreground="{Binding StatusBrush}"
+                                                                    Foreground="{Binding StatusPillTextBrush}"
                                                                     Text="{Binding StatusLabel}" />
                                                             </Border>
                                                         </StackPanel>
@@ -1568,7 +1588,7 @@
                     Canvas.ZIndex="30"
                     Background="Transparent"
                     PointerPressed="ResizeGrip_PointerPressed"
-                    ToolTipService.ToolTip="拖动调整大小（360×480 至 720×1000）">
+                    ToolTipService.ToolTip="拖动调整大小（480×620 至 760×1400）">
                     <Path
                         Width="15"
                         Height="15"
@@ -1583,5 +1603,6 @@
                 </Border>
             </Grid>
         </Grid>
-    </Border>
+        </Border>
+    </Grid>
 </Window>

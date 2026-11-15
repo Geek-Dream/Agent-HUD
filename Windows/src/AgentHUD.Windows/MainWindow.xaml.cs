@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using AgentHUD.Core;
 using Microsoft.UI;
+using Microsoft.UI.Composition;
 using Microsoft.UI.Composition.SystemBackdrops;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
@@ -11,6 +12,7 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Animation;
+using Microsoft.UI.Xaml.Hosting;
 using Windows.Graphics;
 using Windows.UI.ViewManagement;
 using WinRT.Interop;
@@ -22,6 +24,13 @@ public sealed partial class MainWindow : Window
 {
     private const int CollapsedWidth = 320;
     private const int CollapsedHeight = 62;
+
+    // Reserved client-area gutter that hosts the neon rim so the glow is
+    // never clipped by the window bounds.
+    private const double RimPadding = 8;
+
+    // Side padding applied inside the rim so the 7-pin gutter never clips it.
+    private const double ContentPadding = 6;
 
     private readonly MainViewModel _viewModel;
     private readonly AppWindow _appWindow;
@@ -42,6 +51,13 @@ public sealed partial class MainWindow : Window
     private int _dragStartWindowX;
     private int _dragStartWindowY;
     private double _expandedWidth = ExpandedPanelSize.DefaultWidth;
+    private Compositor? _compositor;
+    private ContentDialog? _activeDialog;
+    private LayerVisual? _rimVisual;
+    private CompositionRoundedRectangleGeometry? _rimGeometry;
+    private CompositionSpriteShape? _rimCore;
+    private DropShadow? _rimGlowOuter;
+    private DropShadow? _rimGlowInner;
     private double _expandedHeight = ExpandedPanelSize.DefaultHeight;
     private UIElement? _resizeSurface;
     private uint _resizePointerId;
@@ -70,6 +86,7 @@ public sealed partial class MainWindow : Window
         ConfigureWindow();
         ConfigureWindowStyles();
         RestoreWindowPosition();
+        BuildNeonRim();
 
         _positionSaveTimer = DispatcherQueue.CreateTimer();
         _positionSaveTimer.Interval = TimeSpan.FromMilliseconds(350);
@@ -146,6 +163,30 @@ public sealed partial class MainWindow : Window
             dwmwaWindowCornerPreference,
             ref cornerPreference,
             Marshal.SizeOf<int>());
+
+        // The window keeps WS_CAPTION / WS_THICKFRAME so Windows draws its own
+        // rounded shell, but those styles also make DWM paint a light 1px frame
+        // around the client area. Against the custom neon rim that hairline
+        // reads as a stray grey line, so strip the frame styles and keep only
+        // the rounded corner preference. The XAML rim is then the only edge.
+        const int gwlStyle = -16;
+        const long wsCaption = 0x00C00000;
+        const long wsThickFrame = 0x00040000;
+        const long wsBorder = 0x00800000;
+        const uint swpFrameChanged = 0x0020;
+        var frameStyle = GetWindowLongPtr(_windowHandle, gwlStyle).ToInt64();
+        SetWindowLongPtr(
+            _windowHandle,
+            gwlStyle,
+            new IntPtr(frameStyle & ~(wsCaption | wsThickFrame | wsBorder)));
+        SetWindowPos(
+            _windowHandle,
+            IntPtr.Zero,
+            0,
+            0,
+            0,
+            0,
+            swpNoMove | swpNoSize | swpNoActivate | swpFrameChanged);
     }
 
     private void ConfigureWindow()
@@ -191,6 +232,116 @@ public sealed partial class MainWindow : Window
         ApplyWindowBackground();
     }
 
+    /// <summary>
+    /// Builds the window neon rim with Composition primitives instead of stacked
+    /// XAML borders: a rounded-rectangle sprite supplies the single hairline edge
+    /// and DropShadow supplies the outward GPU-blurred neon bleed.
+    /// </summary>
+    /// <summary>
+    /// Shows a dialog as the single active sheet: any dialog still open is
+    /// dismissed first so two modals can never stack on top of each other.
+    /// </summary>
+    private async Task<ContentDialogResult> ShowDialogExclusiveAsync(ContentDialog dialog)
+    {
+        if (_activeDialog is { } current)
+        {
+            try
+            {
+                current.Hide();
+            }
+            catch
+            {
+                // The previous dialog may already be closing; proceed regardless.
+            }
+        }
+        _activeDialog = dialog;
+        dialog.Closed += (_, _) =>
+        {
+            if (ReferenceEquals(_activeDialog, dialog))
+            {
+                _activeDialog = null;
+            }
+        };
+        return await dialog.ShowAsync();
+    }
+
+    private void BuildNeonRim()
+    {
+        var hostVisual = ElementCompositionPreview.GetElementVisual(GlowHost);
+        _compositor = hostVisual.Compositor;
+
+        var (w, h) = RimSize();
+        var size = new System.Numerics.Vector2(w, h);
+        var accent = RimAccentColor();
+
+        // Only LayerVisual exposes Shadow (ILayerVisual2), so the rim is drawn
+        // into a ShapeVisual, captured by a CompositionVisualSurface, then fed
+        // to a LayerVisual whose DropShadow produces the GPU-blurred neon bleed.
+        _rimGeometry = _compositor.CreateRoundedRectangleGeometry();
+        _rimGeometry.Size = size;
+        _rimGeometry.CornerRadius = new System.Numerics.Vector2(RimCornerRadius);
+
+        var stroke = _compositor.CreateColorBrush(accent);
+        _rimCore = _compositor.CreateSpriteShape(_rimGeometry);
+        _rimCore.StrokeBrush = stroke;
+        _rimCore.StrokeThickness = 1.5f;
+
+        var shapeVisual = _compositor.CreateShapeVisual();
+        shapeVisual.Size = size;
+        shapeVisual.Shapes.Add(_rimCore);
+
+        var surface = _compositor.CreateVisualSurface();
+        surface.SourceVisual = shapeVisual;
+        surface.SourceSize = size;
+
+        var sprite = _compositor.CreateSpriteVisual();
+        sprite.Size = size;
+        sprite.Brush = _compositor.CreateSurfaceBrush(surface);
+
+        _rimGlowInner = _compositor.CreateDropShadow();
+        _rimGlowInner.Color = accent;
+        _rimGlowInner.BlurRadius = 12f;
+        _rimGlowInner.Opacity = 0.9f;
+
+        _rimGlowOuter = _compositor.CreateDropShadow();
+        _rimGlowOuter.Color = accent;
+        _rimGlowOuter.BlurRadius = 34f;
+        _rimGlowOuter.Opacity = 0.5f;
+
+        _rimVisual = _compositor.CreateLayerVisual();
+        _rimVisual.Size = size;
+        _rimVisual.Children.InsertAtTop(sprite);
+        _rimVisual.Shadow = _rimGlowOuter;
+        ElementCompositionPreview.SetElementChildVisual(GlowHost, _rimVisual);
+    }
+
+    private const float RimCornerRadius = 26f;
+
+    private (float Width, float Height) RimSize()
+    {
+        // Composition works in physical pixels; GlowHost covers the client area.
+        var size = _appWindow.Size;
+        return ((float)size.Width, (float)size.Height);
+    }
+
+    private global::Windows.UI.Color RimAccentColor()
+    {
+        return RootBorder.ActualTheme == ElementTheme.Dark
+            ? global::Windows.UI.Color.FromArgb(255, 122, 174, 255)
+            : global::Windows.UI.Color.FromArgb(255, 92, 132, 208);
+    }
+
+    private void UpdateNeonRimSize()
+    {
+        if (_rimVisual is null || _rimGeometry is null)
+        {
+            return;
+        }
+        var (w, h) = RimSize();
+        _rimGeometry.Size = new System.Numerics.Vector2(w, h);
+        _rimVisual.Size = new System.Numerics.Vector2(w, h);
+    }
+
     private void RestoreWindowPosition()
     {
         var expanded = _viewModel.IsExpanded;
@@ -214,8 +365,9 @@ public sealed partial class MainWindow : Window
     {
         // AppWindow dimensions are physical pixels; XAML sizes use logical pixels.
         var scale = WindowScale();
-        var logicalWidth = expanded ? _expandedWidth : CollapsedWidth;
-        var logicalHeight = expanded ? _expandedHeight : CollapsedHeight;
+        var logicalWidth = (expanded ? _expandedWidth : CollapsedWidth)
+            + (2 * RimPadding) + (2 * ContentPadding);
+        var logicalHeight = (expanded ? _expandedHeight : CollapsedHeight) + (2 * RimPadding);
         return (
             (int)Math.Round(logicalWidth * scale),
             (int)Math.Round(logicalHeight * scale));
@@ -787,7 +939,7 @@ public sealed partial class MainWindow : Window
         {
             XamlRoot = RootBorder.XamlRoot
         };
-        await dialog.ShowAsync();
+        await ShowDialogExclusiveAsync(dialog);
     }
 
     private async void ImportantRevealButton_Click(object sender, RoutedEventArgs e)
@@ -957,8 +1109,8 @@ public sealed partial class MainWindow : Window
         _appWindow.MoveAndResize(new RectInt32(
             position.X,
             position.Y,
-            (int)Math.Round(_expandedWidth * scale),
-            (int)Math.Round(_expandedHeight * scale)));
+            (int)Math.Round((_expandedWidth + (2 * RimPadding) + (2 * ContentPadding)) * scale),
+            (int)Math.Round((_expandedHeight + (2 * RimPadding)) * scale)));
         e.Handled = true;
     }
 
@@ -1130,9 +1282,11 @@ public sealed partial class MainWindow : Window
             && Microsoft.UI.Xaml.Application.Current.Resources.TryGetValue(brushKey, out var brushValue)
             && brushValue is SolidColorBrush brush)
         {
+            // Reference art keeps provider chips borderless: the tint fill alone
+            // signals the active filter.
             button.Background = tintBrush;
-            button.BorderBrush = brush;
-            button.BorderThickness = new Thickness(1);
+            button.BorderBrush = null;
+            button.BorderThickness = new Thickness(0);
         }
     }
 
@@ -1338,7 +1492,7 @@ public sealed partial class MainWindow : Window
         {
             XamlRoot = RootBorder.XamlRoot
         };
-        await dialog.ShowAsync();
+        await ShowDialogExclusiveAsync(dialog);
         var savedSize = _viewModel.SavedExpandedWindowSize;
         _expandedWidth = ExpandedPanelSize.ClampWidth(
             savedSize.Width ?? ExpandedPanelSize.DefaultWidth);
@@ -1356,7 +1510,7 @@ public sealed partial class MainWindow : Window
         {
             XamlRoot = RootBorder.XamlRoot
         };
-        await dialog.ShowAsync();
+        await ShowDialogExclusiveAsync(dialog);
     }
 
     private void UpdateTrayMenu()

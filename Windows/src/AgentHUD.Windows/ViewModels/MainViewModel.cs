@@ -200,7 +200,7 @@ public sealed class MainViewModel : INotifyPropertyChanged, IMonitoringSnapshotS
         get
         {
             var active = _sessions.Count(session => session.Status.IsActive());
-            return active > 0 ? $"{active} 个 Agent 正在进行" : "本地只读监视中";
+            return active > 0 ? $"{active} 个 Agent 正在运行" : "本地只读监视中";
         }
     }
 
@@ -1221,6 +1221,8 @@ public sealed class SessionRowViewModel : INotifyPropertyChanged
         _ => "HudNeutralTintBrush"
     });
     public Brush StatusBrush => BrushForStatus(Session.Status);
+    /// <summary>Ink colour for the solid status pill.</summary>
+    public Brush StatusPillTextBrush => ThemeBrush("HudPillInkBrush");
     public Brush StatusTintBrush => BrushForStatusTint(Session.Status);
     public Brush CardEdgeBrush => ThemeBrush("HudCardEdgeBrush");
     public Brush BadgeEdgeBrush => Session.Provider switch

@@ -264,7 +264,7 @@ public static class ExpandedPanelSize
 {
     public const double DefaultWidth = 520;
     public const double DefaultHeight = 900;
-    public const double MinWidth = 380;
+    public const double MinWidth = 480;
     public const double MinHeight = 620;
     public const double MaxWidth = 760;
     public const double MaxHeight = 1400;
