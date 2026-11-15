@@ -1561,3 +1561,16 @@ Windows/ 目录零改动（`git status -- Windows/` 为空）。
   截图尺寸与改前一致说明窗口未打开）。检测逻辑本身有单元测试覆盖。
 - 手机端引导卡片未在真机/模拟器上点按验证跳转。
 - Tailscale 在公司网络的可用性未验证（需用户实际环境）。
+
+### 提交与发布（2026-11-15）
+
+| 项 | 结果 |
+|---|---|
+| 提交 | `2aa5409` feat(link): 配对窗口与手机端补齐 Tailscale 远程连接引导（11 文件 +786 −49） |
+| 推送前检查 | `git fetch origin` → 远程无新提交，无分叉 |
+| 版本号 | `0.1.1-beta.4+10` → `0.1.1-beta.5+11` |
+| tag | `v0.1.1-beta.5`（annotated，已推送）→ 触发带 APK 附件的 prerelease |
+| Android APK CI（main） | success（run 43668472853） |
+| Android APK CI（tag） | success（run 43668529999） |
+| Release | `v0.1.1-beta.5` prerelease，附件 `app-release.apk` 65.2 MB |
+| Windows Build CI | failure，**历史遗留**：失败步骤 `Test core`，自 `5b65b43`(11-12 07:59) 起连续 8 次；本次提交 `Windows/` 改动数为 0，本机无 dotnet 无法复现，GitHub 日志接口 403 取不到明细 |
