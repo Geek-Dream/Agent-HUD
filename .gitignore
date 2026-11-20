@@ -5,6 +5,8 @@
 
 # Swift
 .build/
+.build-dismiss/
+.build-session-settings/
 .swiftpm/
 build/
 DerivedData/
