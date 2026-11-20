@@ -44,6 +44,37 @@ public enum ProviderFilter
     OpenCode
 }
 
+/// <summary>会话列表的数量上限；0 表示显示全部。</summary>
+public static class SessionDisplayPolicy
+{
+    public const int DefaultLimit = 10;
+    public static readonly int[] LimitOptions = [0, 3, 5, 10, 15, 20];
+
+    public static int NormalizeLimit(int value) => LimitOptions.Contains(value)
+        ? value
+        : DefaultLimit;
+
+    /// <summary>常驻（星标）会话始终保留，其余会话按最近活动取前 N 条。</summary>
+    public static IReadOnlyList<AgentSession> Apply(
+        IEnumerable<AgentSession> sessions,
+        ISet<string> pinnedSessionIds,
+        int limit)
+    {
+        var ordered = sessions
+            .OrderByDescending(session => pinnedSessionIds.Contains(session.Id))
+            .ThenByDescending(session => session.LastActivityAt)
+            .ThenBy(session => session.Id, StringComparer.Ordinal)
+            .ToArray();
+        if (limit <= 0)
+        {
+            return ordered;
+        }
+        var pinned = ordered.Where(session => pinnedSessionIds.Contains(session.Id));
+        var recent = ordered.Where(session => !pinnedSessionIds.Contains(session.Id)).Take(limit);
+        return pinned.Concat(recent).ToArray();
+    }
+}
+
 public enum TitleSource
 {
     Automatic,
@@ -201,15 +232,21 @@ public static class ModelLabels
     public static bool IsActive(this AgentStatus status) =>
         status is AgentStatus.Starting or AgentStatus.Working or AgentStatus.WaitingUser;
 
+    /// <summary>
+    /// Display order of the session list: 运行中 → 等待 → 已完成 → 错误.
+    /// <see cref="AgentStatus.Starting"/> is grouped with working because the
+    /// user reads both as "still running"; idle/unknown sessions sink to the
+    /// bottom since they carry no pending work.
+    /// </summary>
     public static int SortRank(this AgentStatus status) => status switch
     {
-        AgentStatus.WaitingUser => 0,
-        AgentStatus.Failed => 1,
-        AgentStatus.Working => 2,
-        AgentStatus.Starting => 3,
-        AgentStatus.Completed => 4,
-        AgentStatus.Idle => 5,
-        _ => 6
+        AgentStatus.Working => 0,
+        AgentStatus.Starting => 0,
+        AgentStatus.WaitingUser => 1,
+        AgentStatus.Completed => 2,
+        AgentStatus.Failed => 3,
+        AgentStatus.Idle => 4,
+        _ => 5
     };
 
     public static bool Matches(this StatusFilter filter, AgentStatus status) => filter switch

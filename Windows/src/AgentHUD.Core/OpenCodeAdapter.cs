@@ -15,7 +15,9 @@ public sealed record OpenCodeSessionRecord(
     DateTimeOffset CreatedAt,
     DateTimeOffset UpdatedAt,
     IReadOnlyList<OpenCodeEvent> Messages,
-    IReadOnlyList<OpenCodeEvent> Parts);
+    IReadOnlyList<OpenCodeEvent> Parts,
+    DateTimeOffset? IdleAt = null,
+    string? IdleOutcome = null);
 
 public static class OpenCodeAdapter
 {
@@ -120,6 +122,9 @@ public static class OpenCodeAdapter
                     lastAssistantAt = NestedDate(part.Data, "end")
                         ?? NestedDate(message.Data, "completed")
                         ?? part.Date;
+                    // The assistant answered after the failed call, so that error
+                    // was a retried/unrecoverable tool step, not a failed turn.
+                    latestErrorAt = null;
                 }
 
                 if (type == "patch")
@@ -192,7 +197,21 @@ public static class OpenCodeAdapter
         AgentStatus status;
         StatusConfidence confidence;
 
-        if (latestErrorAt is not null)
+        // `idle` is OpenCode's own turn boundary: it is written once the turn
+        // ends and carries the real outcome. A tool call that failed midway and
+        // was retried is NOT a failed session, which is what the previous
+        // "any error wins" rule reported for every session that ever had one.
+        var idleAt = record.IdleAt;
+        var idleSucceeded = string.Equals(
+            record.IdleOutcome, "succeeded", StringComparison.OrdinalIgnoreCase);
+        var idleFailed = string.Equals(
+            record.IdleOutcome, "error", StringComparison.OrdinalIgnoreCase)
+            || string.Equals(record.IdleOutcome, "failed", StringComparison.OrdinalIgnoreCase);
+        var turnFinished = idleAt is not null
+            && idleAt >= (lastAssistantAt ?? DateTimeOffset.MinValue)
+            && !pendingTool;
+
+        if (idleFailed)
         {
             status = AgentStatus.Failed;
             confidence = StatusConfidence.High;
@@ -207,8 +226,22 @@ public static class OpenCodeAdapter
             status = age < TimeSpan.FromSeconds(240) ? AgentStatus.Working : AgentStatus.Idle;
             confidence = StatusConfidence.High;
         }
-        else if (currentObjective is not null
-            && (lastAssistantAt is null || latestUserAt > lastAssistantAt))
+        else if (latestErrorAt is not null)
+        {
+            // `latestErrorAt` is cleared whenever the agent produces text after
+            // the failure, so anything still set here failed at the tail of the
+            // turn rather than being retried successfully.
+            status = AgentStatus.Failed;
+            confidence = StatusConfidence.High;
+        }
+        else if (turnFinished)
+        {
+            status = idleSucceeded || idleAt is not null
+                ? AgentStatus.Completed
+                : AgentStatus.Idle;
+            confidence = StatusConfidence.High;
+        }
+        else if (latestUserAt > (lastAssistantAt ?? DateTimeOffset.MinValue))
         {
             status = age < TimeSpan.FromSeconds(180) ? AgentStatus.Working : AgentStatus.Idle;
             confidence = StatusConfidence.Medium;

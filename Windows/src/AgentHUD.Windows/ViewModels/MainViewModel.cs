@@ -61,6 +61,7 @@ public sealed class MainViewModel : INotifyPropertyChanged, IMonitoringSnapshotS
         _positionLocked = state.PositionLocked;
         StatusFilter = state.StatusFilter;
         ProviderFilter = state.ProviderFilter;
+        SessionLimit = SessionDisplayPolicy.NormalizeLimit(state.SessionLimit);
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;
@@ -72,6 +73,16 @@ public sealed class MainViewModel : INotifyPropertyChanged, IMonitoringSnapshotS
     public ObservableCollection<SessionRowViewModel> VisibleSessions { get; } = new();
     public StatusFilter StatusFilter { get; private set; }
     public ProviderFilter ProviderFilter { get; private set; }
+    public int SessionLimit { get; private set; }
+    public int HiddenSessionCount => Math.Max(0,
+        _sessions.Count(session => !_store.State.ImportantSessionIds.Contains(session.Id)
+            && StatusFilter.Matches(session.Status)
+            && ProviderFilter.Matches(session.Provider)) - SessionLimit);
+    public string SessionLimitSummary => SessionLimit == 0
+        ? $"显示全部 {_sessions.Count} 个会话"
+        : HiddenSessionCount > 0
+            ? $"显示最近 {VisibleSessions.Count} 个 · 还有 {HiddenSessionCount} 个未显示"
+            : $"显示最近 {SessionLimit} 个会话";
     public DateTimeOffset? LastScannedAt { get; private set; }
     public AIConfiguration AIConfiguration => _store.State.AI.Clone();
     public bool HasApiKey => !string.IsNullOrWhiteSpace(_credentials.GetApiKey());
@@ -285,7 +296,7 @@ public sealed class MainViewModel : INotifyPropertyChanged, IMonitoringSnapshotS
 
         try
         {
-            // Only the very first scan surfaces a loading state; the 3s background
+            // Only the very first scan surfaces a loading state; the background
             // refresh must stay invisible so the list does not blink or re-fade.
             IsLoading = !_hasScanned;
             var snapshot = await Task.Run(() => _scanner.Scan());
@@ -300,15 +311,9 @@ public sealed class MainViewModel : INotifyPropertyChanged, IMonitoringSnapshotS
                 }).ToArray()
                 : Array.Empty<string>();
 
-            if (animatedIds.Length > 0)
-            {
-                foreach (var id in animatedIds)
-                {
-                    CompletionTransition?.Invoke(this, new CompletionTransitionEventArgs(id, false));
-                }
-                await Task.Delay(440);
-            }
-
+            // Publish the new snapshot BEFORE playing the completion animation.
+            // The old order awaited 440 ms of exit animation first, so every
+            // transition made the list lag nearly half a second behind the logs.
             _sessions = snapshot.Sessions;
             _monitoringRevision++;
             LastScannedAt = snapshot.ScannedAt;
@@ -318,11 +323,7 @@ public sealed class MainViewModel : INotifyPropertyChanged, IMonitoringSnapshotS
 
             if (animatedIds.Length > 0)
             {
-                await Task.Delay(35);
-                foreach (var id in animatedIds)
-                {
-                    CompletionTransition?.Invoke(this, new CompletionTransitionEventArgs(id, true));
-                }
+                await PlayCompletionTransitionsAsync(animatedIds);
             }
 
             StartAIEnrichment();
@@ -331,6 +332,19 @@ public sealed class MainViewModel : INotifyPropertyChanged, IMonitoringSnapshotS
         {
             IsLoading = false;
             _refreshGate.Release();
+        }
+    }
+
+    private async Task PlayCompletionTransitionsAsync(IReadOnlyList<string> ids)
+    {
+        foreach (var id in ids)
+        {
+            CompletionTransition?.Invoke(this, new CompletionTransitionEventArgs(id, false));
+        }
+        await Task.Delay(440);
+        foreach (var id in ids)
+        {
+            CompletionTransition?.Invoke(this, new CompletionTransitionEventArgs(id, true));
         }
     }
 
@@ -361,6 +375,15 @@ public sealed class MainViewModel : INotifyPropertyChanged, IMonitoringSnapshotS
         OnPropertyChanged(nameof(ProviderFilter));
         SelectedRow = null;
         DismissImportantNoticeIfVisible();
+        RebuildRows(force: true);
+    }
+
+    public void SetSessionLimit(int limit)
+    {
+        SessionLimit = SessionDisplayPolicy.NormalizeLimit(limit);
+        _store.State.SessionLimit = SessionLimit;
+        _store.Save();
+        OnPropertyChanged(nameof(SessionLimit));
         RebuildRows(force: true);
     }
 
@@ -762,7 +785,9 @@ public sealed class MainViewModel : INotifyPropertyChanged, IMonitoringSnapshotS
             await RefreshAsync();
             try
             {
-                await Task.Delay(TimeSpan.FromSeconds(3), cancellationToken);
+                // Scans are cached and cost ~50 ms warm, so a tighter cadence is
+                // affordable and is what makes a running agent visibly tick.
+                await Task.Delay(TimeSpan.FromSeconds(1.5), cancellationToken);
             }
             catch (OperationCanceledException)
             {
@@ -771,14 +796,29 @@ public sealed class MainViewModel : INotifyPropertyChanged, IMonitoringSnapshotS
         }
     }
 
+    /// <summary>
+    /// Recomputes the relative labels ("刚刚" / "3 分钟前"). They are pure
+    /// functions of wall-clock time, so without this the list showed a frozen
+    /// "刚刚" forever even though refreshes were landing.
+    /// </summary>
+    public void RefreshRelativeTimes()
+    {
+        foreach (var row in VisibleSessions)
+        {
+            row.RefreshAges();
+        }
+        SelectedRow?.RefreshAges();
+    }
+
     private void RebuildRows(bool force)
     {
         var important = _store.State.ImportantSessionIds;
-        var filtered = _sessions
+        var filtered = SessionDisplayPolicy.Apply(_sessions
             .Where(session =>
                 StatusFilter.Matches(session.Status)
-                && ProviderFilter.Matches(session.Provider))
-            .ToArray();
+                && ProviderFilter.Matches(session.Provider)),
+            important,
+            SessionLimit);
         var ordered = SessionOrdering.Sort(
             filtered,
             important,
@@ -788,6 +828,7 @@ public sealed class MainViewModel : INotifyPropertyChanged, IMonitoringSnapshotS
             "\u001E",
             StatusFilter,
             ProviderFilter,
+            SessionLimit,
             PrivacyMode,
             string.Join("\u001F", ordered.Select(session =>
                 $"{session.Id}:{session.Status}:{session.LastActivityAt.UtcTicks}:{DisplayTitle(session)}:{important.Contains(session.Id)}")));
@@ -814,6 +855,8 @@ public sealed class MainViewModel : INotifyPropertyChanged, IMonitoringSnapshotS
         OnPropertyChanged(nameof(CompactDisplayText));
         OnPropertyChanged(nameof(ActiveSummary));
         OnPropertyChanged(nameof(FooterText));
+        OnPropertyChanged(nameof(HiddenSessionCount));
+        OnPropertyChanged(nameof(SessionLimitSummary));
     }
 
     /// <summary>
@@ -1201,6 +1244,18 @@ public sealed class SessionRowViewModel : INotifyPropertyChanged
         }
     }
     public string StarGlyph => IsImportant ? "\uE735" : "\uE734";
+
+    /// <summary>
+    /// Raises the time-derived labels for the elapsed-time row. Called from the
+    /// scanner loop rather than from <see cref="Update"/> because the underlying
+    /// session may not change at all while the clock keeps moving.
+    /// </summary>
+    public void RefreshAges()
+    {
+        OnPropertyChanged(nameof(ActivityAge));
+        OnPropertyChanged(nameof(StartedAge));
+        OnPropertyChanged(nameof(DurationText));
+    }
     public string ProviderShortName => Session.Provider.ShortName();
     public string ProviderDisplayName => Session.Provider.DisplayName();
     public string ProviderInitials => Session.Provider switch
@@ -1221,8 +1276,8 @@ public sealed class SessionRowViewModel : INotifyPropertyChanged
         _ => "HudNeutralTintBrush"
     });
     public Brush StatusBrush => BrushForStatus(Session.Status);
-    /// <summary>Ink colour for the solid status pill.</summary>
-    public Brush StatusPillTextBrush => ThemeBrush("HudPillInkBrush");
+    /// <summary>Status badge keeps a saturated foreground on a quiet tinted plate.</summary>
+    public Brush StatusPillTextBrush => BrushForStatus(Session.Status);
     public Brush StatusTintBrush => BrushForStatusTint(Session.Status);
     public Brush CardEdgeBrush => ThemeBrush("HudCardEdgeBrush");
     public Brush BadgeEdgeBrush => Session.Provider switch

@@ -19,7 +19,7 @@ public sealed class CodexInputAdapter : IAgentInputAdapter
     {
         if (!session.IsLive)
         {
-            return new InputCapability(false, InputState.Offline, "会话或进程已经离线。");
+            return new InputCapability(true, InputState.Ready, "会话已结束，发送后会尝试恢复并继续处理。");
         }
 
         if (session.Status is not (AgentStatus.Working
@@ -59,8 +59,8 @@ public sealed class CodexInputAdapter : IAgentInputAdapter
         }
 
         // `codex queue` 对已经退出的会话同样返回成功，消息会被静默丢弃；
-        // 所以先确认仍有进程持有该会话的 rollout 文件。
-        if (!IsSessionAttached(session))
+        // 运行中的会话先确认仍有进程持有该会话的 rollout 文件。
+        if (session.IsLive && !IsSessionAttached(session))
         {
             return new DeliveryResult(false, DeliveryStatus.Failed, DeliveryError.SessionOffline);
         }
@@ -79,6 +79,10 @@ public sealed class CodexInputAdapter : IAgentInputAdapter
         startInfo.ArgumentList.Add(session.ProviderSessionId);
         startInfo.ArgumentList.Add("--message");
         startInfo.ArgumentList.Add(text);
+        if (!session.IsLive)
+        {
+            startInfo.ArgumentList.Add("--resume");
+        }
 
         try
         {
@@ -103,6 +107,14 @@ public sealed class CodexInputAdapter : IAgentInputAdapter
 
             if (process.ExitCode == 0)
             {
+                // CLI 文档明确说明：--resume 失败只输出 warning，退出码仍为 0。
+                // 这种结果不能向手机报告“已投递”。
+                if (!session.IsLive
+                    && errorText.Contains("resume", StringComparison.OrdinalIgnoreCase)
+                    && errorText.Contains("fail", StringComparison.OrdinalIgnoreCase))
+                {
+                    return new DeliveryResult(false, DeliveryStatus.Failed, DeliveryError.SessionOffline);
+                }
                 return new DeliveryResult(true, DeliveryStatus.Delivered, null);
             }
 

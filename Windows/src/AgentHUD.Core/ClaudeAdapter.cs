@@ -9,7 +9,8 @@ public static class ClaudeAdapter
         string filePath,
         DateTimeOffset modifiedAt,
         bool providerIsRunning,
-        DateTimeOffset now)
+        DateTimeOffset now,
+        IReadOnlyList<JsonElement>? subagentRecords = null)
     {
         if (records.Count == 0)
         {
@@ -22,7 +23,16 @@ public static class ClaudeAdapter
             ?? JsonTools.String(first, "session_id")
             ?? Path.GetFileNameWithoutExtension(filePath);
         var projectPath = JsonTools.String(first, "cwd");
-        var startedAt = EventDate(first);
+
+        // Claude Code writes bookkeeping rows (last-prompt / mode / ai-title …)
+        // without a timestamp. Sorting puts them first, so taking the head's
+        // date yields DateTimeOffset.MinValue and every session ends up with a
+        // year-0001 start time and a 700k-hour duration. Use the first row that
+        // actually carries a timestamp, then fall back to the file mtime.
+        var firstDated = sorted
+            .Select(EventDate)
+            .FirstOrDefault(date => date > DateTimeOffset.MinValue);
+        var startedAt = firstDated > DateTimeOffset.MinValue ? firstDated : modifiedAt;
         var lastActivityAt = modifiedAt;
         string? aiTitle = null;
         string? currentObjective = null;
@@ -36,6 +46,8 @@ public static class ClaudeAdapter
         DateTimeOffset? latestErrorAt = null;
         var runs = new List<TaskRun>();
         UserPromptSnapshot? latestPrompt = null;
+        var latestUserPromptAt = DateTimeOffset.MinValue;
+        DateTimeOffset? turnCompletedAt = null;
 
         foreach (var record in sorted)
         {
@@ -63,19 +75,29 @@ public static class ClaudeAdapter
             var message = JsonTools.Object(record, "message");
             if (type == "user")
             {
-                var content = message is null ? null : JsonTools.Array(message.Value, "content");
+                // A real user prompt is stored either as a bare string or as an
+                // array of parts. Only the array form was handled, so every
+                // string prompt was silently dropped — the session then had no
+                // prompt at all and fell back to a generic "处理XX项目" title.
+                var rawContent = default(JsonElement);
+                var hasContent = message is not null
+                    && JsonTools.TryGet(message.Value, "content", out rawContent);
+                var content = hasContent && rawContent.ValueKind == JsonValueKind.Array
+                    ? rawContent
+                    : (JsonElement?)null;
                 if (IsToolResult(content))
                 {
                     pendingTool = false;
                     continue;
                 }
-                if (JsonTools.Bool(record, "isMeta") == true)
+                if (JsonTools.Bool(record, "isMeta") == true || !hasContent)
                 {
                     continue;
                 }
 
-                var latestPromptText = TextTools.UserPromptText(
-                    string.Join("\n", JsonTools.CollectText(content)));
+                var latestPromptText = TextTools.UserPromptText(rawContent.ValueKind == JsonValueKind.String
+                    ? rawContent.GetString()
+                    : string.Join("\n", JsonTools.CollectText(content)));
                 var images = SessionAttachmentParser.ClaudeImages(content);
                 if (string.IsNullOrWhiteSpace(latestPromptText) && images.Count == 0)
                 {
@@ -86,6 +108,8 @@ public static class ClaudeAdapter
                     latestPromptText,
                     date == DateTimeOffset.MinValue ? null : date,
                     images);
+                latestUserPromptAt = date;
+                turnCompletedAt = null;
 
                 if (currentObjective is not null
                     && lastAssistantText is not null
@@ -156,14 +180,33 @@ public static class ClaudeAdapter
             {
                 latestErrorAt = date;
             }
+
+            // Claude Code closes every turn with a system/turn_duration row.
+            // That is the only unambiguous "finished" marker in the log; relying
+            // on "assistant wrote text" alone made the session look busy until
+            // the 180 s idle timer expired.
+            if (type == "system"
+                && string.Equals(JsonTools.String(record, "subtype"), "turn_duration", StringComparison.OrdinalIgnoreCase))
+            {
+                turnCompletedAt = date;
+            }
         }
 
         var age = Max(TimeSpan.Zero, now - lastActivityAt);
         var isWaitingTool = new[] { "askuserquestion", "request_user_input", "exitplanmode" }
             .Contains(currentTool?.ToLowerInvariant());
+
+        // A delegated child (Task / subagent) keeps the parent busy. Claude Code
+        // records the child in a sibling transcript that shares the session id,
+        // so without this the parent flips to 完成 mid-task while children run.
+        var subagentLastAt = subagentRecords is null ? null : LastSubagentActivity(subagentRecords);
+        var subagentRunning = subagentLastAt is { } subagentAt && now - subagentAt < TimeSpan.FromSeconds(90);
+
         AgentStatus status;
         StatusConfidence confidence;
-        if (latestErrorAt is not null && latestErrorAt >= (lastAssistantAt ?? DateTimeOffset.MinValue))
+        if (latestErrorAt is not null
+            && latestErrorAt >= (lastAssistantAt ?? DateTimeOffset.MinValue)
+            && latestErrorAt >= latestUserPromptAt)
         {
             status = AgentStatus.Failed;
             confidence = StatusConfidence.Medium;
@@ -173,16 +216,36 @@ public static class ClaudeAdapter
             status = AgentStatus.WaitingUser;
             confidence = StatusConfidence.Medium;
         }
+        else if (subagentRunning)
+        {
+            status = AgentStatus.Working;
+            confidence = StatusConfidence.High;
+            if (subagentLastAt > lastActivityAt)
+            {
+                lastActivityAt = subagentLastAt.Value;
+                age = Max(TimeSpan.Zero, now - lastActivityAt);
+            }
+        }
         else if (pendingTool)
         {
             status = age < TimeSpan.FromSeconds(240) ? AgentStatus.Working : AgentStatus.Idle;
             confidence = StatusConfidence.High;
         }
-        else if (currentObjective is not null
-            && (lastAssistantAt is null || (lastEventAt ?? DateTimeOffset.MinValue) > lastAssistantAt))
+        else if (latestUserPromptAt > (lastAssistantAt ?? DateTimeOffset.MinValue))
         {
+            // The user spoke after the last assistant answer, so a turn is in
+            // flight even though nothing has landed in the log yet. Checked
+            // before the completion marker because a stale `turn_duration` from
+            // the previous turn must not mark the new prompt as finished.
             status = age < TimeSpan.FromSeconds(180) ? AgentStatus.Working : AgentStatus.Idle;
             confidence = StatusConfidence.Medium;
+        }
+        else if (turnCompletedAt is not null
+            && turnCompletedAt > (lastAssistantAt ?? DateTimeOffset.MinValue))
+        {
+            // Turn closed and no tool is outstanding: the session is done.
+            status = AgentStatus.Completed;
+            confidence = StatusConfidence.High;
         }
         else if (lastAssistantAt is not null && lastAssistantText is not null)
         {
@@ -263,6 +326,20 @@ public static class ClaudeAdapter
             filePath,
             providerIsRunning && age < TimeSpan.FromMinutes(10),
             null);
+    }
+
+    private static DateTimeOffset? LastSubagentActivity(IReadOnlyList<JsonElement> records)
+    {
+        var latest = DateTimeOffset.MinValue;
+        foreach (var record in records)
+        {
+            var date = EventDate(record);
+            if (date > latest)
+            {
+                latest = date;
+            }
+        }
+        return latest > DateTimeOffset.MinValue ? latest : null;
     }
 
     private static TaskRun MakeRun(

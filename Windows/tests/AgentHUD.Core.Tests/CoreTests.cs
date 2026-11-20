@@ -7,6 +7,26 @@ namespace AgentHUD.Core.Tests;
 public sealed class CoreTests
 {
     [Fact]
+    public void SessionLimitKeepsPinnedSessionsAndNewestItems()
+    {
+        var now = DateTimeOffset.UtcNow;
+        var sessions = Enumerable.Range(0, 12)
+            .Select(index => Session($"session-{index}", AgentProvider.Codex,
+                AgentStatus.Completed, now.AddMinutes(-index)))
+            .ToArray();
+        var pinned = new HashSet<string> { "session-11" };
+
+        var visible = SessionDisplayPolicy.Apply(sessions, pinned, 3);
+
+        Assert.Equal(4, visible.Count);
+        Assert.Equal("session-11", visible[0].Id);
+        Assert.Equal(new[] { "session-0", "session-1", "session-2" },
+            visible.Skip(1).Select(session => session.Id));
+        Assert.Equal(12, SessionDisplayPolicy.Apply(sessions, pinned, 0).Count);
+        Assert.Equal(10, SessionDisplayPolicy.NormalizeLimit(999));
+    }
+
+    [Fact]
     public void TitlePriorityPrefersUserThenAiThenLocal()
     {
         var resolver = new SessionTitleResolver();
@@ -82,6 +102,34 @@ public sealed class CoreTests
         Assert.False(ProviderFilter.Codex.Matches(waiting.Provider));
         Assert.True(ProviderFilter.OpenCode.Matches(AgentProvider.OpenCode));
         Assert.False(ProviderFilter.OpenCode.Matches(AgentProvider.Codex));
+    }
+
+    [Fact]
+    public void StatusRankReadsRunningWaitingCompletedFailed()
+    {
+        // The list must read 运行中 → 等待 → 已完成 → 错误. Starting is grouped
+        // with working because the user reads both as "still running".
+        Assert.Equal(AgentStatus.Working.SortRank(), AgentStatus.Starting.SortRank());
+        Assert.True(AgentStatus.Working.SortRank() < AgentStatus.WaitingUser.SortRank());
+        Assert.True(AgentStatus.WaitingUser.SortRank() < AgentStatus.Completed.SortRank());
+        Assert.True(AgentStatus.Completed.SortRank() < AgentStatus.Failed.SortRank());
+        Assert.True(AgentStatus.Failed.SortRank() < AgentStatus.Idle.SortRank());
+
+        var now = DateTimeOffset.UtcNow;
+        var ordered = SessionOrdering.Sort(
+            new[]
+            {
+                Session("s:failed", AgentProvider.Claude, AgentStatus.Failed, now),
+                Session("s:completed", AgentProvider.Claude, AgentStatus.Completed, now),
+                Session("s:waiting", AgentProvider.Claude, AgentStatus.WaitingUser, now),
+                Session("s:working", AgentProvider.Claude, AgentStatus.Working, now),
+                Session("s:starting", AgentProvider.Claude, AgentStatus.Starting, now)
+            },
+            new HashSet<string>());
+
+        Assert.Equal(
+            new[] { "s:starting", "s:working", "s:waiting", "s:completed", "s:failed" },
+            ordered.Select(session => session.Id));
     }
 
     [Fact]
@@ -187,6 +235,82 @@ public sealed class CoreTests
         {
             File.Delete(path);
         }
+    }
+
+    [Fact]
+    public void IncrementalReadResumesFromTheLastCompleteLine()
+    {
+        // The refresh loop relies on this to avoid re-parsing multi-megabyte
+        // transcripts every 1.5 s. A half-written trailing line must stay
+        // unread so the next append parses it as one complete record.
+        var path = Path.Combine(
+            Path.GetTempPath(),
+            $"agenthud-jsonl-inc-{Guid.NewGuid():N}.jsonl");
+        try
+        {
+            File.WriteAllText(path, "{\"type\":\"user\"}\n{\"type\":\"assis");
+
+            var first = JsonlReader.ReadFrom(path, 0, out var offset);
+            Assert.Single(first);
+            Assert.Equal("user", JsonTools.String(first[0], "type"));
+
+            File.AppendAllText(path, "tant\"}\n{\"type\":\"result\"}\n");
+            var second = JsonlReader.ReadFrom(path, offset, out _);
+
+            Assert.Equal(2, second.Count);
+            Assert.Equal("assistant", JsonTools.String(second[0], "type"));
+            Assert.Equal("result", JsonTools.String(second[1], "type"));
+        }
+        finally
+        {
+            File.Delete(path);
+        }
+    }
+
+    [Fact]
+    public void IncrementalReadFallsBackWhenTheFileIsShorterThanTheOffset()
+    {
+        // Scanner only resumes from a stored offset when the file grew past it.
+        // A rotated/truncated log must be re-read from the beginning, so the
+        // reader has to reject an offset beyond EOF instead of seeking past it.
+        var path = Path.Combine(
+            Path.GetTempPath(),
+            $"agenthud-jsonl-rot-{Guid.NewGuid():N}.jsonl");
+        try
+        {
+            File.WriteAllText(path, "{\"type\":\"old\"}\n{\"type\":\"old2\"}\n");
+            JsonlReader.ReadFrom(path, 0, out var offset);
+            Assert.True(offset > 0);
+
+            File.WriteAllText(path, "{\"type\":\"new\"}\n");
+
+            var records = JsonlReader.ReadFrom(path, offset, out _);
+            Assert.True(
+                records.Count == 0 || JsonTools.String(records[0], "type") != "old",
+                "截断后的文件不应再返回旧内容");
+        }
+        finally
+        {
+            File.Delete(path);
+        }
+    }
+
+    [Fact]
+    public void PromptMentioningBugsIsNotRewrittenIntoALogHunt()
+    {
+        // "优化当前功能，有很多bug" used to be titled "查询一下XX项目日志报错详情"
+        // just because the word "bug" appeared in the prompt.
+        var title = TextTools.AutomaticTaskTitle(
+            "你的任务是优化当前功能，有很多bug，而且刷新比较慢",
+            "Agent-HUD");
+        Assert.DoesNotContain("日志报错", title);
+    }
+
+    [Fact]
+    public void ExplicitLogRequestStillProducesALogTitle()
+    {
+        var title = TextTools.AutomaticTaskTitle("看看今天的日志报错", "Agent-HUD");
+        Assert.Contains("日志报错", title);
     }
 
     private static AgentSession Session(

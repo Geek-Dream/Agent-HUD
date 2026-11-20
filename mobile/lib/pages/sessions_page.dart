@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import '../device_store.dart';
 import '../models.dart';
 import '../session_controller.dart';
+import '../session_display_store.dart';
 import '../theme.dart';
 import '../widgets/hud_chips.dart';
 import 'session_detail_page.dart';
@@ -170,8 +171,8 @@ class _SessionsPageState extends State<SessionsPage>
 
     return Scaffold(
       appBar: AppBar(
-        toolbarHeight: 78,
-        titleSpacing: HudSpacing.xl,
+        toolbarHeight: 70,
+        titleSpacing: HudSpacing.lg,
         title: Row(
           children: [
             const _DeviceGlyph(),
@@ -182,21 +183,38 @@ class _SessionsPageState extends State<SessionsPage>
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    widget.device.instanceName,
+                    'AGENT HUD',
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: HudText.title.copyWith(
-                      fontSize: 20,
+                      fontSize: 17,
                       fontWeight: FontWeight.w700,
-                      letterSpacing: -0.35,
+                      letterSpacing: 0,
                     ),
                   ),
                   const SizedBox(height: 2),
-                  Text(
-                    _subtitle(controller),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: HudText.caption.copyWith(fontSize: 11.5),
+                  Row(
+                    children: [
+                      if (controller.sessions.any(
+                        (session) => HudColors.isActive(session.status),
+                      ))
+                        const Padding(
+                          padding: EdgeInsets.only(right: 5),
+                          child: HudStatusDot(
+                            color: HudColors.completed,
+                            pulsing: false,
+                            size: 5,
+                          ),
+                        ),
+                      Expanded(
+                        child: Text(
+                          '${widget.device.instanceName} · ${_subtitle(controller)}',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: HudText.caption.copyWith(fontSize: 10.5),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -216,7 +234,7 @@ class _SessionsPageState extends State<SessionsPage>
                 ),
               ),
             ),
-          _ProviderFilterMenu(controller: controller, compact: true),
+          _SessionLimitMenu(controller: controller),
           _HeaderAction(
             tooltip: '待办',
             icon: Icons.checklist_rounded,
@@ -325,7 +343,49 @@ class _SessionsPageState extends State<SessionsPage>
       return controller.isRefreshing ? '正在连接…' : '尚未连接';
     }
     if (active > 0) return '$active 个进行中 · 共 $total 个会话';
+    final int hidden = controller.hiddenSessionCount;
+    if (hidden > 0) {
+      return '显示 ${controller.sessions.length} 个 · $hidden 个未显示';
+    }
     return '$total 个会话 · 已同步';
+  }
+}
+
+class _SessionLimitMenu extends StatelessWidget {
+  const _SessionLimitMenu({required this.controller});
+  final SessionController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    return PopupMenuButton<int>(
+      tooltip: '会话显示设置',
+      icon: const Icon(Icons.tune_rounded, size: 20),
+      onSelected: controller.setSessionLimit,
+      itemBuilder: (context) => [
+        const PopupMenuItem<int>(
+          enabled: false,
+          child: Text('会话显示数量', style: HudText.label),
+        ),
+        for (final int limit in SessionDisplayStore.options)
+          PopupMenuItem<int>(
+            value: limit,
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(limit == 0 ? '全部会话' : '最近 $limit 个会话'),
+                ),
+                if (controller.sessionLimit == limit)
+                  const Icon(Icons.check_rounded, size: 17),
+              ],
+            ),
+          ),
+        const PopupMenuDivider(),
+        const PopupMenuItem<int>(
+          enabled: false,
+          child: Text('星标会话常驻显示，不占数量上限', style: HudText.caption),
+        ),
+      ],
+    );
   }
 }
 
@@ -346,7 +406,7 @@ const List<_FilterOption> _statusOptions = [
 ];
 
 const List<_FilterOption> _providerOptions = [
-  _FilterOption('All', '全部来源', HudColors.textSecondary),
+  _FilterOption('All', '全部', HudColors.textSecondary),
   _FilterOption('Codex', 'Codex', HudColors.codex),
   _FilterOption('Claude', 'Claude', HudColors.claude),
   _FilterOption('Pi', 'Pi', HudColors.pi),
@@ -361,152 +421,24 @@ class _Filters extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(
-        border: Border(bottom: BorderSide(color: HudColors.divider)),
-      ),
-      padding: const EdgeInsets.only(bottom: HudSpacing.lg),
-      child: _FilterRow(
-        options: _statusOptions,
-        selected: controller.statusFilter,
-        count: controller.countForStatus,
-        onSelected: controller.setStatusFilter,
-      ),
-    );
-  }
-}
-
-/// Single compact control replacing the old second filter row: a quiet pill
-/// that opens a small popup with the providers.
-class _ProviderFilterMenu extends StatelessWidget {
-  const _ProviderFilterMenu({required this.controller, this.compact = false});
-
-  final SessionController controller;
-  final bool compact;
-
-  @override
-  Widget build(BuildContext context) {
-    final String selected = controller.providerFilter;
-    final bool active = selected != 'All';
-    final Color accent =
-        active ? HudColors.provider(selected) : HudColors.textTertiary;
-
-    return PopupMenuButton<String>(
-      tooltip: '按来源筛选',
-      position: PopupMenuPosition.under,
-      offset: const Offset(0, 6),
-      color: HudColors.surfaceRaised,
-      elevation: 0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(HudRadii.card),
-        side: const BorderSide(color: HudColors.borderStrong),
-      ),
-      padding: EdgeInsets.zero,
-      itemBuilder: (context) => [
-        for (final _FilterOption option in _providerOptions)
-          PopupMenuItem<String>(
-            value: option.value,
-            height: 40,
-            child: Row(
-              children: [
-                if (option.value == 'All')
-                  Icon(
-                    Icons.apps_rounded,
-                    size: 14,
-                    color: HudColors.textTertiary,
-                  )
-                else
-                  HudProviderGlyph(provider: option.value, size: 16),
-                const SizedBox(width: HudSpacing.md),
-                Text(
-                  option.label,
-                  style: HudText.bodySecondary.copyWith(
-                    fontSize: 13,
-                    fontWeight: option.value == selected
-                        ? FontWeight.w600
-                        : FontWeight.w400,
-                    color: option.value == selected
-                        ? HudColors.textPrimary
-                        : HudColors.textSecondary,
-                  ),
-                ),
-                const Spacer(),
-                if (option.value == selected)
-                  const Icon(
-                    Icons.check_rounded,
-                    size: 14,
-                    color: HudColors.textSecondary,
-                  ),
-              ],
-            ),
+      padding: const EdgeInsets.symmetric(vertical: HudSpacing.md),
+      child: Column(
+        children: [
+          _FilterRow(
+            options: _statusOptions,
+            selected: controller.statusFilter,
+            count: controller.countForStatus,
+            onSelected: controller.setStatusFilter,
           ),
-      ],
-      onSelected: controller.setProviderFilter,
-      child: compact
-          ? SizedBox(
-              width: 36,
-              height: 36,
-              child: Center(
-                child: Stack(
-                  clipBehavior: Clip.none,
-                  children: [
-                    Icon(
-                      Icons.filter_alt_outlined,
-                      size: 19,
-                      color: active
-                          ? HudColors.textPrimary
-                          : HudColors.textSecondary,
-                    ),
-                    if (active)
-                      Positioned(
-                        right: -2,
-                        top: -2,
-                        child: Container(
-                          width: 6,
-                          height: 6,
-                          decoration: BoxDecoration(
-                            color: HudColors.provider(selected),
-                            shape: BoxShape.circle,
-                          ),
-                        ),
-                      ),
-                  ],
-                ),
-              ),
-            )
-          : Container(
-              height: 30,
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              decoration: BoxDecoration(
-                color: active ? HudColors.controlHover : Colors.transparent,
-                borderRadius: BorderRadius.circular(999),
-                border: Border.all(
-                  color: active ? HudColors.borderStrong : HudColors.border,
-                ),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(Icons.filter_list_rounded, size: 13, color: accent),
-                  const SizedBox(width: 5),
-                  Text(
-                    active ? selected : '来源',
-                    style: TextStyle(
-                      fontSize: 11.5,
-                      fontWeight: active ? FontWeight.w600 : FontWeight.w500,
-                      color: active
-                          ? HudColors.textPrimary
-                          : HudColors.textTertiary,
-                    ),
-                  ),
-                  const SizedBox(width: 2),
-                  Icon(
-                    Icons.expand_more_rounded,
-                    size: 14,
-                    color: HudColors.textTertiary,
-                  ),
-                ],
-              ),
-            ),
+          const SizedBox(height: HudSpacing.md),
+          _FilterRow(
+            options: _providerOptions,
+            selected: controller.providerFilter,
+            count: controller.countForProvider,
+            onSelected: controller.setProviderFilter,
+          ),
+        ],
+      ),
     );
   }
 }
@@ -526,32 +458,30 @@ class _FilterRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 30,
-      child: ShaderMask(
-        blendMode: BlendMode.dstIn,
-        shaderCallback: (Rect bounds) => const LinearGradient(
-          colors: [Colors.white, Colors.white, Colors.transparent],
-          stops: [0, 0.965, 1],
-        ).createShader(bounds),
-        child: ListView.separated(
-          scrollDirection: Axis.horizontal,
-          padding: const EdgeInsets.only(
-            left: HudSpacing.xl,
-            right: HudSpacing.xxl,
-          ),
-          itemCount: options.length,
-          separatorBuilder: (_, __) => const SizedBox(width: HudSpacing.sm),
-          itemBuilder: (context, index) {
-            final _FilterOption option = options[index];
-            return _FilterChip(
-              option: option,
-              selected: option.value == selected,
-              count: count(option.value),
-              onTap: () => onSelected(option.value),
-            );
-          },
-        ),
+    return Container(
+      height: 40,
+      margin: const EdgeInsets.symmetric(horizontal: HudSpacing.lg),
+      padding: const EdgeInsets.all(3),
+      decoration: BoxDecoration(
+        color: HudColors.surface.withValues(alpha: 0.64),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: HudColors.border),
+      ),
+      child: Row(
+        children: [
+          for (var index = 0; index < options.length; index++) ...[
+            Expanded(
+              child: _FilterChip(
+                option: options[index],
+                selected: options[index].value == selected,
+                count: count(options[index].value),
+                onTap: () => onSelected(options[index].value),
+              ),
+            ),
+            if (index < options.length - 1)
+              Container(width: 1, height: 18, color: HudColors.divider),
+          ],
+        ],
       ),
     );
   }
@@ -572,7 +502,7 @@ class _FilterChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Color accent = option.color;
+    final bool isProvider = _providerOptions.contains(option);
     return Semantics(
       button: true,
       selected: selected,
@@ -580,57 +510,68 @@ class _FilterChip extends StatelessWidget {
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          borderRadius: BorderRadius.circular(999),
+          borderRadius: BorderRadius.circular(6),
           onTap: onTap,
           child: AnimatedContainer(
             duration: HudMotion.fast,
             curve: HudMotion.easeOut,
-            padding: const EdgeInsets.symmetric(horizontal: 10),
+            padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 7),
             decoration: BoxDecoration(
-              color: selected ? HudColors.textPrimary : HudColors.controlFill,
-              borderRadius: BorderRadius.circular(999),
-              border: Border.all(
-                color: selected ? Colors.transparent : HudColors.border,
-              ),
+              color: selected
+                  ? HudColors.working.withValues(alpha: 0.25)
+                  : Colors.transparent,
+              borderRadius: BorderRadius.circular(6),
+              border: selected
+                  ? Border.all(color: HudColors.neon.withValues(alpha: 0.7))
+                  : null,
             ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                if (option.value != 'All') ...[
-                  Container(
-                    width: 4.5,
-                    height: 4.5,
-                    decoration: BoxDecoration(
-                      color: accent.withValues(alpha: selected ? 0.9 : 0.7),
-                      shape: BoxShape.circle,
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (option.value == 'All') ...[
+                    const Icon(
+                      Icons.grid_view_rounded,
+                      size: 12,
+                      color: HudColors.textSecondary,
+                    ),
+                    const SizedBox(width: 4),
+                  ] else if (isProvider) ...[
+                    HudProviderGlyph(provider: option.value, size: 14),
+                    const SizedBox(width: 4),
+                  ] else ...[
+                    Container(
+                      width: 4,
+                      height: 4,
+                      decoration: BoxDecoration(
+                        color: option.color,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                    const SizedBox(width: 4),
+                  ],
+                  Text(
+                    option.label,
+                    style: TextStyle(
+                      fontSize: 11.5,
+                      fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
+                      color: selected
+                          ? HudColors.textPrimary
+                          : HudColors.textSecondary,
                     ),
                   ),
-                  const SizedBox(width: 5),
-                ],
-                Text(
-                  option.label,
-                  style: TextStyle(
-                    fontSize: 12.5,
-                    fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
-                    color: selected
-                        ? HudColors.background
-                        : HudColors.textSecondary,
-                  ),
-                ),
-                if (selected || option.value == 'All') ...[
-                  const SizedBox(width: 5),
+                  const SizedBox(width: 4),
                   Text(
                     '$count',
                     style: HudText.micro.copyWith(
-                      fontSize: 10.5,
-                      color: selected
-                          ? HudColors.background.withValues(alpha: 0.5)
-                          : HudColors.textTertiary,
+                      fontSize: 9.5,
+                      color: HudColors.textTertiary,
                       fontFeatures: const [FontFeature.tabularFigures()],
                     ),
                   ),
                 ],
-              ],
+              ),
             ),
           ),
         ),
@@ -789,24 +730,24 @@ class _SessionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool isActive = HudColors.isActive(session.status);
-    final bool isWorking = session.status == 'Working' ||
-        session.status == 'Starting';
+    final bool isWorking =
+        session.status == 'Working' || session.status == 'Starting';
     final bool needsUser = session.status == 'WaitingUser';
     final Color statusColor = HudColors.status(session.status);
     final String? meta = _metadata(session);
 
     return Padding(
-      padding: const EdgeInsets.only(bottom: 10),
+      padding: EdgeInsets.zero,
       child: HudSurfaceCard(
         onTap: onOpen,
         color: needsUser ? HudColors.surfaceRaised : HudColors.surface,
         borderColor: needsUser
-            ? HudColors.waiting.withValues(alpha: 0.28)
+            ? HudColors.waiting.withValues(alpha: 0.42)
             : HudColors.border,
-        radius: 18,
-        accent: isActive ? statusColor : null,
-        padding: const EdgeInsets.fromLTRB(15, 13, 10, 11),
+        radius: 10,
+        accent: isWorking ? statusColor : null,
+        shadows: const <BoxShadow>[],
+        padding: const EdgeInsets.fromLTRB(12, 12, 12, 11),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -814,35 +755,35 @@ class _SessionCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(top: 1, left: 2),
+                  padding: const EdgeInsets.only(top: 1),
                   child: HudProviderGlyph(
                     provider: session.provider,
-                    size: 30,
+                    size: 34,
                   ),
                 ),
-                const SizedBox(width: 12),
+                const SizedBox(width: 10),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         session.title,
-                        maxLines: 1,
+                        maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: HudText.title.copyWith(
-                          fontSize: 15.5,
-                          height: 1.28,
-                          letterSpacing: -0.1,
+                          fontSize: 15,
+                          height: 1.24,
+                          letterSpacing: 0,
                         ),
                       ),
                       if (meta != null) ...[
-                        const SizedBox(height: 5),
+                        const SizedBox(height: 6),
                         Text(
                           meta,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: HudText.caption.copyWith(
-                            fontSize: 11.5,
+                            fontSize: 10.5,
                             height: 1.3,
                             color: HudColors.textTertiary,
                           ),
@@ -851,82 +792,64 @@ class _SessionCard extends StatelessWidget {
                     ],
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 5, left: 8),
-                  child: Icon(
-                    Icons.chevron_right_rounded,
-                    size: 18,
-                    color: HudColors.textTertiary.withValues(alpha: 0.45),
-                  ),
-                ),
-              ],
-            ),
-            if (session.currentAction.isNotEmpty) ...[
-              const SizedBox(height: 10),
-              Padding(
-                padding: const EdgeInsets.only(left: 3),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                const SizedBox(width: 8),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.only(top: 2.5),
-                      child: Icon(
-                        hudStatusIcon(session.status),
-                        size: 12.5,
-                        color: statusColor.withValues(alpha: 0.85),
+                    if (canStar)
+                      _StarButton(session: session, onStar: onStar)
+                    else if (session.isImportant)
+                      const Icon(
+                        Icons.star_rounded,
+                        size: 17,
+                        color: HudColors.important,
                       ),
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        session.currentAction,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: HudText.bodySecondary.copyWith(
-                          fontSize: 12.5,
-                          height: 1.45,
-                          color: HudColors.textSecondary.withValues(
-                            alpha: 0.9,
-                          ),
-                        ),
-                      ),
+                    const SizedBox(width: 4),
+                    HudStatusPill(
+                      status: session.status,
+                      dense: true,
+                      pulsing: isWorking && !reduced,
                     ),
                   ],
                 ),
-              ),
-            ],
-            const SizedBox(height: 10),
-            Container(
-              height: 1,
-              margin: const EdgeInsets.only(left: 3, right: 6),
-              color: HudColors.divider,
+              ],
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 10),
             Row(
               children: [
-                const SizedBox(width: 3),
-                HudStatusPill(
-                  status: session.status,
-                  dense: true,
-                  pulsing: isWorking && !reduced,
+                Padding(
+                  padding: const EdgeInsets.only(top: 4),
+                  child: HudStatusDot(
+                    color: statusColor,
+                    pulsing: isWorking && !reduced,
+                    size: 5,
+                  ),
                 ),
-                const SizedBox(width: 9),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    session.currentAction.isEmpty
+                        ? '查看会话详情'
+                        : session.currentAction,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: HudText.bodySecondary.copyWith(
+                      fontSize: 11.5,
+                      height: 1.4,
+                      color: HudColors.textSecondary.withValues(
+                        alpha: 0.9,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 8),
                 Text(
                   relativeTime(session.lastActivityAt),
                   style: HudText.caption.copyWith(
                     fontSize: 10.5,
-                    color: HudColors.textTertiary.withValues(alpha: 0.8),
+                    color: HudColors.textTertiary,
                   ),
                 ),
-                const Spacer(),
-                if (canStar)
-                  _StarButton(session: session, onStar: onStar)
-                else if (session.isImportant)
-                  Icon(
-                    Icons.star_rounded,
-                    size: 14,
-                    color: HudColors.important.withValues(alpha: 0.9),
-                  ),
               ],
             ),
           ],
@@ -937,7 +860,7 @@ class _SessionCard extends StatelessWidget {
 
   /// Provider is implied by the glyph, so the meta line only carries context.
   static String? _metadata(AgentSession session) {
-    final List<String> parts = <String>[];
+    final List<String> parts = <String>[session.provider.toUpperCase()];
     if (session.projectName.isNotEmpty) parts.add(session.projectName);
     if (session.gitBranch != null && session.gitBranch!.isNotEmpty) {
       parts.add(session.gitBranch!);
@@ -1266,14 +1189,22 @@ class _DeviceGlyph extends StatelessWidget {
       width: 34,
       height: 34,
       decoration: BoxDecoration(
-        color: HudColors.controlFill,
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            HudColors.working.withValues(alpha: 0.34),
+            HudColors.working.withValues(alpha: 0.08),
+          ],
+        ),
         borderRadius: BorderRadius.circular(HudRadii.control),
-        border: Border.all(color: HudColors.border),
+        border: Border.all(color: HudColors.neon.withValues(alpha: 0.75)),
+        boxShadow: HudElevation.glow(HudColors.working),
       ),
       child: const Icon(
-        Icons.laptop_mac_rounded,
-        size: 17,
-        color: HudColors.textSecondary,
+        Icons.grid_view_rounded,
+        size: 18,
+        color: HudColors.neon,
       ),
     );
   }

@@ -15,17 +15,14 @@ public sealed class AgentInputDispatcher
     {
         _adapters = new Dictionary<AgentProvider, IReadOnlyList<IAgentInputAdapter>>
         {
-            [AgentProvider.Codex] = [new CodexInputAdapter()]
+            [AgentProvider.Codex] = [new CodexInputAdapter()],
+            [AgentProvider.OpenCode] = [new OpenCodeInputAdapter()],
+            [AgentProvider.Claude] = [new ClaudeInputAdapter()]
         };
     }
 
     public InputCapability CapabilityFor(AgentSession session)
     {
-        if (!session.IsLive)
-        {
-            return new InputCapability(false, InputState.Offline, "会话或进程已经离线。");
-        }
-
         if (!_adapters.TryGetValue(session.Provider, out var adapters) || adapters.Count == 0)
         {
             return new InputCapability(false, InputState.Unsupported, "当前 Provider 或版本不支持输入。");

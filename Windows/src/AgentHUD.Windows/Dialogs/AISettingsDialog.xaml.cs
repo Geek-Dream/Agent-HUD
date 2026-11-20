@@ -20,6 +20,7 @@ public sealed partial class AISettingsDialog : ContentDialog
         var savedSize = _viewModel.SavedExpandedWindowSize;
         ExpandedWidthBox.Value = savedSize.Width ?? ExpandedPanelSize.DefaultWidth;
         ExpandedHeightBox.Value = savedSize.Height ?? ExpandedPanelSize.DefaultHeight;
+        SessionLimitBox.SelectedIndex = Array.IndexOf(SessionDisplayPolicy.LimitOptions, _viewModel.SessionLimit);
         UpdateKeyState();
     }
 
@@ -37,6 +38,11 @@ public sealed partial class AISettingsDialog : ContentDialog
         _viewModel.SaveExpandedWindowSize(
             ExpandedWidthBox.Value,
             ExpandedHeightBox.Value);
+        if (SessionLimitBox.SelectedItem is ComboBoxItem { Tag: string limit }
+            && int.TryParse(limit, out var sessionLimit))
+        {
+            _viewModel.SetSessionLimit(sessionLimit);
+        }
         if (!TryReadConfiguration(
                 forceEnabled: false,
                 out var configuration,

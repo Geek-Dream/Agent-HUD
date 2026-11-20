@@ -10,6 +10,7 @@ public sealed class PersistedAppState
     public bool PositionLocked { get; set; }
     public StatusFilter StatusFilter { get; set; } = StatusFilter.All;
     public ProviderFilter ProviderFilter { get; set; } = ProviderFilter.All;
+    public int SessionLimit { get; set; } = SessionDisplayPolicy.DefaultLimit;
     public double? WindowX { get; set; }
     public double? WindowY { get; set; }
     public double? ExpandedWidth { get; set; }
@@ -122,6 +123,7 @@ public sealed class AppStateStore
                 state.ImportantSessionIds ?? new HashSet<string>(),
                 StringComparer.Ordinal);
             state.AI ??= new AIConfiguration();
+            state.SessionLimit = SessionDisplayPolicy.NormalizeLimit(state.SessionLimit);
             return state;
         }
         catch (JsonException)

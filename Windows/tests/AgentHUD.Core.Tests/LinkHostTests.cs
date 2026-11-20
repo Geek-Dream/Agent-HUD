@@ -17,7 +17,8 @@ public sealed class LinkHostTests
     {
         using var directory = new TestDirectory();
         var host = new AgentHudLinkHost(directory.Path);
-        await host.StartAsync(new FakeSnapshotSource());
+        var source = new FakeSnapshotSource();
+        await host.StartAsync(source);
         try
         {
             using var handler = new HttpClientHandler
@@ -60,10 +61,37 @@ public sealed class LinkHostTests
             var body = await sessionsResponse.Content.ReadAsStringAsync();
             var sessions = JsonDocument.Parse(body).RootElement.GetProperty("sessions");
             Assert.Single(sessions.EnumerateArray());
-            Assert.Equal(32, sessions[0].GetProperty("id").GetString()!.Length);
+            var publicId = sessions[0].GetProperty("id").GetString()!;
+            Assert.Equal(32, publicId.Length);
             Assert.DoesNotContain("raw/session/path", body, StringComparison.Ordinal);
             Assert.DoesNotContain("ProjectPath", body, StringComparison.OrdinalIgnoreCase);
             Assert.DoesNotContain("LatestUserPrompt", body, StringComparison.OrdinalIgnoreCase);
+
+            var deniedMessage = await client.PostAsJsonAsync(
+                $"/v1/sessions/{publicId}/messages",
+                new { clientMessageId = "denied", text = "不应发送" });
+            Assert.Equal(HttpStatusCode.Forbidden, deniedMessage.StatusCode);
+
+            Assert.True(host.SetConversationEnabled(deviceId, true));
+            statusResponse = await client.GetAsync("/v1/status");
+            status = JsonDocument.Parse(await statusResponse.Content.ReadAsStringAsync()).RootElement;
+            Assert.Contains("conversation",
+                status.GetProperty("capabilities").EnumerateArray().Select(value => value.GetString()));
+
+            var messageResponse = await client.PostAsJsonAsync(
+                $"/v1/sessions/{publicId}/messages",
+                new { clientMessageId = "mobile-1", text = "继续处理" });
+            Assert.Equal(HttpStatusCode.Accepted, messageResponse.StatusCode);
+            var delivery = JsonDocument.Parse(
+                await messageResponse.Content.ReadAsStringAsync()).RootElement;
+            var deliveryId = delivery.GetProperty("deliveryId").GetString()!;
+            Assert.Equal("raw/session/path", source.LastMessageSessionId);
+            Assert.Equal("继续处理", source.LastMessageText);
+
+            var deliveryResponse = await client.GetAsync($"/v1/deliveries/{deliveryId}");
+            var deliveryStatus = JsonDocument.Parse(
+                await deliveryResponse.Content.ReadAsStringAsync()).RootElement;
+            Assert.Equal("delivered", deliveryStatus.GetProperty("status").GetString());
         }
         finally
         {
@@ -73,6 +101,19 @@ public sealed class LinkHostTests
 
     private sealed class FakeSnapshotSource : IMonitoringSnapshotSource
     {
+        public string? LastMessageSessionId { get; private set; }
+        public string? LastMessageText { get; private set; }
+
+        public string SendMessage(string sessionId, string clientMessageId, string text)
+        {
+            LastMessageSessionId = sessionId;
+            LastMessageText = text;
+            return "delivery-1";
+        }
+
+        public (DeliveryStatus Status, DeliveryError? Error)? GetDeliveryStatus(string deliveryId) =>
+            deliveryId == "delivery-1" ? (DeliveryStatus.Delivered, null) : null;
+
         public MonitoringSnapshot GetMonitoringSnapshot()
         {
             var now = DateTimeOffset.Now;

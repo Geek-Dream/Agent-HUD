@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 
 import 'link_api.dart';
 import 'models.dart';
+import 'session_display_store.dart';
 
 class SessionController extends ChangeNotifier {
   SessionController(this._device, {MonitoringApi? api, this.onDeviceUpdated})
@@ -32,6 +33,8 @@ class SessionController extends ChangeNotifier {
   DateTime? lastUpdated;
   String statusFilter = 'All';
   String providerFilter = 'All';
+  int sessionLimit = 10;
+  int hiddenSessionCount = 0;
 
   SessionActionsApi? get _actions =>
       _api is SessionActionsApi ? _api as SessionActionsApi : null;
@@ -54,10 +57,20 @@ class SessionController extends ChangeNotifier {
     }).toList();
     filtered.sort((a, b) {
       if (a.isImportant != b.isImportant) return a.isImportant ? -1 : 1;
-      if (a.isActive != b.isActive) return a.isActive ? -1 : 1;
       return b.lastActivityAt.compareTo(a.lastActivityAt);
     });
-    return filtered;
+    final int unpinnedCount =
+        filtered.where((session) => !session.isImportant).length;
+    hiddenSessionCount = sessionLimit == 0
+        ? 0
+        : (unpinnedCount - sessionLimit).clamp(0, unpinnedCount).toInt();
+    if (sessionLimit == 0) return filtered;
+    // 星标就是常驻会话；即使它较旧也不被最新 N 条截掉。
+    final pinned = filtered.where((session) => session.isImportant);
+    final recent = filtered
+        .where((session) => !session.isImportant)
+        .take(sessionLimit);
+    return [...pinned, ...recent];
   }
 
   AgentSession? sessionById(String id) {
@@ -85,6 +98,7 @@ class SessionController extends ChangeNotifier {
   }
 
   Future<void> start() async {
+    sessionLimit = await SessionDisplayStore.load();
     await refresh(scan: true);
     if (!_isDisposed) {
       _timer = Timer.periodic(const Duration(seconds: 1), (_) {
@@ -373,6 +387,13 @@ class SessionController extends ChangeNotifier {
   void setProviderFilter(String value) {
     providerFilter = value;
     notifyListeners();
+  }
+
+  Future<void> setSessionLimit(int value) async {
+    if (!SessionDisplayStore.options.contains(value)) return;
+    sessionLimit = value;
+    notifyListeners();
+    await SessionDisplayStore.save(value);
   }
 
   @override

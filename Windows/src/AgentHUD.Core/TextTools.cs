@@ -208,8 +208,19 @@ public static partial class TextTools
             return Limit($"梳理{projectComponent}需求", limit);
         }
 
+        // Only treat a prompt as a log hunt when logs are what the user actually
+        // asked about. Matching a bare "bug"/"error" anywhere in the first 80
+        // chars turned "优化当前功能，有很多bug" into a bogus
+        // "查询一下XX项目日志报错详情".
         var logLead = lead[..Math.Min(80, lead.Length)].ToLowerInvariant();
-        if (new[] { "日志", "报错", "异常", "error", "bug" }.Any(logLead.Contains))
+        var explicitLogAsk = new[] { "日志", "报错", "异常", "崩溃", "堆栈" }
+            .Any(logLead.Contains);
+        var looseLogAsk = new[] { "查日志", "看日志", "log", "trace" }
+            .Any(logLead.Contains)
+            || (new[] { "error", "bug" }.Any(logLead.Contains)
+                && new[] { "查看", "查一下", "看看", "分析", "排查", "定位", "什么原因" }
+                    .Any(logLead.Contains));
+        if (explicitLogAsk || looseLogAsk)
         {
             var action = raw.Contains("修复") ? "修复" : "查询一下";
             return Limit($"{action}{projectComponent}日志报错详情", limit);

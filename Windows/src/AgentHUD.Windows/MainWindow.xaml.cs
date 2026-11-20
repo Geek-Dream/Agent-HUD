@@ -39,6 +39,7 @@ public sealed partial class MainWindow : Window
     private readonly Dictionary<UIElement, (float FromScale, int DurationMs)> _panelMotion = new();
     private readonly Dictionary<SessionRowViewModel, UIElement> _rowContainers = new();
     private readonly Microsoft.UI.Dispatching.DispatcherQueueTimer _positionSaveTimer;
+    private readonly Microsoft.UI.Dispatching.DispatcherQueueTimer _ageRefreshTimer;
     private CancellationTokenSource? _resizeAnimation;
     private CancellationTokenSource? _contentTransition;
     private bool _allowClose;
@@ -86,12 +87,27 @@ public sealed partial class MainWindow : Window
         ConfigureWindow();
         ConfigureWindowStyles();
         RestoreWindowPosition();
-        BuildNeonRim();
+        // The reference has one XAML gradient rim; no outer blue composition frame.
 
         _positionSaveTimer = DispatcherQueue.CreateTimer();
         _positionSaveTimer.Interval = TimeSpan.FromMilliseconds(350);
         _positionSaveTimer.IsRepeating = false;
         _positionSaveTimer.Tick += (_, _) => SaveWindowPosition();
+
+        // "刚刚" / "3 分钟前" are clock-derived, so they have to be re-raised on
+        // their own cadence; a refresh that returns identical session data would
+        // otherwise leave the labels frozen.
+        _ageRefreshTimer = DispatcherQueue.CreateTimer();
+        _ageRefreshTimer.Interval = TimeSpan.FromSeconds(20);
+        _ageRefreshTimer.IsRepeating = true;
+        _ageRefreshTimer.Tick += (_, _) =>
+        {
+            if (IsWindowVisible(_windowHandle))
+            {
+                _viewModel.RefreshRelativeTimes();
+            }
+        };
+        _ageRefreshTimer.Start();
 
         _trayIcon = new TrayIcon(
             _windowHandle,
@@ -284,7 +300,7 @@ public sealed partial class MainWindow : Window
         var stroke = _compositor.CreateColorBrush(accent);
         _rimCore = _compositor.CreateSpriteShape(_rimGeometry);
         _rimCore.StrokeBrush = stroke;
-        _rimCore.StrokeThickness = 1.5f;
+        _rimCore.StrokeThickness = 0.75f;
 
         var shapeVisual = _compositor.CreateShapeVisual();
         shapeVisual.Size = size;
@@ -300,13 +316,13 @@ public sealed partial class MainWindow : Window
 
         _rimGlowInner = _compositor.CreateDropShadow();
         _rimGlowInner.Color = accent;
-        _rimGlowInner.BlurRadius = 12f;
-        _rimGlowInner.Opacity = 0.9f;
+        _rimGlowInner.BlurRadius = 8f;
+        _rimGlowInner.Opacity = 0.40f;
 
         _rimGlowOuter = _compositor.CreateDropShadow();
         _rimGlowOuter.Color = accent;
-        _rimGlowOuter.BlurRadius = 34f;
-        _rimGlowOuter.Opacity = 0.5f;
+        _rimGlowOuter.BlurRadius = 30f;
+        _rimGlowOuter.Opacity = 0.08f;
 
         _rimVisual = _compositor.CreateLayerVisual();
         _rimVisual.Size = size;
@@ -327,7 +343,7 @@ public sealed partial class MainWindow : Window
     private global::Windows.UI.Color RimAccentColor()
     {
         return RootBorder.ActualTheme == ElementTheme.Dark
-            ? global::Windows.UI.Color.FromArgb(255, 122, 174, 255)
+            ? global::Windows.UI.Color.FromArgb(150, 64, 120, 220)
             : global::Windows.UI.Color.FromArgb(255, 92, 132, 208);
     }
 
@@ -365,9 +381,16 @@ public sealed partial class MainWindow : Window
     {
         // AppWindow dimensions are physical pixels; XAML sizes use logical pixels.
         var scale = WindowScale();
-        var logicalWidth = (expanded ? _expandedWidth : CollapsedWidth)
-            + (2 * RimPadding) + (2 * ContentPadding);
-        var logicalHeight = (expanded ? _expandedHeight : CollapsedHeight) + (2 * RimPadding);
+        if (expanded)
+        {
+            // Only the rounded panel is part of the Win32 window. The old outer
+            // gutter would otherwise show up as a second rectangular background.
+            return (
+                (int)Math.Round((_expandedWidth - 10) * scale),
+                (int)Math.Round((_expandedHeight - 39) * scale));
+        }
+        var logicalWidth = CollapsedWidth + (2 * RimPadding) + (2 * ContentPadding);
+        var logicalHeight = CollapsedHeight + (2 * RimPadding);
         return (
             (int)Math.Round(logicalWidth * scale),
             (int)Math.Round(logicalHeight * scale));
@@ -1106,11 +1129,12 @@ public sealed partial class MainWindow : Window
         _resizeStartCursorY = cursor.Y;
 
         var position = _appWindow.Position;
+        var (targetWidth, targetHeight) = ScaledWindowSize(expanded: true);
         _appWindow.MoveAndResize(new RectInt32(
             position.X,
             position.Y,
-            (int)Math.Round((_expandedWidth + (2 * RimPadding) + (2 * ContentPadding)) * scale),
-            (int)Math.Round((_expandedHeight + (2 * RimPadding)) * scale)));
+            targetWidth,
+            targetHeight));
         e.Handled = true;
     }
 
@@ -1153,18 +1177,48 @@ public sealed partial class MainWindow : Window
         if (_usesSystemBackdrop && !highContrast)
         {
             var backdropColor = RootBorder.ActualTheme == ElementTheme.Dark
-                ? global::Windows.UI.Color.FromArgb(214, 5, 13, 30)
+                ? global::Windows.UI.Color.FromArgb(242, 3, 8, 18)
                 : global::Windows.UI.Color.FromArgb(180, 242, 245, 249);
             RootBorder.Background = new SolidColorBrush(backdropColor);
             return;
         }
 
-        var color = highContrast
-            ? new UISettings().GetColorValue(UIColorType.Background)
-            : RootBorder.ActualTheme == ElementTheme.Dark
-                ? global::Windows.UI.Color.FromArgb(255, 5, 13, 30)
-                : global::Windows.UI.Color.FromArgb(255, 242, 245, 249);
-        RootBorder.Background = new SolidColorBrush(color);
+        if (highContrast)
+        {
+            RootBorder.Background = new SolidColorBrush(
+                new UISettings().GetColorValue(UIColorType.Background));
+        }
+        else if (RootBorder.ActualTheme == ElementTheme.Dark)
+        {
+            // Border.Background already follows CornerRadius. Painting the
+            // gradient here avoids any rectangular child backdrop in corners.
+            var background = new LinearGradientBrush
+            {
+                StartPoint = new global::Windows.Foundation.Point(0, 0),
+                EndPoint = new global::Windows.Foundation.Point(0, 1),
+            };
+            background.GradientStops.Add(new GradientStop
+            {
+                Offset = 0,
+                Color = global::Windows.UI.Color.FromArgb(255, 2, 6, 13),
+            });
+            background.GradientStops.Add(new GradientStop
+            {
+                Offset = 0.55,
+                Color = global::Windows.UI.Color.FromArgb(255, 4, 11, 22),
+            });
+            background.GradientStops.Add(new GradientStop
+            {
+                Offset = 1,
+                Color = global::Windows.UI.Color.FromArgb(255, 7, 21, 43),
+            });
+            RootBorder.Background = background;
+        }
+        else
+        {
+            RootBorder.Background = new SolidColorBrush(
+                global::Windows.UI.Color.FromArgb(255, 242, 245, 249));
+        }
     }
 
     private void ViewModel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
@@ -1242,6 +1296,33 @@ public sealed partial class MainWindow : Window
             _ => false
         };
         button.Style = selected ? selectedStyle : normalStyle;
+        if (!selected)
+        {
+            button.ClearValue(Control.BackgroundProperty);
+            button.ClearValue(Control.BorderBrushProperty);
+            button.ClearValue(Control.BorderThicknessProperty);
+            button.ClearValue(Control.ForegroundProperty);
+            return;
+        }
+
+        // Local values keep the selected capsule filled even after pointer state
+        // changes; the reference uses a solid blue selected pill, not an outline.
+        if (Microsoft.UI.Xaml.Application.Current.Resources.TryGetValue("HudFilterSelectedFillBrush", out var fill)
+            && fill is Brush fillBrush)
+        {
+            button.Background = fillBrush;
+        }
+        if (Microsoft.UI.Xaml.Application.Current.Resources.TryGetValue("HudFilterSelectedBorderBrush", out var edge)
+            && edge is Brush edgeBrush)
+        {
+            button.BorderBrush = edgeBrush;
+        }
+        if (Microsoft.UI.Xaml.Application.Current.Resources.TryGetValue("HudTextPrimaryBrush", out var ink)
+            && ink is Brush inkBrush)
+        {
+            button.Foreground = inkBrush;
+        }
+        button.BorderThickness = new Thickness(1);
     }
 
     private void SetProviderFilterStyle(Button button, ProviderFilter provider, Style normalStyle)
@@ -1258,6 +1339,7 @@ public sealed partial class MainWindow : Window
             button.ClearValue(Control.BackgroundProperty);
             button.ClearValue(Control.BorderBrushProperty);
             button.ClearValue(Control.BorderThicknessProperty);
+            button.ClearValue(Control.ForegroundProperty);
             return;
         }
 
@@ -1267,7 +1349,7 @@ public sealed partial class MainWindow : Window
             ProviderFilter.Claude => "HudClaudeTintBrush",
             ProviderFilter.Pi => "HudPiTintBrush",
             ProviderFilter.OpenCode => "HudOpenCodeTintBrush",
-            _ => "HudNeutralTintBrush"
+            _ => "HudSelectionBrush"
         };
         var brushKey = provider switch
         {
@@ -1275,18 +1357,25 @@ public sealed partial class MainWindow : Window
             ProviderFilter.Claude => "HudClaudeBrush",
             ProviderFilter.Pi => "HudPiBrush",
             ProviderFilter.OpenCode => "HudOpenCodeBrush",
-            _ => "HudTextSecondaryBrush"
+            _ => "HudSelectionBorderBrush"
         };
         if (Microsoft.UI.Xaml.Application.Current.Resources.TryGetValue(tintBrushKey, out var tintValue)
             && tintValue is SolidColorBrush tintBrush
             && Microsoft.UI.Xaml.Application.Current.Resources.TryGetValue(brushKey, out var brushValue)
             && brushValue is SolidColorBrush brush)
         {
-            // Reference art keeps provider chips borderless: the tint fill alone
-            // signals the active filter.
+            // The active provider uses the same blue-edged chip as the reference.
             button.Background = tintBrush;
-            button.BorderBrush = null;
-            button.BorderThickness = new Thickness(0);
+            button.BorderBrush = provider == ProviderFilter.All ? brush : null;
+            button.BorderThickness = provider == ProviderFilter.All
+                ? new Thickness(1)
+                : new Thickness(0);
+            if (provider == ProviderFilter.All
+                && Microsoft.UI.Xaml.Application.Current.Resources.TryGetValue("HudTextPrimaryBrush", out var ink)
+                && ink is Brush inkBrush)
+            {
+                button.Foreground = inkBrush;
+            }
         }
     }
 
@@ -1535,6 +1624,7 @@ public sealed partial class MainWindow : Window
         _contentTransition?.Cancel();
         _contentTransition?.Dispose();
         _positionSaveTimer.Stop();
+        _ageRefreshTimer.Stop();
         _trayIcon.Dispose();
         _ = AgentHudLinkRuntime.StopAsync();
         _viewModel.Stop();

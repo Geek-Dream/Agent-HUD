@@ -1,29 +1,26 @@
 import 'package:flutter/material.dart';
 
 /// Shared visual tokens mirrored from the macOS and Windows HUD.
-///
-/// The mobile shell uses a restrained "dark workstation" palette: near-black
-/// neutral surfaces, one hairline border, and colour reserved for status,
-/// provider identity, and primary actions.
 class HudColors {
   const HudColors._();
 
-  static const background = Color(0xFF08090C);
-  static const window = Color(0xFF0C0E12);
-  static const surface = Color(0xFF14171D);
-  static const surfaceRaised = Color(0xFF1B1F27);
-  static const surfaceHover = Color(0xFF262B35);
-  static const controlFill = Color(0x0FFFFFFF);
-  static const controlHover = Color(0x21FFFFFF);
-  static const border = Color(0x14FFFFFF);
-  static const borderStrong = Color(0x30FFFFFF);
-  static const divider = Color(0x12FFFFFF);
+  static const background = Color(0xFF030713);
+  static const window = Color(0xFF071022);
+  static const surface = Color(0xFF0C1930);
+  static const surfaceRaised = Color(0xFF122440);
+  static const surfaceHover = Color(0xFF1B3154);
+  static const controlFill = Color(0x0B79B7FF);
+  static const controlHover = Color(0x1A79B7FF);
+  static const border = Color(0x33456E9F);
+  static const borderStrong = Color(0x706FAEFF);
+  static const divider = Color(0x28456E9F);
+  static const neon = Color(0xFF76A7FF);
 
   static const textPrimary = Color(0xFFF7F9FD);
-  static const textSecondary = Color(0xFFB6BECB);
-  static const textTertiary = Color(0xFF7B8492);
+  static const textSecondary = Color(0xFFB9C8E2);
+  static const textTertiary = Color(0xFF7F93B5);
 
-  static const working = Color(0xFF5E9BFF);
+  static const working = Color(0xFF6EA8FF);
   static const waiting = Color(0xFFF0C462);
   static const completed = Color(0xFF4FD1A0);
   static const failed = Color(0xFFFF6B7F);
@@ -31,7 +28,7 @@ class HudColors {
   static const claude = Color(0xFFFF9A62);
   static const pi = Color(0xFF86D96E);
   static const opencode = Color(0xFF4FD6CA);
-  static const important = Color(0xFFF0C462);
+  static const important = Color(0xFFFFCF62);
   static const todo = Color(0xFFB49BFF);
 
   static Color status(String value) {
@@ -127,8 +124,8 @@ class HudElevation {
 
   static List<BoxShadow> glow(Color color) => <BoxShadow>[
         BoxShadow(
-          color: color.withValues(alpha: 0.16),
-          blurRadius: 16,
+          color: color.withValues(alpha: 0.20),
+          blurRadius: 20,
           spreadRadius: 1,
         ),
       ];
@@ -194,6 +191,7 @@ class HudText {
     letterSpacing: 0.3,
     color: HudColors.textTertiary,
   );
+
   /// Small uppercase-ish label that introduces a group of content.
   static const overline = TextStyle(
     fontSize: 11,
@@ -370,7 +368,7 @@ ThemeData buildHudTheme() {
 }
 
 /// ---------------------------------------------------------------------------
-/// Page background – near-black vertical wash with one very soft top glow.
+/// Page background – deep navy with the same blue rim light as the macOS HUD.
 /// ---------------------------------------------------------------------------
 class HudScaffoldBackground extends StatelessWidget {
   const HudScaffoldBackground({
@@ -396,19 +394,20 @@ class HudScaffoldBackground extends StatelessWidget {
     final Widget layers = Stack(
       children: [
         Positioned(
-          top: -180,
-          left: -60,
-          right: -60,
-          height: 380,
+          top: -210,
+          left: -100,
+          right: -100,
+          height: 430,
           child: IgnorePointer(
             child: DecoratedBox(
               decoration: BoxDecoration(
                 gradient: RadialGradient(
                   colors: [
-                    glow.withValues(alpha: 0.10),
+                    glow.withValues(alpha: 0.24),
+                    glow.withValues(alpha: 0.07),
                     glow.withValues(alpha: 0),
                   ],
-                  stops: const [0, 1],
+                  stops: const [0, 0.45, 1],
                 ),
               ),
             ),
@@ -419,13 +418,33 @@ class HudScaffoldBackground extends StatelessWidget {
             child: DecoratedBox(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
                   colors: [
-                    Colors.white.withValues(alpha: 0.012),
+                    HudColors.neon.withValues(alpha: 0.045),
+                    Colors.transparent,
+                    HudColors.neon.withValues(alpha: 0.025),
+                  ],
+                  stops: const [0, 0.48, 1],
+                ),
+              ),
+            ),
+          ),
+        ),
+        Positioned(
+          left: 0,
+          right: 0,
+          bottom: 0,
+          height: 2,
+          child: IgnorePointer(
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    Colors.transparent,
+                    glow.withValues(alpha: 0.42),
                     Colors.transparent,
                   ],
-                  stops: const [0, 0.4],
                 ),
               ),
             ),
@@ -438,10 +457,10 @@ class HudScaffoldBackground extends StatelessWidget {
     return DecoratedBox(
       decoration: const BoxDecoration(
         gradient: LinearGradient(
-          colors: [HudColors.window, HudColors.background],
+          colors: [HudColors.window, HudColors.background, HudColors.window],
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          stops: [0, 0.6],
+          stops: [0, 0.58, 1],
         ),
       ),
       child: scrollable ? layers : ClipRect(child: layers),
@@ -450,9 +469,7 @@ class HudScaffoldBackground extends StatelessWidget {
 }
 
 /// ---------------------------------------------------------------------------
-/// Standard surface card: vertical gradient fill, hairline ring, inner top
-/// highlight, and an optional accent hairline. Elevation comes from contrast,
-/// not from drop shadows, which keeps the mobile UI crisp on dark OLED screens.
+/// Standard surface card: navy gradient, blue rim and a quiet top highlight.
 /// ---------------------------------------------------------------------------
 class HudSurfaceCard extends StatelessWidget {
   const HudSurfaceCard({
@@ -493,10 +510,10 @@ class HudSurfaceCard extends StatelessWidget {
     final BorderRadius borderRadius = BorderRadius.circular(radius);
     final Gradient fill = gradient ??
         LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
           colors: [
-            Color.alphaBlend(HudColors.controlFill, color),
+            Color.alphaBlend(HudColors.neon.withValues(alpha: 0.045), color),
             color,
           ],
         );
@@ -505,7 +522,14 @@ class HudSurfaceCard extends StatelessWidget {
       margin: margin,
       decoration: BoxDecoration(
         borderRadius: borderRadius,
-        boxShadow: shadows,
+        boxShadow: shadows ??
+            <BoxShadow>[
+              BoxShadow(
+                color: borderColor.withValues(alpha: 0.12),
+                blurRadius: 18,
+                offset: const Offset(0, 5),
+              ),
+            ],
       ),
       child: Material(
         color: Colors.transparent,
@@ -527,7 +551,7 @@ class HudSurfaceCard extends StatelessWidget {
                   child: IgnorePointer(
                     child: Container(
                       height: 1,
-                      color: Colors.white.withValues(alpha: 0.06),
+                      color: HudColors.neon.withValues(alpha: 0.18),
                     ),
                   ),
                 ),

@@ -10,98 +10,133 @@
 
             <ResourceDictionary.ThemeDictionaries>
                 <ResourceDictionary x:Key="Light">
-                    <SolidColorBrush x:Key="HudWindowBrush" Color="#F2F5F9" />
+                    <SolidColorBrush x:Key="HudWindowBrush" Color="#FF040915" />
                     <LinearGradientBrush x:Key="HudRimBackdropBrush" StartPoint="1,0" EndPoint="0,1">
-                        <GradientStop Offset="0" Color="#FFEDF1F7" />
-                        <GradientStop Offset="0.55" Color="#FFE3EAF4" />
-                        <GradientStop Offset="1" Color="#FFCFDDF0" />
+                        <GradientStop Offset="0" Color="#FF030711" />
+                        <GradientStop Offset="0.45" Color="#FF030914" />
+                        <GradientStop Offset="0.82" Color="#FF06101F" />
+                        <GradientStop Offset="1" Color="#FF0B2450" />
                     </LinearGradientBrush>
-                    <SolidColorBrush x:Key="HudSurfaceBrush" Color="#F9FFFFFF" />
-                    <SolidColorBrush x:Key="HudRaisedBrush" Color="#FFFFFFFF" />
-                    <SolidColorBrush x:Key="HudControlFillBrush" Color="#14101826" />
-                    <SolidColorBrush x:Key="HudControlHoverBrush" Color="#241D2938" />
-                    <SolidColorBrush x:Key="HudBorderBrush" Color="#1A101826" />
-                    <SolidColorBrush x:Key="HudBorderStrongBrush" Color="#2A101826" />
-                    <SolidColorBrush x:Key="HudRimHairlineBrush" Color="#595C84D0" />
-                    <SolidColorBrush x:Key="HudDividerBrush" Color="#1A101826" />
-                    <SolidColorBrush x:Key="HudTextPrimaryBrush" Color="#09111E" />
-                    <SolidColorBrush x:Key="HudTextSecondaryBrush" Color="#4A5568" />
-                    <SolidColorBrush x:Key="HudTextTertiaryBrush" Color="#6B7280" />
-                    <SolidColorBrush x:Key="HudSelectionBrush" Color="#E3EDFC" />
-                    <SolidColorBrush x:Key="HudSelectionBorderBrush" Color="#2F78D8" />
-                    <SolidColorBrush x:Key="HudPillInkBrush" Color="#FF04140B" />
-                    <SolidColorBrush x:Key="HudFilterSelectedFillBrush" Color="#2E5AA8F0" />
-                    <SolidColorBrush x:Key="HudFilterSelectedBorderBrush" Color="#C03F7AD8" />
-                    <SolidColorBrush x:Key="HudShadowBrush" Color="#24111A2B" />
-                    <SolidColorBrush x:Key="HudPrivacyBrush" Color="#FFF3CF" />
-                    <SolidColorBrush x:Key="HudWorkingBrush" Color="#0053C7" />
-                    <SolidColorBrush x:Key="HudWaitingBrush" Color="#8A4E00" />
-                    <SolidColorBrush x:Key="HudCompletedBrush" Color="#007347" />
-                    <SolidColorBrush x:Key="HudFailedBrush" Color="#B80F2B" />
-                    <SolidColorBrush x:Key="HudCodexBrush" Color="#0053C7" />
-                    <SolidColorBrush x:Key="HudClaudeBrush" Color="#A83A06" />
-                    <SolidColorBrush x:Key="HudPiBrush" Color="#176612" />
-                    <SolidColorBrush x:Key="HudOpenCodeBrush" Color="#00776B" />
-                    <SolidColorBrush x:Key="HudImportantBrush" Color="#8A4E00" />
-                    <SolidColorBrush x:Key="HudWorkingTintBrush" Color="#220053C7" />
-                    <SolidColorBrush x:Key="HudWaitingTintBrush" Color="#278A4E00" />
-                    <SolidColorBrush x:Key="HudCompletedTintBrush" Color="#26007347" />
-                    <SolidColorBrush x:Key="HudFailedTintBrush" Color="#28B80F2B" />
-                    <SolidColorBrush x:Key="HudNeutralTintBrush" Color="#10111826" />
-                    <SolidColorBrush x:Key="HudCodexTintBrush" Color="#1A0053C7" />
-                    <SolidColorBrush x:Key="HudClaudeTintBrush" Color="#1AA83A06" />
-                    <SolidColorBrush x:Key="HudPiTintBrush" Color="#1A176612" />
-                    <SolidColorBrush x:Key="HudOpenCodeTintBrush" Color="#1A00776B" />
-                    <SolidColorBrush x:Key="HudCardEdgeBrush" Color="#335B6B7A" />
-                    <SolidColorBrush x:Key="HudCodexEdgeBrush" Color="#330053C7" />
-                    <SolidColorBrush x:Key="HudClaudeEdgeBrush" Color="#33A83A06" />
-                    <SolidColorBrush x:Key="HudPiEdgeBrush" Color="#33176612" />
-                    <SolidColorBrush x:Key="HudOpenCodeEdgeBrush" Color="#3300776B" />
-                </ResourceDictionary>
-                                <ResourceDictionary x:Key="Default">
-                    <SolidColorBrush x:Key="HudWindowBrush" Color="#FF06101F" />
-                    <LinearGradientBrush x:Key="HudRimBackdropBrush" StartPoint="1,0" EndPoint="0,1">
-                        <GradientStop Offset="0" Color="#FF03060E" />
-                        <GradientStop Offset="0.5" Color="#FF06101F" />
-                        <GradientStop Offset="0.86" Color="#FF0A1830" />
-                        <GradientStop Offset="1" Color="#FF0E2240" />
-                    </LinearGradientBrush>
-                    <SolidColorBrush x:Key="HudSurfaceBrush" Color="#FF071120" />
-                    <SolidColorBrush x:Key="HudRaisedBrush" Color="#FF0B1526" />
-                    <SolidColorBrush x:Key="HudCardBgBrush" Color="#FF0B1420" />
-                    <SolidColorBrush x:Key="HudCardBorderBrush" Color="#4A1E3050" />
+                    <SolidColorBrush x:Key="HudSurfaceBrush" Color="#FF07101D" />
+                    <SolidColorBrush x:Key="HudRaisedBrush" Color="#FF0B1424" />
+                    <SolidColorBrush x:Key="HudCardBgBrush" Color="#FF0B1425" />
+                    <SolidColorBrush x:Key="HudCardBorderBrush" Color="#4A284D7A" />
+                    <SolidColorBrush x:Key="HudSurfaceHazeBrush" Color="#D2091424" />
+                    <SolidColorBrush x:Key="HudStripBorderBrush" Color="#12FFFFFF" />
                     <SolidColorBrush x:Key="HudAccentBrush" Color="#FF3D8BFF" />
-                    <SolidColorBrush x:Key="HudOnlineBrush" Color="#FF3BF59B" />
+                    <SolidColorBrush x:Key="HudGridIconBrush" Color="#FF72DCFF" />
+                    <SolidColorBrush x:Key="HudCountBadgeBrush" Color="#4A2D405C" />
+                    <SolidColorBrush x:Key="HudOnlineBrush" Color="#FF38E994" />
                     <SolidColorBrush x:Key="HudControlFillBrush" Color="#14FFFFFF" />
                     <SolidColorBrush x:Key="HudControlHoverBrush" Color="#1FFFFFFF" />
                     <SolidColorBrush x:Key="HudBorderBrush" Color="#FF1E2E4C" />
                     <SolidColorBrush x:Key="HudBorderStrongBrush" Color="#8C3F6FE0" />
-                    <SolidColorBrush x:Key="HudRimHairlineBrush" Color="#807AAEFF" />
+                    <LinearGradientBrush x:Key="HudRimStrokeBrush" StartPoint="0,0" EndPoint="1,1">
+                        <GradientStop Offset="0" Color="#D0C8E6FF" />
+                        <GradientStop Offset="0.22" Color="#A082B5E8" />
+                        <GradientStop Offset="0.52" Color="#80569BCB" />
+                        <GradientStop Offset="0.78" Color="#A060BDEF" />
+                        <GradientStop Offset="1" Color="#E064E8FF" />
+                    </LinearGradientBrush>
+                    <SolidColorBrush x:Key="HudRimHairlineBrush" Color="#666E9AD8" />
                     <SolidColorBrush x:Key="HudDividerBrush" Color="#14FFFFFF" />
                     <SolidColorBrush x:Key="HudTextPrimaryBrush" Color="#FFFFFFFF" />
-                    <SolidColorBrush x:Key="HudTextSecondaryBrush" Color="#FFA6B7D2" />
-                    <SolidColorBrush x:Key="HudTextTertiaryBrush" Color="#FF66799A" />
+                    <SolidColorBrush x:Key="HudTextSecondaryBrush" Color="#FFAFC1DA" />
+                    <SolidColorBrush x:Key="HudTextTertiaryBrush" Color="#FF7489A8" />
                     <SolidColorBrush x:Key="HudSelectionBrush" Color="#33255FCB" />
                     <SolidColorBrush x:Key="HudSelectionBorderBrush" Color="#FF67A8FF" />
-                    <SolidColorBrush x:Key="HudPillInkBrush" Color="#FF03101F" />
-                    <SolidColorBrush x:Key="HudFilterSelectedFillBrush" Color="#335AA8FF" />
-                    <SolidColorBrush x:Key="HudFilterSelectedBorderBrush" Color="#E07FB6FF" />
+                    <SolidColorBrush x:Key="HudPillInkBrush" Color="#FF061A12" />
+                    <LinearGradientBrush x:Key="HudFilterSelectedFillBrush" StartPoint="0,0" EndPoint="1,1">
+                        <GradientStop Offset="0" Color="#E02477DC" />
+                        <GradientStop Offset="0.52" Color="#D0144B9B" />
+                        <GradientStop Offset="1" Color="#C00B3272" />
+                    </LinearGradientBrush>
+                    <SolidColorBrush x:Key="HudFilterSelectedBorderBrush" Color="#FF66B6FF" />
                     <SolidColorBrush x:Key="HudShadowBrush" Color="#99000000" />
                     <SolidColorBrush x:Key="HudPrivacyBrush" Color="#44351B" />
-                    <SolidColorBrush x:Key="HudWorkingBrush" Color="#FF5BB3FF" />
+                    <SolidColorBrush x:Key="HudWorkingBrush" Color="#FF4FA8FF" />
                     <SolidColorBrush x:Key="HudWaitingBrush" Color="#FFF5C542" />
-                    <SolidColorBrush x:Key="HudCompletedBrush" Color="#FF3BF59B" />
+                    <SolidColorBrush x:Key="HudCompletedBrush" Color="#FF43E99D" />
                     <SolidColorBrush x:Key="HudFailedBrush" Color="#FFFF6B7D" />
                     <SolidColorBrush x:Key="HudCodexBrush" Color="#FF7CB6FF" />
                     <SolidColorBrush x:Key="HudClaudeBrush" Color="#FFE88A52" />
                     <SolidColorBrush x:Key="HudPiBrush" Color="#FF8FE87F" />
                     <SolidColorBrush x:Key="HudOpenCodeBrush" Color="#FF5FD8C8" />
-                    <SolidColorBrush x:Key="HudImportantBrush" Color="#FFF7C948" />
-                    <SolidColorBrush x:Key="HudWorkingTintBrush" Color="#2E5BB3FF" />
-                    <SolidColorBrush x:Key="HudWaitingTintBrush" Color="#2EF5C542" />
-                    <SolidColorBrush x:Key="HudCompletedTintBrush" Color="#2E3BF59B" />
-                    <SolidColorBrush x:Key="HudFailedTintBrush" Color="#2EFF6B7D" />
-                    <SolidColorBrush x:Key="HudNeutralTintBrush" Color="#26FFFFFF" />
+                    <SolidColorBrush x:Key="HudImportantBrush" Color="#FFE8B53C" />
+                    <SolidColorBrush x:Key="HudWorkingTintBrush" Color="#FF143A5C" />
+                    <SolidColorBrush x:Key="HudWaitingTintBrush" Color="#FF3B3012" />
+                    <SolidColorBrush x:Key="HudCompletedTintBrush" Color="#FF10382A" />
+                    <SolidColorBrush x:Key="HudFailedTintBrush" Color="#FF421C29" />
+                    <SolidColorBrush x:Key="HudNeutralTintBrush" Color="#FF202B3B" />
+                    <SolidColorBrush x:Key="HudCodexTintBrush" Color="#2E7CB6FF" />
+                    <SolidColorBrush x:Key="HudClaudeTintBrush" Color="#2EE88A52" />
+                    <SolidColorBrush x:Key="HudPiTintBrush" Color="#2E8FE87F" />
+                    <SolidColorBrush x:Key="HudOpenCodeTintBrush" Color="#2E5FD8C8" />
+                    <SolidColorBrush x:Key="HudCardEdgeBrush" Color="#4A5FD8C8" />
+                    <SolidColorBrush x:Key="HudCodexEdgeBrush" Color="#4A7CB6FF" />
+                    <SolidColorBrush x:Key="HudClaudeEdgeBrush" Color="#4AE88A52" />
+                    <SolidColorBrush x:Key="HudPiEdgeBrush" Color="#4A8FE87F" />
+                    <SolidColorBrush x:Key="HudOpenCodeEdgeBrush" Color="#4A5FD8C8" />
+                </ResourceDictionary>
+                                                                                                                                                                                                                <ResourceDictionary x:Key="Default">
+                    <SolidColorBrush x:Key="HudWindowBrush" Color="#FF040915" />
+                    <LinearGradientBrush x:Key="HudRimBackdropBrush" StartPoint="1,0" EndPoint="0,1">
+                        <GradientStop Offset="0" Color="#FF030711" />
+                        <GradientStop Offset="0.45" Color="#FF030914" />
+                        <GradientStop Offset="0.82" Color="#FF06101F" />
+                        <GradientStop Offset="1" Color="#FF0B2450" />
+                    </LinearGradientBrush>
+                    <SolidColorBrush x:Key="HudSurfaceBrush" Color="#FF07101D" />
+                    <SolidColorBrush x:Key="HudRaisedBrush" Color="#FF0B1424" />
+                    <SolidColorBrush x:Key="HudCardBgBrush" Color="#FF0B1425" />
+                    <SolidColorBrush x:Key="HudCardBorderBrush" Color="#4A284D7A" />
+                    <SolidColorBrush x:Key="HudSurfaceHazeBrush" Color="#D2091424" />
+                    <SolidColorBrush x:Key="HudStripBorderBrush" Color="#12FFFFFF" />
+                    <SolidColorBrush x:Key="HudAccentBrush" Color="#FF3D8BFF" />
+                    <SolidColorBrush x:Key="HudGridIconBrush" Color="#FF72DCFF" />
+                    <SolidColorBrush x:Key="HudCountBadgeBrush" Color="#4A2D405C" />
+                    <SolidColorBrush x:Key="HudOnlineBrush" Color="#FF38E994" />
+                    <SolidColorBrush x:Key="HudControlFillBrush" Color="#14FFFFFF" />
+                    <SolidColorBrush x:Key="HudControlHoverBrush" Color="#1FFFFFFF" />
+                    <SolidColorBrush x:Key="HudBorderBrush" Color="#FF1E2E4C" />
+                    <SolidColorBrush x:Key="HudBorderStrongBrush" Color="#8C3F6FE0" />
+                    <LinearGradientBrush x:Key="HudRimStrokeBrush" StartPoint="0,0" EndPoint="1,1">
+                        <GradientStop Offset="0" Color="#D0C8E6FF" />
+                        <GradientStop Offset="0.22" Color="#A082B5E8" />
+                        <GradientStop Offset="0.52" Color="#80569BCB" />
+                        <GradientStop Offset="0.78" Color="#A060BDEF" />
+                        <GradientStop Offset="1" Color="#E064E8FF" />
+                    </LinearGradientBrush>
+                    <SolidColorBrush x:Key="HudRimHairlineBrush" Color="#666E9AD8" />
+                    <SolidColorBrush x:Key="HudDividerBrush" Color="#14FFFFFF" />
+                    <SolidColorBrush x:Key="HudTextPrimaryBrush" Color="#FFFFFFFF" />
+                    <SolidColorBrush x:Key="HudTextSecondaryBrush" Color="#FFAFC1DA" />
+                    <SolidColorBrush x:Key="HudTextTertiaryBrush" Color="#FF7489A8" />
+                    <SolidColorBrush x:Key="HudSelectionBrush" Color="#33255FCB" />
+                    <SolidColorBrush x:Key="HudSelectionBorderBrush" Color="#FF67A8FF" />
+                    <SolidColorBrush x:Key="HudPillInkBrush" Color="#FF061A12" />
+                    <LinearGradientBrush x:Key="HudFilterSelectedFillBrush" StartPoint="0,0" EndPoint="1,1">
+                        <GradientStop Offset="0" Color="#E02477DC" />
+                        <GradientStop Offset="0.52" Color="#D0144B9B" />
+                        <GradientStop Offset="1" Color="#C00B3272" />
+                    </LinearGradientBrush>
+                    <SolidColorBrush x:Key="HudFilterSelectedBorderBrush" Color="#FF66B6FF" />
+                    <SolidColorBrush x:Key="HudShadowBrush" Color="#99000000" />
+                    <SolidColorBrush x:Key="HudPrivacyBrush" Color="#44351B" />
+                    <SolidColorBrush x:Key="HudWorkingBrush" Color="#FF4FA8FF" />
+                    <SolidColorBrush x:Key="HudWaitingBrush" Color="#FFF5C542" />
+                    <SolidColorBrush x:Key="HudCompletedBrush" Color="#FF43E99D" />
+                    <SolidColorBrush x:Key="HudFailedBrush" Color="#FFFF6B7D" />
+                    <SolidColorBrush x:Key="HudCodexBrush" Color="#FF7CB6FF" />
+                    <SolidColorBrush x:Key="HudClaudeBrush" Color="#FFE88A52" />
+                    <SolidColorBrush x:Key="HudPiBrush" Color="#FF8FE87F" />
+                    <SolidColorBrush x:Key="HudOpenCodeBrush" Color="#FF5FD8C8" />
+                    <SolidColorBrush x:Key="HudImportantBrush" Color="#FFE8B53C" />
+                    <SolidColorBrush x:Key="HudWorkingTintBrush" Color="#FF143A5C" />
+                    <SolidColorBrush x:Key="HudWaitingTintBrush" Color="#FF3B3012" />
+                    <SolidColorBrush x:Key="HudCompletedTintBrush" Color="#FF10382A" />
+                    <SolidColorBrush x:Key="HudFailedTintBrush" Color="#FF421C29" />
+                    <SolidColorBrush x:Key="HudNeutralTintBrush" Color="#FF202B3B" />
                     <SolidColorBrush x:Key="HudCodexTintBrush" Color="#2E7CB6FF" />
                     <SolidColorBrush x:Key="HudClaudeTintBrush" Color="#2EE88A52" />
                     <SolidColorBrush x:Key="HudPiTintBrush" Color="#2E8FE87F" />
@@ -117,10 +152,13 @@
                     <SolidColorBrush x:Key="HudRimBackdropBrush" Color="#000000" />
                     <SolidColorBrush x:Key="HudSurfaceBrush" Color="#F0000000" />
                     <SolidColorBrush x:Key="HudRaisedBrush" Color="#FF101010" />
+                    <SolidColorBrush x:Key="HudSurfaceHazeBrush" Color="#FF000000" />
+                    <SolidColorBrush x:Key="HudStripBorderBrush" Color="#FFFFFFFF" />
                     <SolidColorBrush x:Key="HudControlFillBrush" Color="#FF202020" />
                     <SolidColorBrush x:Key="HudControlHoverBrush" Color="#FF343434" />
                     <SolidColorBrush x:Key="HudBorderBrush" Color="#FFB8B8B8" />
                     <SolidColorBrush x:Key="HudBorderStrongBrush" Color="#FFFFFFFF" />
+                    <SolidColorBrush x:Key="HudRimStrokeBrush" Color="#FFFFFFFF" />
                     <SolidColorBrush x:Key="HudRimHairlineBrush" Color="#FFFFFFFF" />
                     <SolidColorBrush x:Key="HudDividerBrush" Color="#FF9A9A9A" />
                     <SolidColorBrush x:Key="HudTextPrimaryBrush" Color="#FFFFFFFF" />
@@ -159,10 +197,10 @@
                 </ResourceDictionary>
             </ResourceDictionary.ThemeDictionaries>
 
-            <CornerRadius x:Key="HudPanelRadius">18</CornerRadius>
-            <CornerRadius x:Key="HudHeroRadius">13</CornerRadius>
-            <CornerRadius x:Key="HudCardRadius">11</CornerRadius>
-            <CornerRadius x:Key="HudTileRadius">14</CornerRadius>
+            <CornerRadius x:Key="HudPanelRadius">22</CornerRadius>
+            <CornerRadius x:Key="HudHeroRadius">14</CornerRadius>
+            <CornerRadius x:Key="HudCardRadius">12</CornerRadius>
+            <CornerRadius x:Key="HudTileRadius">12</CornerRadius>
             <CornerRadius x:Key="HudControlRadius">9</CornerRadius>
             <CornerRadius x:Key="HudMicroRadius">7</CornerRadius>
             <CornerRadius x:Key="HudPillRadius">15</CornerRadius>
@@ -178,7 +216,7 @@
             <x:Double x:Key="HudFontSizeDisplay">20</x:Double>
             <x:Double x:Key="HudFontSizeTitle">16</x:Double>
             <x:Double x:Key="HudFontSizeBody">12</x:Double>
-            <x:Double x:Key="HudFontSizeLabel">11.5</x:Double>
+            <x:Double x:Key="HudFontSizeLabel">11</x:Double>
             <x:Double x:Key="HudFontSizeCaption">10.5</x:Double>
             <x:Double x:Key="HudFontSizeMicro">9.5</x:Double>
             <x:Double x:Key="HudFontSizeAgent">8.5</x:Double>
@@ -189,8 +227,8 @@
             <Duration x:Key="HudDurationPage">0:0:0.18</Duration>
 
             <Style x:Key="HudIconButtonStyle" TargetType="Button">
-                <Setter Property="Width" Value="28" />
-                <Setter Property="Height" Value="28" />
+                <Setter Property="Width" Value="26" />
+                <Setter Property="Height" Value="26" />
                 <Setter Property="Padding" Value="0" />
                 <Setter Property="MinWidth" Value="0" />
                 <Setter Property="MinHeight" Value="0" />
@@ -246,17 +284,27 @@
                 </Setter>
             </Style>
 
+            <Style
+                x:Key="HudHeaderIconButtonStyle"
+                TargetType="Button"
+                BasedOn="{StaticResource HudIconButtonStyle}">
+                <Setter Property="Width" Value="30" />
+                <Setter Property="Height" Value="30" />
+                <Setter Property="FontSize" Value="15" />
+            </Style>
+
             <Style x:Key="HudFilterButtonStyle" TargetType="Button">
                 <Setter Property="Height" Value="30" />
-                <Setter Property="Padding" Value="9,0" />
+                <Setter Property="Padding" Value="10,0" />
                 <Setter Property="MinWidth" Value="0" />
                 <Setter Property="MinHeight" Value="0" />
                 <Setter Property="HorizontalContentAlignment" Value="Center" />
                 <Setter Property="VerticalContentAlignment" Value="Center" />
-                <Setter Property="CornerRadius" Value="99" />
+                <Setter Property="HorizontalAlignment" Value="Stretch" />
+                <Setter Property="CornerRadius" Value="14" />
                 <Setter Property="Background" Value="Transparent" />
                 <Setter Property="BorderThickness" Value="0" />
-                <Setter Property="FontSize" Value="12.5" />
+                <Setter Property="FontSize" Value="13.5" />
                 <Setter Property="FontWeight" Value="SemiBold" />
                 <Setter Property="Foreground" Value="{ThemeResource HudTextSecondaryBrush}" />
                 <Setter Property="Template">
@@ -264,8 +312,10 @@
                         <ControlTemplate TargetType="Button">
                             <ContentPresenter
                                 x:Name="ContentPresenter"
-                                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                HorizontalAlignment="Stretch"
+                                HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                VerticalAlignment="Stretch"
+                                VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
                                 Background="{TemplateBinding Background}"
                                 BorderBrush="{TemplateBinding BorderBrush}"
                                 BorderThickness="{TemplateBinding BorderThickness}"
@@ -304,8 +354,32 @@
                 TargetType="Button"
                 BasedOn="{StaticResource HudFilterButtonStyle}">
                 <Setter Property="Background" Value="{ThemeResource HudFilterSelectedFillBrush}" />
-                <Setter Property="BorderThickness" Value="0" />
-                <Setter Property="Foreground" Value="{ThemeResource HudTextPrimaryBrush}" />
+                <Setter Property="BorderBrush" Value="{ThemeResource HudFilterSelectedBorderBrush}" />
+                <Setter Property="BorderThickness" Value="1" />
+                <Setter Property="Foreground" Value="#FFFFFFFF" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Grid>
+                                <Border x:Name="OuterGlow" Margin="-3" Background="#353F9CFF" CornerRadius="18" IsHitTestVisible="False" />
+                                <Border x:Name="InnerGlow" Margin="-1" Background="#603DA9FF" CornerRadius="16" IsHitTestVisible="False" />
+                                <ContentPresenter
+                                    x:Name="ContentPresenter"
+                                    HorizontalAlignment="Stretch"
+                                    HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                    VerticalAlignment="Stretch"
+                                    VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                                    Background="{TemplateBinding Background}"
+                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                    Content="{TemplateBinding Content}"
+                                    ContentTemplate="{TemplateBinding ContentTemplate}"
+                                    CornerRadius="14"
+                                    Padding="{TemplateBinding Padding}" />
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
             </Style>
 
             <Style x:Key="HudTinyButtonStyle" TargetType="Button">

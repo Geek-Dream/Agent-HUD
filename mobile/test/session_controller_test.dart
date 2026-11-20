@@ -14,6 +14,7 @@ class FakeMonitoringApi implements MonitoringApi {
   bool supportsRefresh = true;
   bool supportsConditionalRequests = true;
   List<String> addresses = const [];
+  List<AgentSession>? sessionItems;
 
   @override
   Future<MonitoringStatus> status(LinkedDevice device) async {
@@ -39,7 +40,8 @@ class FakeMonitoringApi implements MonitoringApi {
     sessionsCount += 1;
     return SessionFetchResult(
       etag: supportsConditionalRequests ? 'content-$revision' : null,
-      sessions: [
+      sessions: sessionItems ??
+          [
         AgentSession(
           id: 'session-one',
           provider: 'Codex',
@@ -61,7 +63,7 @@ class FakeMonitoringApi implements MonitoringApi {
           isImportant: false,
           latestPrompt: null,
         ),
-      ],
+          ],
     );
   }
 
@@ -207,6 +209,54 @@ const device = LinkedDevice(
 );
 
 void main() {
+  test('latest N keeps pinned sessions outside the quota', () async {
+    final api = FakeMonitoringApi()
+      ..sessionItems = List<AgentSession>.generate(12, (index) {
+        return AgentSession(
+          id: 'session-$index',
+          provider: 'OpenCode',
+          status: 'Completed',
+          confidence: 'High',
+          title: '会话 $index',
+          projectName: 'Agent-HUD',
+          currentAction: '',
+          currentFiles: const [],
+          startedAt: DateTime.utc(2026, 11, 12),
+          lastActivityAt: DateTime.utc(2026, 11, 12).subtract(
+            Duration(minutes: index),
+          ),
+          completedAt: DateTime.utc(2026, 11, 12),
+          isLive: false,
+          summary: null,
+          gitBranch: null,
+          gitChangedFiles: null,
+          gitInsertions: null,
+          gitDeletions: null,
+          isImportant: index == 11,
+        );
+      });
+    final controller = SessionController(device, api: api);
+    await controller.refresh(scan: true);
+
+    // 默认 10 条，加上 1 条常驻会话；常驻会话不占最近 N 条名额。
+    expect(controller.sessions, hasLength(11));
+    expect(controller.sessions.first.id, 'session-11');
+    expect(controller.sessions.any((item) => item.id == 'session-10'), isFalse);
+    expect(controller.hiddenSessionCount, 1);
+
+    controller.sessionLimit = 3;
+    expect(controller.sessions, hasLength(4));
+    expect(
+      controller.sessions.skip(1).map((item) => item.id),
+      ['session-0', 'session-1', 'session-2'],
+    );
+
+    controller.sessionLimit = 0;
+    expect(controller.sessions, hasLength(12));
+    expect(controller.hiddenSessionCount, 0);
+    controller.dispose();
+  });
+
   test('unchanged content does not download sessions again', () async {
     final api = FakeMonitoringApi();
     final controller = SessionController(device, api: api);

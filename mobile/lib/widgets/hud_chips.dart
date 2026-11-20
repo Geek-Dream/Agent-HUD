@@ -39,7 +39,7 @@ IconData hudStatusIcon(String status) {
   }
 }
 
-/// Provider badge – quiet tinted square with a hairline ring.
+/// Provider badge – tinted glass tile with the macOS-style coloured rim.
 class HudProviderGlyph extends StatelessWidget {
   const HudProviderGlyph({super.key, required this.provider, this.size = 22});
 
@@ -53,14 +53,22 @@ class HudProviderGlyph extends StatelessWidget {
       width: size,
       height: size,
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.12),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            color.withValues(alpha: 0.26),
+            color.withValues(alpha: 0.08),
+          ],
+        ),
         borderRadius: BorderRadius.circular(size * 0.3),
-        border: Border.all(color: color.withValues(alpha: 0.22), width: 1),
+        border: Border.all(color: color.withValues(alpha: 0.48), width: 1),
+        boxShadow: HudElevation.glow(color),
       ),
       child: Center(
         child: Icon(
           hudProviderIcon(provider),
-          size: size * 0.54,
+          size: size * 0.55,
           color: color,
         ),
       ),
@@ -99,7 +107,7 @@ class HudProviderTag extends StatelessWidget {
   }
 }
 
-/// Status pill – dot + label, no gradient, no glow.
+/// Status pill – compact saturated label used in the session card rim.
 class HudStatusPill extends StatelessWidget {
   const HudStatusPill({
     super.key,
@@ -121,9 +129,15 @@ class HudStatusPill extends StatelessWidget {
         vertical: dense ? 3 : 4,
       ),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.1),
+        color: color.withValues(alpha: dense ? 0.20 : 0.13),
         borderRadius: BorderRadius.circular(999),
-        border: Border.all(color: color.withValues(alpha: 0.2), width: 1),
+        border: Border.all(color: color.withValues(alpha: 0.48), width: 1),
+        boxShadow: <BoxShadow>[
+          BoxShadow(
+            color: color.withValues(alpha: 0.12),
+            blurRadius: 12,
+          ),
+        ],
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
