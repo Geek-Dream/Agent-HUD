@@ -1,4 +1,0 @@
-module MultipartKit {
-header "MultipartKit-Swift.h"
-export *
-}

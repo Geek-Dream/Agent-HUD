@@ -1,4 +1,0 @@
-module CNIOPosix {
-umbrella header "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio/Sources/CNIOPosix/include/CNIOPosix.h"
-export *
-}

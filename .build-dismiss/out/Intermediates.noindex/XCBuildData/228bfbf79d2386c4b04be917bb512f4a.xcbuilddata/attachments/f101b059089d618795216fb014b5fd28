@@ -1,4 +1,0 @@
-module CNIOOpenBSD {
-umbrella header "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio/Sources/CNIOOpenBSD/include/CNIOOpenBSD.h"
-export *
-}

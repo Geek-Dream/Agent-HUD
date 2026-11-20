@@ -1,4 +1,0 @@
-module _CertificateInternals {
-header "_CertificateInternals-Swift.h"
-export *
-}

@@ -1,4 +1,0 @@
-module ConsoleKitTerminal {
-header "ConsoleKitTerminal-Swift.h"
-export *
-}

@@ -1,4 +1,0 @@
-module Vapor {
-header "Vapor-Swift.h"
-export *
-}

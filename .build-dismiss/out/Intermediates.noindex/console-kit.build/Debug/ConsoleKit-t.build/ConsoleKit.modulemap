@@ -1,4 +1,0 @@
-module ConsoleKit {
-header "ConsoleKit-Swift.h"
-export *
-}

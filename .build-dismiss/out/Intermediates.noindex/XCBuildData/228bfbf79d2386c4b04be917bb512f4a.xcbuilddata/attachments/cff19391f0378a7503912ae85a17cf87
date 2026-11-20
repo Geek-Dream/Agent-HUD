@@ -1,4 +1,0 @@
-module NIOHTTPCompression {
-header "NIOHTTPCompression-Swift.h"
-export *
-}

@@ -1,4 +1,0 @@
-module CNIOWASI {
-umbrella header "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio/Sources/CNIOWASI/include/CNIOWASI.h"
-export *
-}
