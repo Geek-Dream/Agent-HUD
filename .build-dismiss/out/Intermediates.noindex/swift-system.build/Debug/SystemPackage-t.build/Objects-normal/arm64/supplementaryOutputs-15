@@ -1,0 +1,30 @@
+{
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-system/Sources/System/FileSystem/FileFlags.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-system.build/Debug/SystemPackage-t.build/Objects-normal/arm64/FileFlags.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-system.build/Debug/SystemPackage-t.build/Objects-normal/arm64/FileFlags.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-system.build/Debug/SystemPackage-t.build/Objects-normal/arm64/FileFlags.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-system.build/Debug/SystemPackage-t.build/Objects-normal/arm64/FileFlags.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-system.build/Debug/SystemPackage-t.build/Objects-normal/arm64/FileFlags.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-system/Sources/System/FileSystem/FileMode.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-system.build/Debug/SystemPackage-t.build/Objects-normal/arm64/FileMode.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-system.build/Debug/SystemPackage-t.build/Objects-normal/arm64/FileMode.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-system.build/Debug/SystemPackage-t.build/Objects-normal/arm64/FileMode.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-system.build/Debug/SystemPackage-t.build/Objects-normal/arm64/FileMode.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-system.build/Debug/SystemPackage-t.build/Objects-normal/arm64/FileMode.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-system/Sources/System/FileSystem/FileType.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-system.build/Debug/SystemPackage-t.build/Objects-normal/arm64/FileType.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-system.build/Debug/SystemPackage-t.build/Objects-normal/arm64/FileType.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-system.build/Debug/SystemPackage-t.build/Objects-normal/arm64/FileType.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-system.build/Debug/SystemPackage-t.build/Objects-normal/arm64/FileType.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-system.build/Debug/SystemPackage-t.build/Objects-normal/arm64/FileType.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-system/Sources/System/FileSystem/Identifiers.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-system.build/Debug/SystemPackage-t.build/Objects-normal/arm64/Identifiers.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-system.build/Debug/SystemPackage-t.build/Objects-normal/arm64/Identifiers.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-system.build/Debug/SystemPackage-t.build/Objects-normal/arm64/Identifiers.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-system.build/Debug/SystemPackage-t.build/Objects-normal/arm64/Identifiers.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-system.build/Debug/SystemPackage-t.build/Objects-normal/arm64/Identifiers.swiftdeps"
+  }
+}

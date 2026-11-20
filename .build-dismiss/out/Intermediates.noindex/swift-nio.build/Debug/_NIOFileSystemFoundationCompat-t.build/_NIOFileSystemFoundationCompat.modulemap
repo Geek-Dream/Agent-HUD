@@ -1,0 +1,4 @@
+module _NIOFileSystemFoundationCompat {
+header "_NIOFileSystemFoundationCompat-Swift.h"
+export *
+}

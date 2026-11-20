@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:agent_hud_mobile/link_api.dart';
 import 'package:agent_hud_mobile/models.dart';
 import 'package:agent_hud_mobile/session_controller.dart';
+import 'package:agent_hud_mobile/session_preferences.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 class FakeMonitoringApi implements MonitoringApi {
@@ -42,27 +43,27 @@ class FakeMonitoringApi implements MonitoringApi {
       etag: supportsConditionalRequests ? 'content-$revision' : null,
       sessions: sessionItems ??
           [
-        AgentSession(
-          id: 'session-one',
-          provider: 'Codex',
-          status: 'Working',
-          confidence: 'High',
-          title: '同步测试',
-          projectName: 'Agent-HUD',
-          currentAction: '工作中',
-          currentFiles: const [],
-          startedAt: DateTime.utc(2026, 11, 12),
-          lastActivityAt: DateTime.utc(2026, 11, 12),
-          completedAt: null,
-          isLive: true,
-          summary: null,
-          gitBranch: 'main',
-          gitChangedFiles: 1,
-          gitInsertions: 2,
-          gitDeletions: 0,
-          isImportant: false,
-          latestPrompt: null,
-        ),
+            AgentSession(
+              id: 'session-one',
+              provider: 'Codex',
+              status: 'Working',
+              confidence: 'High',
+              title: '同步测试',
+              projectName: 'Agent-HUD',
+              currentAction: '工作中',
+              currentFiles: const [],
+              startedAt: DateTime.utc(2026, 11, 12),
+              lastActivityAt: DateTime.utc(2026, 11, 12),
+              completedAt: null,
+              isLive: true,
+              summary: null,
+              gitBranch: 'main',
+              gitChangedFiles: 1,
+              gitInsertions: 2,
+              gitDeletions: 0,
+              isImportant: false,
+              latestPrompt: null,
+            ),
           ],
     );
   }
@@ -244,14 +245,14 @@ void main() {
     expect(controller.sessions.any((item) => item.id == 'session-10'), isFalse);
     expect(controller.hiddenSessionCount, 1);
 
-    controller.sessionLimit = 3;
+    await controller.setListLimit(SessionListLimit.recent3);
     expect(controller.sessions, hasLength(4));
     expect(
       controller.sessions.skip(1).map((item) => item.id),
       ['session-0', 'session-1', 'session-2'],
     );
 
-    controller.sessionLimit = 0;
+    await controller.setListLimit(SessionListLimit.all);
     expect(controller.sessions, hasLength(12));
     expect(controller.hiddenSessionCount, 0);
     controller.dispose();

@@ -250,6 +250,48 @@ struct AgentSession: Identifiable, Hashable {
     }
 }
 
+enum SessionListLimit: Int, CaseIterable, Identifiable {
+    case all = 0
+    case recent3 = 3
+    case recent5 = 5
+    case recent10 = 10
+    case recent15 = 15
+    case recent20 = 20
+
+    static let `default` = Self.recent10
+
+    var id: Int { rawValue }
+
+    var count: Int? {
+        self == .all ? nil : rawValue
+    }
+
+    var label: String {
+        self == .all ? "全部" : "最近 \(rawValue)"
+    }
+}
+
+enum SessionListPolicy {
+    static func visible(
+        _ sessions: [AgentSession],
+        limit: SessionListLimit,
+        importantSessionIDs: Set<String>
+    ) -> [AgentSession] {
+        let recentFirst = sessions.sorted {
+            if $0.lastActivityAt != $1.lastActivityAt {
+                return $0.lastActivityAt > $1.lastActivityAt
+            }
+            return $0.id < $1.id
+        }
+        guard let count = limit.count else {
+            return recentFirst
+        }
+        let starred = recentFirst.filter { importantSessionIDs.contains($0.id) }
+        let ordinary = recentFirst.filter { !importantSessionIDs.contains($0.id) }
+        return starred + ordinary.prefix(count)
+    }
+}
+
 enum SessionOrdering {
     static func sorted(
         _ sessions: [AgentSession],
@@ -342,9 +384,28 @@ enum SessionOutlinePolicy {
     }
 }
 
+enum SessionRowSurfacePolicy {
+    /// 每一行都按状态着色，让「工作中 / 等待 / 完成 / 出错」一眼可分。
+    /// 空闲与未知没有明确状态语义，保持中性底色，避免整屏都在发光。
+    static func isStatusTinted(_ status: AgentStatus) -> Bool {
+        switch status {
+        case .starting, .working, .waitingUser, .completed, .failed:
+            return true
+        case .idle, .unknown:
+            return false
+        }
+    }
+
+    /// 只有被标记为「重要」的行才持续脉冲，且复用既有「高级动画」开关，
+    /// 避免每行一个常驻动画把主线程占满。
+    static func shouldPulse(status: AgentStatus, isImportant: Bool, advancedAnimations: Bool) -> Bool {
+        isImportant && advancedAnimations && isStatusTinted(status)
+    }
+}
+
 enum ExpandedPanelSize {
-    static let defaultWidth = 424.0
-    static let defaultHeight = 620.0
+    static let defaultWidth = 520.0
+    static let defaultHeight = 820.0
     static let minimumWidth = 360.0
     static let minimumHeight = 480.0
     static let maximumWidth = 720.0

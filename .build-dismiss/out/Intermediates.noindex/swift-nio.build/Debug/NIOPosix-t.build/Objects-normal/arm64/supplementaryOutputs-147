@@ -1,0 +1,37 @@
+{
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio/Sources/NIOPosix/SocketProtocols.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOPosix-t.build/Objects-normal/arm64/SocketProtocols.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOPosix-t.build/Objects-normal/arm64/SocketProtocols.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOPosix-t.build/Objects-normal/arm64/SocketProtocols.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOPosix-t.build/Objects-normal/arm64/SocketProtocols.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOPosix-t.build/Objects-normal/arm64/SocketProtocols.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio/Sources/NIOPosix/StructuredConcurrencyHelpers.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOPosix-t.build/Objects-normal/arm64/StructuredConcurrencyHelpers.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOPosix-t.build/Objects-normal/arm64/StructuredConcurrencyHelpers.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOPosix-t.build/Objects-normal/arm64/StructuredConcurrencyHelpers.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOPosix-t.build/Objects-normal/arm64/StructuredConcurrencyHelpers.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOPosix-t.build/Objects-normal/arm64/StructuredConcurrencyHelpers.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio/Sources/NIOPosix/System.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOPosix-t.build/Objects-normal/arm64/System.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOPosix-t.build/Objects-normal/arm64/System.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOPosix-t.build/Objects-normal/arm64/System.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOPosix-t.build/Objects-normal/arm64/System.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOPosix-t.build/Objects-normal/arm64/System.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio/Sources/NIOPosix/Thread.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOPosix-t.build/Objects-normal/arm64/Thread.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOPosix-t.build/Objects-normal/arm64/Thread.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOPosix-t.build/Objects-normal/arm64/Thread.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOPosix-t.build/Objects-normal/arm64/Thread.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOPosix-t.build/Objects-normal/arm64/Thread.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio/Sources/NIOPosix/ThreadPosix.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOPosix-t.build/Objects-normal/arm64/ThreadPosix.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOPosix-t.build/Objects-normal/arm64/ThreadPosix.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOPosix-t.build/Objects-normal/arm64/ThreadPosix.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOPosix-t.build/Objects-normal/arm64/ThreadPosix.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOPosix-t.build/Objects-normal/arm64/ThreadPosix.swiftdeps"
+  }
+}

@@ -1,0 +1,89 @@
+{
+  "" : {
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-distributed-tracing.build/Debug/Tracing-t.build/Objects-normal/arm64/Tracing-primary.dia",
+    "emit-module-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-distributed-tracing.build/Debug/Tracing-t.build/Objects-normal/arm64/Tracing-primary-emit-module.d",
+    "emit-module-diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-distributed-tracing.build/Debug/Tracing-t.build/Objects-normal/arm64/Tracing-primary-emit-module.dia",
+    "pch" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-distributed-tracing.build/Debug/Tracing-t.build/Objects-normal/arm64/Tracing-primary-Bridging-header.pch",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-distributed-tracing.build/Debug/Tracing-t.build/Objects-normal/arm64/Tracing-primary.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-distributed-tracing/Sources/Tracing/InstrumentationSystem+Tracing.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-distributed-tracing.build/Debug/Tracing-t.build/Objects-normal/arm64/InstrumentationSystem+Tracing.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-distributed-tracing.build/Debug/Tracing-t.build/Objects-normal/arm64/InstrumentationSystem+Tracing.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-distributed-tracing.build/Debug/Tracing-t.build/Objects-normal/arm64/InstrumentationSystem+Tracing.dia",
+    "index-unit-output-path" : "/swift-distributed-tracing.build/Debug/Tracing-t.build/Objects-normal/arm64/InstrumentationSystem+Tracing.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-distributed-tracing.build/Debug/Tracing-t.build/Objects-normal/arm64/InstrumentationSystem+Tracing.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-distributed-tracing.build/Debug/Tracing-t.build/Objects-normal/arm64/InstrumentationSystem+Tracing.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-distributed-tracing.build/Debug/Tracing-t.build/Objects-normal/arm64/InstrumentationSystem+Tracing.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-distributed-tracing.build/Debug/Tracing-t.build/Objects-normal/arm64/InstrumentationSystem+Tracing~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-distributed-tracing/Sources/Tracing/NoOpTracer.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-distributed-tracing.build/Debug/Tracing-t.build/Objects-normal/arm64/NoOpTracer.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-distributed-tracing.build/Debug/Tracing-t.build/Objects-normal/arm64/NoOpTracer.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-distributed-tracing.build/Debug/Tracing-t.build/Objects-normal/arm64/NoOpTracer.dia",
+    "index-unit-output-path" : "/swift-distributed-tracing.build/Debug/Tracing-t.build/Objects-normal/arm64/NoOpTracer.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-distributed-tracing.build/Debug/Tracing-t.build/Objects-normal/arm64/NoOpTracer.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-distributed-tracing.build/Debug/Tracing-t.build/Objects-normal/arm64/NoOpTracer.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-distributed-tracing.build/Debug/Tracing-t.build/Objects-normal/arm64/NoOpTracer.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-distributed-tracing.build/Debug/Tracing-t.build/Objects-normal/arm64/NoOpTracer~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-distributed-tracing/Sources/Tracing/SpanProtocol.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-distributed-tracing.build/Debug/Tracing-t.build/Objects-normal/arm64/SpanProtocol.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-distributed-tracing.build/Debug/Tracing-t.build/Objects-normal/arm64/SpanProtocol.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-distributed-tracing.build/Debug/Tracing-t.build/Objects-normal/arm64/SpanProtocol.dia",
+    "index-unit-output-path" : "/swift-distributed-tracing.build/Debug/Tracing-t.build/Objects-normal/arm64/SpanProtocol.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-distributed-tracing.build/Debug/Tracing-t.build/Objects-normal/arm64/SpanProtocol.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-distributed-tracing.build/Debug/Tracing-t.build/Objects-normal/arm64/SpanProtocol.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-distributed-tracing.build/Debug/Tracing-t.build/Objects-normal/arm64/SpanProtocol.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-distributed-tracing.build/Debug/Tracing-t.build/Objects-normal/arm64/SpanProtocol~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-distributed-tracing/Sources/Tracing/Tracer.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-distributed-tracing.build/Debug/Tracing-t.build/Objects-normal/arm64/Tracer.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-distributed-tracing.build/Debug/Tracing-t.build/Objects-normal/arm64/Tracer.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-distributed-tracing.build/Debug/Tracing-t.build/Objects-normal/arm64/Tracer.dia",
+    "index-unit-output-path" : "/swift-distributed-tracing.build/Debug/Tracing-t.build/Objects-normal/arm64/Tracer.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-distributed-tracing.build/Debug/Tracing-t.build/Objects-normal/arm64/Tracer.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-distributed-tracing.build/Debug/Tracing-t.build/Objects-normal/arm64/Tracer.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-distributed-tracing.build/Debug/Tracing-t.build/Objects-normal/arm64/Tracer.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-distributed-tracing.build/Debug/Tracing-t.build/Objects-normal/arm64/Tracer~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-distributed-tracing/Sources/Tracing/TracerProtocol+Legacy.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-distributed-tracing.build/Debug/Tracing-t.build/Objects-normal/arm64/TracerProtocol+Legacy.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-distributed-tracing.build/Debug/Tracing-t.build/Objects-normal/arm64/TracerProtocol+Legacy.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-distributed-tracing.build/Debug/Tracing-t.build/Objects-normal/arm64/TracerProtocol+Legacy.dia",
+    "index-unit-output-path" : "/swift-distributed-tracing.build/Debug/Tracing-t.build/Objects-normal/arm64/TracerProtocol+Legacy.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-distributed-tracing.build/Debug/Tracing-t.build/Objects-normal/arm64/TracerProtocol+Legacy.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-distributed-tracing.build/Debug/Tracing-t.build/Objects-normal/arm64/TracerProtocol+Legacy.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-distributed-tracing.build/Debug/Tracing-t.build/Objects-normal/arm64/TracerProtocol+Legacy.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-distributed-tracing.build/Debug/Tracing-t.build/Objects-normal/arm64/TracerProtocol+Legacy~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-distributed-tracing/Sources/Tracing/TracerProtocol.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-distributed-tracing.build/Debug/Tracing-t.build/Objects-normal/arm64/TracerProtocol.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-distributed-tracing.build/Debug/Tracing-t.build/Objects-normal/arm64/TracerProtocol.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-distributed-tracing.build/Debug/Tracing-t.build/Objects-normal/arm64/TracerProtocol.dia",
+    "index-unit-output-path" : "/swift-distributed-tracing.build/Debug/Tracing-t.build/Objects-normal/arm64/TracerProtocol.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-distributed-tracing.build/Debug/Tracing-t.build/Objects-normal/arm64/TracerProtocol.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-distributed-tracing.build/Debug/Tracing-t.build/Objects-normal/arm64/TracerProtocol.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-distributed-tracing.build/Debug/Tracing-t.build/Objects-normal/arm64/TracerProtocol.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-distributed-tracing.build/Debug/Tracing-t.build/Objects-normal/arm64/TracerProtocol~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-distributed-tracing/Sources/Tracing/TracingTime.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-distributed-tracing.build/Debug/Tracing-t.build/Objects-normal/arm64/TracingTime.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-distributed-tracing.build/Debug/Tracing-t.build/Objects-normal/arm64/TracingTime.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-distributed-tracing.build/Debug/Tracing-t.build/Objects-normal/arm64/TracingTime.dia",
+    "index-unit-output-path" : "/swift-distributed-tracing.build/Debug/Tracing-t.build/Objects-normal/arm64/TracingTime.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-distributed-tracing.build/Debug/Tracing-t.build/Objects-normal/arm64/TracingTime.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-distributed-tracing.build/Debug/Tracing-t.build/Objects-normal/arm64/TracingTime.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-distributed-tracing.build/Debug/Tracing-t.build/Objects-normal/arm64/TracingTime.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-distributed-tracing.build/Debug/Tracing-t.build/Objects-normal/arm64/TracingTime~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-distributed-tracing/Sources/Tracing/WithTracer.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-distributed-tracing.build/Debug/Tracing-t.build/Objects-normal/arm64/WithTracer.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-distributed-tracing.build/Debug/Tracing-t.build/Objects-normal/arm64/WithTracer.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-distributed-tracing.build/Debug/Tracing-t.build/Objects-normal/arm64/WithTracer.dia",
+    "index-unit-output-path" : "/swift-distributed-tracing.build/Debug/Tracing-t.build/Objects-normal/arm64/WithTracer.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-distributed-tracing.build/Debug/Tracing-t.build/Objects-normal/arm64/WithTracer.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-distributed-tracing.build/Debug/Tracing-t.build/Objects-normal/arm64/WithTracer.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-distributed-tracing.build/Debug/Tracing-t.build/Objects-normal/arm64/WithTracer.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-distributed-tracing.build/Debug/Tracing-t.build/Objects-normal/arm64/WithTracer~partial.swiftmodule"
+  }
+}

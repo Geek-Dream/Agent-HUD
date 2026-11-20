@@ -1,0 +1,23 @@
+{
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-algorithms/Sources/Algorithms/Joined.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-algorithms.build/Debug/Algorithms-t.build/Objects-normal/arm64/Joined.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-algorithms.build/Debug/Algorithms-t.build/Objects-normal/arm64/Joined.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-algorithms.build/Debug/Algorithms-t.build/Objects-normal/arm64/Joined.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-algorithms.build/Debug/Algorithms-t.build/Objects-normal/arm64/Joined.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-algorithms.build/Debug/Algorithms-t.build/Objects-normal/arm64/Joined.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-algorithms/Sources/Algorithms/Keyed.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-algorithms.build/Debug/Algorithms-t.build/Objects-normal/arm64/Keyed.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-algorithms.build/Debug/Algorithms-t.build/Objects-normal/arm64/Keyed.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-algorithms.build/Debug/Algorithms-t.build/Objects-normal/arm64/Keyed.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-algorithms.build/Debug/Algorithms-t.build/Objects-normal/arm64/Keyed.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-algorithms.build/Debug/Algorithms-t.build/Objects-normal/arm64/Keyed.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-algorithms/Sources/Algorithms/MinMax.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-algorithms.build/Debug/Algorithms-t.build/Objects-normal/arm64/MinMax.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-algorithms.build/Debug/Algorithms-t.build/Objects-normal/arm64/MinMax.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-algorithms.build/Debug/Algorithms-t.build/Objects-normal/arm64/MinMax.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-algorithms.build/Debug/Algorithms-t.build/Objects-normal/arm64/MinMax.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-algorithms.build/Debug/Algorithms-t.build/Objects-normal/arm64/MinMax.swiftdeps"
+  }
+}

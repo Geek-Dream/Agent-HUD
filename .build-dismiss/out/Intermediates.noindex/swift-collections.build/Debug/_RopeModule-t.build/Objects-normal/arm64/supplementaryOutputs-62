@@ -1,0 +1,58 @@
+{
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-collections/Sources/RopeModule/Rope/Basics/Rope+Debugging.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/_RopeModule-t.build/Objects-normal/arm64/Rope+Debugging.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/_RopeModule-t.build/Objects-normal/arm64/Rope+Debugging.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/_RopeModule-t.build/Objects-normal/arm64/Rope+Debugging.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/_RopeModule-t.build/Objects-normal/arm64/Rope+Debugging.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/_RopeModule-t.build/Objects-normal/arm64/Rope+Debugging.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-collections/Sources/RopeModule/Rope/Basics/Rope+Invariants.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/_RopeModule-t.build/Objects-normal/arm64/Rope+Invariants.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/_RopeModule-t.build/Objects-normal/arm64/Rope+Invariants.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/_RopeModule-t.build/Objects-normal/arm64/Rope+Invariants.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/_RopeModule-t.build/Objects-normal/arm64/Rope+Invariants.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/_RopeModule-t.build/Objects-normal/arm64/Rope+Invariants.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-collections/Sources/RopeModule/Rope/Basics/Rope+_Node.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/_RopeModule-t.build/Objects-normal/arm64/Rope+_Node.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/_RopeModule-t.build/Objects-normal/arm64/Rope+_Node.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/_RopeModule-t.build/Objects-normal/arm64/Rope+_Node.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/_RopeModule-t.build/Objects-normal/arm64/Rope+_Node.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/_RopeModule-t.build/Objects-normal/arm64/Rope+_Node.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-collections/Sources/RopeModule/Rope/Basics/Rope+_Storage.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/_RopeModule-t.build/Objects-normal/arm64/Rope+_Storage.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/_RopeModule-t.build/Objects-normal/arm64/Rope+_Storage.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/_RopeModule-t.build/Objects-normal/arm64/Rope+_Storage.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/_RopeModule-t.build/Objects-normal/arm64/Rope+_Storage.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/_RopeModule-t.build/Objects-normal/arm64/Rope+_Storage.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-collections/Sources/RopeModule/Rope/Basics/Rope+_UnmanagedLeaf.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/_RopeModule-t.build/Objects-normal/arm64/Rope+_UnmanagedLeaf.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/_RopeModule-t.build/Objects-normal/arm64/Rope+_UnmanagedLeaf.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/_RopeModule-t.build/Objects-normal/arm64/Rope+_UnmanagedLeaf.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/_RopeModule-t.build/Objects-normal/arm64/Rope+_UnmanagedLeaf.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/_RopeModule-t.build/Objects-normal/arm64/Rope+_UnmanagedLeaf.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-collections/Sources/RopeModule/Rope/Basics/Rope+_UnsafeHandle.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/_RopeModule-t.build/Objects-normal/arm64/Rope+_UnsafeHandle.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/_RopeModule-t.build/Objects-normal/arm64/Rope+_UnsafeHandle.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/_RopeModule-t.build/Objects-normal/arm64/Rope+_UnsafeHandle.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/_RopeModule-t.build/Objects-normal/arm64/Rope+_UnsafeHandle.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/_RopeModule-t.build/Objects-normal/arm64/Rope+_UnsafeHandle.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-collections/Sources/RopeModule/Rope/Basics/Rope.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/_RopeModule-t.build/Objects-normal/arm64/Rope.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/_RopeModule-t.build/Objects-normal/arm64/Rope.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/_RopeModule-t.build/Objects-normal/arm64/Rope.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/_RopeModule-t.build/Objects-normal/arm64/Rope.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/_RopeModule-t.build/Objects-normal/arm64/Rope.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-collections/Sources/RopeModule/Rope/Basics/RopeElement.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/_RopeModule-t.build/Objects-normal/arm64/RopeElement.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/_RopeModule-t.build/Objects-normal/arm64/RopeElement.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/_RopeModule-t.build/Objects-normal/arm64/RopeElement.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/_RopeModule-t.build/Objects-normal/arm64/RopeElement.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/_RopeModule-t.build/Objects-normal/arm64/RopeElement.swiftdeps"
+  }
+}

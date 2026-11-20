@@ -1,0 +1,37 @@
+{
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio/Sources/_NIOFileSystem/Array+FileSystem.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystem-t.build/Objects-normal/arm64/Array+FileSystem.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystem-t.build/Objects-normal/arm64/Array+FileSystem.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystem-t.build/Objects-normal/arm64/Array+FileSystem.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystem-t.build/Objects-normal/arm64/Array+FileSystem.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystem-t.build/Objects-normal/arm64/Array+FileSystem.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio/Sources/_NIOFileSystem/ArraySlice+FileSystem.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystem-t.build/Objects-normal/arm64/ArraySlice+FileSystem.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystem-t.build/Objects-normal/arm64/ArraySlice+FileSystem.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystem-t.build/Objects-normal/arm64/ArraySlice+FileSystem.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystem-t.build/Objects-normal/arm64/ArraySlice+FileSystem.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystem-t.build/Objects-normal/arm64/ArraySlice+FileSystem.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio/Sources/_NIOFileSystem/BufferedReader.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystem-t.build/Objects-normal/arm64/BufferedReader.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystem-t.build/Objects-normal/arm64/BufferedReader.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystem-t.build/Objects-normal/arm64/BufferedReader.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystem-t.build/Objects-normal/arm64/BufferedReader.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystem-t.build/Objects-normal/arm64/BufferedReader.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio/Sources/_NIOFileSystem/BufferedWriter.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystem-t.build/Objects-normal/arm64/BufferedWriter.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystem-t.build/Objects-normal/arm64/BufferedWriter.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystem-t.build/Objects-normal/arm64/BufferedWriter.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystem-t.build/Objects-normal/arm64/BufferedWriter.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystem-t.build/Objects-normal/arm64/BufferedWriter.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystem-t.build/DerivedSources/resource_bundle_accessor.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystem-t.build/Objects-normal/arm64/resource_bundle_accessor.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystem-t.build/Objects-normal/arm64/resource_bundle_accessor.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystem-t.build/Objects-normal/arm64/resource_bundle_accessor.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystem-t.build/Objects-normal/arm64/resource_bundle_accessor.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystem-t.build/Objects-normal/arm64/resource_bundle_accessor.swiftdeps"
+  }
+}

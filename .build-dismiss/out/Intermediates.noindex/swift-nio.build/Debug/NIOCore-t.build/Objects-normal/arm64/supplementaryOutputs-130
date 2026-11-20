@@ -1,0 +1,51 @@
+{
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio/Sources/NIOCore/AsyncSequences/NIOAsyncWriter.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOCore-t.build/Objects-normal/arm64/NIOAsyncWriter.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOCore-t.build/Objects-normal/arm64/NIOAsyncWriter.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOCore-t.build/Objects-normal/arm64/NIOAsyncWriter.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOCore-t.build/Objects-normal/arm64/NIOAsyncWriter.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOCore-t.build/Objects-normal/arm64/NIOAsyncWriter.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio/Sources/NIOCore/AsyncSequences/NIOThrowingAsyncSequenceProducer.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOCore-t.build/Objects-normal/arm64/NIOThrowingAsyncSequenceProducer.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOCore-t.build/Objects-normal/arm64/NIOThrowingAsyncSequenceProducer.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOCore-t.build/Objects-normal/arm64/NIOThrowingAsyncSequenceProducer.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOCore-t.build/Objects-normal/arm64/NIOThrowingAsyncSequenceProducer.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOCore-t.build/Objects-normal/arm64/NIOThrowingAsyncSequenceProducer.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio/Sources/NIOCore/BSDSocketAPI.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOCore-t.build/Objects-normal/arm64/BSDSocketAPI.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOCore-t.build/Objects-normal/arm64/BSDSocketAPI.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOCore-t.build/Objects-normal/arm64/BSDSocketAPI.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOCore-t.build/Objects-normal/arm64/BSDSocketAPI.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOCore-t.build/Objects-normal/arm64/BSDSocketAPI.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio/Sources/NIOCore/ByteBuffer-aux.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOCore-t.build/Objects-normal/arm64/ByteBuffer-aux.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOCore-t.build/Objects-normal/arm64/ByteBuffer-aux.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOCore-t.build/Objects-normal/arm64/ByteBuffer-aux.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOCore-t.build/Objects-normal/arm64/ByteBuffer-aux.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOCore-t.build/Objects-normal/arm64/ByteBuffer-aux.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio/Sources/NIOCore/ByteBuffer-binaryEncodedLengthPrefix.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOCore-t.build/Objects-normal/arm64/ByteBuffer-binaryEncodedLengthPrefix.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOCore-t.build/Objects-normal/arm64/ByteBuffer-binaryEncodedLengthPrefix.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOCore-t.build/Objects-normal/arm64/ByteBuffer-binaryEncodedLengthPrefix.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOCore-t.build/Objects-normal/arm64/ByteBuffer-binaryEncodedLengthPrefix.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOCore-t.build/Objects-normal/arm64/ByteBuffer-binaryEncodedLengthPrefix.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio/Sources/NIOCore/ByteBuffer-conversions.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOCore-t.build/Objects-normal/arm64/ByteBuffer-conversions.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOCore-t.build/Objects-normal/arm64/ByteBuffer-conversions.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOCore-t.build/Objects-normal/arm64/ByteBuffer-conversions.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOCore-t.build/Objects-normal/arm64/ByteBuffer-conversions.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOCore-t.build/Objects-normal/arm64/ByteBuffer-conversions.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio/Sources/NIOCore/ByteBuffer-core.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOCore-t.build/Objects-normal/arm64/ByteBuffer-core.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOCore-t.build/Objects-normal/arm64/ByteBuffer-core.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOCore-t.build/Objects-normal/arm64/ByteBuffer-core.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOCore-t.build/Objects-normal/arm64/ByteBuffer-core.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOCore-t.build/Objects-normal/arm64/ByteBuffer-core.swiftdeps"
+  }
+}

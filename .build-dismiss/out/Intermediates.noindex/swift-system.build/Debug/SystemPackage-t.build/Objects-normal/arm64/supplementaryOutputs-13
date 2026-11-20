@@ -1,0 +1,30 @@
+{
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-system/Sources/System/FilePath/FilePathParsing.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-system.build/Debug/SystemPackage-t.build/Objects-normal/arm64/FilePathParsing.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-system.build/Debug/SystemPackage-t.build/Objects-normal/arm64/FilePathParsing.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-system.build/Debug/SystemPackage-t.build/Objects-normal/arm64/FilePathParsing.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-system.build/Debug/SystemPackage-t.build/Objects-normal/arm64/FilePathParsing.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-system.build/Debug/SystemPackage-t.build/Objects-normal/arm64/FilePathParsing.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-system/Sources/System/FilePath/FilePathString.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-system.build/Debug/SystemPackage-t.build/Objects-normal/arm64/FilePathString.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-system.build/Debug/SystemPackage-t.build/Objects-normal/arm64/FilePathString.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-system.build/Debug/SystemPackage-t.build/Objects-normal/arm64/FilePathString.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-system.build/Debug/SystemPackage-t.build/Objects-normal/arm64/FilePathString.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-system.build/Debug/SystemPackage-t.build/Objects-normal/arm64/FilePathString.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-system/Sources/System/FilePath/FilePathSyntax.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-system.build/Debug/SystemPackage-t.build/Objects-normal/arm64/FilePathSyntax.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-system.build/Debug/SystemPackage-t.build/Objects-normal/arm64/FilePathSyntax.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-system.build/Debug/SystemPackage-t.build/Objects-normal/arm64/FilePathSyntax.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-system.build/Debug/SystemPackage-t.build/Objects-normal/arm64/FilePathSyntax.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-system.build/Debug/SystemPackage-t.build/Objects-normal/arm64/FilePathSyntax.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-system/Sources/System/FilePath/FilePathTemp.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-system.build/Debug/SystemPackage-t.build/Objects-normal/arm64/FilePathTemp.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-system.build/Debug/SystemPackage-t.build/Objects-normal/arm64/FilePathTemp.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-system.build/Debug/SystemPackage-t.build/Objects-normal/arm64/FilePathTemp.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-system.build/Debug/SystemPackage-t.build/Objects-normal/arm64/FilePathTemp.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-system.build/Debug/SystemPackage-t.build/Objects-normal/arm64/FilePathTemp.swiftdeps"
+  }
+}

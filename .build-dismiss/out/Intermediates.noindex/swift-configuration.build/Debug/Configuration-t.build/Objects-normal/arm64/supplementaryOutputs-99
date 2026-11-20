@@ -1,0 +1,37 @@
+{
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-configuration/Sources/Configuration/KeyCoders/CLIKeyEncoder.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-configuration.build/Debug/Configuration-t.build/Objects-normal/arm64/CLIKeyEncoder.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-configuration.build/Debug/Configuration-t.build/Objects-normal/arm64/CLIKeyEncoder.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-configuration.build/Debug/Configuration-t.build/Objects-normal/arm64/CLIKeyEncoder.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-configuration.build/Debug/Configuration-t.build/Objects-normal/arm64/CLIKeyEncoder.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-configuration.build/Debug/Configuration-t.build/Objects-normal/arm64/CLIKeyEncoder.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-configuration/Sources/Configuration/KeyCoders/ConfigKeyEncoder.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-configuration.build/Debug/Configuration-t.build/Objects-normal/arm64/ConfigKeyEncoder.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-configuration.build/Debug/Configuration-t.build/Objects-normal/arm64/ConfigKeyEncoder.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-configuration.build/Debug/Configuration-t.build/Objects-normal/arm64/ConfigKeyEncoder.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-configuration.build/Debug/Configuration-t.build/Objects-normal/arm64/ConfigKeyEncoder.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-configuration.build/Debug/Configuration-t.build/Objects-normal/arm64/ConfigKeyEncoder.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-configuration/Sources/Configuration/KeyCoders/DotSeparatorKeyDecoder.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-configuration.build/Debug/Configuration-t.build/Objects-normal/arm64/DotSeparatorKeyDecoder.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-configuration.build/Debug/Configuration-t.build/Objects-normal/arm64/DotSeparatorKeyDecoder.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-configuration.build/Debug/Configuration-t.build/Objects-normal/arm64/DotSeparatorKeyDecoder.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-configuration.build/Debug/Configuration-t.build/Objects-normal/arm64/DotSeparatorKeyDecoder.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-configuration.build/Debug/Configuration-t.build/Objects-normal/arm64/DotSeparatorKeyDecoder.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-configuration/Sources/Configuration/KeyCoders/SeparatorKeyEncoder.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-configuration.build/Debug/Configuration-t.build/Objects-normal/arm64/SeparatorKeyEncoder.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-configuration.build/Debug/Configuration-t.build/Objects-normal/arm64/SeparatorKeyEncoder.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-configuration.build/Debug/Configuration-t.build/Objects-normal/arm64/SeparatorKeyEncoder.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-configuration.build/Debug/Configuration-t.build/Objects-normal/arm64/SeparatorKeyEncoder.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-configuration.build/Debug/Configuration-t.build/Objects-normal/arm64/SeparatorKeyEncoder.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-configuration/Sources/Configuration/MultiProvider.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-configuration.build/Debug/Configuration-t.build/Objects-normal/arm64/MultiProvider.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-configuration.build/Debug/Configuration-t.build/Objects-normal/arm64/MultiProvider.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-configuration.build/Debug/Configuration-t.build/Objects-normal/arm64/MultiProvider.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-configuration.build/Debug/Configuration-t.build/Objects-normal/arm64/MultiProvider.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-configuration.build/Debug/Configuration-t.build/Objects-normal/arm64/MultiProvider.swiftdeps"
+  }
+}

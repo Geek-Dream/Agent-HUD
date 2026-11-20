@@ -20,6 +20,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     let model = HUDViewModel()
     private var panel: FloatingPanel?
     private var subscriptions: Set<AnyCancellable> = []
+    private var isUpdatingPanelSize = false
     private var linkServer: LinkServer?
     private var linkSettingsWindowController: LinkSettingsWindowController?
     private lazy var aiSettingsWindowController = AISettingsWindowController(
@@ -31,6 +32,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         NSApp.setActivationPolicy(.accessory)
+        #if DEBUG
+        if let previewAppearance = ProcessInfo.processInfo.environment["AGENTHUD_PREVIEW_APPEARANCE"] {
+            NSApp.appearance = NSAppearance(
+                named: previewAppearance == "dark" ? .darkAqua : .aqua
+            )
+        }
+        #endif
         createPanel()
         bindPanelState()
 
@@ -79,13 +87,18 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                 width: initialSize.width,
                 height: initialSize.height
             ),
-            styleMask: [.borderless, .fullSizeContentView],
+            styleMask: [.titled, .closable, .miniaturizable, .resizable, .fullSizeContentView],
             backing: .buffered,
             defer: false
         )
 
+        panel.title = ""
+        panel.titleVisibility = .hidden
+        panel.titlebarAppearsTransparent = true
+        panel.isReleasedWhenClosed = false
         panel.isOpaque = false
         panel.backgroundColor = .clear
+        panel.delegate = self
         panel.hasShadow = true
         panel.level = .floating
         panel.collectionBehavior = [
@@ -97,7 +110,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         panel.isMovable = !model.positionLocked
         panel.isMovableByWindowBackground = !model.positionLocked
         panel.animationBehavior = .utilityWindow
-        panel.contentMinSize = panelSize(expanded: false)
+        panel.contentMinSize = model.isExpanded
+            ? NSSize(
+                width: ExpandedPanelSize.minimumWidth,
+                height: ExpandedPanelSize.minimumHeight
+            )
+            : panelSize(expanded: false)
         panel.contentMaxSize = NSSize(
             width: ExpandedPanelSize.maximumWidth,
             height: ExpandedPanelSize.maximumHeight
@@ -109,7 +127,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         container.wantsLayer = true
         container.layer?.backgroundColor = NSColor.clear.cgColor
         container.layer?.masksToBounds = true
-        container.layer?.cornerRadius = 14
+        container.layer?.cornerRadius = HUDMetrics.Radius.panel
         container.layer?.cornerCurve = .continuous
         container.autoresizesSubviews = true
 
@@ -121,12 +139,17 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         container.addSubview(hostingView)
         panel.contentView = container
 
-        if !panel.setFrameUsingName("AgentHUD.FloatingPanel") {
+        let restoredFrame = panel.setFrameUsingName("AgentHUD.FloatingPanel")
+        if !restoredFrame {
+            positionPanelAtDefaultLocation(panel)
+        } else if abs(panel.frame.width - initialSize.width) > 1
+                    || abs(panel.frame.height - initialSize.height) > 1 {
             positionPanelAtDefaultLocation(panel)
         }
         setPanelSize(initialSize, keepingTopTrailingAnchor: panel, display: false)
         panel.setFrameAutosaveName("AgentHUD.FloatingPanel")
         self.panel = panel
+        updateTrafficLightVisibility()
     }
 
     private func bindPanelState() {
@@ -143,6 +166,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             .dropFirst()
             .sink { [weak self] expanded in
                 self?.resizePanel(expanded: expanded)
+                self?.updateTrafficLightVisibility()
             }
             .store(in: &subscriptions)
 
@@ -152,7 +176,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             }
             .dropFirst()
             .sink { [weak self] _ in
-                guard let self, self.model.isExpanded else {
+                guard let self,
+                      self.model.isExpanded,
+                      !self.isUpdatingPanelSize,
+                      self.panel?.inLiveResize != true else {
                     return
                 }
                 self.resizePanel(expanded: true, animated: false)
@@ -178,6 +205,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             return
         }
 
+        panel.contentMinSize = expanded
+            ? NSSize(
+                width: ExpandedPanelSize.minimumWidth,
+                height: ExpandedPanelSize.minimumHeight
+            )
+            : panelSize(expanded: false)
         let targetFrame = frame(
             for: panelSize(expanded: expanded),
             keepingTopTrailingAnchor: panel
@@ -230,10 +263,48 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         guard let panel else {
             return
         }
+        setPanelSize(
+            panelSize(expanded: model.isExpanded),
+            keepingTopTrailingAnchor: panel,
+            display: false
+        )
+        keepPanelOnScreen(panel)
         if activate {
             NSApp.activate(ignoringOtherApps: true)
         }
+        updateTrafficLightVisibility()
         panel.orderFrontRegardless()
+    }
+
+    private func keepPanelOnScreen(_ panel: NSPanel) {
+        guard let screen = panel.screen ?? NSScreen.main else {
+            return
+        }
+        let visible = screen.visibleFrame
+        guard visible.intersects(panel.frame) else {
+            positionPanelAtDefaultLocation(panel)
+            return
+        }
+
+        var origin = panel.frame.origin
+        origin.x = min(
+            max(origin.x, visible.minX + HUDMetrics.panelGap),
+            visible.maxX - panel.frame.width - HUDMetrics.panelGap
+        )
+        origin.y = min(
+            max(origin.y, visible.minY + HUDMetrics.panelGap),
+            visible.maxY - panel.frame.height - HUDMetrics.panelGap
+        )
+        panel.setFrameOrigin(origin)
+    }
+
+    private func updateTrafficLightVisibility() {
+        guard let panel else {
+            return
+        }
+        for buttonType: NSWindow.ButtonType in [.closeButton, .miniaturizeButton, .zoomButton] {
+            panel.standardWindowButton(buttonType)?.isHidden = !model.isExpanded
+        }
     }
 
     private func hidePanel() {
@@ -327,6 +398,31 @@ private struct AgentHUDStatusMenu: View {
             appDelegate.quit()
         }
         .keyboardShortcut("q")
+    }
+}
+
+extension AppDelegate: NSWindowDelegate {
+    func windowDidResize(_ notification: Notification) {
+        guard let panel,
+              notification.object as? NSPanel === panel,
+              model.isExpanded else {
+            return
+        }
+
+        let size = panel.contentView?.bounds.size ?? panel.frame.size
+        let width = ExpandedPanelSize.clampedWidth(size.width)
+        let height = ExpandedPanelSize.clampedHeight(size.height)
+        guard abs(width - model.expandedWidth) > 0.5
+                || abs(height - model.expandedHeight) > 0.5 else {
+            return
+        }
+
+        isUpdatingPanelSize = true
+        model.expandedWidth = width
+        model.expandedHeight = height
+        DispatchQueue.main.async { [weak self] in
+            self?.isUpdatingPanelSize = false
+        }
     }
 }
 

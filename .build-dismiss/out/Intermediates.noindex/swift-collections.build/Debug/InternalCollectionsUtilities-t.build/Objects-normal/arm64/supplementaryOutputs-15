@@ -1,0 +1,23 @@
+{
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-collections/Sources/InternalCollectionsUtilities/MutableSpan+Extras.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/InternalCollectionsUtilities-t.build/Objects-normal/arm64/MutableSpan+Extras.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/InternalCollectionsUtilities-t.build/Objects-normal/arm64/MutableSpan+Extras.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/InternalCollectionsUtilities-t.build/Objects-normal/arm64/MutableSpan+Extras.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/InternalCollectionsUtilities-t.build/Objects-normal/arm64/MutableSpan+Extras.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/InternalCollectionsUtilities-t.build/Objects-normal/arm64/MutableSpan+Extras.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-collections/Sources/InternalCollectionsUtilities/OutputSpan+Extras.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/InternalCollectionsUtilities-t.build/Objects-normal/arm64/OutputSpan+Extras.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/InternalCollectionsUtilities-t.build/Objects-normal/arm64/OutputSpan+Extras.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/InternalCollectionsUtilities-t.build/Objects-normal/arm64/OutputSpan+Extras.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/InternalCollectionsUtilities-t.build/Objects-normal/arm64/OutputSpan+Extras.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/InternalCollectionsUtilities-t.build/Objects-normal/arm64/OutputSpan+Extras.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-collections/Sources/InternalCollectionsUtilities/RandomAccessCollection+Offsets.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/InternalCollectionsUtilities-t.build/Objects-normal/arm64/RandomAccessCollection+Offsets.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/InternalCollectionsUtilities-t.build/Objects-normal/arm64/RandomAccessCollection+Offsets.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/InternalCollectionsUtilities-t.build/Objects-normal/arm64/RandomAccessCollection+Offsets.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/InternalCollectionsUtilities-t.build/Objects-normal/arm64/RandomAccessCollection+Offsets.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/InternalCollectionsUtilities-t.build/Objects-normal/arm64/RandomAccessCollection+Offsets.swiftdeps"
+  }
+}

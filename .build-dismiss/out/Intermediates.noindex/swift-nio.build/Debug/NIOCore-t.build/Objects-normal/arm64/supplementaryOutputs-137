@@ -1,0 +1,51 @@
+{
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio/Sources/NIOCore/NIOPooledRecvBufferAllocator.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOCore-t.build/Objects-normal/arm64/NIOPooledRecvBufferAllocator.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOCore-t.build/Objects-normal/arm64/NIOPooledRecvBufferAllocator.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOCore-t.build/Objects-normal/arm64/NIOPooledRecvBufferAllocator.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOCore-t.build/Objects-normal/arm64/NIOPooledRecvBufferAllocator.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOCore-t.build/Objects-normal/arm64/NIOPooledRecvBufferAllocator.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio/Sources/NIOCore/NIOScheduledCallback.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOCore-t.build/Objects-normal/arm64/NIOScheduledCallback.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOCore-t.build/Objects-normal/arm64/NIOScheduledCallback.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOCore-t.build/Objects-normal/arm64/NIOScheduledCallback.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOCore-t.build/Objects-normal/arm64/NIOScheduledCallback.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOCore-t.build/Objects-normal/arm64/NIOScheduledCallback.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio/Sources/NIOCore/NIOSendable.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOCore-t.build/Objects-normal/arm64/NIOSendable.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOCore-t.build/Objects-normal/arm64/NIOSendable.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOCore-t.build/Objects-normal/arm64/NIOSendable.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOCore-t.build/Objects-normal/arm64/NIOSendable.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOCore-t.build/Objects-normal/arm64/NIOSendable.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio/Sources/NIOCore/NIOSplitLinesMessageDecoder.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOCore-t.build/Objects-normal/arm64/NIOSplitLinesMessageDecoder.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOCore-t.build/Objects-normal/arm64/NIOSplitLinesMessageDecoder.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOCore-t.build/Objects-normal/arm64/NIOSplitLinesMessageDecoder.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOCore-t.build/Objects-normal/arm64/NIOSplitLinesMessageDecoder.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOCore-t.build/Objects-normal/arm64/NIOSplitLinesMessageDecoder.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio/Sources/NIOCore/NIOTransportAccessibleChannelCore.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOCore-t.build/Objects-normal/arm64/NIOTransportAccessibleChannelCore.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOCore-t.build/Objects-normal/arm64/NIOTransportAccessibleChannelCore.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOCore-t.build/Objects-normal/arm64/NIOTransportAccessibleChannelCore.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOCore-t.build/Objects-normal/arm64/NIOTransportAccessibleChannelCore.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOCore-t.build/Objects-normal/arm64/NIOTransportAccessibleChannelCore.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio/Sources/NIOCore/RecvByteBufferAllocator.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOCore-t.build/Objects-normal/arm64/RecvByteBufferAllocator.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOCore-t.build/Objects-normal/arm64/RecvByteBufferAllocator.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOCore-t.build/Objects-normal/arm64/RecvByteBufferAllocator.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOCore-t.build/Objects-normal/arm64/RecvByteBufferAllocator.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOCore-t.build/Objects-normal/arm64/RecvByteBufferAllocator.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio/Sources/NIOCore/SingleStepByteToMessageDecoder.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOCore-t.build/Objects-normal/arm64/SingleStepByteToMessageDecoder.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOCore-t.build/Objects-normal/arm64/SingleStepByteToMessageDecoder.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOCore-t.build/Objects-normal/arm64/SingleStepByteToMessageDecoder.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOCore-t.build/Objects-normal/arm64/SingleStepByteToMessageDecoder.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOCore-t.build/Objects-normal/arm64/SingleStepByteToMessageDecoder.swiftdeps"
+  }
+}

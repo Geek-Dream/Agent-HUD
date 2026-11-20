@@ -1,0 +1,19 @@
+{
+  "" : {
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-distributed-tracing.build/Debug/ServiceContextModule-t.build/Objects-normal/arm64/ServiceContextModule-primary.dia",
+    "emit-module-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-distributed-tracing.build/Debug/ServiceContextModule-t.build/Objects-normal/arm64/ServiceContextModule-primary-emit-module.d",
+    "emit-module-diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-distributed-tracing.build/Debug/ServiceContextModule-t.build/Objects-normal/arm64/ServiceContextModule-primary-emit-module.dia",
+    "pch" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-distributed-tracing.build/Debug/ServiceContextModule-t.build/Objects-normal/arm64/ServiceContextModule-primary-Bridging-header.pch",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-distributed-tracing.build/Debug/ServiceContextModule-t.build/Objects-normal/arm64/ServiceContextModule-primary.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-distributed-tracing/Sources/ServiceContextModule/ServiceContextModule.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-distributed-tracing.build/Debug/ServiceContextModule-t.build/Objects-normal/arm64/ServiceContextModule.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-distributed-tracing.build/Debug/ServiceContextModule-t.build/Objects-normal/arm64/ServiceContextModule.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-distributed-tracing.build/Debug/ServiceContextModule-t.build/Objects-normal/arm64/ServiceContextModule.dia",
+    "index-unit-output-path" : "/swift-distributed-tracing.build/Debug/ServiceContextModule-t.build/Objects-normal/arm64/ServiceContextModule.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-distributed-tracing.build/Debug/ServiceContextModule-t.build/Objects-normal/arm64/ServiceContextModule.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-distributed-tracing.build/Debug/ServiceContextModule-t.build/Objects-normal/arm64/ServiceContextModule.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-distributed-tracing.build/Debug/ServiceContextModule-t.build/Objects-normal/arm64/ServiceContextModule.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-distributed-tracing.build/Debug/ServiceContextModule-t.build/Objects-normal/arm64/ServiceContextModule~partial.swiftmodule"
+  }
+}

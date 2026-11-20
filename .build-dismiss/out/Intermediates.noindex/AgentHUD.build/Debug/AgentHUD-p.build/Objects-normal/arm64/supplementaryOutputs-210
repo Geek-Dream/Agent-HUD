@@ -1,0 +1,30 @@
+{
+  "/Users/wl/Desktop/Agent-HUD/Sources/AgentHUD/LinkDeviceStore.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/LinkDeviceStore.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/LinkDeviceStore.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/LinkDeviceStore.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/LinkDeviceStore.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/LinkDeviceStore.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/Sources/AgentHUD/LinkModels.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/LinkModels.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/LinkModels.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/LinkModels.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/LinkModels.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/LinkModels.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/Sources/AgentHUD/LinkPairingManager.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/LinkPairingManager.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/LinkPairingManager.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/LinkPairingManager.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/LinkPairingManager.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/LinkPairingManager.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/Sources/AgentHUD/LinkResponses.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/LinkResponses.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/LinkResponses.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/LinkResponses.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/LinkResponses.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/LinkResponses.swiftdeps"
+  }
+}

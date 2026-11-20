@@ -1,0 +1,30 @@
+{
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-collections/Sources/DequeModule/UniqueDeque/UniqueDeque+Consumption.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/DequeModule-t.build/Objects-normal/arm64/UniqueDeque+Consumption.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/DequeModule-t.build/Objects-normal/arm64/UniqueDeque+Consumption.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/DequeModule-t.build/Objects-normal/arm64/UniqueDeque+Consumption.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/DequeModule-t.build/Objects-normal/arm64/UniqueDeque+Consumption.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/DequeModule-t.build/Objects-normal/arm64/UniqueDeque+Consumption.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-collections/Sources/DequeModule/UniqueDeque/UniqueDeque+ContainerOperations.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/DequeModule-t.build/Objects-normal/arm64/UniqueDeque+ContainerOperations.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/DequeModule-t.build/Objects-normal/arm64/UniqueDeque+ContainerOperations.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/DequeModule-t.build/Objects-normal/arm64/UniqueDeque+ContainerOperations.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/DequeModule-t.build/Objects-normal/arm64/UniqueDeque+ContainerOperations.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/DequeModule-t.build/Objects-normal/arm64/UniqueDeque+ContainerOperations.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-collections/Sources/DequeModule/UniqueDeque/UniqueDeque+Deprecations.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/DequeModule-t.build/Objects-normal/arm64/UniqueDeque+Deprecations.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/DequeModule-t.build/Objects-normal/arm64/UniqueDeque+Deprecations.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/DequeModule-t.build/Objects-normal/arm64/UniqueDeque+Deprecations.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/DequeModule-t.build/Objects-normal/arm64/UniqueDeque+Deprecations.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/DequeModule-t.build/Objects-normal/arm64/UniqueDeque+Deprecations.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-collections/Sources/DequeModule/UniqueDeque/UniqueDeque+Descriptions.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/DequeModule-t.build/Objects-normal/arm64/UniqueDeque+Descriptions.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/DequeModule-t.build/Objects-normal/arm64/UniqueDeque+Descriptions.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/DequeModule-t.build/Objects-normal/arm64/UniqueDeque+Descriptions.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/DequeModule-t.build/Objects-normal/arm64/UniqueDeque+Descriptions.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/DequeModule-t.build/Objects-normal/arm64/UniqueDeque+Descriptions.swiftdeps"
+  }
+}

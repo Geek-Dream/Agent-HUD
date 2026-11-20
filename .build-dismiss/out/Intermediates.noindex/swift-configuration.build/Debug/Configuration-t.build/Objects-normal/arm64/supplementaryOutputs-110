@@ -1,0 +1,37 @@
+{
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-configuration/Sources/Configuration/ConfigProvider.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-configuration.build/Debug/Configuration-t.build/Objects-normal/arm64/ConfigProvider.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-configuration.build/Debug/Configuration-t.build/Objects-normal/arm64/ConfigProvider.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-configuration.build/Debug/Configuration-t.build/Objects-normal/arm64/ConfigProvider.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-configuration.build/Debug/Configuration-t.build/Objects-normal/arm64/ConfigProvider.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-configuration.build/Debug/Configuration-t.build/Objects-normal/arm64/ConfigProvider.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-configuration/Sources/Configuration/ConfigProviderHelpers.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-configuration.build/Debug/Configuration-t.build/Objects-normal/arm64/ConfigProviderHelpers.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-configuration.build/Debug/Configuration-t.build/Objects-normal/arm64/ConfigProviderHelpers.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-configuration.build/Debug/Configuration-t.build/Objects-normal/arm64/ConfigProviderHelpers.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-configuration.build/Debug/Configuration-t.build/Objects-normal/arm64/ConfigProviderHelpers.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-configuration.build/Debug/Configuration-t.build/Objects-normal/arm64/ConfigProviderHelpers.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-configuration/Sources/Configuration/ConfigReader+internalHelpers.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-configuration.build/Debug/Configuration-t.build/Objects-normal/arm64/ConfigReader+internalHelpers.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-configuration.build/Debug/Configuration-t.build/Objects-normal/arm64/ConfigReader+internalHelpers.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-configuration.build/Debug/Configuration-t.build/Objects-normal/arm64/ConfigReader+internalHelpers.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-configuration.build/Debug/Configuration-t.build/Objects-normal/arm64/ConfigReader+internalHelpers.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-configuration.build/Debug/Configuration-t.build/Objects-normal/arm64/ConfigReader+internalHelpers.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-configuration/Sources/Configuration/ConfigReader+methods.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-configuration.build/Debug/Configuration-t.build/Objects-normal/arm64/ConfigReader+methods.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-configuration.build/Debug/Configuration-t.build/Objects-normal/arm64/ConfigReader+methods.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-configuration.build/Debug/Configuration-t.build/Objects-normal/arm64/ConfigReader+methods.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-configuration.build/Debug/Configuration-t.build/Objects-normal/arm64/ConfigReader+methods.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-configuration.build/Debug/Configuration-t.build/Objects-normal/arm64/ConfigReader+methods.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-configuration/Sources/Configuration/ConfigReader.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-configuration.build/Debug/Configuration-t.build/Objects-normal/arm64/ConfigReader.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-configuration.build/Debug/Configuration-t.build/Objects-normal/arm64/ConfigReader.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-configuration.build/Debug/Configuration-t.build/Objects-normal/arm64/ConfigReader.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-configuration.build/Debug/Configuration-t.build/Objects-normal/arm64/ConfigReader.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-configuration.build/Debug/Configuration-t.build/Objects-normal/arm64/ConfigReader.swiftdeps"
+  }
+}

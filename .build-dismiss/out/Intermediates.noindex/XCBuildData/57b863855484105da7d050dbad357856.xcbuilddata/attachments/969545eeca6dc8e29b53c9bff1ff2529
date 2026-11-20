@@ -1,0 +1,29 @@
+{
+  "" : {
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystemFoundationCompat-t.build/Objects-normal/arm64/_NIOFileSystemFoundationCompat-primary.dia",
+    "emit-module-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystemFoundationCompat-t.build/Objects-normal/arm64/_NIOFileSystemFoundationCompat-primary-emit-module.d",
+    "emit-module-diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystemFoundationCompat-t.build/Objects-normal/arm64/_NIOFileSystemFoundationCompat-primary-emit-module.dia",
+    "pch" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystemFoundationCompat-t.build/Objects-normal/arm64/_NIOFileSystemFoundationCompat-primary-Bridging-header.pch",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystemFoundationCompat-t.build/Objects-normal/arm64/_NIOFileSystemFoundationCompat-primary.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio/Sources/_NIOFileSystemFoundationCompat/Data+FileSystem.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystemFoundationCompat-t.build/Objects-normal/arm64/Data+FileSystem.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystemFoundationCompat-t.build/Objects-normal/arm64/Data+FileSystem.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystemFoundationCompat-t.build/Objects-normal/arm64/Data+FileSystem.dia",
+    "index-unit-output-path" : "/swift-nio.build/Debug/_NIOFileSystemFoundationCompat-t.build/Objects-normal/arm64/Data+FileSystem.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystemFoundationCompat-t.build/Objects-normal/arm64/Data+FileSystem.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystemFoundationCompat-t.build/Objects-normal/arm64/Data+FileSystem.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystemFoundationCompat-t.build/Objects-normal/arm64/Data+FileSystem.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystemFoundationCompat-t.build/Objects-normal/arm64/Data+FileSystem~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio/Sources/_NIOFileSystemFoundationCompat/Date+FileInfo.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystemFoundationCompat-t.build/Objects-normal/arm64/Date+FileInfo.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystemFoundationCompat-t.build/Objects-normal/arm64/Date+FileInfo.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystemFoundationCompat-t.build/Objects-normal/arm64/Date+FileInfo.dia",
+    "index-unit-output-path" : "/swift-nio.build/Debug/_NIOFileSystemFoundationCompat-t.build/Objects-normal/arm64/Date+FileInfo.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystemFoundationCompat-t.build/Objects-normal/arm64/Date+FileInfo.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystemFoundationCompat-t.build/Objects-normal/arm64/Date+FileInfo.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystemFoundationCompat-t.build/Objects-normal/arm64/Date+FileInfo.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystemFoundationCompat-t.build/Objects-normal/arm64/Date+FileInfo~partial.swiftmodule"
+  }
+}

@@ -1,0 +1,4 @@
+module WebSocketKit {
+header "WebSocketKit-Swift.h"
+export *
+}

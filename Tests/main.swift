@@ -346,6 +346,136 @@ func testSessionImportanceStore() throws {
     try expect(!store.toggle("codex:session"), "Toggling an important session should clear it")
 }
 
+func testSessionDismissalStore() throws {
+    let suiteName = "AgentHUD.SessionDismissalStoreTests.\(UUID().uuidString)"
+    guard let defaults = UserDefaults(suiteName: suiteName) else {
+        throw SmokeFailure.failed("Could not create isolated dismissal store defaults")
+    }
+    defer {
+        defaults.removePersistentDomain(forName: suiteName)
+    }
+
+    let now = Date()
+    let baseline = now.addingTimeInterval(-120)
+    let store = SessionDismissalStore(defaults: defaults, now: now)
+    try expect(
+        !store.isDismissed(sessionID: "codex:session", lastActivityAt: baseline),
+        "Sessions should start visible"
+    )
+    try expect(
+        store.dismiss(sessionID: "codex:session", lastActivityAt: baseline, now: now),
+        "Dismissing a session should record it"
+    )
+    try expect(
+        store.isDismissed(sessionID: "codex:session", lastActivityAt: baseline),
+        "A dismissed session without new activity should stay hidden"
+    )
+    try expect(
+        SessionDismissalStore(defaults: defaults, now: now)
+            .isDismissed(sessionID: "codex:session", lastActivityAt: baseline),
+        "Dismissals should persist across store instances"
+    )
+
+    // 有新活动就自动回来，不需要用户手动恢复。
+    let newer = baseline.addingTimeInterval(60)
+    try expect(
+        !store.isDismissed(sessionID: "codex:session", lastActivityAt: newer),
+        "A session with newer activity should become visible again"
+    )
+
+    let hidden = makeTestSession(id: "codex:hidden", status: .completed, lastActivityAt: baseline)
+    let awakened = makeTestSession(id: "codex:awakened", status: .working, lastActivityAt: newer)
+    // 两条都在 baseline 时刻删除，但 awakened 之后又产生了新活动（newer）。
+    store.dismiss(sessionID: hidden.id, lastActivityAt: baseline, now: now)
+    store.dismiss(sessionID: awakened.id, lastActivityAt: baseline, now: now)
+    store.clearAwakened(in: [hidden, awakened], now: now)
+    try expect(
+        store.dismissal(for: "codex:hidden") != nil,
+        "Still-hidden sessions should keep their record"
+    )
+    try expect(
+        store.dismissal(for: "codex:awakened") == nil,
+        "Awakened sessions should drop their record so they do not linger"
+    )
+
+    try expect(store.restore(sessionID: "codex:hidden"), "Restoring a dismissed session should succeed")
+    try expect(
+        !store.isDismissed(sessionID: "codex:hidden", lastActivityAt: baseline),
+        "A restored session should be visible immediately"
+    )
+
+    // 超过保留期的记录会被清理，避免 UserDefaults 无限增长。
+    store.dismiss(sessionID: "codex:stale", lastActivityAt: baseline, now: now)
+    try expect(
+        store.dismissal(for: "codex:stale") != nil,
+        "Dismissing should record the session before pruning"
+    )
+    let staleStore = SessionDismissalStore(
+        defaults: defaults,
+        now: now.addingTimeInterval(31 * 86_400)
+    )
+    try expect(
+        staleStore.dismissal(for: "codex:stale") == nil,
+        "Expired dismissal records should be pruned"
+    )
+}
+
+/// 视图层真正使用的过滤集合：只有「删除后仍无新活动」的会话才留在里面。
+func testDismissedSessionIDFiltering() throws {
+    let suiteName = "AgentHUD.SessionDismissalFilterTests.\(UUID().uuidString)"
+    guard let defaults = UserDefaults(suiteName: suiteName) else {
+        throw SmokeFailure.failed("Could not create isolated dismissal filter defaults")
+    }
+    defer {
+        defaults.removePersistentDomain(forName: suiteName)
+    }
+
+    let now = Date()
+    let baseline = now.addingTimeInterval(-300)
+    let store = SessionDismissalStore(defaults: defaults, now: now)
+
+    let quiet = makeTestSession(id: "codex:quiet", status: .completed, lastActivityAt: baseline)
+    let moved = makeTestSession(
+        id: "codex:moved",
+        status: .working,
+        lastActivityAt: baseline.addingTimeInterval(120)
+    )
+    let untouched = makeTestSession(
+        id: "codex:untouched",
+        status: .completed,
+        lastActivityAt: baseline
+    )
+
+    store.dismiss(sessionID: quiet.id, lastActivityAt: baseline, now: now)
+    store.dismiss(sessionID: moved.id, lastActivityAt: baseline, now: now)
+
+    let dismissed = store.dismissedIDs(in: [quiet, moved, untouched])
+    try expect(
+        dismissed == ["codex:quiet"],
+        "Only sessions dismissed without newer activity should stay hidden, got \(dismissed.sorted())"
+    )
+
+    // 扫描结果为空时不能把记录清掉，否则会话下次被扫到又会冒出来。
+    store.clearAwakened(in: [], now: now)
+    try expect(
+        store.dismissal(for: "codex:quiet") != nil,
+        "An empty scan must not drop dismissal records"
+    )
+
+    // 全部恢复必须能清掉「当前没扫到」的残留记录：
+    // 只遍历扫描结果会把它们漏下，那条会话下次被扫到时又会莫名消失。
+    store.dismiss(sessionID: "codex:not-scanned", lastActivityAt: baseline, now: now)
+    store.restoreAll()
+    try expect(
+        store.dismissal(for: "codex:quiet") == nil && store.dismissal(for: "codex:not-scanned") == nil,
+        "Restoring all must clear records for sessions absent from the current scan"
+    )
+    try expect(
+        SessionDismissalStore(defaults: defaults, now: now).dismissedIDs(in: [quiet]).isEmpty,
+        "A full restore must persist, not just clear memory"
+    )
+}
+
 func testImportantSessionOrdering() throws {
     let now = Date()
     let working = makeTestSession(
@@ -484,6 +614,55 @@ func testSessionOutlinePolicy() throws {
             "\(status) sessions must not show a status outline"
         )
     }
+}
+
+func testSessionRowSurfacePolicy() throws {
+    for status in [AgentStatus.starting, .working, .waitingUser, .completed, .failed] {
+        try expect(
+            SessionRowSurfacePolicy.isStatusTinted(status),
+            "\(status) rows should carry a status tint"
+        )
+        try expect(
+            SessionRowSurfacePolicy.shouldPulse(
+                status: status,
+                isImportant: true,
+                advancedAnimations: true
+            ),
+            "Important \(status) rows should pulse when advanced animations are on"
+        )
+    }
+
+    for status in [AgentStatus.idle, .unknown] {
+        try expect(
+            !SessionRowSurfacePolicy.isStatusTinted(status),
+            "\(status) rows should stay neutral"
+        )
+        try expect(
+            !SessionRowSurfacePolicy.shouldPulse(
+                status: status,
+                isImportant: true,
+                advancedAnimations: true
+            ),
+            "\(status) rows should never pulse"
+        )
+    }
+
+    try expect(
+        !SessionRowSurfacePolicy.shouldPulse(
+            status: .working,
+            isImportant: false,
+            advancedAnimations: true
+        ),
+        "Unstarred rows must not pulse"
+    )
+    try expect(
+        !SessionRowSurfacePolicy.shouldPulse(
+            status: .working,
+            isImportant: true,
+            advancedAnimations: false
+        ),
+        "Pulse must respect the advanced-animation switch"
+    )
 }
 
 func testHUDPanelAppearancePolicy() throws {
@@ -1722,11 +1901,17 @@ do {
     try testAutomaticTaskTitles()
     try testSessionTitleStore()
     try testSessionImportanceStore()
+    try testSessionDismissalStore()
+    try testDismissedSessionIDFiltering()
     try testImportantSessionOrdering()
     try testRunningFirstOrderingAndCompletionTransition()
     try testSessionOutlinePolicy()
+    try testSessionRowSurfacePolicy()
     try testHUDPanelAppearancePolicy()
     try testExpandedPanelSizePolicy()
+    try testSessionListLimitKeepsStarredSessions()
+    try await testCompletedCodexCanAcceptInput()
+    try await testCodexQueueArgumentsAndErrors()
     try testOpenCode()
     try testOpenCodeCurrentDatabase()
     try testLogReaderFindsRecentPromptBeyondTail()
@@ -1748,7 +1933,7 @@ do {
     try testLinkCertificateFingerprintAndStatusProtocol()
     try testLinkRemoteAddressDetection()
     try await testLinkPairing()
-    print("29 tests passed (adapter, OpenCode, AI title, session presentation, appearance and LAN protocol smoke tests)")
+    print("35 tests passed (adapter, OpenCode, AI title, session presentation, appearance and LAN protocol smoke tests)")
 } catch {
     fputs("Adapter smoke tests failed: \(error)\n", stderr)
     exit(1)

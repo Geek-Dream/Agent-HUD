@@ -1,0 +1,30 @@
+{
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-configuration/Sources/Configuration/SecretsSpecifier.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-configuration.build/Debug/Configuration-t.build/Objects-normal/arm64/SecretsSpecifier.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-configuration.build/Debug/Configuration-t.build/Objects-normal/arm64/SecretsSpecifier.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-configuration.build/Debug/Configuration-t.build/Objects-normal/arm64/SecretsSpecifier.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-configuration.build/Debug/Configuration-t.build/Objects-normal/arm64/SecretsSpecifier.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-configuration.build/Debug/Configuration-t.build/Objects-normal/arm64/SecretsSpecifier.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-configuration/Sources/Configuration/Utilities/AsyncAlgos/AsyncCombineLatestManySequence.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-configuration.build/Debug/Configuration-t.build/Objects-normal/arm64/AsyncCombineLatestManySequence.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-configuration.build/Debug/Configuration-t.build/Objects-normal/arm64/AsyncCombineLatestManySequence.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-configuration.build/Debug/Configuration-t.build/Objects-normal/arm64/AsyncCombineLatestManySequence.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-configuration.build/Debug/Configuration-t.build/Objects-normal/arm64/AsyncCombineLatestManySequence.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-configuration.build/Debug/Configuration-t.build/Objects-normal/arm64/AsyncCombineLatestManySequence.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-configuration/Sources/Configuration/Utilities/AsyncAlgos/CombineLatestManyStateMachine.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-configuration.build/Debug/Configuration-t.build/Objects-normal/arm64/CombineLatestManyStateMachine.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-configuration.build/Debug/Configuration-t.build/Objects-normal/arm64/CombineLatestManyStateMachine.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-configuration.build/Debug/Configuration-t.build/Objects-normal/arm64/CombineLatestManyStateMachine.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-configuration.build/Debug/Configuration-t.build/Objects-normal/arm64/CombineLatestManyStateMachine.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-configuration.build/Debug/Configuration-t.build/Objects-normal/arm64/CombineLatestManyStateMachine.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-configuration/Sources/Configuration/Utilities/AsyncAlgos/CombineLatestManyStorage.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-configuration.build/Debug/Configuration-t.build/Objects-normal/arm64/CombineLatestManyStorage.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-configuration.build/Debug/Configuration-t.build/Objects-normal/arm64/CombineLatestManyStorage.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-configuration.build/Debug/Configuration-t.build/Objects-normal/arm64/CombineLatestManyStorage.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-configuration.build/Debug/Configuration-t.build/Objects-normal/arm64/CombineLatestManyStorage.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-configuration.build/Debug/Configuration-t.build/Objects-normal/arm64/CombineLatestManyStorage.swiftdeps"
+  }
+}

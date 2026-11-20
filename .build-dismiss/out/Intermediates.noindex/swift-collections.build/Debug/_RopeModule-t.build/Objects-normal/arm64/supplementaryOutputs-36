@@ -1,0 +1,58 @@
+{
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-collections/Sources/RopeModule/BigString/Views/BigString+UTF16View.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/_RopeModule-t.build/Objects-normal/arm64/BigString+UTF16View.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/_RopeModule-t.build/Objects-normal/arm64/BigString+UTF16View.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/_RopeModule-t.build/Objects-normal/arm64/BigString+UTF16View.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/_RopeModule-t.build/Objects-normal/arm64/BigString+UTF16View.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/_RopeModule-t.build/Objects-normal/arm64/BigString+UTF16View.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-collections/Sources/RopeModule/BigString/Views/BigString+UTF8View.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/_RopeModule-t.build/Objects-normal/arm64/BigString+UTF8View.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/_RopeModule-t.build/Objects-normal/arm64/BigString+UTF8View.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/_RopeModule-t.build/Objects-normal/arm64/BigString+UTF8View.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/_RopeModule-t.build/Objects-normal/arm64/BigString+UTF8View.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/_RopeModule-t.build/Objects-normal/arm64/BigString+UTF8View.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-collections/Sources/RopeModule/BigString/Views/BigString+UnicodeScalarView.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/_RopeModule-t.build/Objects-normal/arm64/BigString+UnicodeScalarView.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/_RopeModule-t.build/Objects-normal/arm64/BigString+UnicodeScalarView.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/_RopeModule-t.build/Objects-normal/arm64/BigString+UnicodeScalarView.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/_RopeModule-t.build/Objects-normal/arm64/BigString+UnicodeScalarView.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/_RopeModule-t.build/Objects-normal/arm64/BigString+UnicodeScalarView.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-collections/Sources/RopeModule/BigString/Views/BigSubstring+UTF16View.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/_RopeModule-t.build/Objects-normal/arm64/BigSubstring+UTF16View.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/_RopeModule-t.build/Objects-normal/arm64/BigSubstring+UTF16View.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/_RopeModule-t.build/Objects-normal/arm64/BigSubstring+UTF16View.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/_RopeModule-t.build/Objects-normal/arm64/BigSubstring+UTF16View.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/_RopeModule-t.build/Objects-normal/arm64/BigSubstring+UTF16View.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-collections/Sources/RopeModule/BigString/Views/BigSubstring+UTF8View.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/_RopeModule-t.build/Objects-normal/arm64/BigSubstring+UTF8View.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/_RopeModule-t.build/Objects-normal/arm64/BigSubstring+UTF8View.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/_RopeModule-t.build/Objects-normal/arm64/BigSubstring+UTF8View.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/_RopeModule-t.build/Objects-normal/arm64/BigSubstring+UTF8View.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/_RopeModule-t.build/Objects-normal/arm64/BigSubstring+UTF8View.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-collections/Sources/RopeModule/BigString/Views/BigSubstring+UnicodeScalarView.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/_RopeModule-t.build/Objects-normal/arm64/BigSubstring+UnicodeScalarView.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/_RopeModule-t.build/Objects-normal/arm64/BigSubstring+UnicodeScalarView.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/_RopeModule-t.build/Objects-normal/arm64/BigSubstring+UnicodeScalarView.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/_RopeModule-t.build/Objects-normal/arm64/BigSubstring+UnicodeScalarView.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/_RopeModule-t.build/Objects-normal/arm64/BigSubstring+UnicodeScalarView.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-collections/Sources/RopeModule/BigString/Views/BigSubstring.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/_RopeModule-t.build/Objects-normal/arm64/BigSubstring.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/_RopeModule-t.build/Objects-normal/arm64/BigSubstring.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/_RopeModule-t.build/Objects-normal/arm64/BigSubstring.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/_RopeModule-t.build/Objects-normal/arm64/BigSubstring.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/_RopeModule-t.build/Objects-normal/arm64/BigSubstring.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-collections/Sources/RopeModule/Rope/Basics/Rope+Builder.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/_RopeModule-t.build/Objects-normal/arm64/Rope+Builder.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/_RopeModule-t.build/Objects-normal/arm64/Rope+Builder.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/_RopeModule-t.build/Objects-normal/arm64/Rope+Builder.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/_RopeModule-t.build/Objects-normal/arm64/Rope+Builder.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/_RopeModule-t.build/Objects-normal/arm64/Rope+Builder.swiftdeps"
+  }
+}

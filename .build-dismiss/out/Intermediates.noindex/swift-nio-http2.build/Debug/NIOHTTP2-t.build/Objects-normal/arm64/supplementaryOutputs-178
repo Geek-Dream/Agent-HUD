@@ -1,0 +1,51 @@
+{
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio-http2/Sources/NIOHTTP2/HTTP2FlowControlWindow.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-http2.build/Debug/NIOHTTP2-t.build/Objects-normal/arm64/HTTP2FlowControlWindow.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-http2.build/Debug/NIOHTTP2-t.build/Objects-normal/arm64/HTTP2FlowControlWindow.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-http2.build/Debug/NIOHTTP2-t.build/Objects-normal/arm64/HTTP2FlowControlWindow.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-http2.build/Debug/NIOHTTP2-t.build/Objects-normal/arm64/HTTP2FlowControlWindow.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-http2.build/Debug/NIOHTTP2-t.build/Objects-normal/arm64/HTTP2FlowControlWindow.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio-http2/Sources/NIOHTTP2/HTTP2Frame.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-http2.build/Debug/NIOHTTP2-t.build/Objects-normal/arm64/HTTP2Frame.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-http2.build/Debug/NIOHTTP2-t.build/Objects-normal/arm64/HTTP2Frame.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-http2.build/Debug/NIOHTTP2-t.build/Objects-normal/arm64/HTTP2Frame.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-http2.build/Debug/NIOHTTP2-t.build/Objects-normal/arm64/HTTP2Frame.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-http2.build/Debug/NIOHTTP2-t.build/Objects-normal/arm64/HTTP2Frame.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio-http2/Sources/NIOHTTP2/HTTP2FrameEncoder.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-http2.build/Debug/NIOHTTP2-t.build/Objects-normal/arm64/HTTP2FrameEncoder.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-http2.build/Debug/NIOHTTP2-t.build/Objects-normal/arm64/HTTP2FrameEncoder.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-http2.build/Debug/NIOHTTP2-t.build/Objects-normal/arm64/HTTP2FrameEncoder.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-http2.build/Debug/NIOHTTP2-t.build/Objects-normal/arm64/HTTP2FrameEncoder.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-http2.build/Debug/NIOHTTP2-t.build/Objects-normal/arm64/HTTP2FrameEncoder.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio-http2/Sources/NIOHTTP2/HTTP2FrameParser.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-http2.build/Debug/NIOHTTP2-t.build/Objects-normal/arm64/HTTP2FrameParser.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-http2.build/Debug/NIOHTTP2-t.build/Objects-normal/arm64/HTTP2FrameParser.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-http2.build/Debug/NIOHTTP2-t.build/Objects-normal/arm64/HTTP2FrameParser.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-http2.build/Debug/NIOHTTP2-t.build/Objects-normal/arm64/HTTP2FrameParser.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-http2.build/Debug/NIOHTTP2-t.build/Objects-normal/arm64/HTTP2FrameParser.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio-http2/Sources/NIOHTTP2/HTTP2PingData.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-http2.build/Debug/NIOHTTP2-t.build/Objects-normal/arm64/HTTP2PingData.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-http2.build/Debug/NIOHTTP2-t.build/Objects-normal/arm64/HTTP2PingData.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-http2.build/Debug/NIOHTTP2-t.build/Objects-normal/arm64/HTTP2PingData.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-http2.build/Debug/NIOHTTP2-t.build/Objects-normal/arm64/HTTP2PingData.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-http2.build/Debug/NIOHTTP2-t.build/Objects-normal/arm64/HTTP2PingData.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio-http2/Sources/NIOHTTP2/HTTP2PipelineHelpers.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-http2.build/Debug/NIOHTTP2-t.build/Objects-normal/arm64/HTTP2PipelineHelpers.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-http2.build/Debug/NIOHTTP2-t.build/Objects-normal/arm64/HTTP2PipelineHelpers.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-http2.build/Debug/NIOHTTP2-t.build/Objects-normal/arm64/HTTP2PipelineHelpers.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-http2.build/Debug/NIOHTTP2-t.build/Objects-normal/arm64/HTTP2PipelineHelpers.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-http2.build/Debug/NIOHTTP2-t.build/Objects-normal/arm64/HTTP2PipelineHelpers.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio-http2/Sources/NIOHTTP2/HTTP2Settings.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-http2.build/Debug/NIOHTTP2-t.build/Objects-normal/arm64/HTTP2Settings.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-http2.build/Debug/NIOHTTP2-t.build/Objects-normal/arm64/HTTP2Settings.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-http2.build/Debug/NIOHTTP2-t.build/Objects-normal/arm64/HTTP2Settings.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-http2.build/Debug/NIOHTTP2-t.build/Objects-normal/arm64/HTTP2Settings.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-http2.build/Debug/NIOHTTP2-t.build/Objects-normal/arm64/HTTP2Settings.swiftdeps"
+  }
+}

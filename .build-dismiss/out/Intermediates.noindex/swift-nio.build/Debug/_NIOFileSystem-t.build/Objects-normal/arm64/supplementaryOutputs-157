@@ -1,0 +1,30 @@
+{
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio/Sources/_NIOFileSystem/Internal/BufferedOrAnyStream.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystem-t.build/Objects-normal/arm64/BufferedOrAnyStream.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystem-t.build/Objects-normal/arm64/BufferedOrAnyStream.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystem-t.build/Objects-normal/arm64/BufferedOrAnyStream.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystem-t.build/Objects-normal/arm64/BufferedOrAnyStream.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystem-t.build/Objects-normal/arm64/BufferedOrAnyStream.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio/Sources/_NIOFileSystem/Internal/BufferedStream.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystem-t.build/Objects-normal/arm64/BufferedStream.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystem-t.build/Objects-normal/arm64/BufferedStream.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystem-t.build/Objects-normal/arm64/BufferedStream.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystem-t.build/Objects-normal/arm64/BufferedStream.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystem-t.build/Objects-normal/arm64/BufferedStream.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio/Sources/_NIOFileSystem/Internal/Cancellation.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystem-t.build/Objects-normal/arm64/Cancellation.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystem-t.build/Objects-normal/arm64/Cancellation.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystem-t.build/Objects-normal/arm64/Cancellation.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystem-t.build/Objects-normal/arm64/Cancellation.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystem-t.build/Objects-normal/arm64/Cancellation.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio/Sources/_NIOFileSystem/Internal/Concurrency Primitives/TokenBucket.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystem-t.build/Objects-normal/arm64/TokenBucket.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystem-t.build/Objects-normal/arm64/TokenBucket.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystem-t.build/Objects-normal/arm64/TokenBucket.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystem-t.build/Objects-normal/arm64/TokenBucket.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystem-t.build/Objects-normal/arm64/TokenBucket.swiftdeps"
+  }
+}

@@ -1793,3 +1793,359 @@ if (response.statusCode < 200 || response.statusCode >= 300) {
 3. mac 端无 OpenCode 输入适配器（`HUDViewModel.swift:114` 只注册 `CodexInputAdapter()`），
    OpenCode 会话在手机端无法发消息（`unsupported`）。
 4. Windows Build CI 历史失败（`Test core`），本机无 dotnet，无法复现。
+## Tailscale 安装与远程连接打通（2026-11-15，待批准）
+
+### 用户需求（原话）
+> 先看看这个东西咋用桌面有一个 tailscale-1.104.7
+
+### 已确认现状（真实证据）
+
+| 项 | 证据 |
+|---|---|
+| `~/Desktop/tailscale-1.104.7/` | **源码包，非安装包**。zip 内 3664 文件全为 `.go`/`.md`/配置；`find -size +1M` 全目录零命中 → 无 Mach-O 二进制。`VERSION.txt` = `1.104.7` |
+| 本机是否已装 | `tailscale`/`tailscaled` CLI 不存在；`/Applications/Tailscale.app` 不存在；`brew list --cask` 无 tailscale |
+| 系统 | macOS 27.0.1 (26A434)，arm64，磁盘可用 22 GiB |
+| 官方 pkg 可达 | `HEAD Tailscale-1.104.7-macos.pkg` → **206，22,369,022 字节**，Last-Modified 2026-11-12。版本与桌面源码一致 |
+| Tailscale 控制面可达 | `login.tailscale.com` 302 / `controlplane.tailscale.com` 302 / `derp1` 200 / `derp9` 200 |
+| Go 官方代理不可达 | `proxy.golang.org` 000（20s 超时）、`github.com` 000；`goproxy.cn` 200 → 源码自编译路线需改 GOPROXY，且需 Go 1.27.4（本机 1.26.3） |
+| HUD 侧无需改代码 | `Sources/AgentHUD/LinkServer.swift:47,51` 已双栈监听 `0.0.0.0` + `::`；`LinkCertificate.swift` 已识别 RFC 6598 `100.64.0.0/10` |
+| 网络扩展共存风险 | `systemextensionsctl list` → `com.initex.proxifier.v3.macos` activated enabled；本机 1080/1087 有本地代理监听 |
+
+### 目标（可验证）
+1. `pkgutil --check-signature` 对官方 pkg 返回 `signed by a trusted certificate` 且 Team ID 为 Tailscale 官方。
+2. 安装后 `/Applications/Tailscale.app` 存在，System Extension 出现在 `systemextensionsctl list`。
+3. 用户登录后 `tailscale ip -4` 返回 `100.64.0.0/10` 内地址。
+4. 手机端能通过该 `100.x` 地址 + HUD 端口完成配对并拉到会话列表。
+
+### 拟执行命令（逐条审批）
+
+| # | 命令 | 说明 | 系统影响 |
+|---|---|---|---|
+| 1 | `curl -L --fail -o ~/Downloads/Tailscale-1.104.7-macos.pkg https://pkgs.tailscale.com/stable/Tailscale-1.104.7-macos.pkg` | 下载官方安装包 | 写 `~/Downloads` 一个文件，22.4 MB |
+| 2 | `shasum -a 256 ~/Downloads/Tailscale-1.104.7-macos.pkg` | 计算校验值并记录 | 只读 |
+| 3 | `pkgutil --check-signature ~/Downloads/Tailscale-1.104.7-macos.pkg` | 校验 Apple 代码签名与 Team ID | 只读 |
+| 4 | `xar -tf ~/Downloads/Tailscale-1.104.7-macos.pkg \| head -20` | 查看 pkg 内容清单，确认无异常脚本 | 只读 |
+| 5 | **`sudo installer -pkg ~/Downloads/Tailscale-1.104.7-macos.pkg -target /`** | **真正安装**：写 `/Applications`、`/Library`，注册 System Extension | **系统级变更，需 sudo 密码。此条由用户自己用 `!` 前缀执行** |
+| 6 | `open -a Tailscale` | 启动 GUI，弹出登录 | 启动一个应用 |
+| 7 | `tailscale status` / `tailscale ip -4` | 登录后查状态与 100.x 地址 | 只读 |
+| 8 | `curl -s -o /dev/null -w "%{http_code}" http://100.x.x.x:<HUD端口>/v1/...` | 从本机自测 HUD 经 Tailscale 地址可达 | 只读 |
+
+### 边界
+- 只做环境安装，**不改仓库任何代码**（`Windows/` 与 `mobile/` 零改动）。
+- 不代用户完成 OAuth 登录（需浏览器交互）。
+- 不碰工作区已有的未提交改动 `Windows/src/AgentHUD.Core/TextTools.cs`（另一会话 `agent-hud-de` 正在改）。
+- 不删除桌面 `tailscale-1.104.7/` 源码与 zip，除非用户明确要求。
+
+### 风险
+- **风险 1**：pkg 会注册 System Extension，macOS 可能要求在「系统设置 → 通用 → 登录项与扩展」手动允许；可能需重启。
+- **风险 2**：Proxifier 网络扩展与 Tailscale 路由共存，可能出现「100.x 通但外网断」；出现则先停 Proxifier 验证。
+- **风险 3**：Tailscale 装完会改 DNS（MagicDNS）。若只想远程连 HUD，可在 GUI 里关掉 MagicDNS 与「使用 Tailscale DNS」。
+- **风险 4**：`sudo` 密码我无法输入，第 5 步必须用户自己执行。
+
+### 回滚
+- 卸载：`sudo /Applications/Tailscale.app/Contents/MacOS/Tailscale uninstall-system-extension`，
+  或系统设置里移除 VPN 配置后删 `/Applications/Tailscale.app`。
+- 不改仓库代码，无代码回滚需求。
+
+### 未验证项（执行后填写）
+
+## 执行结果（2026-11-15）
+
+### 已完成的改动
+
+| 文件 | 改动 |
+|---|---|
+| `mobile/lib/link_api.dart` | `LinkApiException` 增加可选 `body`；非 2xx 分支先读 body 再抛，错误文案优先用服务端 `error` 字段；`sendMessage` 在非 2xx 但带 `deliveryId` 时返回投递记录而非抛异常。 |
+| `mobile/lib/session_controller.dart` | 新增 `_deliveryErrors` 与 `deliveryError()`；轮询失败记录原因并通知，不再静默 cancel；查询成功后清除。 |
+| `mobile/lib/pages/session_detail_page.dart` | 删除 `_lastClientMessageId`，每次发送用新 `clientMessageId`；新增 `_deliveryNotice`/`_describeDelivery`/`_deliveryErrorLabel`，在输入栏上方展示投递状态与错误中文说明。 |
+| `mobile/test/session_controller_test.dart` | 新增 `FakeConversationApi`；两条用例：轮询失败可见、每次发送 ID 不同。 |
+
+### 验证结果（真实运行，非推断）
+
+- `flutter analyze --no-fatal-infos --no-fatal-warnings` → exit 0，No issues found。
+- `flutter test` → 12 通过 / 1 跳过（原 9 通过 / 1 跳过，新增 2 条 + 原 models 用例）。
+- `./scripts/test.sh` → exit 0，29 tests passed。
+- `./scripts/test-mobile-link.sh` → exit 0，真实 HTTPS + Dart `LinkApi` 配对与监控链路通过。
+- `git diff --cached --check` → exit 0，无空白错误。
+
+### 发布
+
+- 提交 `415f389` fix(mobile): 修复消息幂等复用与投递状态不可见（6 文件 +458 −22）。
+- 推送前 `git fetch origin` → 无分叉（`0 1`）。
+- 版本 `0.1.1-beta.6+12` → `0.1.1-beta.7+13`。
+- 标签 `v0.1.1-beta.7` 已推送。
+- Android APK CI（tag）run `43680502460` → **success**。
+- Release `v0.1.1-beta.7` prerelease 已发布（2026-11-15T05:23:43Z），附件 `app-release.apk` 65.2 MB。
+- Release 声明 SHA-256：`582831e2ea85442125a00d58c6f52a5525298f8f8972b3eb14551332acbdea03`。
+
+### 关键发现（本轮新增，需另立任务）
+
+**macOS 端没有 OpenCode 输入适配器。** `HUDViewModel.swift:114` 只注册 `adapters: [CodexInputAdapter()]`；
+`OpenCodeAdapter.swift` 是会话监控适配器，不实现 `AgentInputAdapter`。
+因此手机向 OpenCode 会话发消息时，`AgentInputDispatcher.capability(for:)` 的
+`adapters(for: .opencode)` 返回空 → 状态 `unsupported` → 手机端 `canSendMessage` 为 false，
+**消息在发送前就被拦截**。本轮三处修复只解决「发送之后」的可见性，
+不能使 OpenCode 会话支持对话。
+
+OpenCode 桌面版在 `127.0.0.1:49374` 提供本地 HTTP 服务，`/api/*` 需 HTTP Basic 认证；
+密码不在环境变量、`opencode.settings`、`auth.json` 中，未取得凭据，未验证任何注入通道。
+`opencode.db` 的 `session_inbox` / `session_pending` 属于 opencode 内部队列，
+直接写入等于篡改数据库，未采用。
+
+### 未验证项
+
+- 手机真机/模拟器上的投递状态展示与错误文案（本机无真机）。
+- 对话链路端到端：`test-mobile-link.sh` 的对话分支要求 `HUD_E2E_THREAD_ID`，本次未设置，
+  实际跑的是监控链路；三处修复在真实投递失败场景下的表现未经在线 Agent 验证。
+- Windows 端零改动，未编译（本机无 dotnet）。工作区另有并发会话修改
+  `Windows/src/AgentHUD.Core/TextTools.cs`，未纳入本次提交。
+- Windows Build CI 仍失败（`Test core`，历史遗留，本机无法复现，日志接口 403）。
+
+### 并发会话提示
+
+本次执行期间检测到多个并发 `claude` 进程（PID 53574、53923、26902 等）。
+`Windows/src/AgentHUD.Core/TextTools.cs` 于 12:46 由其他会话修改，非本轮改动，已排除在提交外。
+
+## 会话删除（静音）功能（2026-11-16）
+
+### 用户需求（原话）
+> 目前有问题的是里面的功能，就是他的会话，会越来越多，我希望有删除功能，删除之后等会话状态更新了，她再出现即可
+
+### 设计结论
+
+会话不是存出来的：`SessionScanner.scan()` 每次刷新都从 `~/.codex/sessions`、`~/.claude/projects`、
+OpenCode SQLite 重新解析，再 `prefix(24)`。所以「删除」不能删任何日志，只能是显示层的一次静音。
+
+**回来条件（用户确认）：有新活动就回来。** 记录删除那一刻的 `lastActivityAt` 作为基线，
+之后只要该会话活动时间超过基线就自动恢复。不比较删除时刻，因此 HUD 关闭期间发生的变化
+重新打开后依然判断正确。
+
+### 变更
+
+| 文件 | 改动 |
+|---|---|
+| `Sources/AgentHUD/SessionDismissalStore.swift`（新增） | 持久化 `[sessionID: (activityBaseline, dismissedAt)]` 到 `UserDefaults` 的 `hud.dismissedSessions.v1`；提供 `isDismissed` / `dismissedIDs(in:)` / `dismiss` / `restore` / `clearAwakened` |
+| `Sources/AgentHUD/HUDViewModel.swift` | 新增 `dismissedSessionIDs` 与 `displayableSessions`；列表、筛选计数、折叠态文案、AI 标题请求、完成提醒全部改用 `displayableSessions`；新增 `dismiss` / `restoreDismissed` / `restoreAllDismissed` |
+| `Sources/AgentHUD/HUDShell.swift` | 行内 hover 显示垃圾桶按钮；底栏新增「恢复已删除 N」 |
+| `Tests/main.swift` | 新增 `testSessionDismissalStore`、`testDismissedSessionIDFiltering`；测试计数文案 29 → 32（并发会话另加 1 项） |
+| `scripts/test.sh` | 编译清单加入新文件 |
+
+### 关键设计取舍
+
+1. **存整数毫秒而非 Double**。`UserDefaults` 把 `Double` 写成 6 位小数，读回来比原值略小，
+   已删除的会话会被误判成「有新活动」立刻弹回。这是实现过程中被测试抓到的真实缺陷。
+2. **不能按「不在本次扫描结果里」清理记录**。扫描只返回最近 24 条，被挤出的会话不等于结束；
+   按扫描结果清理会让它下次被扫到时又冒出来。`clearAwakened` 只在会话确实有新活动时删记录。
+3. **先结算删除状态，再决定动画与提醒**。否则刚删除的会话仍会触发行滑出动画和「重要会话已完成」提示。
+4. 记录保留 30 天后清理，避免 `UserDefaults` 无限增长。
+
+### 验证结果（真实运行）
+
+- `./scripts/test.sh` → exit 0，32 tests passed。
+- 故意改坏 `testDismissedSessionIDFiltering` 的断言 → 测试失败并报出实际值，确认新测试真的在跑（不是装饰）。
+- `swift build -c debug` → exit 0，真实编译错误 0 条。
+- 端到端脚本（真实 `AgentSession` + `SessionDismissalStore`）四项全过：删除后隐藏、
+  有新活动自动回来、被 24 条上限挤出后记录不丢、重新扫到仍保持隐藏。
+
+### 未验证项
+
+- UI 未做视觉验证：本机 `build/AgentHUD.app` 正被另一会话占用运行（PID 95462），
+  未替换该产物，也未截图确认垃圾桶按钮与底栏恢复入口的实际观感。
+- 仅改 macOS。Windows 与手机端未做同样功能。
+
+### 并发会话提示
+
+本轮执行期间仓库被其他会话推进（`1edbea5` → `4f2a368` → `10df041`）。
+`Sources/AgentHUD/Models.swift`（`SessionRowSurfacePolicy`）与 `HUDShell.swift` 的行底色/脉冲
+改动来自另一会话，非本轮改动。为避开共享 `.build` 的并发写坏，本轮用 `--scratch-path .build-dismiss` 构建。
+
+# 三端消息续发 + 会话数量筛选与易用性优化（2026-11-19，待批准）
+
+## 状态
+
+待用户批准后实施。本轮只完成了只读探索与本计划；未改业务代码、未发消息、未启动/停止应用。
+
+## 目标（可验证）
+
+1. 手机可向正在运行的 Codex 会话排队消息，也可向本轮已完成、进程仍存活的 Codex 会话续发；进程已退出时必须明确失败，不能假报成功。
+2. Mac、Windows、手机默认只展示最近 10 条普通会话，星标会话始终保留在列表中；状态/来源筛选继续生效。
+3. 三端设置都提供：全部、最近 3、5、10（默认）、15、20 条。星标不受数量上限影响；旧会话仅被隐藏，不删除、不影响详情查找与消息投递。
+4. 手机会话页增加显式设置入口，页面显示“当前显示/符合条件/总会话”数量，并让列表筛选与投递结果更容易理解。
+
+## 已核实的前置事实与根因
+
+- Mac `Sources/AgentHUD/AgentInputDispatcher.swift:23` 与 Windows `Services/AgentInputDispatcher.cs:24` 都先用 `isLive` 拒绝输入。
+- Mac `CodexInputAdapter.swift:23-26` 与 Windows `CodexInputAdapter.cs:25-28` 只接受 `Working/WaitingUser/Idle/Starting`，因此 `Completed/Failed` 必然不可发送。这不是单纯 APK 问题，手机只是忠实执行电脑返回的 capability。
+- 两端现有投递都用 `codex queue --thread ... --message ...`，且都要求 rollout 文件仍被进程持有，原因注释已写明 CLI 对退出线程可能返回成功。不能简单删除这个保护。
+- 本机实际命令 `codex --version` → `codex-cli 0.170.0`；`codex queue --help` 明确提供 `--resume`：“After queueing, try to resume the thread ... A failed resume produces a warning and the command still succeeds”。因此计划用 `queue --resume` 统一覆盖排队和续发，并增加结果/警告判定，绝不把退出码 0 直接等同于成功。
+- 手机 `mobile/lib/session_controller.dart:48-61` 只有状态/来源筛选和排序，没有数量限制。桌面 Mac `HUDViewModel.visibleSessions` 与 Windows `MainViewModel.RebuildRows` 也没有数量限制。
+- 已有星标能力可复用为“指定常驻会话”：Mac `SessionImportanceStore`、Windows `AppStateStore.ImportantSessionIds`、手机 `setImportant`；无需新增收藏协议或重复数据。
+- Mac 已有 `AISettingsWindow` 的显示设置区域；Windows 已有 `AISettingsDialog`；手机没有设置入口，需新增轻量设置页/底部面板。
+- 服务端扫描结果本身已有窗口（README 写最近 7 天最多 24 个），本轮筛选只控制三端可见列表，不能声称会显示扫描窗口之外的全部历史。
+
+## 明确契约
+
+### 列表
+
+- 数量按“最近活动时间（`lastActivityAt`）”计算，不是按自然日截断。
+- 状态/来源筛选后的候选集合，先保留全部星标，再取其余最近 N 条；`all` 不限制数量。
+- 星标置顶；其余会话按最近活动时间排序。运行/等待状态仍在对应筛选中，不再用“前 10 条”挤掉星标。
+- 列表头部/底部显示 `显示 X / 符合条件 Y · 共 Z`，提供修改入口；无匹配结果时提示当前筛选条件。
+- 设置只持久化本端 UI 偏好，不改变服务端返回，不跨设备强制覆盖。星标仍按现有机制由电脑同步到手机。
+- 手机“指定常驻会话”通过列表卡片或详情页现有星标完成，设置页说明操作方式；不增加第二套常驻列表。
+
+### 消息
+
+- 仅扩展现有 Codex 输入适配器，不承诺 Claude/OpenCode/Pi/Orca 获得发送能力。
+- 在线/附着线程：保留 queue 排队语义；已完成但仍附着线程：允许 `--resume` 续发；离线线程：仍返回 `sessionOffline`，明确提示先在原终端恢复。
+- 不自动开新终端、不自动切换工作目录、不注入键盘/鼠标、不绕过 Agent 审批；发送只来自用户已授权的手机对话开关。
+- 统一 Mac/Windows capability 判断与错误原因，手机沿用 camelCase 状态协议，不改变现有接口路径。
+- CLI 的 stdout/stderr 只在本地用于判断，不上传；手机展示已知错误的中文原因和真实投递状态。
+
+## 实施步骤（测试先行）
+
+1. **共享筛选规则（Mac）**：在 `Models.swift` 增加小型 `SessionListLimit`/可见性规则；`HUDViewModel.visibleSessions` 接入；设置存 `UserDefaults`。在 `Tests/main.swift` 先写默认 10、各数量、all、星标豁免、筛选后计数、无数据等用例。
+   - 验证：新用例先因规则缺失/旧行为失败；实现后 `./scripts/test.sh` 通过。
+2. **Mac 易用性**：`AISettingsWindow.swift` 的显示设置增加“会话显示数量”分段选择器与说明；必要时只在现有列表区域加数量摘要，不重排 HUD 结构。
+   - 验证：编译 `swift build -c debug --scratch-path .build-session-settings`，检查设置重启后保留及列表即时更新。
+3. **共享筛选规则（Windows）**：在 `AgentHUD.Core/Models.cs` 增加与 Mac 同义规则和单元测试；`PersistedAppState` 保存选择；`MainViewModel.RebuildRows` 在 `ReconcileVisibleRows` 前裁剪；设置对话框增加选择器。
+   - 验证：Windows Core 测试通过；WinUI 编译若本机无 SDK，明确列未验证，不伪称通过。保留 `ReconcileVisibleRows` 和所有 `HudMotion` 机制。
+4. **手机筛选与设置**：新增轻量本机偏好存储（普通显示偏好使用 SharedPreferences，非敏感信息不放安全存储）；`SessionController` 接入裁剪/计数；会话页增加设置入口、数量摘要、星标常驻说明；设置项为三端同一组选项。
+   - 验证：`session_controller_test.dart` 与 widget 测试覆盖默认/切换/星标/筛选组合；`flutter analyze --no-fatal-infos --no-fatal-warnings`、`flutter test`。
+5. **消息能力修正**：Mac/Windows 适配器移除对“完成状态”和“仅在线”的一刀切，改由 adapter 判定附着；按 CLI 实测加入 `queue --resume`，对缺失 CLI/附着/失败警告给出具体错误。为 CLI 调用与 capability 加可注入测试边界，不在单元测试里操作真实用户线程。
+   - 验证：分别测试运行中、完成但附着、完成且离线、CLI 失败/超时、连续两条不同消息；Mac 自测和 Windows 对应测试通过。
+6. **端到端验证**：用临时测试线程/CLI stub 验证协议，不对用户现有会话发测试消息。用户连接模拟器后，再执行真实 APK 的“运行中发送、完成后发送、连续发送、星标常驻、切换显示数量、杀掉进程后重启设置保留”。
+7. **文档/记录**：更新 README 中已过时“只读/不向 Agent 终端发送输入”的说明与手机设置说明；更新本 PLAN 执行结果，新增 `summary.md` 记录技能、命令、未验证项；不自动提交、不发布 APK。
+
+## 拟执行命令（逐条审批）
+
+### 1. 写文件（系统操作：修改仓库源码/测试/文档）
+
+- 修改上述 Mac、Windows、Flutter 源码与对应测试；新增手机偏好存储/设置页、`summary.md`；追加本计划执行结果。
+- 只改本任务相关文件，不触碰已暂存的 `.build-dismiss` 等构建产物，不删除用户改动。
+
+### 2. Mac 测试（系统操作：编译并写 `.build` 缓存）
+
+```bash
+./scripts/test.sh
+swift build -c debug --scratch-path .build-session-settings
+```
+
+### 3. Flutter 测试与构建（系统操作：写 Flutter/Android 构建缓存）
+
+```bash
+cd mobile && flutter analyze --no-fatal-infos --no-fatal-warnings
+cd mobile && flutter test
+cd mobile && flutter build apk --debug
+```
+
+### 4. Link 协议集成测试（系统操作：临时 HTTPS 服务、临时文件、编译缓存）
+
+```bash
+./scripts/test-mobile-link.sh
+```
+
+### 5. Windows 测试（系统操作：编译缓存；仅在找到可用 .NET 8 SDK 时执行）
+
+```bash
+dotnet test Windows/tests/AgentHUD.Core.Tests/AgentHUD.Core.Tests.csproj -c Release
+```
+
+本机当前 `command -v dotnet` 无输出，`Windows/.dotnet/dotnet.exe` 不存在；不下载依赖、不改 Windows 进程，除非另行批准。
+
+### 6. 模拟器验证（系统操作：启动 Android 模拟器、安装 APK；等待用户连接/确认设备后执行）
+
+```bash
+adb devices -l
+flutter emulators
+# 确认目标设备后再用 flutter run/install，不盲装到多台设备
+```
+
+### 7. 只读核对
+
+```bash
+git diff --check
+git diff -- <本任务文件>
+git status --short
+```
+
+全局 `MACHINE_CHECKS` 所列 `scripts/validate-config.sh`、`scripts/tests/run.sh`、`scripts/gates/all.sh`、`scripts/workflow/verify.sh` 经 `ls` 均不存在，无法执行，将列为未验证项，不创建假脚本冒充门禁。
+
+## 边界 / 风险 / 回滚
+
+- 不修改 AGENTS.md 已禁止改动的动画/对账机制，不重排 HUD 结构；UI 仅增加必要控件与说明。
+- 不改变服务端隐私模式、配对授权和会话数据源；不向真实 Agent 发送探测消息。
+- `queue --resume` 依赖本机 Codex 版本；旧版本不支持时必须返回明确 `inputUnavailable`，不能退回假成功。
+- 手机偏好需要新增 Flutter `shared_preferences` 依赖；若不希望增加依赖，可改为现有普通本地文件方案，但需批准后确定，不用安全存储保存普通 UI 设置。
+- 工作区已有大量 staged 构建产物；本任务不暂存、不重置、不清理它们。回滚仅针对本任务新改文件逐文件还原，已产生的提交（本轮默认不提交）用新提交 revert。
+
+## 技能/工具记录
+
+- MCP `local-memory.search_memory` 已查询，未返回 Agent-HUD 相关历史。
+- `codegraph_explore` 已尝试；项目没有 `.codegraph`，工具要求先初始化，未初始化索引，改用源码定位。
+- `.scale/skills-registry.json` 不存在；全局提到的 `tdd`、`verification`、`freeze-guard`、`graphify` 不在本次可调用技能清单，未强行调用。TDD 按上述测试先行手工执行，验证以真实命令输出为准。
+
+## 未验证项（批准前）
+
+- 未改代码，未运行上述构建/测试，未验证真实 Codex `queue --resume` 投递（不会向用户真实会话发测试消息）。
+- 本机 `adb devices -l` 无设备；APK 真机/模拟器行为未验证。
+- Windows SDK/WinUI 不可用；Windows 运行与视觉未验证。
+
+## 执行结果（2026-11-19）
+
+### 已完成
+
+- Mac 新增 `SessionListLimit` / `SessionListPolicy`：默认最近 10 条，支持全部、3/5/10/15/20；星标会话额外常驻，按 `lastActivityAt` 排序。设置写入 `UserDefaults`，HUD 设置窗口与底栏可进入/查看数量。
+- Mac `CodexInputAdapter` 改为 `codex queue --thread ... --message ... --resume`，移除基于 rollout 文件句柄的预拒绝；支持运行中排队与完成后续发。检查退出码及 stdout/stderr 的恢复失败诊断；未知线程、旧版 CLI、超时分别映射错误。dispatcher 保留具体 adapter 错误码。
+- Flutter 新增 `session_display.dart`、`session_preferences.dart`、`pages/session_settings_page.dart`；`SessionController` 接入数量裁剪、筛选摘要、异步偏好加载/保存。`shared_preferences` 依赖已加入 `pubspec.yaml` 并解析。
+- 新增 Mac `Tests/SessionInteractionTests.swift`，手机 `test/session_display_test.dart` 与 `test/session_settings_test.dart`，覆盖默认/全部/各数量/星标/设置页/偏好持久化/CLI 参数及错误。
+- README 已同步会话显示、星标常驻与授权对话说明。
+- 未提交、未推送、未发布 Release；未向真实 Agent 会话发送测试消息。
+
+### 真实验证
+
+- `./scripts/test.sh` → exit 0，`35 tests passed`。新增测试在实现前曾因缺少策略/旧适配器失败，随后通过。
+- `flutter analyze --no-fatal-infos --no-fatal-warnings` → exit 0，`No issues found`。
+- `flutter test`（修复全部持久化 bug 后）→ exit 0，`75 tests passed`，1 个既有跳过。
+- `flutter test test/session_settings_test.dart` → exit 0，2 tests passed。
+- `flutter build apk --debug` → exit 0，产物 `mobile/build/app/outputs/flutter-apk/app-debug.apk`。
+- `codex --version` → `codex-cli 0.170.0`；`codex queue --help` 确认 `--resume` 存在；本机二进制诊断字符串含 `Queued message`、`Resume failed`。
+
+### 未验证 / 阻塞
+
+- **Mac 完整 SwiftPM 构建未通过**：两次依赖下载均因 GitHub `curl 56 Connection reset by peer` / early EOF 停滞，后台任务已停止；没有把核心测试当作完整应用构建通过。需要网络恢复后重跑 `swift build -c debug --scratch-path .build-session-settings`。
+- **真实 Codex 队列投递未验证**：遵守边界，未操作用户现有线程；当前为可注入 CLI 的单元测试与参数/诊断验证。
+- **模拟器未验证**：`adb devices -l` 无连接设备；APK 仅构建成功，未安装/运行/截图。
+- **Windows 未执行**：用户明确说不用管；未改 Windows 代码。
+- 全局 MACHINE_CHECKS 四个脚本不存在，未运行；`.scale/skills-registry.json` 不存在；codegraph 未初始化；均不作为通过依据。
+
+### 并发工作区说明
+
+本轮开始时工作区已有另一批 Mac UI 未提交改动（`AppDelegate.swift`、`HUDShell.swift`、`HUDTheme.swift`、`HUDMetrics.swift` 等）及大量 staged 构建产物。本轮没有回退、重置、暂存或清理它们；本任务的新逻辑集中在 `Models.swift`、`HUDViewModel.swift`、`CodexInputAdapter.swift`、新增测试与 Flutter 文件。
+
+---
+
+# 2026-11-20 远程 main 合并与手机端重构记录
+
+## 基线与备份
+
+- 原工作区先保存为 `stash@{0}`（`505677a8`），保留暂存、未暂存和未跟踪内容，未删除备份。
+- 当前分支、本地 `main`、`origin/main` 已快进到 `ec7be4b`。
+- 原 stash 恢复后两个手机端冲突为 `session_controller.dart` 和 `sessions_page.dart`，已解决并暂存。
+
+## 批准的合并取舍
+
+- 采用远程新版会话列表布局、顶部显示数量菜单及原有实时状态能力。
+- 保留本地数量枚举、稳定排序与星标常驻筛选函数、显示摘要、完整设置页和星标操作说明。
+- 控制器统一使用 `SessionListLimit` / `listLimit` / `setListLimit`，不保留两套数量状态。
+- 使用 `FlutterSecureStorage` 保存普通显示偏好，沿用 `hud.session_limit.v1`；可注入内存实现用于测试。
+- 本地五个新增源码/测试文件均已融合保留；远程 `session_display_store.dart` 已无引用，待用户批准后删除。
+- Mac 本地代码全部保留；未修改本轮远程新增 Windows 代码。
+
+## 验证
+
+- `flutter analyze --no-pub --no-fatal-infos --no-fatal-warnings`：exit 0，No issues found。
+- `flutter test --no-pub`：exit 0，78 tests passed，1 个既有跳过。
+- `pubspec.yaml` / `pubspec.lock` 与 `origin/main` 一致；本机 Flutter 自动降版已恢复，未夹带依赖变更。
+- 源码与文档 `git diff --cached --check` 排除原有构建产物后 exit 0。
+- 未提交、未推送、未重新构建 APK、未进行真实设备验收。

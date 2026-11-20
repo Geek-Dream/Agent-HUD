@@ -1,0 +1,23 @@
+{
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-algorithms/Sources/Algorithms/Combinations.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-algorithms.build/Debug/Algorithms-t.build/Objects-normal/arm64/Combinations.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-algorithms.build/Debug/Algorithms-t.build/Objects-normal/arm64/Combinations.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-algorithms.build/Debug/Algorithms-t.build/Objects-normal/arm64/Combinations.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-algorithms.build/Debug/Algorithms-t.build/Objects-normal/arm64/Combinations.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-algorithms.build/Debug/Algorithms-t.build/Objects-normal/arm64/Combinations.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-algorithms/Sources/Algorithms/Compacted.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-algorithms.build/Debug/Algorithms-t.build/Objects-normal/arm64/Compacted.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-algorithms.build/Debug/Algorithms-t.build/Objects-normal/arm64/Compacted.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-algorithms.build/Debug/Algorithms-t.build/Objects-normal/arm64/Compacted.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-algorithms.build/Debug/Algorithms-t.build/Objects-normal/arm64/Compacted.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-algorithms.build/Debug/Algorithms-t.build/Objects-normal/arm64/Compacted.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-algorithms/Sources/Algorithms/Cycle.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-algorithms.build/Debug/Algorithms-t.build/Objects-normal/arm64/Cycle.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-algorithms.build/Debug/Algorithms-t.build/Objects-normal/arm64/Cycle.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-algorithms.build/Debug/Algorithms-t.build/Objects-normal/arm64/Cycle.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-algorithms.build/Debug/Algorithms-t.build/Objects-normal/arm64/Cycle.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-algorithms.build/Debug/Algorithms-t.build/Objects-normal/arm64/Cycle.swiftdeps"
+  }
+}

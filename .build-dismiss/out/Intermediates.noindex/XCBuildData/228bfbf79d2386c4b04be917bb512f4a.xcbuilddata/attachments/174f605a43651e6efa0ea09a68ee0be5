@@ -1,0 +1,12 @@
+/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio-extras/Sources/NIOSOCKS/Channel\ Handlers/SOCKSClientHandler.swift
+/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio-extras/Sources/NIOSOCKS/Channel\ Handlers/SOCKSServerHandshakeHandler.swift
+/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio-extras/Sources/NIOSOCKS/Messages/AuthenticationMethod.swift
+/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio-extras/Sources/NIOSOCKS/Messages/ClientGreeting.swift
+/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio-extras/Sources/NIOSOCKS/Messages/Errors.swift
+/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio-extras/Sources/NIOSOCKS/Messages/Helpers.swift
+/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio-extras/Sources/NIOSOCKS/Messages/Messages.swift
+/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio-extras/Sources/NIOSOCKS/Messages/SOCKSRequest.swift
+/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio-extras/Sources/NIOSOCKS/Messages/SOCKSResponse.swift
+/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio-extras/Sources/NIOSOCKS/Messages/SelectedAuthenticationMethod.swift
+/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio-extras/Sources/NIOSOCKS/State/ClientStateMachine.swift
+/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio-extras/Sources/NIOSOCKS/State/ServerStateMachine.swift

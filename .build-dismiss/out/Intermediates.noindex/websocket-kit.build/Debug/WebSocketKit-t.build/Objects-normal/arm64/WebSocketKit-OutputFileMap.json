@@ -1,0 +1,79 @@
+{
+  "" : {
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/websocket-kit.build/Debug/WebSocketKit-t.build/Objects-normal/arm64/WebSocketKit-primary.dia",
+    "emit-module-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/websocket-kit.build/Debug/WebSocketKit-t.build/Objects-normal/arm64/WebSocketKit-primary-emit-module.d",
+    "emit-module-diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/websocket-kit.build/Debug/WebSocketKit-t.build/Objects-normal/arm64/WebSocketKit-primary-emit-module.dia",
+    "pch" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/websocket-kit.build/Debug/WebSocketKit-t.build/Objects-normal/arm64/WebSocketKit-primary-Bridging-header.pch",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/websocket-kit.build/Debug/WebSocketKit-t.build/Objects-normal/arm64/WebSocketKit-primary.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/websocket-kit/Sources/WebSocketKit/Concurrency/WebSocket+Concurrency.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/websocket-kit.build/Debug/WebSocketKit-t.build/Objects-normal/arm64/WebSocket+Concurrency.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/websocket-kit.build/Debug/WebSocketKit-t.build/Objects-normal/arm64/WebSocket+Concurrency.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/websocket-kit.build/Debug/WebSocketKit-t.build/Objects-normal/arm64/WebSocket+Concurrency.dia",
+    "index-unit-output-path" : "/websocket-kit.build/Debug/WebSocketKit-t.build/Objects-normal/arm64/WebSocket+Concurrency.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/websocket-kit.build/Debug/WebSocketKit-t.build/Objects-normal/arm64/WebSocket+Concurrency.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/websocket-kit.build/Debug/WebSocketKit-t.build/Objects-normal/arm64/WebSocket+Concurrency.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/websocket-kit.build/Debug/WebSocketKit-t.build/Objects-normal/arm64/WebSocket+Concurrency.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/websocket-kit.build/Debug/WebSocketKit-t.build/Objects-normal/arm64/WebSocket+Concurrency~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/websocket-kit/Sources/WebSocketKit/Exports.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/websocket-kit.build/Debug/WebSocketKit-t.build/Objects-normal/arm64/Exports.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/websocket-kit.build/Debug/WebSocketKit-t.build/Objects-normal/arm64/Exports.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/websocket-kit.build/Debug/WebSocketKit-t.build/Objects-normal/arm64/Exports.dia",
+    "index-unit-output-path" : "/websocket-kit.build/Debug/WebSocketKit-t.build/Objects-normal/arm64/Exports.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/websocket-kit.build/Debug/WebSocketKit-t.build/Objects-normal/arm64/Exports.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/websocket-kit.build/Debug/WebSocketKit-t.build/Objects-normal/arm64/Exports.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/websocket-kit.build/Debug/WebSocketKit-t.build/Objects-normal/arm64/Exports.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/websocket-kit.build/Debug/WebSocketKit-t.build/Objects-normal/arm64/Exports~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/websocket-kit/Sources/WebSocketKit/HTTPUpgradeRequestHandler.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/websocket-kit.build/Debug/WebSocketKit-t.build/Objects-normal/arm64/HTTPUpgradeRequestHandler.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/websocket-kit.build/Debug/WebSocketKit-t.build/Objects-normal/arm64/HTTPUpgradeRequestHandler.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/websocket-kit.build/Debug/WebSocketKit-t.build/Objects-normal/arm64/HTTPUpgradeRequestHandler.dia",
+    "index-unit-output-path" : "/websocket-kit.build/Debug/WebSocketKit-t.build/Objects-normal/arm64/HTTPUpgradeRequestHandler.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/websocket-kit.build/Debug/WebSocketKit-t.build/Objects-normal/arm64/HTTPUpgradeRequestHandler.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/websocket-kit.build/Debug/WebSocketKit-t.build/Objects-normal/arm64/HTTPUpgradeRequestHandler.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/websocket-kit.build/Debug/WebSocketKit-t.build/Objects-normal/arm64/HTTPUpgradeRequestHandler.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/websocket-kit.build/Debug/WebSocketKit-t.build/Objects-normal/arm64/HTTPUpgradeRequestHandler~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/websocket-kit/Sources/WebSocketKit/WebSocket+Connect.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/websocket-kit.build/Debug/WebSocketKit-t.build/Objects-normal/arm64/WebSocket+Connect.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/websocket-kit.build/Debug/WebSocketKit-t.build/Objects-normal/arm64/WebSocket+Connect.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/websocket-kit.build/Debug/WebSocketKit-t.build/Objects-normal/arm64/WebSocket+Connect.dia",
+    "index-unit-output-path" : "/websocket-kit.build/Debug/WebSocketKit-t.build/Objects-normal/arm64/WebSocket+Connect.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/websocket-kit.build/Debug/WebSocketKit-t.build/Objects-normal/arm64/WebSocket+Connect.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/websocket-kit.build/Debug/WebSocketKit-t.build/Objects-normal/arm64/WebSocket+Connect.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/websocket-kit.build/Debug/WebSocketKit-t.build/Objects-normal/arm64/WebSocket+Connect.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/websocket-kit.build/Debug/WebSocketKit-t.build/Objects-normal/arm64/WebSocket+Connect~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/websocket-kit/Sources/WebSocketKit/WebSocket.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/websocket-kit.build/Debug/WebSocketKit-t.build/Objects-normal/arm64/WebSocket.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/websocket-kit.build/Debug/WebSocketKit-t.build/Objects-normal/arm64/WebSocket.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/websocket-kit.build/Debug/WebSocketKit-t.build/Objects-normal/arm64/WebSocket.dia",
+    "index-unit-output-path" : "/websocket-kit.build/Debug/WebSocketKit-t.build/Objects-normal/arm64/WebSocket.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/websocket-kit.build/Debug/WebSocketKit-t.build/Objects-normal/arm64/WebSocket.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/websocket-kit.build/Debug/WebSocketKit-t.build/Objects-normal/arm64/WebSocket.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/websocket-kit.build/Debug/WebSocketKit-t.build/Objects-normal/arm64/WebSocket.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/websocket-kit.build/Debug/WebSocketKit-t.build/Objects-normal/arm64/WebSocket~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/websocket-kit/Sources/WebSocketKit/WebSocketClient.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/websocket-kit.build/Debug/WebSocketKit-t.build/Objects-normal/arm64/WebSocketClient.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/websocket-kit.build/Debug/WebSocketKit-t.build/Objects-normal/arm64/WebSocketClient.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/websocket-kit.build/Debug/WebSocketKit-t.build/Objects-normal/arm64/WebSocketClient.dia",
+    "index-unit-output-path" : "/websocket-kit.build/Debug/WebSocketKit-t.build/Objects-normal/arm64/WebSocketClient.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/websocket-kit.build/Debug/WebSocketKit-t.build/Objects-normal/arm64/WebSocketClient.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/websocket-kit.build/Debug/WebSocketKit-t.build/Objects-normal/arm64/WebSocketClient.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/websocket-kit.build/Debug/WebSocketKit-t.build/Objects-normal/arm64/WebSocketClient.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/websocket-kit.build/Debug/WebSocketKit-t.build/Objects-normal/arm64/WebSocketClient~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/websocket-kit/Sources/WebSocketKit/WebSocketHandler.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/websocket-kit.build/Debug/WebSocketKit-t.build/Objects-normal/arm64/WebSocketHandler.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/websocket-kit.build/Debug/WebSocketKit-t.build/Objects-normal/arm64/WebSocketHandler.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/websocket-kit.build/Debug/WebSocketKit-t.build/Objects-normal/arm64/WebSocketHandler.dia",
+    "index-unit-output-path" : "/websocket-kit.build/Debug/WebSocketKit-t.build/Objects-normal/arm64/WebSocketHandler.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/websocket-kit.build/Debug/WebSocketKit-t.build/Objects-normal/arm64/WebSocketHandler.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/websocket-kit.build/Debug/WebSocketKit-t.build/Objects-normal/arm64/WebSocketHandler.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/websocket-kit.build/Debug/WebSocketKit-t.build/Objects-normal/arm64/WebSocketHandler.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/websocket-kit.build/Debug/WebSocketKit-t.build/Objects-normal/arm64/WebSocketHandler~partial.swiftmodule"
+  }
+}

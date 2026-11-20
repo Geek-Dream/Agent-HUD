@@ -7,7 +7,7 @@
 ![Windows 10+](https://img.shields.io/badge/Windows-10%20%2F%2011-2563EB)
 ![Read Only](https://img.shields.io/badge/local%20data-read--only-16A34A)
 
-AgentHUD 是一个本地优先、只读的 coding agent 常驻浮窗。它集中展示 Codex、
+AgentHUD 是一个本地优先的 coding agent 常驻浮窗。它集中展示 Codex、
 Claude Code、OpenCode 和本地 Orca 会话的实时状态、任务标题、完成总结、Git 上下文与历史记录，
 但不会启动、停止、审批或控制任何 Agent。
 
@@ -19,6 +19,9 @@ Claude Code、OpenCode 和本地 Orca 会话的实时状态、任务标题、完
 - 完成记录支持分页加载，重要会话自动置顶；星标会话按工作、完成、等待和
   错误状态显示蓝、绿、黄、红色轮廓，未标星会话不显示状态轮廓。
 - 展开面板支持轻度透明背景，并可在设置中调整宽度和高度，上限为 720 × 1000。
+- 会话列表默认显示最近 10 条；Mac 与手机设置可选择全部、最近 3/5/10/15/20 条。
+  星标会话始终常驻，不占数量上限，也不会删除历史记录。
+- Codex 会话支持在授权后通过队列续发消息；恢复失败会显示真实错误，不会假报已投递。
 - 运行中的会话完成后向右滑出，再从列表底部平滑渐入。
 - 支持手动修改标题，也可通过 OpenAI 兼容接口生成更易读的任务标题。
 - 支持查看用户原始输入和会话图片，并提供可缩放、可切换的图片预览。
@@ -82,14 +85,15 @@ Windows\start-agent-hud.cmd
 如果应用启动后立即退出，启动器会显示退出码，并打印
 `%LOCALAPPDATA%\AgentHUD\startup-error.log` 中的启动错误。
 
-## 手机只读监控
+## 手机监控与会话管理
 
 Windows 标题栏或托盘菜单中的“手机关联”会生成两分钟有效的二维码和六位验证码。
 手机与电脑位于同一局域网时，可以通过 `mobile/` 中的 Flutter App 关联设备并查看会话状态。
-每台设备使用独立、可撤销的只读令牌，连接层需要 .NET 8 的 ASP.NET Core 运行时；
+每台设备使用独立、可撤销的令牌，连接层需要 .NET 8 的 ASP.NET Core 运行时；
 启动器已同步检查该运行时。
 
-首版不开放任何控制接口，也不会发送 API Key、完整路径、原始日志或图片。
+对话能力需要电脑端单独授权。手机会话页的「会话显示设置」可选择全部、最近 3/5/10/15/20 条，
+默认最近 10 条；在会话卡片或详情页点星标即可指定常驻会话。设置只保存在本机，不修改会话日志。
 协议见 `docs/lan-monitoring.md`，手机构建说明见 `mobile/README.md`。
 macOS 菜单栏同样提供“手机关联”，对应 Swift 实现见 `docs/macos-lan.md`。
 
@@ -104,8 +108,7 @@ macOS 菜单栏同样提供“手机关联”，对应 Swift 实现见 `docs/mac
 默认展示最近七天内有活动的会话，最多 24 个。`继续`、`确认`、`continue` 这类
 追问不会覆盖会话原本的实质任务标题。
 
-AgentHUD 不安装 Agent hooks，不修改 `~/.codex`、`~/.claude`、OpenCode 数据或项目配置，不向 Agent
-终端发送输入，也不会自动提交、合并、回滚或清理 Git 改动。
+AgentHUD 不安装 Agent hooks，不修改 `~/.codex`、`~/.claude`、OpenCode 数据或项目配置，不会自动提交、合并、回滚或清理 Git 改动。
 
 ## AI 标题
 

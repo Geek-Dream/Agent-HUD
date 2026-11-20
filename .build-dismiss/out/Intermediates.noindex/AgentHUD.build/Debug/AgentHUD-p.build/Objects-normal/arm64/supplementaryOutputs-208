@@ -1,0 +1,30 @@
+{
+  "/Users/wl/Desktop/Agent-HUD/Sources/AgentHUD/GitReader.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/GitReader.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/GitReader.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/GitReader.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/GitReader.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/GitReader.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/Sources/AgentHUD/HUDMetrics.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/HUDMetrics.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/HUDMetrics.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/HUDMetrics.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/HUDMetrics.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/HUDMetrics.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/Sources/AgentHUD/HUDShell.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/HUDShell.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/HUDShell.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/HUDShell.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/HUDShell.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/HUDShell.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/Sources/AgentHUD/HUDTheme.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/HUDTheme.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/HUDTheme.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/HUDTheme.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/HUDTheme.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/HUDTheme.swiftdeps"
+  }
+}

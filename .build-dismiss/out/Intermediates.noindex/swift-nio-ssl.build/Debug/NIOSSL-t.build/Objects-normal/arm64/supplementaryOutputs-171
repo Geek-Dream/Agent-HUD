@@ -1,0 +1,23 @@
+{
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio-ssl/Sources/NIOSSL/TLSConfiguration.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-ssl.build/Debug/NIOSSL-t.build/Objects-normal/arm64/TLSConfiguration.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-ssl.build/Debug/NIOSSL-t.build/Objects-normal/arm64/TLSConfiguration.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-ssl.build/Debug/NIOSSL-t.build/Objects-normal/arm64/TLSConfiguration.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-ssl.build/Debug/NIOSSL-t.build/Objects-normal/arm64/TLSConfiguration.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-ssl.build/Debug/NIOSSL-t.build/Objects-normal/arm64/TLSConfiguration.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio-ssl/Sources/NIOSSL/UniversalBootstrapSupport.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-ssl.build/Debug/NIOSSL-t.build/Objects-normal/arm64/UniversalBootstrapSupport.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-ssl.build/Debug/NIOSSL-t.build/Objects-normal/arm64/UniversalBootstrapSupport.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-ssl.build/Debug/NIOSSL-t.build/Objects-normal/arm64/UniversalBootstrapSupport.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-ssl.build/Debug/NIOSSL-t.build/Objects-normal/arm64/UniversalBootstrapSupport.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-ssl.build/Debug/NIOSSL-t.build/Objects-normal/arm64/UniversalBootstrapSupport.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio-ssl/Sources/NIOSSL/UnsafeKeyAndChainTarget.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-ssl.build/Debug/NIOSSL-t.build/Objects-normal/arm64/UnsafeKeyAndChainTarget.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-ssl.build/Debug/NIOSSL-t.build/Objects-normal/arm64/UnsafeKeyAndChainTarget.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-ssl.build/Debug/NIOSSL-t.build/Objects-normal/arm64/UnsafeKeyAndChainTarget.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-ssl.build/Debug/NIOSSL-t.build/Objects-normal/arm64/UnsafeKeyAndChainTarget.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-ssl.build/Debug/NIOSSL-t.build/Objects-normal/arm64/UnsafeKeyAndChainTarget.swiftdeps"
+  }
+}

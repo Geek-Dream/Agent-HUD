@@ -1,0 +1,79 @@
+{
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-certificates/Sources/X509/Extension Types/SubjectKeyIdentifier.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-certificates.build/Debug/X509-t.build/Objects-normal/arm64/SubjectKeyIdentifier.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-certificates.build/Debug/X509-t.build/Objects-normal/arm64/SubjectKeyIdentifier.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-certificates.build/Debug/X509-t.build/Objects-normal/arm64/SubjectKeyIdentifier.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-certificates.build/Debug/X509-t.build/Objects-normal/arm64/SubjectKeyIdentifier.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-certificates.build/Debug/X509-t.build/Objects-normal/arm64/SubjectKeyIdentifier.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-certificates/Sources/X509/Extension.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-certificates.build/Debug/X509-t.build/Objects-normal/arm64/Extension.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-certificates.build/Debug/X509-t.build/Objects-normal/arm64/Extension.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-certificates.build/Debug/X509-t.build/Objects-normal/arm64/Extension.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-certificates.build/Debug/X509-t.build/Objects-normal/arm64/Extension.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-certificates.build/Debug/X509-t.build/Objects-normal/arm64/Extension.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-certificates/Sources/X509/Extensions.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-certificates.build/Debug/X509-t.build/Objects-normal/arm64/Extensions.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-certificates.build/Debug/X509-t.build/Objects-normal/arm64/Extensions.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-certificates.build/Debug/X509-t.build/Objects-normal/arm64/Extensions.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-certificates.build/Debug/X509-t.build/Objects-normal/arm64/Extensions.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-certificates.build/Debug/X509-t.build/Objects-normal/arm64/Extensions.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-certificates/Sources/X509/ExtensionsBuilder.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-certificates.build/Debug/X509-t.build/Objects-normal/arm64/ExtensionsBuilder.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-certificates.build/Debug/X509-t.build/Objects-normal/arm64/ExtensionsBuilder.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-certificates.build/Debug/X509-t.build/Objects-normal/arm64/ExtensionsBuilder.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-certificates.build/Debug/X509-t.build/Objects-normal/arm64/ExtensionsBuilder.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-certificates.build/Debug/X509-t.build/Objects-normal/arm64/ExtensionsBuilder.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-certificates/Sources/X509/GeneralName.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-certificates.build/Debug/X509-t.build/Objects-normal/arm64/GeneralName.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-certificates.build/Debug/X509-t.build/Objects-normal/arm64/GeneralName.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-certificates.build/Debug/X509-t.build/Objects-normal/arm64/GeneralName.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-certificates.build/Debug/X509-t.build/Objects-normal/arm64/GeneralName.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-certificates.build/Debug/X509-t.build/Objects-normal/arm64/GeneralName.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-certificates/Sources/X509/Lock.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-certificates.build/Debug/X509-t.build/Objects-normal/arm64/Lock.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-certificates.build/Debug/X509-t.build/Objects-normal/arm64/Lock.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-certificates.build/Debug/X509-t.build/Objects-normal/arm64/Lock.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-certificates.build/Debug/X509-t.build/Objects-normal/arm64/Lock.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-certificates.build/Debug/X509-t.build/Objects-normal/arm64/Lock.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-certificates/Sources/X509/LockedValueBox.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-certificates.build/Debug/X509-t.build/Objects-normal/arm64/LockedValueBox.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-certificates.build/Debug/X509-t.build/Objects-normal/arm64/LockedValueBox.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-certificates.build/Debug/X509-t.build/Objects-normal/arm64/LockedValueBox.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-certificates.build/Debug/X509-t.build/Objects-normal/arm64/LockedValueBox.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-certificates.build/Debug/X509-t.build/Objects-normal/arm64/LockedValueBox.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-certificates/Sources/X509/OCSP/BasicOCSPResponse.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-certificates.build/Debug/X509-t.build/Objects-normal/arm64/BasicOCSPResponse.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-certificates.build/Debug/X509-t.build/Objects-normal/arm64/BasicOCSPResponse.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-certificates.build/Debug/X509-t.build/Objects-normal/arm64/BasicOCSPResponse.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-certificates.build/Debug/X509-t.build/Objects-normal/arm64/BasicOCSPResponse.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-certificates.build/Debug/X509-t.build/Objects-normal/arm64/BasicOCSPResponse.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-certificates/Sources/X509/OCSP/DirectoryString.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-certificates.build/Debug/X509-t.build/Objects-normal/arm64/DirectoryString.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-certificates.build/Debug/X509-t.build/Objects-normal/arm64/DirectoryString.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-certificates.build/Debug/X509-t.build/Objects-normal/arm64/DirectoryString.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-certificates.build/Debug/X509-t.build/Objects-normal/arm64/DirectoryString.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-certificates.build/Debug/X509-t.build/Objects-normal/arm64/DirectoryString.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-certificates/Sources/X509/OCSP/OCSPCertID.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-certificates.build/Debug/X509-t.build/Objects-normal/arm64/OCSPCertID.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-certificates.build/Debug/X509-t.build/Objects-normal/arm64/OCSPCertID.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-certificates.build/Debug/X509-t.build/Objects-normal/arm64/OCSPCertID.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-certificates.build/Debug/X509-t.build/Objects-normal/arm64/OCSPCertID.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-certificates.build/Debug/X509-t.build/Objects-normal/arm64/OCSPCertID.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-certificates/Sources/X509/OCSP/OCSPCertStatus.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-certificates.build/Debug/X509-t.build/Objects-normal/arm64/OCSPCertStatus.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-certificates.build/Debug/X509-t.build/Objects-normal/arm64/OCSPCertStatus.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-certificates.build/Debug/X509-t.build/Objects-normal/arm64/OCSPCertStatus.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-certificates.build/Debug/X509-t.build/Objects-normal/arm64/OCSPCertStatus.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-certificates.build/Debug/X509-t.build/Objects-normal/arm64/OCSPCertStatus.swiftdeps"
+  }
+}

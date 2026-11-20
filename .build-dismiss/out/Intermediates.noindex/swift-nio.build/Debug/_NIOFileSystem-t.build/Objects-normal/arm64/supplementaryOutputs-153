@@ -1,0 +1,30 @@
+{
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio/Sources/_NIOFileSystem/ByteBuffer+FileSystem.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystem-t.build/Objects-normal/arm64/ByteBuffer+FileSystem.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystem-t.build/Objects-normal/arm64/ByteBuffer+FileSystem.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystem-t.build/Objects-normal/arm64/ByteBuffer+FileSystem.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystem-t.build/Objects-normal/arm64/ByteBuffer+FileSystem.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystem-t.build/Objects-normal/arm64/ByteBuffer+FileSystem.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio/Sources/_NIOFileSystem/ByteCount.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystem-t.build/Objects-normal/arm64/ByteCount.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystem-t.build/Objects-normal/arm64/ByteCount.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystem-t.build/Objects-normal/arm64/ByteCount.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystem-t.build/Objects-normal/arm64/ByteCount.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystem-t.build/Objects-normal/arm64/ByteCount.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio/Sources/_NIOFileSystem/Convenience.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystem-t.build/Objects-normal/arm64/Convenience.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystem-t.build/Objects-normal/arm64/Convenience.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystem-t.build/Objects-normal/arm64/Convenience.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystem-t.build/Objects-normal/arm64/Convenience.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystem-t.build/Objects-normal/arm64/Convenience.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio/Sources/_NIOFileSystem/DirectoryEntries.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystem-t.build/Objects-normal/arm64/DirectoryEntries.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystem-t.build/Objects-normal/arm64/DirectoryEntries.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystem-t.build/Objects-normal/arm64/DirectoryEntries.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystem-t.build/Objects-normal/arm64/DirectoryEntries.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystem-t.build/Objects-normal/arm64/DirectoryEntries.swiftdeps"
+  }
+}

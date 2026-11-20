@@ -1,0 +1,51 @@
+{
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/async-http-client/Sources/AsyncHTTPClient/ConnectionPool/HTTPConnectionPool+Manager.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/async-http-client.build/Debug/AsyncHTTPClient-t.build/Objects-normal/arm64/HTTPConnectionPool+Manager.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/async-http-client.build/Debug/AsyncHTTPClient-t.build/Objects-normal/arm64/HTTPConnectionPool+Manager.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/async-http-client.build/Debug/AsyncHTTPClient-t.build/Objects-normal/arm64/HTTPConnectionPool+Manager.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/async-http-client.build/Debug/AsyncHTTPClient-t.build/Objects-normal/arm64/HTTPConnectionPool+Manager.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/async-http-client.build/Debug/AsyncHTTPClient-t.build/Objects-normal/arm64/HTTPConnectionPool+Manager.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/async-http-client/Sources/AsyncHTTPClient/ConnectionPool/HTTPConnectionPool.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/async-http-client.build/Debug/AsyncHTTPClient-t.build/Objects-normal/arm64/HTTPConnectionPool.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/async-http-client.build/Debug/AsyncHTTPClient-t.build/Objects-normal/arm64/HTTPConnectionPool.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/async-http-client.build/Debug/AsyncHTTPClient-t.build/Objects-normal/arm64/HTTPConnectionPool.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/async-http-client.build/Debug/AsyncHTTPClient-t.build/Objects-normal/arm64/HTTPConnectionPool.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/async-http-client.build/Debug/AsyncHTTPClient-t.build/Objects-normal/arm64/HTTPConnectionPool.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/async-http-client/Sources/AsyncHTTPClient/ConnectionPool/HTTPExecutableRequest.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/async-http-client.build/Debug/AsyncHTTPClient-t.build/Objects-normal/arm64/HTTPExecutableRequest.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/async-http-client.build/Debug/AsyncHTTPClient-t.build/Objects-normal/arm64/HTTPExecutableRequest.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/async-http-client.build/Debug/AsyncHTTPClient-t.build/Objects-normal/arm64/HTTPExecutableRequest.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/async-http-client.build/Debug/AsyncHTTPClient-t.build/Objects-normal/arm64/HTTPExecutableRequest.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/async-http-client.build/Debug/AsyncHTTPClient-t.build/Objects-normal/arm64/HTTPExecutableRequest.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/async-http-client/Sources/AsyncHTTPClient/ConnectionPool/HTTPRequestStateMachine+Demand.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/async-http-client.build/Debug/AsyncHTTPClient-t.build/Objects-normal/arm64/HTTPRequestStateMachine+Demand.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/async-http-client.build/Debug/AsyncHTTPClient-t.build/Objects-normal/arm64/HTTPRequestStateMachine+Demand.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/async-http-client.build/Debug/AsyncHTTPClient-t.build/Objects-normal/arm64/HTTPRequestStateMachine+Demand.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/async-http-client.build/Debug/AsyncHTTPClient-t.build/Objects-normal/arm64/HTTPRequestStateMachine+Demand.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/async-http-client.build/Debug/AsyncHTTPClient-t.build/Objects-normal/arm64/HTTPRequestStateMachine+Demand.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/async-http-client/Sources/AsyncHTTPClient/ConnectionPool/HTTPRequestStateMachine.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/async-http-client.build/Debug/AsyncHTTPClient-t.build/Objects-normal/arm64/HTTPRequestStateMachine.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/async-http-client.build/Debug/AsyncHTTPClient-t.build/Objects-normal/arm64/HTTPRequestStateMachine.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/async-http-client.build/Debug/AsyncHTTPClient-t.build/Objects-normal/arm64/HTTPRequestStateMachine.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/async-http-client.build/Debug/AsyncHTTPClient-t.build/Objects-normal/arm64/HTTPRequestStateMachine.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/async-http-client.build/Debug/AsyncHTTPClient-t.build/Objects-normal/arm64/HTTPRequestStateMachine.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/async-http-client/Sources/AsyncHTTPClient/ConnectionPool/RequestBodyLength.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/async-http-client.build/Debug/AsyncHTTPClient-t.build/Objects-normal/arm64/RequestBodyLength.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/async-http-client.build/Debug/AsyncHTTPClient-t.build/Objects-normal/arm64/RequestBodyLength.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/async-http-client.build/Debug/AsyncHTTPClient-t.build/Objects-normal/arm64/RequestBodyLength.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/async-http-client.build/Debug/AsyncHTTPClient-t.build/Objects-normal/arm64/RequestBodyLength.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/async-http-client.build/Debug/AsyncHTTPClient-t.build/Objects-normal/arm64/RequestBodyLength.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/async-http-client/Sources/AsyncHTTPClient/ConnectionPool/RequestFramingMetadata.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/async-http-client.build/Debug/AsyncHTTPClient-t.build/Objects-normal/arm64/RequestFramingMetadata.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/async-http-client.build/Debug/AsyncHTTPClient-t.build/Objects-normal/arm64/RequestFramingMetadata.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/async-http-client.build/Debug/AsyncHTTPClient-t.build/Objects-normal/arm64/RequestFramingMetadata.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/async-http-client.build/Debug/AsyncHTTPClient-t.build/Objects-normal/arm64/RequestFramingMetadata.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/async-http-client.build/Debug/AsyncHTTPClient-t.build/Objects-normal/arm64/RequestFramingMetadata.swiftdeps"
+  }
+}

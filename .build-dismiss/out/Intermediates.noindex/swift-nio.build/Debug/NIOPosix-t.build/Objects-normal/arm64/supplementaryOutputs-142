@@ -1,0 +1,44 @@
+{
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio/Sources/NIOPosix/IntegerTypes.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOPosix-t.build/Objects-normal/arm64/IntegerTypes.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOPosix-t.build/Objects-normal/arm64/IntegerTypes.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOPosix-t.build/Objects-normal/arm64/IntegerTypes.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOPosix-t.build/Objects-normal/arm64/IntegerTypes.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOPosix-t.build/Objects-normal/arm64/IntegerTypes.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio/Sources/NIOPosix/Linux.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOPosix-t.build/Objects-normal/arm64/Linux.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOPosix-t.build/Objects-normal/arm64/Linux.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOPosix-t.build/Objects-normal/arm64/Linux.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOPosix-t.build/Objects-normal/arm64/Linux.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOPosix-t.build/Objects-normal/arm64/Linux.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio/Sources/NIOPosix/LinuxCPUSet.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOPosix-t.build/Objects-normal/arm64/LinuxCPUSet.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOPosix-t.build/Objects-normal/arm64/LinuxCPUSet.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOPosix-t.build/Objects-normal/arm64/LinuxCPUSet.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOPosix-t.build/Objects-normal/arm64/LinuxCPUSet.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOPosix-t.build/Objects-normal/arm64/LinuxCPUSet.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio/Sources/NIOPosix/LinuxUring.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOPosix-t.build/Objects-normal/arm64/LinuxUring.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOPosix-t.build/Objects-normal/arm64/LinuxUring.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOPosix-t.build/Objects-normal/arm64/LinuxUring.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOPosix-t.build/Objects-normal/arm64/LinuxUring.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOPosix-t.build/Objects-normal/arm64/LinuxUring.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio/Sources/NIOPosix/MultiThreadedEventLoopGroup.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOPosix-t.build/Objects-normal/arm64/MultiThreadedEventLoopGroup.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOPosix-t.build/Objects-normal/arm64/MultiThreadedEventLoopGroup.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOPosix-t.build/Objects-normal/arm64/MultiThreadedEventLoopGroup.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOPosix-t.build/Objects-normal/arm64/MultiThreadedEventLoopGroup.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOPosix-t.build/Objects-normal/arm64/MultiThreadedEventLoopGroup.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio/Sources/NIOPosix/NIOPosixSendableMetatype.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOPosix-t.build/Objects-normal/arm64/NIOPosixSendableMetatype.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOPosix-t.build/Objects-normal/arm64/NIOPosixSendableMetatype.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOPosix-t.build/Objects-normal/arm64/NIOPosixSendableMetatype.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOPosix-t.build/Objects-normal/arm64/NIOPosixSendableMetatype.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOPosix-t.build/Objects-normal/arm64/NIOPosixSendableMetatype.swiftdeps"
+  }
+}

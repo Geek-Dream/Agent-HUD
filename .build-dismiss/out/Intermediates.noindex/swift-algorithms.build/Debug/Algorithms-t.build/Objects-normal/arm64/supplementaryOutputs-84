@@ -1,0 +1,23 @@
+{
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-algorithms/Sources/Algorithms/Partition.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-algorithms.build/Debug/Algorithms-t.build/Objects-normal/arm64/Partition.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-algorithms.build/Debug/Algorithms-t.build/Objects-normal/arm64/Partition.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-algorithms.build/Debug/Algorithms-t.build/Objects-normal/arm64/Partition.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-algorithms.build/Debug/Algorithms-t.build/Objects-normal/arm64/Partition.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-algorithms.build/Debug/Algorithms-t.build/Objects-normal/arm64/Partition.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-algorithms/Sources/Algorithms/Permutations.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-algorithms.build/Debug/Algorithms-t.build/Objects-normal/arm64/Permutations.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-algorithms.build/Debug/Algorithms-t.build/Objects-normal/arm64/Permutations.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-algorithms.build/Debug/Algorithms-t.build/Objects-normal/arm64/Permutations.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-algorithms.build/Debug/Algorithms-t.build/Objects-normal/arm64/Permutations.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-algorithms.build/Debug/Algorithms-t.build/Objects-normal/arm64/Permutations.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-algorithms/Sources/Algorithms/Product.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-algorithms.build/Debug/Algorithms-t.build/Objects-normal/arm64/Product.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-algorithms.build/Debug/Algorithms-t.build/Objects-normal/arm64/Product.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-algorithms.build/Debug/Algorithms-t.build/Objects-normal/arm64/Product.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-algorithms.build/Debug/Algorithms-t.build/Objects-normal/arm64/Product.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-algorithms.build/Debug/Algorithms-t.build/Objects-normal/arm64/Product.swiftdeps"
+  }
+}

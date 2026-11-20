@@ -1,5 +1,6 @@
 import AppKit
 import Combine
+import QuartzCore
 import SwiftUI
 
 struct HUDShell: View {
@@ -77,6 +78,7 @@ struct HUDShell: View {
             .contrast(model.panelContrast)
         }
         .preferredColorScheme(nil)
+        .ignoresSafeArea()
     }
 
     private var pageTransition: AnyTransition {
@@ -102,8 +104,73 @@ struct HUDShell: View {
     }
 
     private var classicBackground: some View {
-        HUDTheme.windowTint
+        ZStack {
+            VisualEffectView(
+                material: .popover,
+                blendingMode: .behindWindow,
+                opacity: 0.45
+            )
+            LinearGradient(
+                colors: HUDTheme.windowGradient,
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
             .opacity(model.panelOpacity)
+            .overlay {
+                RadialGradient(
+                    colors: [
+                        HUDTheme.auroraSheen,
+                        Color.clear
+                    ],
+                    center: UnitPoint(x: 0.10, y: 0.02),
+                    startRadius: 8,
+                    endRadius: 520
+                )
+                .blendMode(.screen)
+            }
+            .overlay {
+                PanelLightSweep()
+            }
+        }
+    }
+}
+
+private struct PanelLightSweep: View {
+    var body: some View {
+        GeometryReader { proxy in
+            let width = proxy.size.width
+            let height = proxy.size.height
+
+            ZStack {
+                Path { path in
+                    path.move(to: CGPoint(x: 0, y: height * 0.03))
+                    path.addLine(to: CGPoint(x: width * 0.66, y: 0))
+                    path.addLine(to: CGPoint(x: 0, y: height * 0.30))
+                    path.closeSubpath()
+                }
+                .fill(HUDTheme.glassSheen)
+
+                Path { path in
+                    path.move(to: CGPoint(x: width * 0.20, y: 0))
+                    path.addLine(to: CGPoint(x: width * 0.92, y: 0))
+                    path.addLine(to: CGPoint(x: width * 0.30, y: height * 0.35))
+                    path.closeSubpath()
+                }
+                .fill(HUDTheme.glassSheen.opacity(0.42))
+                .blur(radius: 8)
+
+                Path { path in
+                    path.move(to: CGPoint(x: 0, y: height))
+                    path.addLine(to: CGPoint(x: width * 0.88, y: height))
+                    path.addLine(to: CGPoint(x: width, y: height * 0.88))
+                    path.addLine(to: CGPoint(x: 0, y: height * 0.98))
+                    path.closeSubpath()
+                }
+                .fill(HUDTheme.glassSheen.opacity(0.55))
+                .blur(radius: 5)
+            }
+            .allowsHitTesting(false)
+        }
     }
 }
 
@@ -226,7 +293,7 @@ private struct ExpandedHUDView: View {
                     )
                 } else {
                     ScrollView {
-                        LazyVStack(spacing: 0) {
+                        LazyVStack(spacing: 7) {
                             ForEach(rows) { row in
                                 AgentRowView(
                                     model: model,
@@ -238,11 +305,10 @@ private struct ExpandedHUDView: View {
                                         model.select(row.session)
                                     }
                                 }
-                                Divider()
-                                    .padding(.leading, 58)
-                                    .opacity(0.45)
                             }
                         }
+                        .padding(.top, 2)
+                        .padding(.bottom, 8)
                         .animation(
                             HUDMetrics.listAnimation,
                             value: rows.map(\.id)
@@ -257,19 +323,24 @@ private struct ExpandedHUDView: View {
     }
 
     private var expandedHeader: some View {
-        HStack(spacing: 8) {
-            HStack(spacing: 8) {
+        HStack(spacing: 10) {
+            HStack(spacing: 12) {
                 BrandToggleButton(isExpanded: true) {
                     model.collapse()
                 }
 
-                VStack(alignment: .leading, spacing: 2) {
+                VStack(alignment: .leading, spacing: 5) {
                     Text("AGENT HUD")
-                        .font(.system(size: 11, weight: .bold, design: .monospaced))
-                        .foregroundStyle(.primary)
-                    Text(model.activeCount > 0 ? "\(model.activeCount) 个 Agent 正在进行" : "本地只读监视中")
-                        .font(.system(size: 11))
-                        .foregroundStyle(HUDTheme.textSecondary)
+                        .font(.system(size: 15, weight: .semibold))
+                        .foregroundStyle(HUDTheme.textPrimary)
+                    HStack(spacing: 5) {
+                        Circle()
+                            .fill(model.activeCount > 0 ? HUDTheme.completed : HUDTheme.textTertiary)
+                            .frame(width: 6, height: 6)
+                        Text(model.activeCount > 0 ? "\(model.activeCount) 个 Agent 正在运行" : "本地只读监视中")
+                            .font(.system(size: 11.5, weight: .medium))
+                    }
+                    .foregroundStyle(HUDTheme.textSecondary)
                 }
                 .allowsHitTesting(false)
             }
@@ -309,9 +380,9 @@ private struct ExpandedHUDView: View {
                 model.hide()
             }
         }
-        .padding(.horizontal, 14)
-        .padding(.top, 13)
-        .padding(.bottom, 11)
+        .padding(.horizontal, 16)
+        .padding(.top, 32)
+        .padding(.bottom, 14)
         .background {
             WindowDragHandle(isEnabled: !model.positionLocked)
         }
@@ -339,7 +410,6 @@ private struct ExpandedHUDView: View {
                 count: { filter in
                     model.providerCount(filter)
                 },
-                visibleCount: model.visibleSessions.count,
                 onSelect: { filter in
                     withAnimation(HUDMetrics.filterAnimation) {
                         model.providerFilter = filter
@@ -384,29 +454,74 @@ private struct ExpandedHUDView: View {
             HUDMetrics.calloutAnimation,
             value: model.shouldShowImportantCompletionNotice
         )
-        .background(HUDTheme.surface.opacity(0.42))
+        .background(Color.clear)
     }
 
     private var footer: some View {
-        HStack(spacing: 6) {
-            Image(systemName: "lock.shield")
-                .font(.system(size: 10))
-            Text("只读")
+        HStack(spacing: 7) {
+            Button {
+                model.openAISettings()
+            } label: {
+                HStack(spacing: 5) {
+                    Image(systemName: "line.3.horizontal.decrease.circle")
+                        .font(.system(size: 10))
+                    Text(model.visibleSessionSummary)
+                        .lineLimit(1)
+                }
+            }
+            .buttonStyle(.plain)
+            .help("修改会话显示数量；星标会话始终常驻")
+
+            if !model.dismissedSessionIDs.isEmpty {
+                Button {
+                    withAnimation(HUDMetrics.listAnimation) {
+                        model.restoreAllDismissed()
+                    }
+                } label: {
+                    HStack(spacing: 3) {
+                        Image(systemName: "arrow.uturn.backward")
+                            .font(.system(size: 9, weight: .semibold))
+                        Text("恢复已删除 \(model.dismissedSessionIDs.count)")
+                            .monospacedDigit()
+                    }
+                    .foregroundStyle(HUDTheme.textSecondary)
+                }
+                .buttonStyle(.plain)
+                .help("把已删除的会话全部恢复显示")
+                .accessibilityLabel("恢复已删除的 \(model.dismissedSessionIDs.count) 条会话")
+                .transition(.opacity)
+            }
+
             Spacer()
             if let scannedAt = model.lastScannedAt {
-                Text("更新于 \(scannedAt.clockTime)")
-                    .monospacedDigit()
+                HStack(spacing: 6) {
+                    Circle()
+                        .fill(HUDTheme.completed)
+                        .frame(width: 5, height: 5)
+                    Text("更新于 \(scannedAt.clockTime)")
+                        .monospacedDigit()
+                }
             } else {
                 Text("正在读取")
             }
         }
         .font(.system(size: 10.5))
         .foregroundStyle(HUDTheme.textSecondary)
-        .padding(.horizontal, 14)
-        .frame(height: 28)
+        .padding(.horizontal, 16)
+        .frame(height: 34)
+        .background(
+            LinearGradient(
+                colors: HUDTheme.footerGradient,
+                startPoint: .top,
+                endPoint: .bottom
+            )
+        )
         .overlay(alignment: .top) {
-            Divider().opacity(0.45)
+            Rectangle()
+                .fill(HUDTheme.border.opacity(0.7))
+                .frame(height: 0.6)
         }
+        .animation(HUDMetrics.listAnimation, value: model.dismissedSessionIDs.count)
     }
 }
 
@@ -530,6 +645,7 @@ private struct SessionDetailView: View {
         }
         .padding(.horizontal, 12)
         .frame(height: 48)
+        .padding(.top, 30)
         .background {
             WindowDragHandle(isEnabled: !model.positionLocked)
         }
@@ -915,8 +1031,41 @@ private struct SessionDetailView: View {
     }
 }
 
+@MainActor
+private final class RowMotionState: ObservableObject {
+    @Published var hoverLocation: CGPoint?
+    @Published var importantBurst = false
+    private var burstSequence = 0
+
+    func playImportantBurst() {
+        burstSequence += 1
+        let sequence = burstSequence
+        var transaction = Transaction()
+        transaction.disablesAnimations = true
+        withTransaction(transaction) {
+            importantBurst = true
+        }
+        // Give SwiftUI one rendered frame at the bright, contracted state before
+        // expanding the ring. This also survives the row moving to the top.
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) { [weak self] in
+            guard let self, self.burstSequence == sequence else {
+                return
+            }
+            withAnimation(.easeOut(duration: 0.60)) {
+                self.importantBurst = false
+            }
+        }
+    }
+
+    func cancelImportantBurst() {
+        burstSequence += 1
+        importantBurst = false
+    }
+}
+
 private struct AgentRowView: View {
     @ObservedObject var model: HUDViewModel
+    @StateObject private var motion = RowMotionState()
     let session: AgentSession
     let phase: SessionRowPresentation.Phase
     let arrivalVisible: Bool
@@ -934,8 +1083,19 @@ private struct AgentRowView: View {
         model.isImportant(session)
     }
 
-    private var showsStatusOutline: Bool {
-        SessionOutlinePolicy.shouldShow(status: session.status, isImportant: isImportant)
+    private var glyphStyle: SessionGlyphStyle {
+        SessionGlyphPolicy.style(
+            title: model.privacyMode ? "" : model.displayTitle(for: session),
+            provider: session.provider
+        )
+    }
+
+    private var rowAccent: Color {
+        isImportant ? importantTint : glyphStyle.color
+    }
+
+    private var showsEdgeLight: Bool {
+        isHovered || isImportant || session.status.isRunning
     }
 
     private var isDeparting: Bool {
@@ -950,14 +1110,47 @@ private struct AgentRowView: View {
         HStack(alignment: .top, spacing: 11) {
             ZStack {
                 RoundedRectangle(cornerRadius: HUDMetrics.Radius.small, style: .continuous)
-                    .fill(session.provider.accentColor.opacity(0.12))
-                Image(systemName: session.provider.symbolName)
-                    .font(HUDMetrics.Typography.title)
-                    .foregroundStyle(session.provider.accentColor)
+                    .fill(
+                        LinearGradient(
+                            colors: [
+                                glyphStyle.highlightColor.opacity(0.28),
+                                glyphStyle.color.opacity(0.07)
+                            ],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        )
+                    )
+                    .overlay {
+                        RoundedRectangle(cornerRadius: HUDMetrics.Radius.small, style: .continuous)
+                            .strokeBorder(glyphStyle.color.opacity(isHovered ? 0.58 : 0.28), lineWidth: 0.8)
+                    }
+                    .shadow(
+                        color: glyphStyle.color.opacity(isHovered ? 0.48 : 0.16),
+                        radius: isHovered ? 10 : 5,
+                        y: isHovered ? 0 : 2
+                    )
+                Image(systemName: glyphStyle.symbol)
+                    .font(.system(size: 18, weight: .semibold))
+                    .foregroundStyle(
+                        LinearGradient(
+                            colors: [glyphStyle.highlightColor, glyphStyle.color],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        )
+                    )
+                    .shadow(
+                        color: glyphStyle.color.opacity(isHovered ? 0.72 : 0.24),
+                        radius: isHovered ? 6 : 2
+                    )
+                    .scaleEffect(isHovered ? 1.08 : 1)
+                    .animation(
+                        HUDMetrics.motion(.spring(response: 0.24, dampingFraction: 0.72)),
+                        value: isHovered
+                    )
             }
-            .frame(width: 33, height: 33)
+            .frame(width: 42, height: 42)
 
-            VStack(alignment: .leading, spacing: 5) {
+            VStack(alignment: .leading, spacing: 6) {
                 HStack(spacing: 7) {
                     if isEditingTitle {
                         InlineTitleTextField(
@@ -1015,22 +1208,72 @@ private struct AgentRowView: View {
 
                     Spacer(minLength: 4)
 
+                    if isHovered, !model.privacyMode {
+                        Button {
+                            model.suppressNextRowOpen(for: session)
+                            withAnimation(HUDMetrics.listAnimation) {
+                                model.dismiss(session)
+                            }
+                        } label: {
+                            Image(systemName: "trash")
+                                .font(.system(size: 9.5, weight: .semibold))
+                                .foregroundStyle(HUDTheme.textSecondary)
+                                .frame(width: 21, height: 21)
+                                .background(
+                                    HUDTheme.controlFill,
+                                    in: RoundedRectangle(cornerRadius: HUDMetrics.Radius.micro, style: .continuous)
+                                )
+                        }
+                        .buttonStyle(.plain)
+                        .help("从列表删除，有新动态时自动回来")
+                        .accessibilityLabel("从列表删除，有新动态时自动回来")
+                        .transition(.opacity.combined(with: .scale(scale: 0.82)))
+                    }
+
                     Button {
                         model.suppressNextRowOpen(for: session)
-                        withAnimation(HUDMetrics.filterAnimation) {
+                        if !isImportant, !HUDMetrics.reduceMotion {
+                            motion.playImportantBurst()
+                        } else {
+                            motion.cancelImportantBurst()
+                        }
+                        withAnimation(HUDMetrics.listAnimation) {
                             model.toggleImportance(for: session)
                         }
                     } label: {
-                        Image(systemName: isImportant ? "star.fill" : "star")
-                            .font(.system(size: 10, weight: .semibold))
-                            .foregroundStyle(isImportant ? importantTint : HUDTheme.textSecondary)
-                            .frame(width: 21, height: 21)
-                            .background(
-                                isImportant
-                                    ? importantTint.opacity(0.13)
-                                    : HUDTheme.controlFill,
-                                in: RoundedRectangle(cornerRadius: HUDMetrics.Radius.micro, style: .continuous)
-                            )
+                        ZStack {
+                            Circle()
+                                .strokeBorder(importantTint, lineWidth: 1.5)
+                                .scaleEffect(motion.importantBurst ? 0.68 : 1.85)
+                                .opacity(motion.importantBurst ? 1 : 0)
+
+                            RoundedRectangle(cornerRadius: HUDMetrics.Radius.micro, style: .continuous)
+                                .fill(
+                                    isImportant
+                                        ? importantTint.opacity(motion.importantBurst ? 0.34 : 0.20)
+                                        : HUDTheme.controlFill
+                                )
+
+                            Image(systemName: isImportant ? "star.fill" : "star")
+                                .font(.system(size: 10.5, weight: .semibold))
+                                .foregroundStyle(isImportant ? importantTint : HUDTheme.textSecondary)
+                                .symbolEffect(.bounce, value: isImportant)
+                                .shadow(
+                                    color: importantTint.opacity(isImportant ? 0.60 : 0),
+                                    radius: motion.importantBurst ? 8 : 3
+                                )
+                        }
+                        .frame(width: 24, height: 24)
+                        .overlay {
+                            if isImportant {
+                                RoundedRectangle(cornerRadius: HUDMetrics.Radius.micro, style: .continuous)
+                                    .strokeBorder(importantTint.opacity(0.38), lineWidth: 0.7)
+                            }
+                        }
+                        .shadow(
+                            color: importantTint.opacity(isImportant ? 0.30 : 0),
+                            radius: motion.importantBurst ? 10 : 5
+                        )
                     }
                     .buttonStyle(.plain)
                     .help(isImportant ? "取消重要" : "标记为重要并置顶")
@@ -1042,6 +1285,7 @@ private struct AgentRowView: View {
                 HStack(spacing: 5) {
                     Text(session.provider.shortName)
                         .font(HUDMetrics.Typography.agent)
+                        .foregroundStyle(glyphStyle.color)
                     Text("·")
                     Text(model.privacyMode ? "项目已隐藏" : session.projectName)
                     if let git = session.git {
@@ -1072,66 +1316,60 @@ private struct AgentRowView: View {
             }
 
             Image(systemName: "chevron.right")
-                .font(HUDMetrics.Typography.micro)
+                .font(.system(size: 10, weight: .semibold))
                 .foregroundStyle(HUDTheme.textTertiary)
-                .padding(.top, 9)
+                .padding(.top, 12)
         }
-        .padding(.horizontal, 14)
-        .padding(.vertical, 12)
+        .padding(.horizontal, 17)
+        .padding(.vertical, 14)
         .contentShape(Rectangle())
         .background {
-            RoundedRectangle(cornerRadius: HUDMetrics.Radius.card, style: .continuous)
-                .fill(HUDTheme.surface.opacity(isHovered ? 0.72 : 0.34))
-                .overlay {
-                    if showsStatusOutline {
-                        RoundedRectangle(cornerRadius: HUDMetrics.Radius.card, style: .continuous)
-                            .fill(session.status.color.opacity(isHovered ? 0.06 : 0.03))
-                    }
-                }
+            SessionRowSurface(
+                status: session.status,
+                isHovered: isHovered,
+                accent: rowAccent,
+                isImportant: isImportant,
+                hoverLocation: motion.hoverLocation,
+                animatesImportant: model.advancedAnimations
+            )
         }
         .overlay(alignment: .leading) {
-            if showsStatusOutline {
-                Rectangle()
-                    .fill(session.status.color)
-                    .frame(width: 2.5)
-                    .padding(.vertical, 9)
+            if showsEdgeLight {
+                Capsule()
+                    .fill(rowAccent)
+                    .frame(width: 3)
+                    .padding(.vertical, 18)
+                    .padding(.leading, 8)
+                    .shadow(
+                        color: rowAccent.opacity(isHovered ? 0.82 : (isImportant ? 0.52 : 0.36)),
+                        radius: isHovered ? 8 : 4
+                    )
             }
         }
         .overlay {
-            if showsStatusOutline {
+            if isHovered {
                 RoundedRectangle(cornerRadius: HUDMetrics.Radius.card, style: .continuous)
                     .strokeBorder(
-                        session.status.color.opacity(isHovered ? 0.75 : 0.55),
-                        lineWidth: 1
+                        rowAccent.opacity(0.82),
+                        lineWidth: 1.2
                     )
-                    .padding(.horizontal, 6)
-                    .padding(.vertical, 5)
+                    .padding(.horizontal, 8)
                     .allowsHitTesting(false)
             }
         }
         .shadow(
-            color: showsStatusOutline
-                ? HUDTheme.Shadow.status(color: session.status.color, hovered: isHovered).color
-                : HUDTheme.Shadow.rowBase.color,
-            radius: showsStatusOutline
-                ? HUDTheme.Shadow.status(color: session.status.color, hovered: isHovered).radius
-                : HUDTheme.Shadow.rowBase.radius,
-            y: showsStatusOutline
-                ? HUDTheme.Shadow.status(color: session.status.color, hovered: isHovered).y
-                : HUDTheme.Shadow.rowBase.y
+            color: isHovered
+                ? rowAccent.opacity(0.38)
+                : (isImportant ? importantTint.opacity(0.15) : HUDTheme.Shadow.rowBase.color),
+            radius: isHovered ? 13 : (isImportant ? 8 : HUDTheme.Shadow.rowBase.radius),
+            y: isHovered ? 0 : HUDTheme.Shadow.rowBase.y
         )
-        .scaleEffect(isHovered ? 1.005 : 1.0)
-        .animation(HUDMetrics.motion(.spring(response: 0.22, dampingFraction: 0.92)), value: isHovered)
+        .animation(HUDMetrics.motion(.easeOut(duration: 0.18)), value: isHovered)
         .opacity(isDeparting ? 0 : (isArriving && !arrivalVisible ? 0 : 1))
         .offset(
-            x: isDeparting ? 118 : 0,
-            y: isArriving && !arrivalVisible ? 12 : 0
+            x: 0,
+            y: isArriving && !arrivalVisible ? 8 : 0
         )
-        .scaleEffect(
-            isArriving && !arrivalVisible ? 0.985 : 1,
-            anchor: .top
-        )
-        .blur(radius: isDeparting ? 1.8 : 0)
         .zIndex(isDeparting ? 1 : 0)
         .animation(
             .timingCurve(
@@ -1144,7 +1382,7 @@ private struct AgentRowView: View {
             value: isDeparting
         )
         .animation(
-            .spring(response: 0.36, dampingFraction: 0.88),
+            .timingCurve(0.16, 1, 0.3, 1, duration: 0.28),
             value: arrivalVisible
         )
         .onTapGesture {
@@ -1159,6 +1397,14 @@ private struct AgentRowView: View {
         .onHover { hovered in
             withAnimation(.timingCurve(0.2, 0.8, 0.2, 1, duration: 0.16)) {
                 model.setHoveredSession(session.id, hovered: hovered)
+            }
+        }
+        .onContinuousHover(coordinateSpace: .local) { phase in
+            switch phase {
+            case .active(let location):
+                motion.hoverLocation = location
+            case .ended:
+                motion.hoverLocation = nil
             }
         }
         .onDisappear {
@@ -1191,6 +1437,225 @@ private struct AgentRowView: View {
 
 private let importantTint = HUDTheme.important
 
+/// 会话行的渐变背景与悬停霓虹；重要描边只呼吸发光，不缩放卡片。
+/// 独立成视图便于离屏渲染做像素级验证。
+struct SessionRowSurface: View {
+    let status: AgentStatus
+    let isHovered: Bool
+    let accent: Color
+    let isImportant: Bool
+    let hoverLocation: CGPoint?
+    let animatesImportant: Bool
+    @Environment(\.colorScheme) private var colorScheme
+
+    var body: some View {
+        GeometryReader { proxy in
+            ZStack {
+                RoundedRectangle(cornerRadius: HUDMetrics.Radius.card, style: .continuous)
+                    .fill(
+                        LinearGradient(
+                            colors: HUDTheme.cardGradient,
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        )
+                    )
+                    .overlay {
+                        RoundedRectangle(cornerRadius: HUDMetrics.Radius.card, style: .continuous)
+                            .strokeBorder(
+                                LinearGradient(
+                                    colors: HUDTheme.cardBorderGradient,
+                                    startPoint: .topLeading,
+                                    endPoint: .bottomTrailing
+                                ),
+                                lineWidth: 0.8
+                            )
+                    }
+
+                if SessionRowSurfacePolicy.isStatusTinted(status) {
+                    RoundedRectangle(cornerRadius: HUDMetrics.Radius.card, style: .continuous)
+                        .fill(
+                            LinearGradient(
+                                colors: [
+                                    status.color.opacity(isHovered ? 0.055 : 0.028),
+                                    status.color.opacity(isHovered ? 0.025 : 0.010)
+                                ],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            )
+                        )
+                }
+
+                if isImportant {
+                    RoundedRectangle(cornerRadius: HUDMetrics.Radius.card, style: .continuous)
+                        .fill(
+                            LinearGradient(
+                                colors: [
+                                    importantTint.opacity(colorScheme == .dark ? 0.12 : 0.075),
+                                    importantTint.opacity(0.018)
+                                ],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            )
+                        )
+                }
+
+                if isHovered, let hoverLocation {
+                    RadialGradient(
+                        colors: [
+                            accent.opacity(colorScheme == .dark ? 0.36 : 0.20),
+                            accent.opacity(colorScheme == .dark ? 0.12 : 0.06),
+                            Color.clear
+                        ],
+                        center: UnitPoint(
+                            x: min(max(hoverLocation.x / max(proxy.size.width, 1), 0), 1),
+                            y: min(max(hoverLocation.y / max(proxy.size.height, 1), 0), 1)
+                        ),
+                        startRadius: 4,
+                        endRadius: 115
+                    )
+                    .clipShape(RoundedRectangle(cornerRadius: HUDMetrics.Radius.card, style: .continuous))
+                    .blendMode(colorScheme == .dark ? .screen : .normal)
+                    .transition(.opacity)
+                }
+
+                if isImportant {
+                    ImportantBorder(
+                        isHovered: isHovered,
+                        animates: animatesImportant && !HUDMetrics.reduceMotion
+                    )
+                } else if isHovered {
+                    RoundedRectangle(cornerRadius: HUDMetrics.Radius.card, style: .continuous)
+                        .strokeBorder(accent.opacity(0.58), lineWidth: 1.2)
+                        .shadow(color: accent.opacity(0.46), radius: 10)
+                }
+            }
+            .padding(.horizontal, 8)
+        }
+    }
+}
+
+private struct ImportantBorder: View {
+    let isHovered: Bool
+    let animates: Bool
+
+    var body: some View {
+        RoundedRectangle(cornerRadius: HUDMetrics.Radius.card, style: .continuous)
+            .strokeBorder(importantTint.opacity(isHovered ? 0.56 : 0.24), lineWidth: 0.9)
+            .overlay {
+                if animates {
+                    OpacityPulseLayer(
+                        color: importantTint.opacity(0.68),
+                        cornerRadius: HUDMetrics.Radius.card,
+                        lineWidth: 1.2,
+                        shadowRadius: 13,
+                        minimumOpacity: 0.14,
+                        duration: 1.7
+                    )
+                    .allowsHitTesting(false)
+                } else {
+                    RoundedRectangle(cornerRadius: HUDMetrics.Radius.card, style: .continuous)
+                        .strokeBorder(importantTint.opacity(0.28), lineWidth: 1)
+                }
+            }
+    }
+}
+
+/// A repeating opacity animation that stays on Core Animation's render thread.
+/// SwiftUI symbol effects and phase animators otherwise rebuild the HUD view tree.
+private struct OpacityPulseLayer: NSViewRepresentable {
+    let color: Color
+    let cornerRadius: CGFloat
+    let lineWidth: CGFloat
+    let shadowRadius: CGFloat
+    let minimumOpacity: Double
+    let duration: Double
+
+    func makeNSView(context: Context) -> OpacityPulseNSView {
+        OpacityPulseNSView()
+    }
+
+    func updateNSView(_ view: OpacityPulseNSView, context: Context) {
+        view.configure(
+            color: NSColor(color).cgColor,
+            cornerRadius: cornerRadius,
+            lineWidth: lineWidth,
+            shadowRadius: shadowRadius,
+            minimumOpacity: minimumOpacity,
+            duration: duration
+        )
+    }
+}
+
+private final class OpacityPulseNSView: NSView {
+    private let pulseLayer = CAShapeLayer()
+    private var cornerRadius: CGFloat = 0
+    private var lineWidth: CGFloat = 0
+
+    override init(frame frameRect: NSRect) {
+        super.init(frame: frameRect)
+        wantsLayer = true
+        layer?.addSublayer(pulseLayer)
+    }
+
+    required init?(coder: NSCoder) {
+        nil
+    }
+
+    override func layout() {
+        super.layout()
+        CATransaction.begin()
+        CATransaction.setDisableActions(true)
+        pulseLayer.frame = bounds
+        let pathBounds = bounds.insetBy(dx: lineWidth / 2, dy: lineWidth / 2)
+        let path = lineWidth == 0
+            ? CGPath(ellipseIn: pathBounds, transform: nil)
+            : CGPath(
+                roundedRect: pathBounds,
+                cornerWidth: cornerRadius,
+                cornerHeight: cornerRadius,
+                transform: nil
+            )
+        pulseLayer.path = path
+        pulseLayer.shadowPath = path
+        CATransaction.commit()
+    }
+
+    func configure(
+        color: CGColor,
+        cornerRadius: CGFloat,
+        lineWidth: CGFloat,
+        shadowRadius: CGFloat,
+        minimumOpacity: Double,
+        duration: Double
+    ) {
+        self.cornerRadius = cornerRadius
+        self.lineWidth = lineWidth
+        CATransaction.begin()
+        CATransaction.setDisableActions(true)
+        pulseLayer.fillColor = lineWidth == 0 ? color : CGColor.clear
+        pulseLayer.strokeColor = lineWidth == 0 ? nil : color
+        pulseLayer.lineWidth = lineWidth
+        pulseLayer.shadowColor = color
+        pulseLayer.shadowOpacity = shadowRadius == 0 ? 0 : 0.68
+        pulseLayer.shadowRadius = shadowRadius
+        pulseLayer.shadowOffset = .zero
+        CATransaction.commit()
+        needsLayout = true
+
+        guard pulseLayer.animation(forKey: "hud.opacity") == nil else {
+            return
+        }
+        let animation = CABasicAnimation(keyPath: "opacity")
+        animation.fromValue = minimumOpacity
+        animation.toValue = 1
+        animation.duration = duration
+        animation.autoreverses = true
+        animation.repeatCount = .infinity
+        animation.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
+        pulseLayer.add(animation, forKey: "hud.opacity")
+    }
+}
+
 private struct StatusDot: View {
     let color: Color
     let animates: Bool
@@ -1198,10 +1663,23 @@ private struct StatusDot: View {
     var body: some View {
         // 脉冲（高级动画）是逐行常驻动画，会话越多开销越大，
         // 因此默认关闭、由用户在设置里按需开启；关闭时保持静态实心点。
-        Image(systemName: "circle.fill")
-            .font(.system(size: 5))
-            .foregroundStyle(color)
-            .symbolEffect(.pulse, options: .repeating, isActive: animates)
+        Group {
+            if animates {
+                OpacityPulseLayer(
+                    color: color,
+                    cornerRadius: 2.5,
+                    lineWidth: 0,
+                    shadowRadius: 0,
+                    minimumOpacity: 0.38,
+                    duration: 1.15
+                )
+            } else {
+                Circle()
+                    .fill(color)
+            }
+        }
+        .frame(width: 5, height: 5)
+        .allowsHitTesting(false)
     }
 }
 
@@ -1700,103 +2178,97 @@ private struct CalloutCaret: Shape {
     }
 }
 
+@MainActor
+private final class FilterHoverState: ObservableObject {
+    @Published var status: StatusFilter?
+    @Published var provider: ProviderFilter?
+}
+
 private struct OverviewStrip: View {
     let selectedFilter: StatusFilter
     let highlightAll: Bool
     let count: (StatusFilter) -> Int
     let onSelect: (StatusFilter) -> Void
     @Namespace private var selectionNamespace
+    @Environment(\.colorScheme) private var colorScheme
+    @StateObject private var hover = FilterHoverState()
 
     var body: some View {
         HStack(spacing: 2) {
             ForEach(StatusFilter.allCases) { filter in
                 let selected = filter == selectedFilter
+                let hovered = hover.status == filter
 
                 Button {
                     onSelect(filter)
                 } label: {
-                    VStack(spacing: 4) {
-                        HStack(spacing: 4) {
-                            Text(filter.label)
-                                .font(.system(size: 10.5, weight: .semibold))
+                    HStack(spacing: 5) {
+                        Text(filter.label)
+                            .font(.system(size: 11.5, weight: .semibold))
 
-                            Text("\(count(filter))")
-                                .font(.system(size: 9, weight: .bold, design: .rounded))
-                                .monospacedDigit()
-                                .contentTransition(.numericText())
-                                .padding(.horizontal, 4)
-                                .frame(minWidth: 16, minHeight: 14)
-                                .background(
+                        Text("\(count(filter))")
+                            .font(.system(size: 9, weight: .bold, design: .rounded))
+                            .monospacedDigit()
+                            .contentTransition(.numericText())
+                            .frame(minWidth: 17, minHeight: 17)
+                            .background(
+                                selected ? filter.color.opacity(0.12) : HUDTheme.controlFill,
+                                in: Capsule()
+                            )
+                    }
+                    .foregroundStyle(
+                        selected
+                            ? HUDTheme.selectionText
+                            : (hovered ? filter.color : HUDTheme.textSecondary)
+                    )
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 33)
+                    .background {
+                        if selected {
+                            Capsule()
+                                .fill(
                                     LinearGradient(
-                                        colors: [
-                                            filter.color.opacity(selected ? 0.24 : 0.11),
-                                            filter.color.opacity(selected ? 0.10 : 0.045)
-                                        ],
+                                        colors: HUDTheme.selectionGradient,
                                         startPoint: .topLeading,
                                         endPoint: .bottomTrailing
-                                    ),
-                                    in: Capsule()
+                                    )
                                 )
                                 .overlay {
                                     Capsule()
                                         .strokeBorder(
-                                            filter.color.opacity(selected ? 0.52 : 0.18),
-                                            lineWidth: 0.8
+                                            filter.color.opacity(colorScheme == .dark ? 0.82 : 0.46),
+                                            lineWidth: 0.9
                                         )
-                                }
-                        }
-                        .foregroundStyle(selected ? filter.color : HUDTheme.textSecondary)
-
-                        Capsule()
-                            .fill(
-                                selected
-                                    ? LinearGradient(
-                                        colors: [
-                                            filter.color.opacity(0.72),
-                                            filter.color
-                                        ],
-                                        startPoint: .leading,
-                                        endPoint: .trailing
-                                    )
-                                    : LinearGradient(
-                                        colors: [Color.clear, Color.clear],
-                                        startPoint: .leading,
-                                        endPoint: .trailing
-                                    )
-                            )
-                            .frame(width: 22, height: 2)
-                            .shadow(
-                                color: selected ? filter.color.opacity(0.58) : .clear,
-                                radius: 4
-                            )
-                    }
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 7)
-                    .background {
-                        if selected {
-                            RoundedRectangle(cornerRadius: HUDMetrics.Radius.control, style: .continuous)
-                                .fill(filter.color.opacity(0.16))
-                                .overlay {
-                                    RoundedRectangle(cornerRadius: HUDMetrics.Radius.control, style: .continuous)
-                                        .strokeBorder(filter.color.opacity(0.42), lineWidth: 0.8)
                                 }
                                 .matchedGeometryEffect(
                                     id: "overview-selection",
                                     in: selectionNamespace
                                 )
+                        } else if hovered {
+                            Capsule()
+                                .fill(filter.color.opacity(colorScheme == .dark ? 0.13 : 0.09))
+                                .overlay {
+                                    Capsule()
+                                        .strokeBorder(filter.color.opacity(0.36), lineWidth: 0.7)
+                                }
                         }
                     }
                     .shadow(
-                        color: selected ? filter.color.opacity(0.24) : .clear,
-                        radius: selected ? 6 : 0,
-                        y: 2
+                        color: filter.color.opacity(
+                            selected ? (colorScheme == .dark ? 0.64 : 0.30) : (hovered ? 0.28 : 0)
+                        ),
+                        radius: selected ? (colorScheme == .dark ? 12 : 8) : (hovered ? 7 : 0),
+                        y: 0
                     )
-                    .contentShape(Rectangle())
+                    .contentShape(Capsule())
                 }
                 .buttonStyle(.plain)
+                .onHover { isHovered in
+                    hover.status = isHovered ? filter : nil
+                }
                 .overlay {
                     if filter == .all, highlightAll {
-                        RoundedRectangle(cornerRadius: HUDMetrics.Radius.control, style: .continuous)
+                        Capsule()
                             .strokeBorder(
                                 AgentStatus.completed.color.opacity(0.88),
                                 lineWidth: 1.2
@@ -1812,16 +2284,28 @@ private struct OverviewStrip: View {
                 .accessibilityLabel("\(filter.label)，\(count(filter)) 个会话")
             }
         }
-        .padding(.horizontal, 10)
-        .padding(.top, 4)
-        .frame(height: 45)
-        .background(HUDTheme.surface.opacity(0.42))
-        .overlay(alignment: .top) {
-            Rectangle()
-                .fill(HUDTheme.divider)
-                .frame(height: 0.5)
+        .padding(3)
+        .background(
+            LinearGradient(
+                colors: HUDTheme.filterBarGradient,
+                startPoint: .top,
+                endPoint: .bottom
+            ),
+            in: RoundedRectangle(cornerRadius: HUDMetrics.Radius.small, style: .continuous)
+        )
+        .overlay {
+            RoundedRectangle(cornerRadius: HUDMetrics.Radius.small, style: .continuous)
+                .strokeBorder(
+                    colorScheme == .dark ? HUDTheme.border : Color.white.opacity(0.58),
+                    lineWidth: 0.7
+                )
         }
+        .padding(.horizontal, 12)
+        .padding(.top, 2)
+        .padding(.bottom, 4)
+        .frame(height: 46)
         .animation(HUDMetrics.motion(HUDMetrics.filterAnimation), value: selectedFilter)
+        .animation(HUDMetrics.motion(.easeOut(duration: 0.15)), value: hover.status)
     }
 }
 
@@ -1829,9 +2313,10 @@ private struct ProviderFilterStrip: View {
     let selectedFilter: ProviderFilter
     let highlightAll: Bool
     let count: (ProviderFilter) -> Int
-    let visibleCount: Int
     let onSelect: (ProviderFilter) -> Void
     @Namespace private var selectionNamespace
+    @Environment(\.colorScheme) private var colorScheme
+    @StateObject private var hover = FilterHoverState()
 
     var body: some View {
         HStack(spacing: 6) {
@@ -1839,57 +2324,81 @@ private struct ProviderFilterStrip: View {
                 HStack(spacing: 6) {
                     ForEach(ProviderFilter.allCases) { filter in
                 let selected = filter == selectedFilter
+                let hovered = hover.provider == filter
 
                 Button {
                     onSelect(filter)
                 } label: {
                     HStack(spacing: 5) {
                         Image(systemName: filter.symbolName)
-                            .font(.system(size: 8.5, weight: .semibold))
+                            .font(.system(size: 9.5, weight: .semibold))
 
                         Text(filter.label)
-                            .font(.system(size: 10.5, weight: .semibold))
+                            .font(.system(size: 11, weight: .medium))
 
                         Text("\(count(filter))")
-                            .font(.system(size: 8.5, weight: .bold, design: .rounded))
+                            .font(.system(size: 9, weight: .semibold, design: .rounded))
                             .monospacedDigit()
                             .opacity(selected ? 0.9 : 0.65)
                             .contentTransition(.numericText())
                     }
-                    .foregroundStyle(selected ? filter.accentColor : HUDTheme.textSecondary)
-                    .padding(.horizontal, 8)
-                    .frame(height: 25)
+                    .foregroundStyle(
+                        selected
+                            ? HUDTheme.selectionText
+                            : (filter == .all ? HUDTheme.textSecondary : filter.accentColor)
+                    )
+                    .padding(.horizontal, 10)
+                    .frame(height: 29)
                     .background {
                         if selected {
                             Capsule()
-                                .fill(filter.accentColor.opacity(0.18))
+                                .fill(
+                                    LinearGradient(
+                                        colors: HUDTheme.selectionGradient,
+                                        startPoint: .topLeading,
+                                        endPoint: .bottomTrailing
+                                    )
+                                )
                                 .matchedGeometryEffect(
                                     id: "provider-selection",
                                     in: selectionNamespace
                                 )
                         } else {
                             Capsule()
-                                .fill(HUDTheme.controlFill)
+                                .fill(filter.accentColor.opacity(hovered ? 0.14 : 0.055))
+                                .background(
+                                    LinearGradient(
+                                        colors: HUDTheme.filterPillGradient,
+                                        startPoint: .top,
+                                        endPoint: .bottom
+                                    ),
+                                    in: Capsule()
+                                )
                         }
                     }
                     .overlay {
                         Capsule()
                             .strokeBorder(
                                 selected
-                                    ? filter.accentColor.opacity(0.45)
-                                    : HUDTheme.border,
-                                lineWidth: 0.8
+                                    ? filter.accentColor.opacity(0.72)
+                                    : filter.accentColor.opacity(hovered ? 0.58 : 0.16),
+                                lineWidth: hovered || selected ? 0.9 : 0.7
                             )
                     }
                     .shadow(
-                        color: selected ? filter.accentColor.opacity(0.28) : .clear,
-                        radius: selected ? 7 : 0,
-                        y: 2
+                        color: filter.accentColor.opacity(
+                            selected ? (colorScheme == .dark ? 0.52 : 0.24) : (hovered ? 0.32 : 0)
+                        ),
+                        radius: selected ? (colorScheme == .dark ? 11 : 7) : (hovered ? 8 : 0),
+                        y: 0
                     )
                     .fixedSize(horizontal: true, vertical: false)
                     .contentShape(Capsule())
                 }
                 .buttonStyle(.plain)
+                .onHover { isHovered in
+                    hover.provider = isHovered ? filter : nil
+                }
                 .overlay {
                     if filter == .all, highlightAll {
                         Capsule()
@@ -1910,19 +2419,27 @@ private struct ProviderFilterStrip: View {
                 }
             }
             .layoutPriority(1)
-
-            Spacer(minLength: 2)
-
-            Text("\(visibleCount) 个会话")
-                .font(HUDMetrics.Typography.caption)
-                .foregroundStyle(HUDTheme.textSecondary)
-                .monospacedDigit()
-                .contentTransition(.numericText())
         }
-        .padding(.horizontal, 14)
-        .padding(.vertical, 8)
-        .background(HUDTheme.surface.opacity(0.18))
+        .padding(.horizontal, 6)
+        .padding(.vertical, 5)
+        .frame(height: 44)
+        .background(
+            LinearGradient(
+                colors: HUDTheme.filterBarGradient,
+                startPoint: .top,
+                endPoint: .bottom
+            ),
+            in: RoundedRectangle(cornerRadius: HUDMetrics.Radius.small, style: .continuous)
+        )
+        .overlay {
+            if colorScheme == .dark {
+                RoundedRectangle(cornerRadius: HUDMetrics.Radius.small, style: .continuous)
+                    .strokeBorder(HUDTheme.border, lineWidth: 0.7)
+            }
+        }
+        .padding(.horizontal, 12)
         .animation(HUDMetrics.motion(HUDMetrics.filterAnimation), value: selectedFilter)
+        .animation(HUDMetrics.motion(.easeOut(duration: 0.15)), value: hover.provider)
     }
 }
 
@@ -1949,42 +2466,31 @@ private struct StatusBadge: View {
     let confidence: StatusConfidence
 
     var body: some View {
-        HStack(spacing: 4) {
+        HStack(spacing: 5) {
             Circle()
                 .fill(status.color)
                 .frame(width: 5, height: 5)
             Text(status.shortLabel)
-                .font(HUDMetrics.Typography.micro)
+                .font(.system(size: 10, weight: .semibold))
                 .foregroundStyle(status.color)
         }
-        .padding(.horizontal, 6)
-        .frame(height: 18)
+        .padding(.horizontal, 8)
+        .frame(height: 22)
         .background(
             LinearGradient(
                 colors: [
-                    status.color.opacity(0.20),
-                    status.color.opacity(0.065)
+                    status.color.opacity(0.17),
+                    status.color.opacity(0.07)
                 ],
                 startPoint: .topLeading,
                 endPoint: .bottomTrailing
             ),
-            in: RoundedRectangle(cornerRadius: HUDMetrics.Radius.micro)
+            in: Capsule()
         )
         .overlay {
-            RoundedRectangle(cornerRadius: HUDMetrics.Radius.micro)
-                .strokeBorder(
-                    LinearGradient(
-                        colors: [
-                            HUDTheme.borderStrong,
-                            status.color.opacity(0.52)
-                        ],
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    ),
-                    lineWidth: 0.8
-                )
+            Capsule()
+                .strokeBorder(status.color.opacity(0.22), lineWidth: 0.8)
         }
-        .shadow(color: status.color.opacity(0.18), radius: 4, y: 1)
         .help("\(status.label) · \(confidence.label)")
     }
 }
@@ -2085,14 +2591,21 @@ private struct BrandMark: View {
     var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius: HUDMetrics.Radius.small, style: .continuous)
-                .fill(HUDTheme.controlFill)
+                .fill(
+                    LinearGradient(
+                        colors: HUDTheme.brandGradient,
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    )
+                )
             RoundedRectangle(cornerRadius: HUDMetrics.Radius.small, style: .continuous)
-                .strokeBorder(HUDTheme.border)
+                .strokeBorder(HUDTheme.accent.opacity(0.35), lineWidth: 0.9)
             Image(systemName: "rectangle.3.group")
-                .font(.system(size: size * 0.43, weight: .semibold))
+                .font(.system(size: size * 0.42, weight: .medium))
                 .foregroundStyle(HUDTheme.textPrimary)
         }
         .frame(width: size, height: size)
+        .shadow(color: HUDTheme.rowShadow, radius: 4, y: 2)
     }
 }
 
@@ -2102,7 +2615,7 @@ private struct BrandToggleButton: View {
 
     var body: some View {
         Button(action: action) {
-            BrandMark(size: 28)
+            BrandMark(size: isExpanded ? 42 : 28)
                 .contentShape(RoundedRectangle(cornerRadius: HUDMetrics.Radius.small, style: .continuous))
         }
         .buttonStyle(.plain)
@@ -2142,14 +2655,18 @@ private struct HUDIconButton: View {
     var body: some View {
         Button(action: action) {
             Image(systemName: symbol)
-                .font(.system(size: 11.5, weight: .semibold))
+                .font(.system(size: 12, weight: .medium))
                 .foregroundStyle(tint)
-                .frame(width: 27, height: 27)
+                .frame(width: 29, height: 29)
                 .background(
-                    HUDTheme.controlFill,
+                    HUDTheme.toolbarIdle,
                     in: RoundedRectangle(cornerRadius: HUDMetrics.Radius.control, style: .continuous)
                 )
-                .contentShape(Rectangle())
+                .overlay {
+                    RoundedRectangle(cornerRadius: HUDMetrics.Radius.control, style: .continuous)
+                        .strokeBorder(HUDTheme.border.opacity(0.55), lineWidth: 0.6)
+                }
+                .contentShape(RoundedRectangle(cornerRadius: HUDMetrics.Radius.control, style: .continuous))
         }
         .buttonStyle(.plain)
         .help(help)

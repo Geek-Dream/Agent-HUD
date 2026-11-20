@@ -1,0 +1,109 @@
+{
+  "" : {
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOWebSocket-t.build/Objects-normal/arm64/NIOWebSocket-primary.dia",
+    "emit-module-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOWebSocket-t.build/Objects-normal/arm64/NIOWebSocket-primary-emit-module.d",
+    "emit-module-diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOWebSocket-t.build/Objects-normal/arm64/NIOWebSocket-primary-emit-module.dia",
+    "pch" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOWebSocket-t.build/Objects-normal/arm64/NIOWebSocket-primary-Bridging-header.pch",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOWebSocket-t.build/Objects-normal/arm64/NIOWebSocket-primary.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio/Sources/NIOWebSocket/NIOWebSocketClientUpgrader.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOWebSocket-t.build/Objects-normal/arm64/NIOWebSocketClientUpgrader.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOWebSocket-t.build/Objects-normal/arm64/NIOWebSocketClientUpgrader.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOWebSocket-t.build/Objects-normal/arm64/NIOWebSocketClientUpgrader.dia",
+    "index-unit-output-path" : "/swift-nio.build/Debug/NIOWebSocket-t.build/Objects-normal/arm64/NIOWebSocketClientUpgrader.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOWebSocket-t.build/Objects-normal/arm64/NIOWebSocketClientUpgrader.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOWebSocket-t.build/Objects-normal/arm64/NIOWebSocketClientUpgrader.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOWebSocket-t.build/Objects-normal/arm64/NIOWebSocketClientUpgrader.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOWebSocket-t.build/Objects-normal/arm64/NIOWebSocketClientUpgrader~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio/Sources/NIOWebSocket/NIOWebSocketFrameAggregator.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOWebSocket-t.build/Objects-normal/arm64/NIOWebSocketFrameAggregator.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOWebSocket-t.build/Objects-normal/arm64/NIOWebSocketFrameAggregator.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOWebSocket-t.build/Objects-normal/arm64/NIOWebSocketFrameAggregator.dia",
+    "index-unit-output-path" : "/swift-nio.build/Debug/NIOWebSocket-t.build/Objects-normal/arm64/NIOWebSocketFrameAggregator.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOWebSocket-t.build/Objects-normal/arm64/NIOWebSocketFrameAggregator.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOWebSocket-t.build/Objects-normal/arm64/NIOWebSocketFrameAggregator.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOWebSocket-t.build/Objects-normal/arm64/NIOWebSocketFrameAggregator.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOWebSocket-t.build/Objects-normal/arm64/NIOWebSocketFrameAggregator~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio/Sources/NIOWebSocket/NIOWebSocketServerUpgrader.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOWebSocket-t.build/Objects-normal/arm64/NIOWebSocketServerUpgrader.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOWebSocket-t.build/Objects-normal/arm64/NIOWebSocketServerUpgrader.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOWebSocket-t.build/Objects-normal/arm64/NIOWebSocketServerUpgrader.dia",
+    "index-unit-output-path" : "/swift-nio.build/Debug/NIOWebSocket-t.build/Objects-normal/arm64/NIOWebSocketServerUpgrader.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOWebSocket-t.build/Objects-normal/arm64/NIOWebSocketServerUpgrader.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOWebSocket-t.build/Objects-normal/arm64/NIOWebSocketServerUpgrader.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOWebSocket-t.build/Objects-normal/arm64/NIOWebSocketServerUpgrader.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOWebSocket-t.build/Objects-normal/arm64/NIOWebSocketServerUpgrader~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio/Sources/NIOWebSocket/SHA1.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOWebSocket-t.build/Objects-normal/arm64/SHA1.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOWebSocket-t.build/Objects-normal/arm64/SHA1.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOWebSocket-t.build/Objects-normal/arm64/SHA1.dia",
+    "index-unit-output-path" : "/swift-nio.build/Debug/NIOWebSocket-t.build/Objects-normal/arm64/SHA1.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOWebSocket-t.build/Objects-normal/arm64/SHA1.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOWebSocket-t.build/Objects-normal/arm64/SHA1.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOWebSocket-t.build/Objects-normal/arm64/SHA1.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOWebSocket-t.build/Objects-normal/arm64/SHA1~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio/Sources/NIOWebSocket/WebSocketErrorCodes.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOWebSocket-t.build/Objects-normal/arm64/WebSocketErrorCodes.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOWebSocket-t.build/Objects-normal/arm64/WebSocketErrorCodes.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOWebSocket-t.build/Objects-normal/arm64/WebSocketErrorCodes.dia",
+    "index-unit-output-path" : "/swift-nio.build/Debug/NIOWebSocket-t.build/Objects-normal/arm64/WebSocketErrorCodes.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOWebSocket-t.build/Objects-normal/arm64/WebSocketErrorCodes.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOWebSocket-t.build/Objects-normal/arm64/WebSocketErrorCodes.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOWebSocket-t.build/Objects-normal/arm64/WebSocketErrorCodes.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOWebSocket-t.build/Objects-normal/arm64/WebSocketErrorCodes~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio/Sources/NIOWebSocket/WebSocketFrame.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOWebSocket-t.build/Objects-normal/arm64/WebSocketFrame.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOWebSocket-t.build/Objects-normal/arm64/WebSocketFrame.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOWebSocket-t.build/Objects-normal/arm64/WebSocketFrame.dia",
+    "index-unit-output-path" : "/swift-nio.build/Debug/NIOWebSocket-t.build/Objects-normal/arm64/WebSocketFrame.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOWebSocket-t.build/Objects-normal/arm64/WebSocketFrame.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOWebSocket-t.build/Objects-normal/arm64/WebSocketFrame.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOWebSocket-t.build/Objects-normal/arm64/WebSocketFrame.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOWebSocket-t.build/Objects-normal/arm64/WebSocketFrame~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio/Sources/NIOWebSocket/WebSocketFrameDecoder.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOWebSocket-t.build/Objects-normal/arm64/WebSocketFrameDecoder.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOWebSocket-t.build/Objects-normal/arm64/WebSocketFrameDecoder.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOWebSocket-t.build/Objects-normal/arm64/WebSocketFrameDecoder.dia",
+    "index-unit-output-path" : "/swift-nio.build/Debug/NIOWebSocket-t.build/Objects-normal/arm64/WebSocketFrameDecoder.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOWebSocket-t.build/Objects-normal/arm64/WebSocketFrameDecoder.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOWebSocket-t.build/Objects-normal/arm64/WebSocketFrameDecoder.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOWebSocket-t.build/Objects-normal/arm64/WebSocketFrameDecoder.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOWebSocket-t.build/Objects-normal/arm64/WebSocketFrameDecoder~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio/Sources/NIOWebSocket/WebSocketFrameEncoder.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOWebSocket-t.build/Objects-normal/arm64/WebSocketFrameEncoder.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOWebSocket-t.build/Objects-normal/arm64/WebSocketFrameEncoder.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOWebSocket-t.build/Objects-normal/arm64/WebSocketFrameEncoder.dia",
+    "index-unit-output-path" : "/swift-nio.build/Debug/NIOWebSocket-t.build/Objects-normal/arm64/WebSocketFrameEncoder.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOWebSocket-t.build/Objects-normal/arm64/WebSocketFrameEncoder.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOWebSocket-t.build/Objects-normal/arm64/WebSocketFrameEncoder.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOWebSocket-t.build/Objects-normal/arm64/WebSocketFrameEncoder.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOWebSocket-t.build/Objects-normal/arm64/WebSocketFrameEncoder~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio/Sources/NIOWebSocket/WebSocketOpcode.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOWebSocket-t.build/Objects-normal/arm64/WebSocketOpcode.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOWebSocket-t.build/Objects-normal/arm64/WebSocketOpcode.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOWebSocket-t.build/Objects-normal/arm64/WebSocketOpcode.dia",
+    "index-unit-output-path" : "/swift-nio.build/Debug/NIOWebSocket-t.build/Objects-normal/arm64/WebSocketOpcode.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOWebSocket-t.build/Objects-normal/arm64/WebSocketOpcode.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOWebSocket-t.build/Objects-normal/arm64/WebSocketOpcode.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOWebSocket-t.build/Objects-normal/arm64/WebSocketOpcode.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOWebSocket-t.build/Objects-normal/arm64/WebSocketOpcode~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio/Sources/NIOWebSocket/WebSocketProtocolErrorHandler.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOWebSocket-t.build/Objects-normal/arm64/WebSocketProtocolErrorHandler.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOWebSocket-t.build/Objects-normal/arm64/WebSocketProtocolErrorHandler.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOWebSocket-t.build/Objects-normal/arm64/WebSocketProtocolErrorHandler.dia",
+    "index-unit-output-path" : "/swift-nio.build/Debug/NIOWebSocket-t.build/Objects-normal/arm64/WebSocketProtocolErrorHandler.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOWebSocket-t.build/Objects-normal/arm64/WebSocketProtocolErrorHandler.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOWebSocket-t.build/Objects-normal/arm64/WebSocketProtocolErrorHandler.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOWebSocket-t.build/Objects-normal/arm64/WebSocketProtocolErrorHandler.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/NIOWebSocket-t.build/Objects-normal/arm64/WebSocketProtocolErrorHandler~partial.swiftmodule"
+  }
+}

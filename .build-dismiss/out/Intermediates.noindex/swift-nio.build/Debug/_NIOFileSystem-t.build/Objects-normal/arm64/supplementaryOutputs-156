@@ -1,0 +1,30 @@
+{
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio/Sources/_NIOFileSystem/FileSystemError.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystem-t.build/Objects-normal/arm64/FileSystemError.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystem-t.build/Objects-normal/arm64/FileSystemError.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystem-t.build/Objects-normal/arm64/FileSystemError.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystem-t.build/Objects-normal/arm64/FileSystemError.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystem-t.build/Objects-normal/arm64/FileSystemError.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio/Sources/_NIOFileSystem/FileSystemProtocol.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystem-t.build/Objects-normal/arm64/FileSystemProtocol.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystem-t.build/Objects-normal/arm64/FileSystemProtocol.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystem-t.build/Objects-normal/arm64/FileSystemProtocol.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystem-t.build/Objects-normal/arm64/FileSystemProtocol.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystem-t.build/Objects-normal/arm64/FileSystemProtocol.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio/Sources/_NIOFileSystem/FileType.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystem-t.build/Objects-normal/arm64/FileType.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystem-t.build/Objects-normal/arm64/FileType.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystem-t.build/Objects-normal/arm64/FileType.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystem-t.build/Objects-normal/arm64/FileType.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystem-t.build/Objects-normal/arm64/FileType.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio/Sources/_NIOFileSystem/IOStrategy.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystem-t.build/Objects-normal/arm64/IOStrategy.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystem-t.build/Objects-normal/arm64/IOStrategy.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystem-t.build/Objects-normal/arm64/IOStrategy.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystem-t.build/Objects-normal/arm64/IOStrategy.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio.build/Debug/_NIOFileSystem-t.build/Objects-normal/arm64/IOStrategy.swiftdeps"
+  }
+}

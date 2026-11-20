@@ -1,0 +1,44 @@
+{
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-collections/Sources/BitCollections/BitArray/BitArray+CustomReflectable.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/BitCollections-t.build/Objects-normal/arm64/BitArray+CustomReflectable.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/BitCollections-t.build/Objects-normal/arm64/BitArray+CustomReflectable.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/BitCollections-t.build/Objects-normal/arm64/BitArray+CustomReflectable.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/BitCollections-t.build/Objects-normal/arm64/BitArray+CustomReflectable.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/BitCollections-t.build/Objects-normal/arm64/BitArray+CustomReflectable.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-collections/Sources/BitCollections/BitArray/BitArray+Descriptions.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/BitCollections-t.build/Objects-normal/arm64/BitArray+Descriptions.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/BitCollections-t.build/Objects-normal/arm64/BitArray+Descriptions.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/BitCollections-t.build/Objects-normal/arm64/BitArray+Descriptions.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/BitCollections-t.build/Objects-normal/arm64/BitArray+Descriptions.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/BitCollections-t.build/Objects-normal/arm64/BitArray+Descriptions.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-collections/Sources/BitCollections/BitArray/BitArray+Equatable.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/BitCollections-t.build/Objects-normal/arm64/BitArray+Equatable.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/BitCollections-t.build/Objects-normal/arm64/BitArray+Equatable.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/BitCollections-t.build/Objects-normal/arm64/BitArray+Equatable.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/BitCollections-t.build/Objects-normal/arm64/BitArray+Equatable.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/BitCollections-t.build/Objects-normal/arm64/BitArray+Equatable.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-collections/Sources/BitCollections/BitArray/BitArray+ExpressibleByArrayLiteral.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/BitCollections-t.build/Objects-normal/arm64/BitArray+ExpressibleByArrayLiteral.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/BitCollections-t.build/Objects-normal/arm64/BitArray+ExpressibleByArrayLiteral.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/BitCollections-t.build/Objects-normal/arm64/BitArray+ExpressibleByArrayLiteral.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/BitCollections-t.build/Objects-normal/arm64/BitArray+ExpressibleByArrayLiteral.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/BitCollections-t.build/Objects-normal/arm64/BitArray+ExpressibleByArrayLiteral.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-collections/Sources/BitCollections/BitArray/BitArray+ExpressibleByStringLiteral.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/BitCollections-t.build/Objects-normal/arm64/BitArray+ExpressibleByStringLiteral.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/BitCollections-t.build/Objects-normal/arm64/BitArray+ExpressibleByStringLiteral.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/BitCollections-t.build/Objects-normal/arm64/BitArray+ExpressibleByStringLiteral.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/BitCollections-t.build/Objects-normal/arm64/BitArray+ExpressibleByStringLiteral.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/BitCollections-t.build/Objects-normal/arm64/BitArray+ExpressibleByStringLiteral.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-collections/Sources/BitCollections/BitArray/BitArray+Extras.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/BitCollections-t.build/Objects-normal/arm64/BitArray+Extras.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/BitCollections-t.build/Objects-normal/arm64/BitArray+Extras.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/BitCollections-t.build/Objects-normal/arm64/BitArray+Extras.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/BitCollections-t.build/Objects-normal/arm64/BitArray+Extras.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/BitCollections-t.build/Objects-normal/arm64/BitArray+Extras.swiftdeps"
+  }
+}

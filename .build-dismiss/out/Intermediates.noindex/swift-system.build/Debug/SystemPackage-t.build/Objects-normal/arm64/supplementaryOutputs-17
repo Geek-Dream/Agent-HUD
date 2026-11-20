@@ -1,0 +1,23 @@
+{
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-system/Sources/System/Internals/Exports.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-system.build/Debug/SystemPackage-t.build/Objects-normal/arm64/Exports.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-system.build/Debug/SystemPackage-t.build/Objects-normal/arm64/Exports.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-system.build/Debug/SystemPackage-t.build/Objects-normal/arm64/Exports.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-system.build/Debug/SystemPackage-t.build/Objects-normal/arm64/Exports.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-system.build/Debug/SystemPackage-t.build/Objects-normal/arm64/Exports.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-system/Sources/System/Internals/Mocking.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-system.build/Debug/SystemPackage-t.build/Objects-normal/arm64/Mocking.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-system.build/Debug/SystemPackage-t.build/Objects-normal/arm64/Mocking.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-system.build/Debug/SystemPackage-t.build/Objects-normal/arm64/Mocking.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-system.build/Debug/SystemPackage-t.build/Objects-normal/arm64/Mocking.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-system.build/Debug/SystemPackage-t.build/Objects-normal/arm64/Mocking.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-system/Sources/System/Internals/RawBuffer.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-system.build/Debug/SystemPackage-t.build/Objects-normal/arm64/RawBuffer.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-system.build/Debug/SystemPackage-t.build/Objects-normal/arm64/RawBuffer.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-system.build/Debug/SystemPackage-t.build/Objects-normal/arm64/RawBuffer.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-system.build/Debug/SystemPackage-t.build/Objects-normal/arm64/RawBuffer.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-system.build/Debug/SystemPackage-t.build/Objects-normal/arm64/RawBuffer.swiftdeps"
+  }
+}

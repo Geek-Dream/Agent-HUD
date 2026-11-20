@@ -1,0 +1,23 @@
+{
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio-ssl/Sources/NIOSSL/String+unsafeUninitializedCapacity.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-ssl.build/Debug/NIOSSL-t.build/Objects-normal/arm64/String+unsafeUninitializedCapacity.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-ssl.build/Debug/NIOSSL-t.build/Objects-normal/arm64/String+unsafeUninitializedCapacity.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-ssl.build/Debug/NIOSSL-t.build/Objects-normal/arm64/String+unsafeUninitializedCapacity.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-ssl.build/Debug/NIOSSL-t.build/Objects-normal/arm64/String+unsafeUninitializedCapacity.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-ssl.build/Debug/NIOSSL-t.build/Objects-normal/arm64/String+unsafeUninitializedCapacity.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio-ssl/Sources/NIOSSL/SubjectAlternativeName.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-ssl.build/Debug/NIOSSL-t.build/Objects-normal/arm64/SubjectAlternativeName.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-ssl.build/Debug/NIOSSL-t.build/Objects-normal/arm64/SubjectAlternativeName.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-ssl.build/Debug/NIOSSL-t.build/Objects-normal/arm64/SubjectAlternativeName.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-ssl.build/Debug/NIOSSL-t.build/Objects-normal/arm64/SubjectAlternativeName.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-ssl.build/Debug/NIOSSL-t.build/Objects-normal/arm64/SubjectAlternativeName.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio-ssl/Sources/NIOSSL/SwiftCrypto/NIOSSLSecureBytes.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-ssl.build/Debug/NIOSSL-t.build/Objects-normal/arm64/NIOSSLSecureBytes.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-ssl.build/Debug/NIOSSL-t.build/Objects-normal/arm64/NIOSSLSecureBytes.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-ssl.build/Debug/NIOSSL-t.build/Objects-normal/arm64/NIOSSLSecureBytes.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-ssl.build/Debug/NIOSSL-t.build/Objects-normal/arm64/NIOSSLSecureBytes.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-ssl.build/Debug/NIOSSL-t.build/Objects-normal/arm64/NIOSSLSecureBytes.swiftdeps"
+  }
+}

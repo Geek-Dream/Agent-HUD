@@ -14,7 +14,7 @@ final class AISettingsWindowController: NSWindowController {
             onConfigurationChanged: onConfigurationChanged
         )
         let window = NSWindow(
-            contentRect: NSRect(x: 0, y: 0, width: 520, height: 590),
+            contentRect: NSRect(x: 0, y: 0, width: 520, height: 690),
             styleMask: [.titled, .closable],
             backing: .buffered,
             defer: false
@@ -293,7 +293,7 @@ private struct AISettingsView: View {
             .padding(24)
             .frame(width: 520, alignment: .topLeading)
         }
-        .frame(width: 520, height: 590)
+        .frame(width: 520, height: 690)
         .onAppear {
             model.refreshSecretState()
         }
@@ -334,6 +334,23 @@ private struct AISettingsView: View {
                 }
             }
             .toggleStyle(.switch)
+
+            VStack(alignment: .leading, spacing: 6) {
+                Text("会话显示数量")
+                    .font(.system(size: 11, weight: .semibold))
+                    .foregroundStyle(.secondary)
+                Picker("会话显示数量", selection: $displayModel.sessionListLimit) {
+                    ForEach(SessionListLimit.allCases) { limit in
+                        Text(limit.label).tag(limit)
+                    }
+                }
+                .pickerStyle(.menu)
+                .labelsHidden()
+                Text("默认显示最近 10 条；星标会话始终常驻，不占这个数量。设置只改变显示，不会删除会话。")
+                    .font(.system(size: 10.5))
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
 
             appearanceSlider(
                 title: "不透明度",

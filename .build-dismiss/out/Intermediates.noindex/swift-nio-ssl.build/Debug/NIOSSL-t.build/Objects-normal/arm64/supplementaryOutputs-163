@@ -1,0 +1,30 @@
+{
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio-ssl/Sources/NIOSSL/FreeBSDCABundle.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-ssl.build/Debug/NIOSSL-t.build/Objects-normal/arm64/FreeBSDCABundle.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-ssl.build/Debug/NIOSSL-t.build/Objects-normal/arm64/FreeBSDCABundle.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-ssl.build/Debug/NIOSSL-t.build/Objects-normal/arm64/FreeBSDCABundle.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-ssl.build/Debug/NIOSSL-t.build/Objects-normal/arm64/FreeBSDCABundle.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-ssl.build/Debug/NIOSSL-t.build/Objects-normal/arm64/FreeBSDCABundle.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio-ssl/Sources/NIOSSL/IdentityVerification.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-ssl.build/Debug/NIOSSL-t.build/Objects-normal/arm64/IdentityVerification.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-ssl.build/Debug/NIOSSL-t.build/Objects-normal/arm64/IdentityVerification.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-ssl.build/Debug/NIOSSL-t.build/Objects-normal/arm64/IdentityVerification.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-ssl.build/Debug/NIOSSL-t.build/Objects-normal/arm64/IdentityVerification.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-ssl.build/Debug/NIOSSL-t.build/Objects-normal/arm64/IdentityVerification.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio-ssl/Sources/NIOSSL/LinuxCABundle.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-ssl.build/Debug/NIOSSL-t.build/Objects-normal/arm64/LinuxCABundle.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-ssl.build/Debug/NIOSSL-t.build/Objects-normal/arm64/LinuxCABundle.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-ssl.build/Debug/NIOSSL-t.build/Objects-normal/arm64/LinuxCABundle.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-ssl.build/Debug/NIOSSL-t.build/Objects-normal/arm64/LinuxCABundle.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-ssl.build/Debug/NIOSSL-t.build/Objects-normal/arm64/LinuxCABundle.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio-ssl/Sources/NIOSSL/NIOSSLClientHandler.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-ssl.build/Debug/NIOSSL-t.build/Objects-normal/arm64/NIOSSLClientHandler.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-ssl.build/Debug/NIOSSL-t.build/Objects-normal/arm64/NIOSSLClientHandler.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-ssl.build/Debug/NIOSSL-t.build/Objects-normal/arm64/NIOSSLClientHandler.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-ssl.build/Debug/NIOSSL-t.build/Objects-normal/arm64/NIOSSLClientHandler.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-ssl.build/Debug/NIOSSL-t.build/Objects-normal/arm64/NIOSSLClientHandler.swiftdeps"
+  }
+}

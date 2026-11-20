@@ -1,0 +1,289 @@
+{
+  "" : {
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ConsoleKitTerminal-primary.dia",
+    "emit-module-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ConsoleKitTerminal-primary-emit-module.d",
+    "emit-module-diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ConsoleKitTerminal-primary-emit-module.dia",
+    "pch" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ConsoleKitTerminal-primary-Bridging-header.pch",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ConsoleKitTerminal-primary.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/console-kit/Sources/ConsoleKitTerminal/Activity/ActivityBar.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ActivityBar.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ActivityBar.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ActivityBar.dia",
+    "index-unit-output-path" : "/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ActivityBar.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ActivityBar.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ActivityBar.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ActivityBar.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ActivityBar~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/console-kit/Sources/ConsoleKitTerminal/Activity/ActivityIndicator.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ActivityIndicator.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ActivityIndicator.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ActivityIndicator.dia",
+    "index-unit-output-path" : "/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ActivityIndicator.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ActivityIndicator.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ActivityIndicator.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ActivityIndicator.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ActivityIndicator~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/console-kit/Sources/ConsoleKitTerminal/Activity/ActivityIndicatorRenderer.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ActivityIndicatorRenderer.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ActivityIndicatorRenderer.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ActivityIndicatorRenderer.dia",
+    "index-unit-output-path" : "/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ActivityIndicatorRenderer.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ActivityIndicatorRenderer.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ActivityIndicatorRenderer.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ActivityIndicatorRenderer.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ActivityIndicatorRenderer~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/console-kit/Sources/ConsoleKitTerminal/Activity/ActivityIndicatorState.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ActivityIndicatorState.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ActivityIndicatorState.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ActivityIndicatorState.dia",
+    "index-unit-output-path" : "/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ActivityIndicatorState.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ActivityIndicatorState.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ActivityIndicatorState.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ActivityIndicatorState.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ActivityIndicatorState~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/console-kit/Sources/ConsoleKitTerminal/Activity/CustomActivity.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/CustomActivity.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/CustomActivity.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/CustomActivity.dia",
+    "index-unit-output-path" : "/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/CustomActivity.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/CustomActivity.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/CustomActivity.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/CustomActivity.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/CustomActivity~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/console-kit/Sources/ConsoleKitTerminal/Activity/LoadingBar.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/LoadingBar.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/LoadingBar.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/LoadingBar.dia",
+    "index-unit-output-path" : "/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/LoadingBar.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/LoadingBar.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/LoadingBar.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/LoadingBar.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/LoadingBar~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/console-kit/Sources/ConsoleKitTerminal/Activity/ProgressBar.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ProgressBar.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ProgressBar.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ProgressBar.dia",
+    "index-unit-output-path" : "/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ProgressBar.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ProgressBar.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ProgressBar.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ProgressBar.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ProgressBar~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/console-kit/Sources/ConsoleKitTerminal/Clear/Console+Clear.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/Console+Clear.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/Console+Clear.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/Console+Clear.dia",
+    "index-unit-output-path" : "/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/Console+Clear.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/Console+Clear.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/Console+Clear.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/Console+Clear.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/Console+Clear~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/console-kit/Sources/ConsoleKitTerminal/Clear/Console+Ephemeral.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/Console+Ephemeral.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/Console+Ephemeral.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/Console+Ephemeral.dia",
+    "index-unit-output-path" : "/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/Console+Ephemeral.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/Console+Ephemeral.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/Console+Ephemeral.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/Console+Ephemeral.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/Console+Ephemeral~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/console-kit/Sources/ConsoleKitTerminal/Clear/ConsoleClear.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ConsoleClear.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ConsoleClear.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ConsoleClear.dia",
+    "index-unit-output-path" : "/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ConsoleClear.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ConsoleClear.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ConsoleClear.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ConsoleClear.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ConsoleClear~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/console-kit/Sources/ConsoleKitTerminal/Input/Console+Ask.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/Console+Ask.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/Console+Ask.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/Console+Ask.dia",
+    "index-unit-output-path" : "/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/Console+Ask.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/Console+Ask.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/Console+Ask.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/Console+Ask.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/Console+Ask~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/console-kit/Sources/ConsoleKitTerminal/Input/Console+Choose.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/Console+Choose.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/Console+Choose.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/Console+Choose.dia",
+    "index-unit-output-path" : "/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/Console+Choose.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/Console+Choose.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/Console+Choose.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/Console+Choose.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/Console+Choose~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/console-kit/Sources/ConsoleKitTerminal/Input/Console+Confirm.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/Console+Confirm.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/Console+Confirm.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/Console+Confirm.dia",
+    "index-unit-output-path" : "/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/Console+Confirm.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/Console+Confirm.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/Console+Confirm.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/Console+Confirm.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/Console+Confirm~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/console-kit/Sources/ConsoleKitTerminal/Input/Console+Input.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/Console+Input.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/Console+Input.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/Console+Input.dia",
+    "index-unit-output-path" : "/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/Console+Input.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/Console+Input.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/Console+Input.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/Console+Input.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/Console+Input~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/console-kit/Sources/ConsoleKitTerminal/Output/Console+Center.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/Console+Center.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/Console+Center.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/Console+Center.dia",
+    "index-unit-output-path" : "/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/Console+Center.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/Console+Center.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/Console+Center.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/Console+Center.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/Console+Center~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/console-kit/Sources/ConsoleKitTerminal/Output/Console+Output.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/Console+Output.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/Console+Output.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/Console+Output.dia",
+    "index-unit-output-path" : "/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/Console+Output.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/Console+Output.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/Console+Output.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/Console+Output.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/Console+Output~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/console-kit/Sources/ConsoleKitTerminal/Output/Console+Wait.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/Console+Wait.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/Console+Wait.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/Console+Wait.dia",
+    "index-unit-output-path" : "/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/Console+Wait.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/Console+Wait.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/Console+Wait.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/Console+Wait.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/Console+Wait~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/console-kit/Sources/ConsoleKitTerminal/Output/ConsoleColor.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ConsoleColor.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ConsoleColor.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ConsoleColor.dia",
+    "index-unit-output-path" : "/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ConsoleColor.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ConsoleColor.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ConsoleColor.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ConsoleColor.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ConsoleColor~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/console-kit/Sources/ConsoleKitTerminal/Output/ConsoleStyle.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ConsoleStyle.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ConsoleStyle.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ConsoleStyle.dia",
+    "index-unit-output-path" : "/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ConsoleStyle.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ConsoleStyle.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ConsoleStyle.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ConsoleStyle.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ConsoleStyle~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/console-kit/Sources/ConsoleKitTerminal/Output/ConsoleText.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ConsoleText.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ConsoleText.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ConsoleText.dia",
+    "index-unit-output-path" : "/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ConsoleText.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ConsoleText.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ConsoleText.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ConsoleText.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ConsoleText~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/console-kit/Sources/ConsoleKitTerminal/Output/ConsoleTextFragment.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ConsoleTextFragment.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ConsoleTextFragment.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ConsoleTextFragment.dia",
+    "index-unit-output-path" : "/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ConsoleTextFragment.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ConsoleTextFragment.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ConsoleTextFragment.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ConsoleTextFragment.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ConsoleTextFragment~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/console-kit/Sources/ConsoleKitTerminal/Terminal/ANSI.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ANSI.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ANSI.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ANSI.dia",
+    "index-unit-output-path" : "/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ANSI.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ANSI.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ANSI.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ANSI.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ANSI~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/console-kit/Sources/ConsoleKitTerminal/Terminal/Console.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/Console.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/Console.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/Console.dia",
+    "index-unit-output-path" : "/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/Console.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/Console.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/Console.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/Console.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/Console~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/console-kit/Sources/ConsoleKitTerminal/Terminal/Terminal.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/Terminal.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/Terminal.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/Terminal.dia",
+    "index-unit-output-path" : "/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/Terminal.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/Terminal.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/Terminal.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/Terminal.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/Terminal~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/console-kit/Sources/ConsoleKitTerminal/Terminal/readpassphrase_linux.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/readpassphrase_linux.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/readpassphrase_linux.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/readpassphrase_linux.dia",
+    "index-unit-output-path" : "/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/readpassphrase_linux.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/readpassphrase_linux.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/readpassphrase_linux.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/readpassphrase_linux.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/readpassphrase_linux~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/console-kit/Sources/ConsoleKitTerminal/Utilities/AnySendableHashable.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/AnySendableHashable.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/AnySendableHashable.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/AnySendableHashable.dia",
+    "index-unit-output-path" : "/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/AnySendableHashable.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/AnySendableHashable.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/AnySendableHashable.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/AnySendableHashable.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/AnySendableHashable~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/console-kit/Sources/ConsoleKitTerminal/Utilities/ConsoleLogger.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ConsoleLogger.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ConsoleLogger.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ConsoleLogger.dia",
+    "index-unit-output-path" : "/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ConsoleLogger.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ConsoleLogger.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ConsoleLogger.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ConsoleLogger.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ConsoleLogger~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/console-kit/Sources/ConsoleKitTerminal/Utilities/LoggerFragment.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/LoggerFragment.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/LoggerFragment.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/LoggerFragment.dia",
+    "index-unit-output-path" : "/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/LoggerFragment.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/LoggerFragment.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/LoggerFragment.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/LoggerFragment.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/LoggerFragment~partial.swiftmodule"
+  }
+}

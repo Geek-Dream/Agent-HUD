@@ -1,0 +1,23 @@
+{
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-collections/Sources/InternalCollectionsUtilities/Immortalize.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/InternalCollectionsUtilities-t.build/Objects-normal/arm64/Immortalize.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/InternalCollectionsUtilities-t.build/Objects-normal/arm64/Immortalize.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/InternalCollectionsUtilities-t.build/Objects-normal/arm64/Immortalize.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/InternalCollectionsUtilities-t.build/Objects-normal/arm64/Immortalize.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/InternalCollectionsUtilities-t.build/Objects-normal/arm64/Immortalize.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-collections/Sources/InternalCollectionsUtilities/IntegerTricks/FixedWidthInteger+roundUpToPowerOfTwo.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/InternalCollectionsUtilities-t.build/Objects-normal/arm64/FixedWidthInteger+roundUpToPowerOfTwo.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/InternalCollectionsUtilities-t.build/Objects-normal/arm64/FixedWidthInteger+roundUpToPowerOfTwo.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/InternalCollectionsUtilities-t.build/Objects-normal/arm64/FixedWidthInteger+roundUpToPowerOfTwo.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/InternalCollectionsUtilities-t.build/Objects-normal/arm64/FixedWidthInteger+roundUpToPowerOfTwo.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/InternalCollectionsUtilities-t.build/Objects-normal/arm64/FixedWidthInteger+roundUpToPowerOfTwo.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-collections/Sources/InternalCollectionsUtilities/IntegerTricks/Integer rank.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/InternalCollectionsUtilities-t.build/Objects-normal/arm64/Integer rank.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/InternalCollectionsUtilities-t.build/Objects-normal/arm64/Integer rank.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/InternalCollectionsUtilities-t.build/Objects-normal/arm64/Integer rank.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/InternalCollectionsUtilities-t.build/Objects-normal/arm64/Integer rank.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/InternalCollectionsUtilities-t.build/Objects-normal/arm64/Integer rank.swiftdeps"
+  }
+}

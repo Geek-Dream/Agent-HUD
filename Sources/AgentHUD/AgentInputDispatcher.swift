@@ -20,13 +20,6 @@ final class AgentInputDispatcher {
     }
 
     func capability(for session: AgentSession) -> AgentInputCapability {
-        guard session.isLive else {
-            return AgentInputCapability(
-                enabled: false,
-                state: .offline,
-                reason: "会话或进程已经离线。"
-            )
-        }
         guard let adapters = adapters(for: session.provider),
               !adapters.isEmpty else {
             return AgentInputCapability(
@@ -120,13 +113,13 @@ final class AgentInputDispatcher {
                 )
                 return
             }
+            deliveryStore.update(
+                deliveryId: deliveryId,
+                status: .failed,
+                error: result.error ?? .deliveryFailed
+            )
+            return
         }
-
-        deliveryStore.update(
-            deliveryId: deliveryId,
-            status: .failed,
-            error: .deliveryFailed
-        )
     }
 
     private func adapters(for provider: AgentProvider) -> [any AgentInputAdapter]? {

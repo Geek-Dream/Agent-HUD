@@ -1,0 +1,65 @@
+{
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-collections/Sources/HashTreeCollections/HashNode/_HashNode+Subtree Removals.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/HashTreeCollections-t.build/Objects-normal/arm64/_HashNode+Subtree Removals.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/HashTreeCollections-t.build/Objects-normal/arm64/_HashNode+Subtree Removals.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/HashTreeCollections-t.build/Objects-normal/arm64/_HashNode+Subtree Removals.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/HashTreeCollections-t.build/Objects-normal/arm64/_HashNode+Subtree Removals.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/HashTreeCollections-t.build/Objects-normal/arm64/_HashNode+Subtree Removals.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-collections/Sources/HashTreeCollections/HashNode/_HashNode+UnsafeHandle.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/HashTreeCollections-t.build/Objects-normal/arm64/_HashNode+UnsafeHandle.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/HashTreeCollections-t.build/Objects-normal/arm64/_HashNode+UnsafeHandle.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/HashTreeCollections-t.build/Objects-normal/arm64/_HashNode+UnsafeHandle.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/HashTreeCollections-t.build/Objects-normal/arm64/_HashNode+UnsafeHandle.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/HashTreeCollections-t.build/Objects-normal/arm64/_HashNode+UnsafeHandle.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-collections/Sources/HashTreeCollections/HashNode/_HashNode.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/HashTreeCollections-t.build/Objects-normal/arm64/_HashNode.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/HashTreeCollections-t.build/Objects-normal/arm64/_HashNode.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/HashTreeCollections-t.build/Objects-normal/arm64/_HashNode.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/HashTreeCollections-t.build/Objects-normal/arm64/_HashNode.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/HashTreeCollections-t.build/Objects-normal/arm64/_HashNode.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-collections/Sources/HashTreeCollections/HashNode/_HashNodeHeader.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/HashTreeCollections-t.build/Objects-normal/arm64/_HashNodeHeader.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/HashTreeCollections-t.build/Objects-normal/arm64/_HashNodeHeader.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/HashTreeCollections-t.build/Objects-normal/arm64/_HashNodeHeader.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/HashTreeCollections-t.build/Objects-normal/arm64/_HashNodeHeader.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/HashTreeCollections-t.build/Objects-normal/arm64/_HashNodeHeader.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-collections/Sources/HashTreeCollections/HashNode/_HashSlot.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/HashTreeCollections-t.build/Objects-normal/arm64/_HashSlot.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/HashTreeCollections-t.build/Objects-normal/arm64/_HashSlot.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/HashTreeCollections-t.build/Objects-normal/arm64/_HashSlot.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/HashTreeCollections-t.build/Objects-normal/arm64/_HashSlot.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/HashTreeCollections-t.build/Objects-normal/arm64/_HashSlot.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-collections/Sources/HashTreeCollections/HashNode/_HashStack.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/HashTreeCollections-t.build/Objects-normal/arm64/_HashStack.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/HashTreeCollections-t.build/Objects-normal/arm64/_HashStack.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/HashTreeCollections-t.build/Objects-normal/arm64/_HashStack.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/HashTreeCollections-t.build/Objects-normal/arm64/_HashStack.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/HashTreeCollections-t.build/Objects-normal/arm64/_HashStack.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-collections/Sources/HashTreeCollections/HashNode/_HashTreeIterator.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/HashTreeCollections-t.build/Objects-normal/arm64/_HashTreeIterator.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/HashTreeCollections-t.build/Objects-normal/arm64/_HashTreeIterator.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/HashTreeCollections-t.build/Objects-normal/arm64/_HashTreeIterator.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/HashTreeCollections-t.build/Objects-normal/arm64/_HashTreeIterator.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/HashTreeCollections-t.build/Objects-normal/arm64/_HashTreeIterator.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-collections/Sources/HashTreeCollections/HashNode/_HashTreeStatistics.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/HashTreeCollections-t.build/Objects-normal/arm64/_HashTreeStatistics.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/HashTreeCollections-t.build/Objects-normal/arm64/_HashTreeStatistics.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/HashTreeCollections-t.build/Objects-normal/arm64/_HashTreeStatistics.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/HashTreeCollections-t.build/Objects-normal/arm64/_HashTreeStatistics.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/HashTreeCollections-t.build/Objects-normal/arm64/_HashTreeStatistics.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-collections/Sources/HashTreeCollections/HashNode/_RawHashNode+UnsafeHandle.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/HashTreeCollections-t.build/Objects-normal/arm64/_RawHashNode+UnsafeHandle.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/HashTreeCollections-t.build/Objects-normal/arm64/_RawHashNode+UnsafeHandle.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/HashTreeCollections-t.build/Objects-normal/arm64/_RawHashNode+UnsafeHandle.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/HashTreeCollections-t.build/Objects-normal/arm64/_RawHashNode+UnsafeHandle.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/HashTreeCollections-t.build/Objects-normal/arm64/_RawHashNode+UnsafeHandle.swiftdeps"
+  }
+}

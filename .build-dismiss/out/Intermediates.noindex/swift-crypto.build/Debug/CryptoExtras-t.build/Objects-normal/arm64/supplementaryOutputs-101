@@ -1,0 +1,51 @@
+{
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-crypto/Sources/CryptoExtras/Key Derivation/PBKDF2/BoringSSL/PBKDF2_commoncrypto.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-crypto.build/Debug/CryptoExtras-t.build/Objects-normal/arm64/PBKDF2_commoncrypto.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-crypto.build/Debug/CryptoExtras-t.build/Objects-normal/arm64/PBKDF2_commoncrypto.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-crypto.build/Debug/CryptoExtras-t.build/Objects-normal/arm64/PBKDF2_commoncrypto.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-crypto.build/Debug/CryptoExtras-t.build/Objects-normal/arm64/PBKDF2_commoncrypto.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-crypto.build/Debug/CryptoExtras-t.build/Objects-normal/arm64/PBKDF2_commoncrypto.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-crypto/Sources/CryptoExtras/Key Derivation/PBKDF2/PBKDF2.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-crypto.build/Debug/CryptoExtras-t.build/Objects-normal/arm64/PBKDF2.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-crypto.build/Debug/CryptoExtras-t.build/Objects-normal/arm64/PBKDF2.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-crypto.build/Debug/CryptoExtras-t.build/Objects-normal/arm64/PBKDF2.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-crypto.build/Debug/CryptoExtras-t.build/Objects-normal/arm64/PBKDF2.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-crypto.build/Debug/CryptoExtras-t.build/Objects-normal/arm64/PBKDF2.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-crypto/Sources/CryptoExtras/Key Derivation/Scrypt/BoringSSL/Scrypt_boring.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-crypto.build/Debug/CryptoExtras-t.build/Objects-normal/arm64/Scrypt_boring.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-crypto.build/Debug/CryptoExtras-t.build/Objects-normal/arm64/Scrypt_boring.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-crypto.build/Debug/CryptoExtras-t.build/Objects-normal/arm64/Scrypt_boring.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-crypto.build/Debug/CryptoExtras-t.build/Objects-normal/arm64/Scrypt_boring.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-crypto.build/Debug/CryptoExtras-t.build/Objects-normal/arm64/Scrypt_boring.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-crypto/Sources/CryptoExtras/Key Derivation/Scrypt/Scrypt.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-crypto.build/Debug/CryptoExtras-t.build/Objects-normal/arm64/Scrypt.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-crypto.build/Debug/CryptoExtras-t.build/Objects-normal/arm64/Scrypt.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-crypto.build/Debug/CryptoExtras-t.build/Objects-normal/arm64/Scrypt.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-crypto.build/Debug/CryptoExtras-t.build/Objects-normal/arm64/Scrypt.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-crypto.build/Debug/CryptoExtras-t.build/Objects-normal/arm64/Scrypt.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-crypto/Sources/CryptoExtras/OPRFs/OPRF.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-crypto.build/Debug/CryptoExtras-t.build/Objects-normal/arm64/OPRF.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-crypto.build/Debug/CryptoExtras-t.build/Objects-normal/arm64/OPRF.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-crypto.build/Debug/CryptoExtras-t.build/Objects-normal/arm64/OPRF.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-crypto.build/Debug/CryptoExtras-t.build/Objects-normal/arm64/OPRF.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-crypto.build/Debug/CryptoExtras-t.build/Objects-normal/arm64/OPRF.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-crypto/Sources/CryptoExtras/OPRFs/OPRFClient.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-crypto.build/Debug/CryptoExtras-t.build/Objects-normal/arm64/OPRFClient.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-crypto.build/Debug/CryptoExtras-t.build/Objects-normal/arm64/OPRFClient.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-crypto.build/Debug/CryptoExtras-t.build/Objects-normal/arm64/OPRFClient.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-crypto.build/Debug/CryptoExtras-t.build/Objects-normal/arm64/OPRFClient.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-crypto.build/Debug/CryptoExtras-t.build/Objects-normal/arm64/OPRFClient.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-crypto/Sources/CryptoExtras/OPRFs/OPRFServer.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-crypto.build/Debug/CryptoExtras-t.build/Objects-normal/arm64/OPRFServer.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-crypto.build/Debug/CryptoExtras-t.build/Objects-normal/arm64/OPRFServer.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-crypto.build/Debug/CryptoExtras-t.build/Objects-normal/arm64/OPRFServer.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-crypto.build/Debug/CryptoExtras-t.build/Objects-normal/arm64/OPRFServer.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-crypto.build/Debug/CryptoExtras-t.build/Objects-normal/arm64/OPRFServer.swiftdeps"
+  }
+}

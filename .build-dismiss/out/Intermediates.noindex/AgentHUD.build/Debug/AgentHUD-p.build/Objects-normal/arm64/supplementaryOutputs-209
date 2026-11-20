@@ -1,0 +1,30 @@
+{
+  "/Users/wl/Desktop/Agent-HUD/Sources/AgentHUD/HUDViewModel.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/HUDViewModel.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/HUDViewModel.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/HUDViewModel.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/HUDViewModel.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/HUDViewModel.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/Sources/AgentHUD/ImagePreviewWindow.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/ImagePreviewWindow.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/ImagePreviewWindow.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/ImagePreviewWindow.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/ImagePreviewWindow.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/ImagePreviewWindow.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/Sources/AgentHUD/KeychainAISecretStore.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/KeychainAISecretStore.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/KeychainAISecretStore.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/KeychainAISecretStore.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/KeychainAISecretStore.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/KeychainAISecretStore.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/Sources/AgentHUD/LinkCertificate.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/LinkCertificate.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/LinkCertificate.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/LinkCertificate.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/LinkCertificate.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/LinkCertificate.swiftdeps"
+  }
+}

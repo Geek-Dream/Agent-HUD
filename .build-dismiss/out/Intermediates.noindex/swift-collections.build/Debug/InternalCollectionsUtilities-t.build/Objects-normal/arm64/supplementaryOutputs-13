@@ -1,0 +1,23 @@
+{
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-collections/Sources/InternalCollectionsUtilities/IntegerTricks/UInt+first and last set bit.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/InternalCollectionsUtilities-t.build/Objects-normal/arm64/UInt+first and last set bit.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/InternalCollectionsUtilities-t.build/Objects-normal/arm64/UInt+first and last set bit.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/InternalCollectionsUtilities-t.build/Objects-normal/arm64/UInt+first and last set bit.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/InternalCollectionsUtilities-t.build/Objects-normal/arm64/UInt+first and last set bit.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/InternalCollectionsUtilities-t.build/Objects-normal/arm64/UInt+first and last set bit.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-collections/Sources/InternalCollectionsUtilities/IntegerTricks/UInt+reversed.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/InternalCollectionsUtilities-t.build/Objects-normal/arm64/UInt+reversed.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/InternalCollectionsUtilities-t.build/Objects-normal/arm64/UInt+reversed.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/InternalCollectionsUtilities-t.build/Objects-normal/arm64/UInt+reversed.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/InternalCollectionsUtilities-t.build/Objects-normal/arm64/UInt+reversed.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/InternalCollectionsUtilities-t.build/Objects-normal/arm64/UInt+reversed.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-collections/Sources/InternalCollectionsUtilities/Iterable+CopyContents.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/InternalCollectionsUtilities-t.build/Objects-normal/arm64/Iterable+CopyContents.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/InternalCollectionsUtilities-t.build/Objects-normal/arm64/Iterable+CopyContents.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/InternalCollectionsUtilities-t.build/Objects-normal/arm64/Iterable+CopyContents.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/InternalCollectionsUtilities-t.build/Objects-normal/arm64/Iterable+CopyContents.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/InternalCollectionsUtilities-t.build/Objects-normal/arm64/Iterable+CopyContents.swiftdeps"
+  }
+}

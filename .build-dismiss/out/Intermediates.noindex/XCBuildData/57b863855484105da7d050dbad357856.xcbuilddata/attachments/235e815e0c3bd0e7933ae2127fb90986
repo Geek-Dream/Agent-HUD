@@ -1,0 +1,4 @@
+module ServiceContextModuleCompatibility {
+header "ServiceContextModuleCompatibility-Swift.h"
+export *
+}

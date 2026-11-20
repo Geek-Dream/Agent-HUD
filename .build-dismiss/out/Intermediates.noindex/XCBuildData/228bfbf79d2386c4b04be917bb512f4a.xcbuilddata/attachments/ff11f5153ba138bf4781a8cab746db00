@@ -1,0 +1,369 @@
+{
+  "" : {
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/AgentHUD-primary.dia",
+    "emit-module-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/AgentHUD-primary-emit-module.d",
+    "emit-module-diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/AgentHUD-primary-emit-module.dia",
+    "pch" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/AgentHUD-primary-Bridging-header.pch",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/AgentHUD-primary.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/Sources/AgentHUD/AIConfiguration.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/AIConfiguration.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/AIConfiguration.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/AIConfiguration.dia",
+    "index-unit-output-path" : "/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/AIConfiguration.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/AIConfiguration.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/AIConfiguration.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/AIConfiguration.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/AIConfiguration~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/Sources/AgentHUD/AISettingsWindow.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/AISettingsWindow.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/AISettingsWindow.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/AISettingsWindow.dia",
+    "index-unit-output-path" : "/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/AISettingsWindow.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/AISettingsWindow.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/AISettingsWindow.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/AISettingsWindow.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/AISettingsWindow~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/Sources/AgentHUD/AITitleService.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/AITitleService.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/AITitleService.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/AITitleService.dia",
+    "index-unit-output-path" : "/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/AITitleService.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/AITitleService.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/AITitleService.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/AITitleService.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/AITitleService~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/Sources/AgentHUD/AgentInputAdapter.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/AgentInputAdapter.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/AgentInputAdapter.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/AgentInputAdapter.dia",
+    "index-unit-output-path" : "/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/AgentInputAdapter.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/AgentInputAdapter.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/AgentInputAdapter.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/AgentInputAdapter.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/AgentInputAdapter~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/Sources/AgentHUD/AgentInputDispatcher.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/AgentInputDispatcher.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/AgentInputDispatcher.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/AgentInputDispatcher.dia",
+    "index-unit-output-path" : "/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/AgentInputDispatcher.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/AgentInputDispatcher.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/AgentInputDispatcher.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/AgentInputDispatcher.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/AgentInputDispatcher~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/Sources/AgentHUD/AgentRuntimeRegistry.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/AgentRuntimeRegistry.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/AgentRuntimeRegistry.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/AgentRuntimeRegistry.dia",
+    "index-unit-output-path" : "/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/AgentRuntimeRegistry.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/AgentRuntimeRegistry.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/AgentRuntimeRegistry.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/AgentRuntimeRegistry.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/AgentRuntimeRegistry~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/Sources/AgentHUD/AppDelegate.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/AppDelegate.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/AppDelegate.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/AppDelegate.dia",
+    "index-unit-output-path" : "/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/AppDelegate.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/AppDelegate.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/AppDelegate.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/AppDelegate.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/AppDelegate~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/Sources/AgentHUD/ClaudeAdapter.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/ClaudeAdapter.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/ClaudeAdapter.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/ClaudeAdapter.dia",
+    "index-unit-output-path" : "/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/ClaudeAdapter.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/ClaudeAdapter.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/ClaudeAdapter.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/ClaudeAdapter.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/ClaudeAdapter~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/Sources/AgentHUD/CodexAdapter.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/CodexAdapter.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/CodexAdapter.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/CodexAdapter.dia",
+    "index-unit-output-path" : "/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/CodexAdapter.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/CodexAdapter.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/CodexAdapter.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/CodexAdapter.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/CodexAdapter~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/Sources/AgentHUD/CodexInputAdapter.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/CodexInputAdapter.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/CodexInputAdapter.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/CodexInputAdapter.dia",
+    "index-unit-output-path" : "/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/CodexInputAdapter.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/CodexInputAdapter.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/CodexInputAdapter.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/CodexInputAdapter.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/CodexInputAdapter~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/Sources/AgentHUD/CommandRunner.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/CommandRunner.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/CommandRunner.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/CommandRunner.dia",
+    "index-unit-output-path" : "/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/CommandRunner.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/CommandRunner.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/CommandRunner.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/CommandRunner.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/CommandRunner~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/Sources/AgentHUD/DeliveryStore.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/DeliveryStore.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/DeliveryStore.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/DeliveryStore.dia",
+    "index-unit-output-path" : "/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/DeliveryStore.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/DeliveryStore.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/DeliveryStore.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/DeliveryStore.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/DeliveryStore~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/Sources/AgentHUD/GitReader.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/GitReader.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/GitReader.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/GitReader.dia",
+    "index-unit-output-path" : "/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/GitReader.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/GitReader.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/GitReader.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/GitReader.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/GitReader~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/Sources/AgentHUD/HUDMetrics.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/HUDMetrics.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/HUDMetrics.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/HUDMetrics.dia",
+    "index-unit-output-path" : "/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/HUDMetrics.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/HUDMetrics.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/HUDMetrics.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/HUDMetrics.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/HUDMetrics~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/Sources/AgentHUD/HUDShell.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/HUDShell.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/HUDShell.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/HUDShell.dia",
+    "index-unit-output-path" : "/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/HUDShell.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/HUDShell.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/HUDShell.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/HUDShell.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/HUDShell~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/Sources/AgentHUD/HUDTheme.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/HUDTheme.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/HUDTheme.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/HUDTheme.dia",
+    "index-unit-output-path" : "/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/HUDTheme.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/HUDTheme.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/HUDTheme.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/HUDTheme.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/HUDTheme~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/Sources/AgentHUD/HUDViewModel.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/HUDViewModel.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/HUDViewModel.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/HUDViewModel.dia",
+    "index-unit-output-path" : "/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/HUDViewModel.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/HUDViewModel.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/HUDViewModel.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/HUDViewModel.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/HUDViewModel~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/Sources/AgentHUD/ImagePreviewWindow.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/ImagePreviewWindow.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/ImagePreviewWindow.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/ImagePreviewWindow.dia",
+    "index-unit-output-path" : "/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/ImagePreviewWindow.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/ImagePreviewWindow.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/ImagePreviewWindow.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/ImagePreviewWindow.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/ImagePreviewWindow~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/Sources/AgentHUD/KeychainAISecretStore.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/KeychainAISecretStore.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/KeychainAISecretStore.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/KeychainAISecretStore.dia",
+    "index-unit-output-path" : "/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/KeychainAISecretStore.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/KeychainAISecretStore.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/KeychainAISecretStore.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/KeychainAISecretStore.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/KeychainAISecretStore~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/Sources/AgentHUD/LinkCertificate.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/LinkCertificate.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/LinkCertificate.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/LinkCertificate.dia",
+    "index-unit-output-path" : "/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/LinkCertificate.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/LinkCertificate.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/LinkCertificate.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/LinkCertificate.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/LinkCertificate~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/Sources/AgentHUD/LinkDeviceStore.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/LinkDeviceStore.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/LinkDeviceStore.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/LinkDeviceStore.dia",
+    "index-unit-output-path" : "/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/LinkDeviceStore.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/LinkDeviceStore.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/LinkDeviceStore.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/LinkDeviceStore.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/LinkDeviceStore~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/Sources/AgentHUD/LinkModels.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/LinkModels.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/LinkModels.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/LinkModels.dia",
+    "index-unit-output-path" : "/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/LinkModels.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/LinkModels.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/LinkModels.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/LinkModels.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/LinkModels~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/Sources/AgentHUD/LinkPairingManager.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/LinkPairingManager.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/LinkPairingManager.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/LinkPairingManager.dia",
+    "index-unit-output-path" : "/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/LinkPairingManager.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/LinkPairingManager.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/LinkPairingManager.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/LinkPairingManager.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/LinkPairingManager~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/Sources/AgentHUD/LinkResponses.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/LinkResponses.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/LinkResponses.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/LinkResponses.dia",
+    "index-unit-output-path" : "/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/LinkResponses.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/LinkResponses.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/LinkResponses.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/LinkResponses.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/LinkResponses~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/Sources/AgentHUD/LinkServer.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/LinkServer.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/LinkServer.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/LinkServer.dia",
+    "index-unit-output-path" : "/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/LinkServer.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/LinkServer.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/LinkServer.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/LinkServer.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/LinkServer~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/Sources/AgentHUD/LinkSettingsWindow.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/LinkSettingsWindow.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/LinkSettingsWindow.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/LinkSettingsWindow.dia",
+    "index-unit-output-path" : "/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/LinkSettingsWindow.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/LinkSettingsWindow.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/LinkSettingsWindow.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/LinkSettingsWindow.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/LinkSettingsWindow~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/Sources/AgentHUD/Models.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/Models.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/Models.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/Models.dia",
+    "index-unit-output-path" : "/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/Models.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/Models.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/Models.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/Models.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/Models~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/Sources/AgentHUD/OpenCodeAdapter.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/OpenCodeAdapter.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/OpenCodeAdapter.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/OpenCodeAdapter.dia",
+    "index-unit-output-path" : "/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/OpenCodeAdapter.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/OpenCodeAdapter.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/OpenCodeAdapter.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/OpenCodeAdapter.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/OpenCodeAdapter~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/Sources/AgentHUD/OpenCodeSessionSource.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/OpenCodeSessionSource.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/OpenCodeSessionSource.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/OpenCodeSessionSource.dia",
+    "index-unit-output-path" : "/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/OpenCodeSessionSource.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/OpenCodeSessionSource.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/OpenCodeSessionSource.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/OpenCodeSessionSource.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/OpenCodeSessionSource~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/Sources/AgentHUD/OrcaSessionSource.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/OrcaSessionSource.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/OrcaSessionSource.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/OrcaSessionSource.dia",
+    "index-unit-output-path" : "/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/OrcaSessionSource.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/OrcaSessionSource.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/OrcaSessionSource.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/OrcaSessionSource.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/OrcaSessionSource~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/Sources/AgentHUD/SessionDismissalStore.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/SessionDismissalStore.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/SessionDismissalStore.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/SessionDismissalStore.dia",
+    "index-unit-output-path" : "/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/SessionDismissalStore.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/SessionDismissalStore.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/SessionDismissalStore.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/SessionDismissalStore.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/SessionDismissalStore~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/Sources/AgentHUD/SessionImportanceStore.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/SessionImportanceStore.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/SessionImportanceStore.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/SessionImportanceStore.dia",
+    "index-unit-output-path" : "/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/SessionImportanceStore.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/SessionImportanceStore.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/SessionImportanceStore.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/SessionImportanceStore.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/SessionImportanceStore~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/Sources/AgentHUD/SessionScanner.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/SessionScanner.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/SessionScanner.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/SessionScanner.dia",
+    "index-unit-output-path" : "/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/SessionScanner.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/SessionScanner.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/SessionScanner.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/SessionScanner.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/SessionScanner~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/Sources/AgentHUD/SessionTitleStore.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/SessionTitleStore.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/SessionTitleStore.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/SessionTitleStore.dia",
+    "index-unit-output-path" : "/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/SessionTitleStore.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/SessionTitleStore.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/SessionTitleStore.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/SessionTitleStore.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/SessionTitleStore~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/Sources/AgentHUD/Utilities.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/Utilities.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/Utilities.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/Utilities.dia",
+    "index-unit-output-path" : "/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/Utilities.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/Utilities.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/Utilities.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/Utilities.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/Utilities~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/Sources/AgentHUD/WindowDragHandle.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/WindowDragHandle.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/WindowDragHandle.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/WindowDragHandle.dia",
+    "index-unit-output-path" : "/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/WindowDragHandle.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/WindowDragHandle.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/WindowDragHandle.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/WindowDragHandle.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/AgentHUD.build/Debug/AgentHUD-p.build/Objects-normal/arm64/WindowDragHandle~partial.swiftmodule"
+  }
+}

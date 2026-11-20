@@ -1,0 +1,4 @@
+module NIOWebSocket {
+header "NIOWebSocket-Swift.h"
+export *
+}

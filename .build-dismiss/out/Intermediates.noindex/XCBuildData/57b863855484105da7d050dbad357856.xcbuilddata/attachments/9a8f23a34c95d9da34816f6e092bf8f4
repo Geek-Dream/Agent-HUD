@@ -1,0 +1,4 @@
+module NIOFileSystem {
+header "NIOFileSystem-Swift.h"
+export *
+}

@@ -1,0 +1,19 @@
+{
+  "" : {
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-service-context.build/Debug/ServiceContextModuleCompatibility-t.build/Objects-normal/arm64/ServiceContextModuleCompatibility-primary.dia",
+    "emit-module-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-service-context.build/Debug/ServiceContextModuleCompatibility-t.build/Objects-normal/arm64/ServiceContextModuleCompatibility-primary-emit-module.d",
+    "emit-module-diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-service-context.build/Debug/ServiceContextModuleCompatibility-t.build/Objects-normal/arm64/ServiceContextModuleCompatibility-primary-emit-module.dia",
+    "pch" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-service-context.build/Debug/ServiceContextModuleCompatibility-t.build/Objects-normal/arm64/ServiceContextModuleCompatibility-primary-Bridging-header.pch",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-service-context.build/Debug/ServiceContextModuleCompatibility-t.build/Objects-normal/arm64/ServiceContextModuleCompatibility-primary.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-service-context/Sources/ServiceContextModule/Reexport.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-service-context.build/Debug/ServiceContextModuleCompatibility-t.build/Objects-normal/arm64/Reexport.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-service-context.build/Debug/ServiceContextModuleCompatibility-t.build/Objects-normal/arm64/Reexport.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-service-context.build/Debug/ServiceContextModuleCompatibility-t.build/Objects-normal/arm64/Reexport.dia",
+    "index-unit-output-path" : "/swift-service-context.build/Debug/ServiceContextModuleCompatibility-t.build/Objects-normal/arm64/Reexport.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-service-context.build/Debug/ServiceContextModuleCompatibility-t.build/Objects-normal/arm64/Reexport.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-service-context.build/Debug/ServiceContextModuleCompatibility-t.build/Objects-normal/arm64/Reexport.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-service-context.build/Debug/ServiceContextModuleCompatibility-t.build/Objects-normal/arm64/Reexport.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-service-context.build/Debug/ServiceContextModuleCompatibility-t.build/Objects-normal/arm64/Reexport~partial.swiftmodule"
+  }
+}

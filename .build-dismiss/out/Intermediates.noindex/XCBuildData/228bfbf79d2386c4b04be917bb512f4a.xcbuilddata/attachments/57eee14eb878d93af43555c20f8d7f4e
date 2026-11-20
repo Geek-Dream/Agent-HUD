@@ -1,0 +1,4 @@
+module CNIOExtrasZlib {
+umbrella header "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio-extras/Sources/CNIOExtrasZlib/include/CNIOExtrasZlib.h"
+export *
+}

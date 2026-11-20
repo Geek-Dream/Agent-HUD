@@ -7,10 +7,11 @@ import 'package:provider/provider.dart';
 import '../device_store.dart';
 import '../models.dart';
 import '../session_controller.dart';
-import '../session_display_store.dart';
+import '../session_preferences.dart';
 import '../theme.dart';
 import '../widgets/hud_chips.dart';
 import 'session_detail_page.dart';
+import 'session_settings_page.dart';
 import 'todos_page.dart';
 
 class SessionsPage extends StatefulWidget {
@@ -46,6 +47,7 @@ class _SessionsPageState extends State<SessionsPage>
     _controller = widget.controller ??
         SessionController(
           widget.device,
+          displayPreferences: LocalSessionDisplayPreferences(),
           onDeviceUpdated: _persistDevice,
         );
     _controller.addListener(_changed);
@@ -114,6 +116,14 @@ class _SessionsPageState extends State<SessionsPage>
           controller: _controller,
           session: session,
         ),
+      ),
+    );
+  }
+
+  void _openSettings() {
+    Navigator.of(context).push(
+      HudSlidePageRoute<void>(
+        builder: (_) => SessionSettingsPage(controller: _controller),
       ),
     );
   }
@@ -234,7 +244,10 @@ class _SessionsPageState extends State<SessionsPage>
                 ),
               ),
             ),
-          _SessionLimitMenu(controller: controller),
+          _SessionLimitMenu(
+            controller: controller,
+            onOpenSettings: _openSettings,
+          ),
           _HeaderAction(
             tooltip: '待办',
             icon: Icons.checklist_rounded,
@@ -253,6 +266,10 @@ class _SessionsPageState extends State<SessionsPage>
         child: Column(
           children: [
             _Filters(controller: controller),
+            _DisplaySummary(
+              controller: controller,
+              onOpenSettings: _openSettings,
+            ),
             _ErrorBanner(message: disconnected ? null : controller.error),
             Expanded(
               child: RefreshIndicator(
@@ -352,37 +369,58 @@ class _SessionsPageState extends State<SessionsPage>
 }
 
 class _SessionLimitMenu extends StatelessWidget {
-  const _SessionLimitMenu({required this.controller});
+  const _SessionLimitMenu({
+    required this.controller,
+    required this.onOpenSettings,
+  });
+
   final SessionController controller;
+  final VoidCallback onOpenSettings;
 
   @override
   Widget build(BuildContext context) {
-    return PopupMenuButton<int>(
+    return PopupMenuButton<SessionListLimit>(
       tooltip: '会话显示设置',
       icon: const Icon(Icons.tune_rounded, size: 20),
-      onSelected: controller.setSessionLimit,
+      onSelected: controller.setListLimit,
       itemBuilder: (context) => [
-        const PopupMenuItem<int>(
+        const PopupMenuItem<SessionListLimit>(
           enabled: false,
           child: Text('会话显示数量', style: HudText.label),
         ),
-        for (final int limit in SessionDisplayStore.options)
-          PopupMenuItem<int>(
+        for (final limit in SessionListLimit.values)
+          PopupMenuItem<SessionListLimit>(
             value: limit,
             child: Row(
               children: [
-                Expanded(
-                  child: Text(limit == 0 ? '全部会话' : '最近 $limit 个会话'),
-                ),
-                if (controller.sessionLimit == limit)
+                Expanded(child: Text(limit.label)),
+                if (controller.listLimit == limit)
                   const Icon(Icons.check_rounded, size: 17),
               ],
             ),
           ),
         const PopupMenuDivider(),
-        const PopupMenuItem<int>(
+        PopupMenuItem<SessionListLimit>(
           enabled: false,
-          child: Text('星标会话常驻显示，不占数量上限', style: HudText.caption),
+          child: SizedBox(
+            width: 230,
+            child: Text(
+              '星标会话常驻显示，不占数量上限',
+              style: HudText.caption,
+              softWrap: true,
+            ),
+          ),
+        ),
+        PopupMenuItem<SessionListLimit>(
+          enabled: false,
+          child: TextButton.icon(
+            onPressed: () {
+              Navigator.of(context).pop();
+              onOpenSettings();
+            },
+            icon: const Icon(Icons.settings_outlined, size: 17),
+            label: const Text('查看完整设置'),
+          ),
         ),
       ],
     );
@@ -1102,6 +1140,58 @@ class _DisconnectedList extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class _DisplaySummary extends StatelessWidget {
+  const _DisplaySummary({
+    required this.controller,
+    required this.onOpenSettings,
+  });
+
+  final SessionController controller;
+  final VoidCallback onOpenSettings;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(
+        HudSpacing.xl,
+        HudSpacing.sm,
+        HudSpacing.xl,
+        0,
+      ),
+      child: InkWell(
+        onTap: onOpenSettings,
+        borderRadius: BorderRadius.circular(8),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 4),
+          child: Row(
+            children: [
+              const Icon(
+                Icons.tune_rounded,
+                size: 13,
+                color: HudColors.textTertiary,
+              ),
+              const SizedBox(width: HudSpacing.sm),
+              Flexible(
+                child: Text(
+                  '${controller.visibleSummary} · ${controller.listLimit.label}',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: HudText.caption.copyWith(fontSize: 10.5),
+                ),
+              ),
+              const SizedBox(width: HudSpacing.sm),
+              Text(
+                '共 ${controller.totalCount}',
+                style: HudText.caption.copyWith(fontSize: 10.5),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

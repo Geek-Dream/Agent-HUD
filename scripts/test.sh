@@ -16,6 +16,7 @@ swiftc \
     Sources/AgentHUD/CommandRunner.swift \
     Sources/AgentHUD/SessionTitleStore.swift \
     Sources/AgentHUD/SessionImportanceStore.swift \
+    Sources/AgentHUD/SessionDismissalStore.swift \
     Sources/AgentHUD/CodexAdapter.swift \
     Sources/AgentHUD/ClaudeAdapter.swift \
     Sources/AgentHUD/OpenCodeAdapter.swift \
@@ -31,6 +32,7 @@ swiftc \
     Sources/AgentHUD/CodexInputAdapter.swift \
     Sources/AgentHUD/AgentInputDispatcher.swift \
     Tests/LinkTests.swift \
+    Tests/SessionInteractionTests.swift \
     Tests/main.swift \
     -o "$BINARY"
 

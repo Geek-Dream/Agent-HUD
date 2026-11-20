@@ -1,0 +1,23 @@
+{
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-system/Sources/System/Internals/Syscalls.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-system.build/Debug/SystemPackage-t.build/Objects-normal/arm64/Syscalls.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-system.build/Debug/SystemPackage-t.build/Objects-normal/arm64/Syscalls.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-system.build/Debug/SystemPackage-t.build/Objects-normal/arm64/Syscalls.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-system.build/Debug/SystemPackage-t.build/Objects-normal/arm64/Syscalls.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-system.build/Debug/SystemPackage-t.build/Objects-normal/arm64/Syscalls.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-system/Sources/System/Internals/WindowsSyscallAdapters.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-system.build/Debug/SystemPackage-t.build/Objects-normal/arm64/WindowsSyscallAdapters.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-system.build/Debug/SystemPackage-t.build/Objects-normal/arm64/WindowsSyscallAdapters.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-system.build/Debug/SystemPackage-t.build/Objects-normal/arm64/WindowsSyscallAdapters.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-system.build/Debug/SystemPackage-t.build/Objects-normal/arm64/WindowsSyscallAdapters.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-system.build/Debug/SystemPackage-t.build/Objects-normal/arm64/WindowsSyscallAdapters.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-system/Sources/System/MachPort.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-system.build/Debug/SystemPackage-t.build/Objects-normal/arm64/MachPort.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-system.build/Debug/SystemPackage-t.build/Objects-normal/arm64/MachPort.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-system.build/Debug/SystemPackage-t.build/Objects-normal/arm64/MachPort.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-system.build/Debug/SystemPackage-t.build/Objects-normal/arm64/MachPort.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-system.build/Debug/SystemPackage-t.build/Objects-normal/arm64/MachPort.swiftdeps"
+  }
+}

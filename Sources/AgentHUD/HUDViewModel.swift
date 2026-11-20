@@ -87,9 +87,20 @@ final class HUDViewModel: ObservableObject, LinkSnapshotProviding {
             dismissImportantCompletionNoticeIfNowVisible()
         }
     }
+    @Published var sessionListLimit: SessionListLimit = .default {
+        didSet {
+            UserDefaults.standard.set(sessionListLimit.rawValue, forKey: "hud.sessionListLimit")
+            dismissImportantCompletionNoticeIfNowVisible()
+        }
+    }
     @Published private(set) var titleOverrides: [String: String] = [:]
     @Published private(set) var aiTitles: [String: String] = [:]
     @Published private(set) var importantSessionIDs: Set<String> = []
+    /// 当前扫描结果里仍处于「已删除」状态的会话。
+    ///
+    /// 只存已经算好的结果，不在每次渲染时逐条查 store：`records` 里的活动时间
+    /// 比较要在刷新时统一做一次，否则同一个会话可能在列表和计数里得到不同结论。
+    @Published private(set) var dismissedSessionIDs: Set<String> = []
     @Published var editingTitleSessionID: String?
     @Published var titleDraft = ""
     @Published private(set) var hoveredSessionID: String?
@@ -106,6 +117,7 @@ final class HUDViewModel: ObservableObject, LinkSnapshotProviding {
     private let scanner = SessionScanner()
     private let titleStore = SessionTitleStore()
     private let importanceStore = SessionImportanceStore()
+    private let dismissalStore = SessionDismissalStore()
     private let secretStore = KeychainAISecretStore()
     private let aiTitleService = AITitleService()
     private let inputDispatcher = AgentInputDispatcher(
@@ -126,14 +138,26 @@ final class HUDViewModel: ObservableObject, LinkSnapshotProviding {
         isExpanded = UserDefaults.standard.object(forKey: "hud.isExpanded") as? Bool ?? false
         privacyMode = UserDefaults.standard.bool(forKey: "hud.privacyMode")
         positionLocked = UserDefaults.standard.object(forKey: "hud.positionLocked") as? Bool ?? false
+        let storedWidth = UserDefaults.standard.object(forKey: "hud.expandedWidth") as? Double
+        let storedHeight = UserDefaults.standard.object(forKey: "hud.expandedHeight") as? Double
+        let usesLegacyDefaultSize = UserDefaults.standard.object(forKey: "hud.appearanceRevision") == nil
+            && (storedWidth == nil || storedWidth == 424)
+            && (storedHeight == nil || storedHeight == 620)
         expandedWidth = ExpandedPanelSize.clampedWidth(
-            UserDefaults.standard.object(forKey: "hud.expandedWidth") as? Double
-                ?? ExpandedPanelSize.defaultWidth
+            usesLegacyDefaultSize
+                ? ExpandedPanelSize.defaultWidth
+                : (storedWidth ?? ExpandedPanelSize.defaultWidth)
         )
         expandedHeight = ExpandedPanelSize.clampedHeight(
-            UserDefaults.standard.object(forKey: "hud.expandedHeight") as? Double
-                ?? ExpandedPanelSize.defaultHeight
+            usesLegacyDefaultSize
+                ? ExpandedPanelSize.defaultHeight
+                : (storedHeight ?? ExpandedPanelSize.defaultHeight)
         )
+        if usesLegacyDefaultSize {
+            UserDefaults.standard.set(ExpandedPanelSize.defaultWidth, forKey: "hud.expandedWidth")
+            UserDefaults.standard.set(ExpandedPanelSize.defaultHeight, forKey: "hud.expandedHeight")
+        }
+        UserDefaults.standard.set(2, forKey: "hud.appearanceRevision")
         panelOpacity = HUDPanelAppearance.clampedOpacity(
             UserDefaults.standard.object(forKey: "hud.panelOpacity") as? Double
                 ?? HUDPanelAppearance.defaultOpacity
@@ -152,6 +176,10 @@ final class HUDViewModel: ObservableObject, LinkSnapshotProviding {
         providerFilter = ProviderFilter(
             rawValue: UserDefaults.standard.string(forKey: "hud.providerFilter") ?? ""
         ) ?? .all
+        sessionListLimit = SessionListLimit(
+            rawValue: UserDefaults.standard.object(forKey: "hud.sessionListLimit") as? Int
+                ?? SessionListLimit.default.rawValue
+        ) ?? .default
         titleOverrides = titleStore.titles
         importantSessionIDs = importanceStore.sessionIDs
     }
@@ -170,22 +198,45 @@ final class HUDViewModel: ObservableObject, LinkSnapshotProviding {
     }
 
     var visibleSessions: [AgentSession] {
-        let filtered = sessions.filter {
+        SessionListPolicy.visible(
+            filteredSessions,
+            limit: sessionListLimit,
+            importantSessionIDs: importantSessionIDs
+        )
+    }
+
+    var filteredSessions: [AgentSession] {
+        displayableSessions.filter {
             statusFilter.matches($0.status) && providerFilter.matches($0.provider)
         }
-        return SessionOrdering.sorted(
-            filtered,
-            importantSessionIDs: importantSessionIDs,
-            runningFirst: statusFilter == .all
-        )
+    }
+
+    var visibleSessionSummary: String {
+        let visible = visibleSessions.count
+        let matching = filteredSessions.count
+        return visible == matching
+            ? "显示 \(visible) 个会话"
+            : "显示 \(visible) / \(matching) 个会话"
+    }
+
+    /// 从列表、计数和折叠态文案里统一使用的会话集合。
+    ///
+    /// 被删除且尚未出现新活动的会话只影响「显示」，`sessions` 本身保留完整扫描结果：
+    /// 删除不会改动任何本地日志，恢复时也不需要重新扫描。
+    var displayableSessions: [AgentSession] {
+        guard !dismissedSessionIDs.isEmpty else {
+            return sessions
+        }
+        return sessions.filter { !dismissedSessionIDs.contains($0.id) }
     }
 
     var visibleSessionRows: [SessionRowPresentation] {
         let currentRows = visibleSessions.filter {
             !departingCompletionSessionIDs.contains($0.id)
         }
+        let visibleIDs = Set(visibleSessions.map(\.id))
         let departingRows = departingSessions.values.filter {
-            statusFilter.matches($0.status) && providerFilter.matches($0.provider)
+            visibleIDs.contains($0.id)
         }
         let ordered = SessionOrdering.sorted(
             currentRows + departingRows,
@@ -219,45 +270,58 @@ final class HUDViewModel: ObservableObject, LinkSnapshotProviding {
     }
 
     func statusCount(_ filter: StatusFilter) -> Int {
-        sessions.filter {
+        displayableSessions.filter {
             providerFilter.matches($0.provider) && filter.matches($0.status)
         }.count
     }
 
     func providerCount(_ filter: ProviderFilter) -> Int {
-        sessions.filter {
+        displayableSessions.filter {
             statusFilter.matches($0.status) && filter.matches($0.provider)
         }.count
     }
 
     var workingCount: Int {
-        sessions.filter { $0.status == .working || $0.status == .starting }.count
+        displayableSessions.filter { $0.status == .working || $0.status == .starting }.count
     }
 
     var waitingCount: Int {
-        sessions.filter { $0.status == .waitingUser }.count
+        displayableSessions.filter { $0.status == .waitingUser }.count
     }
 
     var completedCount: Int {
-        sessions.filter { $0.status == .completed }.count
+        displayableSessions.filter { $0.status == .completed }.count
     }
 
     var failedCount: Int {
-        sessions.filter { $0.status == .failed }.count
+        displayableSessions.filter { $0.status == .failed }.count
     }
 
     var activeCount: Int {
-        sessions.filter { $0.status.isActive }.count
+        displayableSessions.filter { $0.status.isActive }.count
+    }
+
+    /// 已被用户删除、当前扫描结果里仍然存在的会话。用于底部的恢复入口。
+    var dismissedSessions: [AgentSession] {
+        guard !dismissedSessionIDs.isEmpty else {
+            return []
+        }
+        return sessions
+            .filter { dismissedSessionIDs.contains($0.id) }
+            .sorted { $0.lastActivityAt > $1.lastActivityAt }
     }
 
     var compactStatusText: String {
-        if sessions.isEmpty {
+        if displayableSessions.isEmpty {
+            if !dismissedSessionIDs.isEmpty {
+                return "已删除 \(dismissedSessionIDs.count) 条，等待新动态"
+            }
             return isLoading ? "正在读取本地会话" : "等待本地 Agent"
         }
-        if let active = sessions.first(where: { $0.status.isActive }) {
+        if let active = displayableSessions.first(where: { $0.status.isActive }) {
             return displayTitle(for: active)
         }
-        if let recent = sessions.first {
+        if let recent = displayableSessions.first {
             return recent.lastRun?.objective ?? displayTitle(for: recent)
         }
         return "暂无会话"
@@ -494,6 +558,38 @@ final class HUDViewModel: ObservableObject, LinkSnapshotProviding {
         importantSessionIDs.contains(session.id)
     }
 
+    /// 从列表删除一条会话。
+    ///
+    /// 删除记的是「当前最后活动时间」而不是删除时刻：会话之后只要产生任何新活动，
+    /// 下一次刷新就会自动回到列表，用户不需要手动恢复。
+    func dismiss(_ session: AgentSession) {
+        dismissalStore.dismiss(sessionID: session.id, lastActivityAt: session.lastActivityAt)
+        dismissedSessionIDs = Self.dismissedIDs(from: dismissalStore, in: sessions)
+        if selectedSessionID == session.id {
+            cancelTitleEditing()
+            selectedSessionID = nil
+        }
+        if editingTitleSessionID == session.id {
+            cancelTitleEditing()
+        }
+        departingSessions.removeValue(forKey: session.id)
+        departingCompletionSessionIDs.remove(session.id)
+        arrivingCompletionSessionIDs.remove(session.id)
+        revealedArrivalSessionIDs.remove(session.id)
+    }
+
+    func restoreAllDismissed() {
+        dismissalStore.restoreAll()
+        dismissedSessionIDs = []
+    }
+
+    private static func dismissedIDs(
+        from store: SessionDismissalStore,
+        in sessions: [AgentSession]
+    ) -> Set<String> {
+        store.dismissedIDs(in: sessions)
+    }
+
     func toggleImportance(for session: AgentSession) {
         importanceStore.toggle(session.id)
         importantSessionIDs = importanceStore.sessionIDs
@@ -506,6 +602,7 @@ final class HUDViewModel: ObservableObject, LinkSnapshotProviding {
         panelContrast = HUDPanelAppearance.defaultContrast
         visualTheme = .classic
         advancedAnimations = false
+        sessionListLimit = .default
     }
 
     func start() {
@@ -564,13 +661,19 @@ final class HUDViewModel: ObservableObject, LinkSnapshotProviding {
             previousSessions: previousSessions,
             currentSessions: snapshot.sessions
         )
+        // 先结算删除状态，再决定动画和提醒：被删除且还没新活动的会话不该
+        // 触发行滑出动画，也不该弹出「重要会话已完成」的提示。
+        dismissalStore.clearAwakened(in: snapshot.sessions)
+        let nextDismissedIDs = Self.dismissedIDs(from: dismissalStore, in: snapshot.sessions)
+
         let currentByID = Dictionary(
             snapshot.sessions.map { ($0.id, $0) },
             uniquingKeysWith: { _, latest in latest }
         )
         let animatedCompletionIDs = statusFilter == .all
             ? Set(runningCompletionIDs.filter { sessionID in
-                guard let session = currentByID[sessionID] else {
+                guard let session = currentByID[sessionID],
+                      !nextDismissedIDs.contains(sessionID) else {
                     return false
                 }
                 return providerFilter.matches(session.provider)
@@ -584,6 +687,7 @@ final class HUDViewModel: ObservableObject, LinkSnapshotProviding {
         }
 
         sessions = snapshot.sessions
+        dismissedSessionIDs = nextDismissedIDs
         monitoringRevision += 1
         presentImportantCompletionNoticeIfNeeded(
             completionIDs: runningCompletionIDs,
@@ -603,7 +707,7 @@ final class HUDViewModel: ObservableObject, LinkSnapshotProviding {
             cancelTitleEditing()
         }
 
-        startAITitleEnrichment(for: sessions)
+        startAITitleEnrichment(for: displayableSessions)
     }
 
     func select(_ session: AgentSession) {
@@ -662,7 +766,7 @@ final class HUDViewModel: ObservableObject, LinkSnapshotProviding {
         aiTitleKeys = [:]
         Task {
             await aiTitleService.clearCache()
-            startAITitleEnrichment(for: sessions)
+            startAITitleEnrichment(for: displayableSessions)
         }
     }
 
@@ -733,7 +837,7 @@ final class HUDViewModel: ObservableObject, LinkSnapshotProviding {
             uniquingKeysWith: { _, latest in latest }
         )
         let candidates = currentSessions
-            .filter { completionIDs.contains($0.id) }
+            .filter { completionIDs.contains($0.id) && !dismissedSessionIDs.contains($0.id) }
             .sorted { $0.lastActivityAt > $1.lastActivityAt }
 
         for session in candidates {

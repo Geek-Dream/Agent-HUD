@@ -1,0 +1,39 @@
+{
+  "" : {
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/SpanPreview-t.build/Objects-normal/arm64/SpanPreview-primary.dia",
+    "emit-module-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/SpanPreview-t.build/Objects-normal/arm64/SpanPreview-primary-emit-module.d",
+    "emit-module-diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/SpanPreview-t.build/Objects-normal/arm64/SpanPreview-primary-emit-module.dia",
+    "pch" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/SpanPreview-t.build/Objects-normal/arm64/SpanPreview-primary-Bridging-header.pch",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/SpanPreview-t.build/Objects-normal/arm64/SpanPreview-primary.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-collections/Sources/SpanPreview/InputSpan.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/SpanPreview-t.build/Objects-normal/arm64/InputSpan.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/SpanPreview-t.build/Objects-normal/arm64/InputSpan.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/SpanPreview-t.build/Objects-normal/arm64/InputSpan.dia",
+    "index-unit-output-path" : "/swift-collections.build/Debug/SpanPreview-t.build/Objects-normal/arm64/InputSpan.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/SpanPreview-t.build/Objects-normal/arm64/InputSpan.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/SpanPreview-t.build/Objects-normal/arm64/InputSpan.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/SpanPreview-t.build/Objects-normal/arm64/InputSpan.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/SpanPreview-t.build/Objects-normal/arm64/InputSpan~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-collections/Sources/SpanPreview/MutableSpan+InputSpanHelpers.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/SpanPreview-t.build/Objects-normal/arm64/MutableSpan+InputSpanHelpers.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/SpanPreview-t.build/Objects-normal/arm64/MutableSpan+InputSpanHelpers.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/SpanPreview-t.build/Objects-normal/arm64/MutableSpan+InputSpanHelpers.dia",
+    "index-unit-output-path" : "/swift-collections.build/Debug/SpanPreview-t.build/Objects-normal/arm64/MutableSpan+InputSpanHelpers.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/SpanPreview-t.build/Objects-normal/arm64/MutableSpan+InputSpanHelpers.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/SpanPreview-t.build/Objects-normal/arm64/MutableSpan+InputSpanHelpers.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/SpanPreview-t.build/Objects-normal/arm64/MutableSpan+InputSpanHelpers.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/SpanPreview-t.build/Objects-normal/arm64/MutableSpan+InputSpanHelpers~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-collections/Sources/SpanPreview/OutputSpan+InputSpanHelpers.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/SpanPreview-t.build/Objects-normal/arm64/OutputSpan+InputSpanHelpers.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/SpanPreview-t.build/Objects-normal/arm64/OutputSpan+InputSpanHelpers.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/SpanPreview-t.build/Objects-normal/arm64/OutputSpan+InputSpanHelpers.dia",
+    "index-unit-output-path" : "/swift-collections.build/Debug/SpanPreview-t.build/Objects-normal/arm64/OutputSpan+InputSpanHelpers.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/SpanPreview-t.build/Objects-normal/arm64/OutputSpan+InputSpanHelpers.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/SpanPreview-t.build/Objects-normal/arm64/OutputSpan+InputSpanHelpers.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/SpanPreview-t.build/Objects-normal/arm64/OutputSpan+InputSpanHelpers.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/SpanPreview-t.build/Objects-normal/arm64/OutputSpan+InputSpanHelpers~partial.swiftmodule"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-collections/Sources/InternalCollectionsUtilities/UnsafeMutablePointer+Extras.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/InternalCollectionsUtilities-t.build/Objects-normal/arm64/UnsafeMutablePointer+Extras.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/InternalCollectionsUtilities-t.build/Objects-normal/arm64/UnsafeMutablePointer+Extras.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/InternalCollectionsUtilities-t.build/Objects-normal/arm64/UnsafeMutablePointer+Extras.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/InternalCollectionsUtilities-t.build/Objects-normal/arm64/UnsafeMutablePointer+Extras.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/InternalCollectionsUtilities-t.build/Objects-normal/arm64/UnsafeMutablePointer+Extras.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-collections/Sources/InternalCollectionsUtilities/UnsafeMutableRawBufferPointer+Extras.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/InternalCollectionsUtilities-t.build/Objects-normal/arm64/UnsafeMutableRawBufferPointer+Extras.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/InternalCollectionsUtilities-t.build/Objects-normal/arm64/UnsafeMutableRawBufferPointer+Extras.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/InternalCollectionsUtilities-t.build/Objects-normal/arm64/UnsafeMutableRawBufferPointer+Extras.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/InternalCollectionsUtilities-t.build/Objects-normal/arm64/UnsafeMutableRawBufferPointer+Extras.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/InternalCollectionsUtilities-t.build/Objects-normal/arm64/UnsafeMutableRawBufferPointer+Extras.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-collections/Sources/InternalCollectionsUtilities/UnsafePointer+Extras.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/InternalCollectionsUtilities-t.build/Objects-normal/arm64/UnsafePointer+Extras.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/InternalCollectionsUtilities-t.build/Objects-normal/arm64/UnsafePointer+Extras.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/InternalCollectionsUtilities-t.build/Objects-normal/arm64/UnsafePointer+Extras.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/InternalCollectionsUtilities-t.build/Objects-normal/arm64/UnsafePointer+Extras.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/InternalCollectionsUtilities-t.build/Objects-normal/arm64/UnsafePointer+Extras.swiftdeps"
+  }
+}

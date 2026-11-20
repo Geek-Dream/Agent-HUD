@@ -1,0 +1,23 @@
+{
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/console-kit/Sources/ConsoleKitTerminal/Activity/ActivityIndicatorState.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ActivityIndicatorState.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ActivityIndicatorState.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ActivityIndicatorState.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ActivityIndicatorState.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/ActivityIndicatorState.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/console-kit/Sources/ConsoleKitTerminal/Activity/CustomActivity.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/CustomActivity.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/CustomActivity.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/CustomActivity.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/CustomActivity.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/CustomActivity.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/console-kit/Sources/ConsoleKitTerminal/Activity/LoadingBar.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/LoadingBar.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/LoadingBar.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/LoadingBar.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/LoadingBar.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitTerminal-t.build/Objects-normal/arm64/LoadingBar.swiftdeps"
+  }
+}

@@ -1,0 +1,4 @@
+module SpanPreview {
+header "SpanPreview-Swift.h"
+export *
+}

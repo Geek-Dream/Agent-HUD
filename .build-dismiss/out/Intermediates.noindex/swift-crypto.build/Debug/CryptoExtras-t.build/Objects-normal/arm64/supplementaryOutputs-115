@@ -1,0 +1,51 @@
+{
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-crypto/Sources/CryptoExtras/Util/ThreadSpecific/ThreadSpecific.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-crypto.build/Debug/CryptoExtras-t.build/Objects-normal/arm64/ThreadSpecific.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-crypto.build/Debug/CryptoExtras-t.build/Objects-normal/arm64/ThreadSpecific.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-crypto.build/Debug/CryptoExtras-t.build/Objects-normal/arm64/ThreadSpecific.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-crypto.build/Debug/CryptoExtras-t.build/Objects-normal/arm64/ThreadSpecific.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-crypto.build/Debug/CryptoExtras-t.build/Objects-normal/arm64/ThreadSpecific.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-crypto/Sources/CryptoExtras/Util/ThreadSpecific/ThreadWindows.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-crypto.build/Debug/CryptoExtras-t.build/Objects-normal/arm64/ThreadWindows.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-crypto.build/Debug/CryptoExtras-t.build/Objects-normal/arm64/ThreadWindows.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-crypto.build/Debug/CryptoExtras-t.build/Objects-normal/arm64/ThreadWindows.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-crypto.build/Debug/CryptoExtras-t.build/Objects-normal/arm64/ThreadWindows.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-crypto.build/Debug/CryptoExtras-t.build/Objects-normal/arm64/ThreadWindows.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-crypto/Sources/CryptoExtras/Util/Zeroization.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-crypto.build/Debug/CryptoExtras-t.build/Objects-normal/arm64/Zeroization.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-crypto.build/Debug/CryptoExtras-t.build/Objects-normal/arm64/Zeroization.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-crypto.build/Debug/CryptoExtras-t.build/Objects-normal/arm64/Zeroization.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-crypto.build/Debug/CryptoExtras-t.build/Objects-normal/arm64/Zeroization.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-crypto.build/Debug/CryptoExtras-t.build/Objects-normal/arm64/Zeroization.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-crypto/Sources/CryptoExtras/ZKPs/DLEQ.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-crypto.build/Debug/CryptoExtras-t.build/Objects-normal/arm64/DLEQ.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-crypto.build/Debug/CryptoExtras-t.build/Objects-normal/arm64/DLEQ.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-crypto.build/Debug/CryptoExtras-t.build/Objects-normal/arm64/DLEQ.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-crypto.build/Debug/CryptoExtras-t.build/Objects-normal/arm64/DLEQ.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-crypto.build/Debug/CryptoExtras-t.build/Objects-normal/arm64/DLEQ.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-crypto/Sources/CryptoExtras/ZKPs/Prover.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-crypto.build/Debug/CryptoExtras-t.build/Objects-normal/arm64/Prover.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-crypto.build/Debug/CryptoExtras-t.build/Objects-normal/arm64/Prover.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-crypto.build/Debug/CryptoExtras-t.build/Objects-normal/arm64/Prover.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-crypto.build/Debug/CryptoExtras-t.build/Objects-normal/arm64/Prover.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-crypto.build/Debug/CryptoExtras-t.build/Objects-normal/arm64/Prover.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-crypto/Sources/CryptoExtras/ZKPs/Verifier.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-crypto.build/Debug/CryptoExtras-t.build/Objects-normal/arm64/Verifier.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-crypto.build/Debug/CryptoExtras-t.build/Objects-normal/arm64/Verifier.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-crypto.build/Debug/CryptoExtras-t.build/Objects-normal/arm64/Verifier.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-crypto.build/Debug/CryptoExtras-t.build/Objects-normal/arm64/Verifier.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-crypto.build/Debug/CryptoExtras-t.build/Objects-normal/arm64/Verifier.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-crypto/Sources/CryptoExtras/ZKPs/ZKPToolbox.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-crypto.build/Debug/CryptoExtras-t.build/Objects-normal/arm64/ZKPToolbox.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-crypto.build/Debug/CryptoExtras-t.build/Objects-normal/arm64/ZKPToolbox.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-crypto.build/Debug/CryptoExtras-t.build/Objects-normal/arm64/ZKPToolbox.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-crypto.build/Debug/CryptoExtras-t.build/Objects-normal/arm64/ZKPToolbox.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-crypto.build/Debug/CryptoExtras-t.build/Objects-normal/arm64/ZKPToolbox.swiftdeps"
+  }
+}

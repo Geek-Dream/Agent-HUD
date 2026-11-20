@@ -4,14 +4,23 @@ import 'package:flutter/foundation.dart';
 
 import 'link_api.dart';
 import 'models.dart';
-import 'session_display_store.dart';
+import 'session_display.dart';
+import 'session_preferences.dart';
 
 class SessionController extends ChangeNotifier {
-  SessionController(this._device, {MonitoringApi? api, this.onDeviceUpdated})
-      : _api = api ?? LinkApi();
+  SessionController(
+    this._device, {
+    MonitoringApi? api,
+    this.onDeviceUpdated,
+    SessionDisplayPreferences? displayPreferences,
+  })  : _api = api ?? LinkApi(),
+        _displayPreferences =
+            displayPreferences ?? InMemorySessionDisplayPreferences();
 
   LinkedDevice _device;
   final MonitoringApi _api;
+  final SessionDisplayPreferences _displayPreferences;
+  bool _preferencesLoaded = false;
 
   /// 电脑在 /v1/status 里报告了新的局域网地址时回调，用于把地址写回本地存储。
   final void Function(LinkedDevice device)? onDeviceUpdated;
@@ -33,8 +42,22 @@ class SessionController extends ChangeNotifier {
   DateTime? lastUpdated;
   String statusFilter = 'All';
   String providerFilter = 'All';
-  int sessionLimit = 10;
-  int hiddenSessionCount = 0;
+  SessionListLimit listLimit = SessionListLimit.defaultLimit;
+  bool get preferencesLoaded => _preferencesLoaded;
+
+  Future<void> loadDisplayPreferences() async {
+    await _displayPreferences.load();
+    if (_isDisposed) return;
+    listLimit = _displayPreferences.listLimit;
+    _preferencesLoaded = true;
+    notifyListeners();
+  }
+
+  Future<void> setListLimit(SessionListLimit limit) async {
+    listLimit = limit;
+    notifyListeners();
+    await _displayPreferences.setListLimit(limit);
+  }
 
   SessionActionsApi? get _actions =>
       _api is SessionActionsApi ? _api as SessionActionsApi : null;
@@ -48,30 +71,32 @@ class SessionController extends ChangeNotifier {
   final Map<String, String> _deliveryErrors = {};
   final Map<String, Timer> _deliveryPollers = {};
 
-  List<AgentSession> get sessions {
-    final filtered = _sessions.where((session) {
-      final statusMatches = _matchesStatus(session.status, statusFilter);
-      final providerMatches =
-          providerFilter == 'All' || session.provider == providerFilter;
-      return statusMatches && providerMatches;
-    }).toList();
-    filtered.sort((a, b) {
-      if (a.isImportant != b.isImportant) return a.isImportant ? -1 : 1;
-      return b.lastActivityAt.compareTo(a.lastActivityAt);
-    });
-    final int unpinnedCount =
-        filtered.where((session) => !session.isImportant).length;
-    hiddenSessionCount = sessionLimit == 0
-        ? 0
-        : (unpinnedCount - sessionLimit).clamp(0, unpinnedCount).toInt();
-    if (sessionLimit == 0) return filtered;
-    // 星标就是常驻会话；即使它较旧也不被最新 N 条截掉。
-    final pinned = filtered.where((session) => session.isImportant);
-    final recent = filtered
-        .where((session) => !session.isImportant)
-        .take(sessionLimit);
-    return [...pinned, ...recent];
+  List<AgentSession> get matchingSessions => _sessions.where((session) {
+        final statusMatches = _matchesStatus(session.status, statusFilter);
+        final providerMatches =
+            providerFilter == 'All' || session.provider == providerFilter;
+        return statusMatches && providerMatches;
+      }).toList();
+
+  List<AgentSession> get sessions => visibleSessions(
+        matchingSessions,
+        listLimit,
+        isImportant: (session) => session.isImportant,
+        lastActivityAt: (session) => session.lastActivityAt,
+        id: (session) => session.id,
+      );
+
+  int get hiddenSessionCount {
+    final int total = matchingSessions.length;
+    if (listLimit.count == null) return 0;
+    final int pinned =
+        matchingSessions.where((session) => session.isImportant).length;
+    return (total - pinned - listLimit.count!).clamp(0, total - pinned);
   }
+
+  String get visibleSummary => hiddenSessionCount == 0
+      ? '显示 ${sessions.length} 个会话'
+      : '显示 ${sessions.length} / ${matchingSessions.length} 个会话';
 
   AgentSession? sessionById(String id) {
     for (final session in _sessions) {
@@ -98,7 +123,7 @@ class SessionController extends ChangeNotifier {
   }
 
   Future<void> start() async {
-    sessionLimit = await SessionDisplayStore.load();
+    await loadDisplayPreferences();
     await refresh(scan: true);
     if (!_isDisposed) {
       _timer = Timer.periodic(const Duration(seconds: 1), (_) {
@@ -387,13 +412,6 @@ class SessionController extends ChangeNotifier {
   void setProviderFilter(String value) {
     providerFilter = value;
     notifyListeners();
-  }
-
-  Future<void> setSessionLimit(int value) async {
-    if (!SessionDisplayStore.options.contains(value)) return;
-    sessionLimit = value;
-    notifyListeners();
-    await SessionDisplayStore.save(value);
   }
 
   @override

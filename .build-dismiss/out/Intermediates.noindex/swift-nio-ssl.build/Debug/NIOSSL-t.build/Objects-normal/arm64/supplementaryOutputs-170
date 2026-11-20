@@ -1,0 +1,23 @@
+{
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio-ssl/Sources/NIOSSL/SwiftCrypto/RNG.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-ssl.build/Debug/NIOSSL-t.build/Objects-normal/arm64/RNG.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-ssl.build/Debug/NIOSSL-t.build/Objects-normal/arm64/RNG.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-ssl.build/Debug/NIOSSL-t.build/Objects-normal/arm64/RNG.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-ssl.build/Debug/NIOSSL-t.build/Objects-normal/arm64/RNG.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-ssl.build/Debug/NIOSSL-t.build/Objects-normal/arm64/RNG.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio-ssl/Sources/NIOSSL/SwiftCrypto/SafeCompare.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-ssl.build/Debug/NIOSSL-t.build/Objects-normal/arm64/SafeCompare.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-ssl.build/Debug/NIOSSL-t.build/Objects-normal/arm64/SafeCompare.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-ssl.build/Debug/NIOSSL-t.build/Objects-normal/arm64/SafeCompare.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-ssl.build/Debug/NIOSSL-t.build/Objects-normal/arm64/SafeCompare.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-ssl.build/Debug/NIOSSL-t.build/Objects-normal/arm64/SafeCompare.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio-ssl/Sources/NIOSSL/SwiftCrypto/Zeroization.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-ssl.build/Debug/NIOSSL-t.build/Objects-normal/arm64/Zeroization.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-ssl.build/Debug/NIOSSL-t.build/Objects-normal/arm64/Zeroization.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-ssl.build/Debug/NIOSSL-t.build/Objects-normal/arm64/Zeroization.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-ssl.build/Debug/NIOSSL-t.build/Objects-normal/arm64/Zeroization.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-ssl.build/Debug/NIOSSL-t.build/Objects-normal/arm64/Zeroization.swiftdeps"
+  }
+}

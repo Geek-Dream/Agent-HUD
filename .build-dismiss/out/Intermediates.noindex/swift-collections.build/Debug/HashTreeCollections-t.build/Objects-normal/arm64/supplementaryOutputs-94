@@ -1,0 +1,58 @@
+{
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-collections/Sources/HashTreeCollections/TreeSet/TreeSet+SetAlgebra basics.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/HashTreeCollections-t.build/Objects-normal/arm64/TreeSet+SetAlgebra basics.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/HashTreeCollections-t.build/Objects-normal/arm64/TreeSet+SetAlgebra basics.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/HashTreeCollections-t.build/Objects-normal/arm64/TreeSet+SetAlgebra basics.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/HashTreeCollections-t.build/Objects-normal/arm64/TreeSet+SetAlgebra basics.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/HashTreeCollections-t.build/Objects-normal/arm64/TreeSet+SetAlgebra basics.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-collections/Sources/HashTreeCollections/TreeSet/TreeSet+SetAlgebra formIntersection.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/HashTreeCollections-t.build/Objects-normal/arm64/TreeSet+SetAlgebra formIntersection.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/HashTreeCollections-t.build/Objects-normal/arm64/TreeSet+SetAlgebra formIntersection.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/HashTreeCollections-t.build/Objects-normal/arm64/TreeSet+SetAlgebra formIntersection.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/HashTreeCollections-t.build/Objects-normal/arm64/TreeSet+SetAlgebra formIntersection.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/HashTreeCollections-t.build/Objects-normal/arm64/TreeSet+SetAlgebra formIntersection.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-collections/Sources/HashTreeCollections/TreeSet/TreeSet+SetAlgebra formSymmetricDifference.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/HashTreeCollections-t.build/Objects-normal/arm64/TreeSet+SetAlgebra formSymmetricDifference.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/HashTreeCollections-t.build/Objects-normal/arm64/TreeSet+SetAlgebra formSymmetricDifference.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/HashTreeCollections-t.build/Objects-normal/arm64/TreeSet+SetAlgebra formSymmetricDifference.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/HashTreeCollections-t.build/Objects-normal/arm64/TreeSet+SetAlgebra formSymmetricDifference.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/HashTreeCollections-t.build/Objects-normal/arm64/TreeSet+SetAlgebra formSymmetricDifference.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-collections/Sources/HashTreeCollections/TreeSet/TreeSet+SetAlgebra formUnion.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/HashTreeCollections-t.build/Objects-normal/arm64/TreeSet+SetAlgebra formUnion.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/HashTreeCollections-t.build/Objects-normal/arm64/TreeSet+SetAlgebra formUnion.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/HashTreeCollections-t.build/Objects-normal/arm64/TreeSet+SetAlgebra formUnion.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/HashTreeCollections-t.build/Objects-normal/arm64/TreeSet+SetAlgebra formUnion.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/HashTreeCollections-t.build/Objects-normal/arm64/TreeSet+SetAlgebra formUnion.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-collections/Sources/HashTreeCollections/TreeSet/TreeSet+SetAlgebra intersection.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/HashTreeCollections-t.build/Objects-normal/arm64/TreeSet+SetAlgebra intersection.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/HashTreeCollections-t.build/Objects-normal/arm64/TreeSet+SetAlgebra intersection.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/HashTreeCollections-t.build/Objects-normal/arm64/TreeSet+SetAlgebra intersection.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/HashTreeCollections-t.build/Objects-normal/arm64/TreeSet+SetAlgebra intersection.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/HashTreeCollections-t.build/Objects-normal/arm64/TreeSet+SetAlgebra intersection.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-collections/Sources/HashTreeCollections/TreeSet/TreeSet+SetAlgebra isDisjoint.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/HashTreeCollections-t.build/Objects-normal/arm64/TreeSet+SetAlgebra isDisjoint.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/HashTreeCollections-t.build/Objects-normal/arm64/TreeSet+SetAlgebra isDisjoint.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/HashTreeCollections-t.build/Objects-normal/arm64/TreeSet+SetAlgebra isDisjoint.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/HashTreeCollections-t.build/Objects-normal/arm64/TreeSet+SetAlgebra isDisjoint.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/HashTreeCollections-t.build/Objects-normal/arm64/TreeSet+SetAlgebra isDisjoint.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-collections/Sources/HashTreeCollections/TreeSet/TreeSet+SetAlgebra isEqualSet.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/HashTreeCollections-t.build/Objects-normal/arm64/TreeSet+SetAlgebra isEqualSet.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/HashTreeCollections-t.build/Objects-normal/arm64/TreeSet+SetAlgebra isEqualSet.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/HashTreeCollections-t.build/Objects-normal/arm64/TreeSet+SetAlgebra isEqualSet.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/HashTreeCollections-t.build/Objects-normal/arm64/TreeSet+SetAlgebra isEqualSet.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/HashTreeCollections-t.build/Objects-normal/arm64/TreeSet+SetAlgebra isEqualSet.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-collections/Sources/HashTreeCollections/TreeSet/TreeSet+SetAlgebra isStrictSubset.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/HashTreeCollections-t.build/Objects-normal/arm64/TreeSet+SetAlgebra isStrictSubset.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/HashTreeCollections-t.build/Objects-normal/arm64/TreeSet+SetAlgebra isStrictSubset.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/HashTreeCollections-t.build/Objects-normal/arm64/TreeSet+SetAlgebra isStrictSubset.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/HashTreeCollections-t.build/Objects-normal/arm64/TreeSet+SetAlgebra isStrictSubset.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/HashTreeCollections-t.build/Objects-normal/arm64/TreeSet+SetAlgebra isStrictSubset.swiftdeps"
+  }
+}

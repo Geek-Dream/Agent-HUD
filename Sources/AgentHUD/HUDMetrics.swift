@@ -10,11 +10,11 @@ enum HUDMetrics {
     // MARK: - Design tokens
 
     enum Radius {
-        static let micro: CGFloat = 4
+        static let micro: CGFloat = 5
         static let control: CGFloat = 7
-        static let small: CGFloat = 8
-        static let card: CGFloat = 10
-        static let panel: CGFloat = 14
+        static let small: CGFloat = 9
+        static let card: CGFloat = 8
+        static let panel: CGFloat = 18
     }
 
     enum Spacing {
@@ -29,12 +29,12 @@ enum HUDMetrics {
 
     enum Typography {
         static let display = Font.system(size: 20, weight: .semibold)
-        static let title = Font.system(size: 13, weight: .semibold)
+        static let title = Font.system(size: 13.5, weight: .semibold)
         static let body = Font.system(size: 12)
         static let label = Font.system(size: 11, weight: .semibold)
-        static let caption = Font.system(size: 10.5, weight: .medium)
+        static let caption = Font.system(size: 11, weight: .medium)
         static let micro = Font.system(size: 9.5, weight: .semibold)
-        static let agent = Font.system(size: 8.5, weight: .bold, design: .monospaced)
+        static let agent = Font.system(size: 9, weight: .semibold, design: .monospaced)
     }
 
     enum Motion {
@@ -63,7 +63,7 @@ enum HUDMetrics {
     }
 
     static var filterAnimation: Animation {
-        .spring(response: Motion.stateDuration, dampingFraction: 0.92)
+        .spring(response: 0.32, dampingFraction: 0.82)
     }
 
     static var pageAnimation: Animation {
@@ -75,7 +75,7 @@ enum HUDMetrics {
     }
 
     static var listAnimation: Animation {
-        .spring(response: 0.38, dampingFraction: 0.92)
+        .timingCurve(0.16, 1, 0.3, 1, duration: 0.28)
     }
 }
 
@@ -83,7 +83,7 @@ extension AgentProvider {
     var symbolName: String {
         switch self {
         case .codex:
-            return "terminal.fill"
+            return "diamond.fill"
         case .claude:
             return "sparkle"
         case .pi:
@@ -107,11 +107,75 @@ extension AgentProvider {
     }
 }
 
+struct SessionGlyphStyle {
+    let symbol: String
+    let color: Color
+
+    var highlightColor: Color {
+        switch symbol {
+        case "chart.bar.fill":
+            return HUDTheme.glyphPink
+        case "storefront.fill":
+            return HUDTheme.important
+        case "bubble.left.and.bubble.right.fill", "paintpalette.fill", "sparkles":
+            return HUDTheme.glyphViolet
+        case "chevron.left.forwardslash.chevron.right", "doc.text.fill":
+            return HUDTheme.glyphCyan
+        case "diamond.fill", "circle.hexagongrid.fill":
+            return HUDTheme.glyphCyan
+        case "sparkle":
+            return HUDTheme.important
+        default:
+            return color
+        }
+    }
+}
+
+enum SessionGlyphPolicy {
+    static func style(title: String, provider: AgentProvider) -> SessionGlyphStyle {
+        let text = title.lowercased()
+
+        if containsAny(["sql", "api", "统计", "数据", "分析"], in: text) {
+            return SessionGlyphStyle(symbol: "chart.bar.fill", color: HUDTheme.glyphViolet)
+        }
+        if containsAny(["端口", "服务", "重启", "部署"], in: text) {
+            return SessionGlyphStyle(symbol: "storefront.fill", color: HUDTheme.glyphOrange)
+        }
+        if containsAny(["确认", "问题", "是否", "解决", "沟通"], in: text) {
+            return SessionGlyphStyle(
+                symbol: "bubble.left.and.bubble.right.fill",
+                color: HUDTheme.glyphViolet
+            )
+        }
+        if containsAny(["页面", "卡片", "模块", "代码", "前端", "组件"], in: text) {
+            return SessionGlyphStyle(
+                symbol: "chevron.left.forwardslash.chevron.right",
+                color: HUDTheme.glyphMint
+            )
+        }
+        if containsAny(["颜色", "样式", "背景", "视觉", "设计"], in: text) {
+            return SessionGlyphStyle(symbol: "paintpalette.fill", color: HUDTheme.glyphPink)
+        }
+        if containsAny(["标题", "生成", "优化", "技能", "集成", "动画", "交互", "筛选"], in: text) {
+            return SessionGlyphStyle(symbol: "sparkles", color: HUDTheme.glyphCyan)
+        }
+        if containsAny(["文档", "需求", "报告", "总结"], in: text) {
+            return SessionGlyphStyle(symbol: "doc.text.fill", color: HUDTheme.glyphCyan)
+        }
+
+        return SessionGlyphStyle(symbol: provider.symbolName, color: provider.accentColor)
+    }
+
+    private static func containsAny(_ keywords: [String], in text: String) -> Bool {
+        keywords.contains { text.contains($0) }
+    }
+}
+
 extension StatusFilter {
     var color: Color {
         switch self {
         case .all:
-            return HUDTheme.textPrimary
+            return HUDTheme.accent
         case .working:
             return AgentStatus.working.color
         case .waiting:
@@ -122,6 +186,21 @@ extension StatusFilter {
             return AgentStatus.failed.color
         }
     }
+
+    var symbolName: String {
+        switch self {
+        case .all:
+            return "square.grid.2x2"
+        case .working:
+            return "briefcase"
+        case .waiting:
+            return "clock"
+        case .completed:
+            return "checkmark"
+        case .failed:
+            return "exclamationmark"
+        }
+    }
 }
 
 extension ProviderFilter {
@@ -130,7 +209,7 @@ extension ProviderFilter {
     }
 
     var accentColor: Color {
-        provider?.accentColor ?? HUDTheme.textPrimary
+        provider?.accentColor ?? HUDTheme.accent
     }
 }
 

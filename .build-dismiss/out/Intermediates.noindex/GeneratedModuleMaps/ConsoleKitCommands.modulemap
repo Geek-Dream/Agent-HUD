@@ -1,0 +1,4 @@
+module ConsoleKitCommands {
+header "ConsoleKitCommands-Swift.h"
+export *
+}

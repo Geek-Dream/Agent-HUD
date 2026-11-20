@@ -1,0 +1,23 @@
+{
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/console-kit/Sources/ConsoleKitCommands/Base/Command.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitCommands-t.build/Objects-normal/arm64/Command.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitCommands-t.build/Objects-normal/arm64/Command.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitCommands-t.build/Objects-normal/arm64/Command.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitCommands-t.build/Objects-normal/arm64/Command.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitCommands-t.build/Objects-normal/arm64/Command.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/console-kit/Sources/ConsoleKitCommands/Base/CommandContext.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitCommands-t.build/Objects-normal/arm64/CommandContext.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitCommands-t.build/Objects-normal/arm64/CommandContext.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitCommands-t.build/Objects-normal/arm64/CommandContext.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitCommands-t.build/Objects-normal/arm64/CommandContext.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitCommands-t.build/Objects-normal/arm64/CommandContext.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/console-kit/Sources/ConsoleKitCommands/Base/CommandError.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitCommands-t.build/Objects-normal/arm64/CommandError.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitCommands-t.build/Objects-normal/arm64/CommandError.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitCommands-t.build/Objects-normal/arm64/CommandError.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitCommands-t.build/Objects-normal/arm64/CommandError.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/console-kit.build/Debug/ConsoleKitCommands-t.build/Objects-normal/arm64/CommandError.swiftdeps"
+  }
+}

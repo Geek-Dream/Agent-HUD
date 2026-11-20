@@ -1,0 +1,30 @@
+{
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio-ssl/Sources/NIOSSL/AndroidCABundle.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-ssl.build/Debug/NIOSSL-t.build/Objects-normal/arm64/AndroidCABundle.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-ssl.build/Debug/NIOSSL-t.build/Objects-normal/arm64/AndroidCABundle.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-ssl.build/Debug/NIOSSL-t.build/Objects-normal/arm64/AndroidCABundle.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-ssl.build/Debug/NIOSSL-t.build/Objects-normal/arm64/AndroidCABundle.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-ssl.build/Debug/NIOSSL-t.build/Objects-normal/arm64/AndroidCABundle.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio-ssl/Sources/NIOSSL/ByteBufferBIO.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-ssl.build/Debug/NIOSSL-t.build/Objects-normal/arm64/ByteBufferBIO.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-ssl.build/Debug/NIOSSL-t.build/Objects-normal/arm64/ByteBufferBIO.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-ssl.build/Debug/NIOSSL-t.build/Objects-normal/arm64/ByteBufferBIO.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-ssl.build/Debug/NIOSSL-t.build/Objects-normal/arm64/ByteBufferBIO.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-ssl.build/Debug/NIOSSL-t.build/Objects-normal/arm64/ByteBufferBIO.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio-ssl/Sources/NIOSSL/CustomPrivateKey.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-ssl.build/Debug/NIOSSL-t.build/Objects-normal/arm64/CustomPrivateKey.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-ssl.build/Debug/NIOSSL-t.build/Objects-normal/arm64/CustomPrivateKey.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-ssl.build/Debug/NIOSSL-t.build/Objects-normal/arm64/CustomPrivateKey.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-ssl.build/Debug/NIOSSL-t.build/Objects-normal/arm64/CustomPrivateKey.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-ssl.build/Debug/NIOSSL-t.build/Objects-normal/arm64/CustomPrivateKey.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-ssl.build/Debug/NIOSSL-t.build/DerivedSources/resource_bundle_accessor.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-ssl.build/Debug/NIOSSL-t.build/Objects-normal/arm64/resource_bundle_accessor.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-ssl.build/Debug/NIOSSL-t.build/Objects-normal/arm64/resource_bundle_accessor.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-ssl.build/Debug/NIOSSL-t.build/Objects-normal/arm64/resource_bundle_accessor.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-ssl.build/Debug/NIOSSL-t.build/Objects-normal/arm64/resource_bundle_accessor.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-ssl.build/Debug/NIOSSL-t.build/Objects-normal/arm64/resource_bundle_accessor.swiftdeps"
+  }
+}

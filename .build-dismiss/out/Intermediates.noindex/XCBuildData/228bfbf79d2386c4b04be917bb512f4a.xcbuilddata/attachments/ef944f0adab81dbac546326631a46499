@@ -1,0 +1,59 @@
+{
+  "" : {
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/routing-kit.build/Debug/RoutingKit-t.build/Objects-normal/arm64/RoutingKit-primary.dia",
+    "emit-module-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/routing-kit.build/Debug/RoutingKit-t.build/Objects-normal/arm64/RoutingKit-primary-emit-module.d",
+    "emit-module-diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/routing-kit.build/Debug/RoutingKit-t.build/Objects-normal/arm64/RoutingKit-primary-emit-module.dia",
+    "pch" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/routing-kit.build/Debug/RoutingKit-t.build/Objects-normal/arm64/RoutingKit-primary-Bridging-header.pch",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/routing-kit.build/Debug/RoutingKit-t.build/Objects-normal/arm64/RoutingKit-primary.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/routing-kit/Sources/RoutingKit/AnyRouter.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/routing-kit.build/Debug/RoutingKit-t.build/Objects-normal/arm64/AnyRouter.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/routing-kit.build/Debug/RoutingKit-t.build/Objects-normal/arm64/AnyRouter.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/routing-kit.build/Debug/RoutingKit-t.build/Objects-normal/arm64/AnyRouter.dia",
+    "index-unit-output-path" : "/routing-kit.build/Debug/RoutingKit-t.build/Objects-normal/arm64/AnyRouter.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/routing-kit.build/Debug/RoutingKit-t.build/Objects-normal/arm64/AnyRouter.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/routing-kit.build/Debug/RoutingKit-t.build/Objects-normal/arm64/AnyRouter.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/routing-kit.build/Debug/RoutingKit-t.build/Objects-normal/arm64/AnyRouter.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/routing-kit.build/Debug/RoutingKit-t.build/Objects-normal/arm64/AnyRouter~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/routing-kit/Sources/RoutingKit/Parameters.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/routing-kit.build/Debug/RoutingKit-t.build/Objects-normal/arm64/Parameters.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/routing-kit.build/Debug/RoutingKit-t.build/Objects-normal/arm64/Parameters.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/routing-kit.build/Debug/RoutingKit-t.build/Objects-normal/arm64/Parameters.dia",
+    "index-unit-output-path" : "/routing-kit.build/Debug/RoutingKit-t.build/Objects-normal/arm64/Parameters.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/routing-kit.build/Debug/RoutingKit-t.build/Objects-normal/arm64/Parameters.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/routing-kit.build/Debug/RoutingKit-t.build/Objects-normal/arm64/Parameters.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/routing-kit.build/Debug/RoutingKit-t.build/Objects-normal/arm64/Parameters.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/routing-kit.build/Debug/RoutingKit-t.build/Objects-normal/arm64/Parameters~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/routing-kit/Sources/RoutingKit/PathComponent.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/routing-kit.build/Debug/RoutingKit-t.build/Objects-normal/arm64/PathComponent.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/routing-kit.build/Debug/RoutingKit-t.build/Objects-normal/arm64/PathComponent.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/routing-kit.build/Debug/RoutingKit-t.build/Objects-normal/arm64/PathComponent.dia",
+    "index-unit-output-path" : "/routing-kit.build/Debug/RoutingKit-t.build/Objects-normal/arm64/PathComponent.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/routing-kit.build/Debug/RoutingKit-t.build/Objects-normal/arm64/PathComponent.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/routing-kit.build/Debug/RoutingKit-t.build/Objects-normal/arm64/PathComponent.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/routing-kit.build/Debug/RoutingKit-t.build/Objects-normal/arm64/PathComponent.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/routing-kit.build/Debug/RoutingKit-t.build/Objects-normal/arm64/PathComponent~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/routing-kit/Sources/RoutingKit/Router.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/routing-kit.build/Debug/RoutingKit-t.build/Objects-normal/arm64/Router.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/routing-kit.build/Debug/RoutingKit-t.build/Objects-normal/arm64/Router.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/routing-kit.build/Debug/RoutingKit-t.build/Objects-normal/arm64/Router.dia",
+    "index-unit-output-path" : "/routing-kit.build/Debug/RoutingKit-t.build/Objects-normal/arm64/Router.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/routing-kit.build/Debug/RoutingKit-t.build/Objects-normal/arm64/Router.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/routing-kit.build/Debug/RoutingKit-t.build/Objects-normal/arm64/Router.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/routing-kit.build/Debug/RoutingKit-t.build/Objects-normal/arm64/Router.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/routing-kit.build/Debug/RoutingKit-t.build/Objects-normal/arm64/Router~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/routing-kit/Sources/RoutingKit/TrieRouter.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/routing-kit.build/Debug/RoutingKit-t.build/Objects-normal/arm64/TrieRouter.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/routing-kit.build/Debug/RoutingKit-t.build/Objects-normal/arm64/TrieRouter.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/routing-kit.build/Debug/RoutingKit-t.build/Objects-normal/arm64/TrieRouter.dia",
+    "index-unit-output-path" : "/routing-kit.build/Debug/RoutingKit-t.build/Objects-normal/arm64/TrieRouter.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/routing-kit.build/Debug/RoutingKit-t.build/Objects-normal/arm64/TrieRouter.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/routing-kit.build/Debug/RoutingKit-t.build/Objects-normal/arm64/TrieRouter.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/routing-kit.build/Debug/RoutingKit-t.build/Objects-normal/arm64/TrieRouter.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/routing-kit.build/Debug/RoutingKit-t.build/Objects-normal/arm64/TrieRouter~partial.swiftmodule"
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-collections/Sources/BitCollections/BitSet/BitSet+SetAlgebra conformance.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/BitCollections-t.build/Objects-normal/arm64/BitSet+SetAlgebra conformance.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/BitCollections-t.build/Objects-normal/arm64/BitSet+SetAlgebra conformance.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/BitCollections-t.build/Objects-normal/arm64/BitSet+SetAlgebra conformance.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/BitCollections-t.build/Objects-normal/arm64/BitSet+SetAlgebra conformance.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/BitCollections-t.build/Objects-normal/arm64/BitSet+SetAlgebra conformance.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-collections/Sources/BitCollections/BitSet/BitSet+SetAlgebra formIntersection.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/BitCollections-t.build/Objects-normal/arm64/BitSet+SetAlgebra formIntersection.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/BitCollections-t.build/Objects-normal/arm64/BitSet+SetAlgebra formIntersection.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/BitCollections-t.build/Objects-normal/arm64/BitSet+SetAlgebra formIntersection.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/BitCollections-t.build/Objects-normal/arm64/BitSet+SetAlgebra formIntersection.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/BitCollections-t.build/Objects-normal/arm64/BitSet+SetAlgebra formIntersection.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-collections/Sources/BitCollections/BitSet/BitSet+SetAlgebra formSymmetricDifference.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/BitCollections-t.build/Objects-normal/arm64/BitSet+SetAlgebra formSymmetricDifference.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/BitCollections-t.build/Objects-normal/arm64/BitSet+SetAlgebra formSymmetricDifference.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/BitCollections-t.build/Objects-normal/arm64/BitSet+SetAlgebra formSymmetricDifference.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/BitCollections-t.build/Objects-normal/arm64/BitSet+SetAlgebra formSymmetricDifference.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/BitCollections-t.build/Objects-normal/arm64/BitSet+SetAlgebra formSymmetricDifference.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-collections/Sources/BitCollections/BitSet/BitSet+SetAlgebra formUnion.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/BitCollections-t.build/Objects-normal/arm64/BitSet+SetAlgebra formUnion.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/BitCollections-t.build/Objects-normal/arm64/BitSet+SetAlgebra formUnion.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/BitCollections-t.build/Objects-normal/arm64/BitSet+SetAlgebra formUnion.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/BitCollections-t.build/Objects-normal/arm64/BitSet+SetAlgebra formUnion.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/BitCollections-t.build/Objects-normal/arm64/BitSet+SetAlgebra formUnion.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-collections/Sources/BitCollections/BitSet/BitSet+SetAlgebra intersection.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/BitCollections-t.build/Objects-normal/arm64/BitSet+SetAlgebra intersection.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/BitCollections-t.build/Objects-normal/arm64/BitSet+SetAlgebra intersection.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/BitCollections-t.build/Objects-normal/arm64/BitSet+SetAlgebra intersection.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/BitCollections-t.build/Objects-normal/arm64/BitSet+SetAlgebra intersection.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/BitCollections-t.build/Objects-normal/arm64/BitSet+SetAlgebra intersection.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-collections/Sources/BitCollections/BitSet/BitSet+SetAlgebra isDisjoint.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/BitCollections-t.build/Objects-normal/arm64/BitSet+SetAlgebra isDisjoint.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/BitCollections-t.build/Objects-normal/arm64/BitSet+SetAlgebra isDisjoint.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/BitCollections-t.build/Objects-normal/arm64/BitSet+SetAlgebra isDisjoint.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/BitCollections-t.build/Objects-normal/arm64/BitSet+SetAlgebra isDisjoint.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/BitCollections-t.build/Objects-normal/arm64/BitSet+SetAlgebra isDisjoint.swiftdeps"
+  }
+}

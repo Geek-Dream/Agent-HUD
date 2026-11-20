@@ -1,0 +1,4 @@
+module _NIOFileSystem {
+header "_NIOFileSystem-Swift.h"
+export *
+}

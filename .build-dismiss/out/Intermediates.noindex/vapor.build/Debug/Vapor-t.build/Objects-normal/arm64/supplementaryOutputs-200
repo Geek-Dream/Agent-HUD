@@ -1,0 +1,156 @@
+{
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/vapor/Sources/Vapor/Multipart/File+Multipart.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/File+Multipart.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/File+Multipart.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/File+Multipart.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/File+Multipart.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/File+Multipart.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/vapor/Sources/Vapor/Multipart/FormDataDecoder+Content.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/FormDataDecoder+Content.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/FormDataDecoder+Content.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/FormDataDecoder+Content.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/FormDataDecoder+Content.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/FormDataDecoder+Content.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/vapor/Sources/Vapor/Multipart/FormDataEncoder+Content.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/FormDataEncoder+Content.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/FormDataEncoder+Content.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/FormDataEncoder+Content.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/FormDataEncoder+Content.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/FormDataEncoder+Content.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/vapor/Sources/Vapor/Passwords/Application+Password.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/Application+Password.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/Application+Password.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/Application+Password.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/Application+Password.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/Application+Password.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/vapor/Sources/Vapor/Passwords/Application+Passwords.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/Application+Passwords.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/Application+Passwords.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/Application+Passwords.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/Application+Passwords.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/Application+Passwords.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/vapor/Sources/Vapor/Passwords/AsyncPasswordHasher.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/AsyncPasswordHasher.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/AsyncPasswordHasher.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/AsyncPasswordHasher.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/AsyncPasswordHasher.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/AsyncPasswordHasher.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/vapor/Sources/Vapor/Passwords/BcryptHasher.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/BcryptHasher.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/BcryptHasher.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/BcryptHasher.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/BcryptHasher.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/BcryptHasher.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/vapor/Sources/Vapor/Passwords/PasswordHasher.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/PasswordHasher.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/PasswordHasher.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/PasswordHasher.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/PasswordHasher.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/PasswordHasher.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/vapor/Sources/Vapor/Passwords/PlaintextHasher.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/PlaintextHasher.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/PlaintextHasher.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/PlaintextHasher.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/PlaintextHasher.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/PlaintextHasher.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/vapor/Sources/Vapor/Passwords/Request+Password.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/Request+Password.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/Request+Password.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/Request+Password.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/Request+Password.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/Request+Password.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/vapor/Sources/Vapor/Request/Redirect.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/Redirect.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/Redirect.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/Redirect.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/Redirect.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/Redirect.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/vapor/Sources/Vapor/Request/Request+Body.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/Request+Body.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/Request+Body.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/Request+Body.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/Request+Body.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/Request+Body.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/vapor/Sources/Vapor/Request/Request+BodyStream.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/Request+BodyStream.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/Request+BodyStream.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/Request+BodyStream.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/Request+BodyStream.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/Request+BodyStream.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/vapor/Sources/Vapor/Request/Request.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/Request.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/Request.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/Request.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/Request.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/Request.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/vapor/Sources/Vapor/Responder/Application+Responder.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/Application+Responder.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/Application+Responder.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/Application+Responder.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/Application+Responder.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/Application+Responder.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/vapor/Sources/Vapor/Responder/DefaultResponder.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/DefaultResponder.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/DefaultResponder.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/DefaultResponder.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/DefaultResponder.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/DefaultResponder.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/vapor/Sources/Vapor/Response/Response+Body.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/Response+Body.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/Response+Body.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/Response+Body.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/Response+Body.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/Response+Body.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/vapor/Sources/Vapor/Response/Response.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/Response.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/Response.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/Response.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/Response.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/Response.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/vapor/Sources/Vapor/Response/ResponseCodable.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/ResponseCodable.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/ResponseCodable.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/ResponseCodable.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/ResponseCodable.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/ResponseCodable.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/vapor/Sources/Vapor/Routing/Application+Routes.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/Application+Routes.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/Application+Routes.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/Application+Routes.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/Application+Routes.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/Application+Routes.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/vapor/Sources/Vapor/Routing/Parameters+Require.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/Parameters+Require.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/Parameters+Require.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/Parameters+Require.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/Parameters+Require.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/Parameters+Require.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/vapor/Sources/Vapor/Routing/Request+WebSocket.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/Request+WebSocket.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/Request+WebSocket.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/Request+WebSocket.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/Request+WebSocket.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/vapor.build/Debug/Vapor-t.build/Objects-normal/arm64/Request+WebSocket.swiftdeps"
+  }
+}

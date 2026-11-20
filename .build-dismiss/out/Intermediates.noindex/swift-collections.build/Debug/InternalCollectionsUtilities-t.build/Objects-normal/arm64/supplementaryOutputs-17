@@ -1,0 +1,23 @@
+{
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-collections/Sources/InternalCollectionsUtilities/TemporaryAllocation.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/InternalCollectionsUtilities-t.build/Objects-normal/arm64/TemporaryAllocation.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/InternalCollectionsUtilities-t.build/Objects-normal/arm64/TemporaryAllocation.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/InternalCollectionsUtilities-t.build/Objects-normal/arm64/TemporaryAllocation.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/InternalCollectionsUtilities-t.build/Objects-normal/arm64/TemporaryAllocation.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/InternalCollectionsUtilities-t.build/Objects-normal/arm64/TemporaryAllocation.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-collections/Sources/InternalCollectionsUtilities/UnsafeBitSet/_UnsafeBitSet+Index.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/InternalCollectionsUtilities-t.build/Objects-normal/arm64/_UnsafeBitSet+Index.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/InternalCollectionsUtilities-t.build/Objects-normal/arm64/_UnsafeBitSet+Index.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/InternalCollectionsUtilities-t.build/Objects-normal/arm64/_UnsafeBitSet+Index.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/InternalCollectionsUtilities-t.build/Objects-normal/arm64/_UnsafeBitSet+Index.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/InternalCollectionsUtilities-t.build/Objects-normal/arm64/_UnsafeBitSet+Index.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-collections/Sources/InternalCollectionsUtilities/UnsafeBitSet/_UnsafeBitSet+_Word.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/InternalCollectionsUtilities-t.build/Objects-normal/arm64/_UnsafeBitSet+_Word.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/InternalCollectionsUtilities-t.build/Objects-normal/arm64/_UnsafeBitSet+_Word.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/InternalCollectionsUtilities-t.build/Objects-normal/arm64/_UnsafeBitSet+_Word.dia",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/InternalCollectionsUtilities-t.build/Objects-normal/arm64/_UnsafeBitSet+_Word.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-collections.build/Debug/InternalCollectionsUtilities-t.build/Objects-normal/arm64/_UnsafeBitSet+_Word.swiftdeps"
+  }
+}

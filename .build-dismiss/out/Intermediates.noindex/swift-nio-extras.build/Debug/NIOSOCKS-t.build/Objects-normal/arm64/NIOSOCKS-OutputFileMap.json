@@ -1,0 +1,129 @@
+{
+  "" : {
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-extras.build/Debug/NIOSOCKS-t.build/Objects-normal/arm64/NIOSOCKS-primary.dia",
+    "emit-module-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-extras.build/Debug/NIOSOCKS-t.build/Objects-normal/arm64/NIOSOCKS-primary-emit-module.d",
+    "emit-module-diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-extras.build/Debug/NIOSOCKS-t.build/Objects-normal/arm64/NIOSOCKS-primary-emit-module.dia",
+    "pch" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-extras.build/Debug/NIOSOCKS-t.build/Objects-normal/arm64/NIOSOCKS-primary-Bridging-header.pch",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-extras.build/Debug/NIOSOCKS-t.build/Objects-normal/arm64/NIOSOCKS-primary.swiftdeps"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio-extras/Sources/NIOSOCKS/Channel Handlers/SOCKSClientHandler.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-extras.build/Debug/NIOSOCKS-t.build/Objects-normal/arm64/SOCKSClientHandler.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-extras.build/Debug/NIOSOCKS-t.build/Objects-normal/arm64/SOCKSClientHandler.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-extras.build/Debug/NIOSOCKS-t.build/Objects-normal/arm64/SOCKSClientHandler.dia",
+    "index-unit-output-path" : "/swift-nio-extras.build/Debug/NIOSOCKS-t.build/Objects-normal/arm64/SOCKSClientHandler.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-extras.build/Debug/NIOSOCKS-t.build/Objects-normal/arm64/SOCKSClientHandler.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-extras.build/Debug/NIOSOCKS-t.build/Objects-normal/arm64/SOCKSClientHandler.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-extras.build/Debug/NIOSOCKS-t.build/Objects-normal/arm64/SOCKSClientHandler.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-extras.build/Debug/NIOSOCKS-t.build/Objects-normal/arm64/SOCKSClientHandler~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio-extras/Sources/NIOSOCKS/Channel Handlers/SOCKSServerHandshakeHandler.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-extras.build/Debug/NIOSOCKS-t.build/Objects-normal/arm64/SOCKSServerHandshakeHandler.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-extras.build/Debug/NIOSOCKS-t.build/Objects-normal/arm64/SOCKSServerHandshakeHandler.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-extras.build/Debug/NIOSOCKS-t.build/Objects-normal/arm64/SOCKSServerHandshakeHandler.dia",
+    "index-unit-output-path" : "/swift-nio-extras.build/Debug/NIOSOCKS-t.build/Objects-normal/arm64/SOCKSServerHandshakeHandler.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-extras.build/Debug/NIOSOCKS-t.build/Objects-normal/arm64/SOCKSServerHandshakeHandler.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-extras.build/Debug/NIOSOCKS-t.build/Objects-normal/arm64/SOCKSServerHandshakeHandler.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-extras.build/Debug/NIOSOCKS-t.build/Objects-normal/arm64/SOCKSServerHandshakeHandler.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-extras.build/Debug/NIOSOCKS-t.build/Objects-normal/arm64/SOCKSServerHandshakeHandler~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio-extras/Sources/NIOSOCKS/Messages/AuthenticationMethod.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-extras.build/Debug/NIOSOCKS-t.build/Objects-normal/arm64/AuthenticationMethod.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-extras.build/Debug/NIOSOCKS-t.build/Objects-normal/arm64/AuthenticationMethod.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-extras.build/Debug/NIOSOCKS-t.build/Objects-normal/arm64/AuthenticationMethod.dia",
+    "index-unit-output-path" : "/swift-nio-extras.build/Debug/NIOSOCKS-t.build/Objects-normal/arm64/AuthenticationMethod.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-extras.build/Debug/NIOSOCKS-t.build/Objects-normal/arm64/AuthenticationMethod.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-extras.build/Debug/NIOSOCKS-t.build/Objects-normal/arm64/AuthenticationMethod.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-extras.build/Debug/NIOSOCKS-t.build/Objects-normal/arm64/AuthenticationMethod.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-extras.build/Debug/NIOSOCKS-t.build/Objects-normal/arm64/AuthenticationMethod~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio-extras/Sources/NIOSOCKS/Messages/ClientGreeting.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-extras.build/Debug/NIOSOCKS-t.build/Objects-normal/arm64/ClientGreeting.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-extras.build/Debug/NIOSOCKS-t.build/Objects-normal/arm64/ClientGreeting.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-extras.build/Debug/NIOSOCKS-t.build/Objects-normal/arm64/ClientGreeting.dia",
+    "index-unit-output-path" : "/swift-nio-extras.build/Debug/NIOSOCKS-t.build/Objects-normal/arm64/ClientGreeting.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-extras.build/Debug/NIOSOCKS-t.build/Objects-normal/arm64/ClientGreeting.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-extras.build/Debug/NIOSOCKS-t.build/Objects-normal/arm64/ClientGreeting.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-extras.build/Debug/NIOSOCKS-t.build/Objects-normal/arm64/ClientGreeting.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-extras.build/Debug/NIOSOCKS-t.build/Objects-normal/arm64/ClientGreeting~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio-extras/Sources/NIOSOCKS/Messages/Errors.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-extras.build/Debug/NIOSOCKS-t.build/Objects-normal/arm64/Errors.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-extras.build/Debug/NIOSOCKS-t.build/Objects-normal/arm64/Errors.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-extras.build/Debug/NIOSOCKS-t.build/Objects-normal/arm64/Errors.dia",
+    "index-unit-output-path" : "/swift-nio-extras.build/Debug/NIOSOCKS-t.build/Objects-normal/arm64/Errors.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-extras.build/Debug/NIOSOCKS-t.build/Objects-normal/arm64/Errors.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-extras.build/Debug/NIOSOCKS-t.build/Objects-normal/arm64/Errors.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-extras.build/Debug/NIOSOCKS-t.build/Objects-normal/arm64/Errors.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-extras.build/Debug/NIOSOCKS-t.build/Objects-normal/arm64/Errors~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio-extras/Sources/NIOSOCKS/Messages/Helpers.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-extras.build/Debug/NIOSOCKS-t.build/Objects-normal/arm64/Helpers.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-extras.build/Debug/NIOSOCKS-t.build/Objects-normal/arm64/Helpers.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-extras.build/Debug/NIOSOCKS-t.build/Objects-normal/arm64/Helpers.dia",
+    "index-unit-output-path" : "/swift-nio-extras.build/Debug/NIOSOCKS-t.build/Objects-normal/arm64/Helpers.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-extras.build/Debug/NIOSOCKS-t.build/Objects-normal/arm64/Helpers.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-extras.build/Debug/NIOSOCKS-t.build/Objects-normal/arm64/Helpers.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-extras.build/Debug/NIOSOCKS-t.build/Objects-normal/arm64/Helpers.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-extras.build/Debug/NIOSOCKS-t.build/Objects-normal/arm64/Helpers~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio-extras/Sources/NIOSOCKS/Messages/Messages.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-extras.build/Debug/NIOSOCKS-t.build/Objects-normal/arm64/Messages.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-extras.build/Debug/NIOSOCKS-t.build/Objects-normal/arm64/Messages.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-extras.build/Debug/NIOSOCKS-t.build/Objects-normal/arm64/Messages.dia",
+    "index-unit-output-path" : "/swift-nio-extras.build/Debug/NIOSOCKS-t.build/Objects-normal/arm64/Messages.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-extras.build/Debug/NIOSOCKS-t.build/Objects-normal/arm64/Messages.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-extras.build/Debug/NIOSOCKS-t.build/Objects-normal/arm64/Messages.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-extras.build/Debug/NIOSOCKS-t.build/Objects-normal/arm64/Messages.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-extras.build/Debug/NIOSOCKS-t.build/Objects-normal/arm64/Messages~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio-extras/Sources/NIOSOCKS/Messages/SOCKSRequest.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-extras.build/Debug/NIOSOCKS-t.build/Objects-normal/arm64/SOCKSRequest.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-extras.build/Debug/NIOSOCKS-t.build/Objects-normal/arm64/SOCKSRequest.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-extras.build/Debug/NIOSOCKS-t.build/Objects-normal/arm64/SOCKSRequest.dia",
+    "index-unit-output-path" : "/swift-nio-extras.build/Debug/NIOSOCKS-t.build/Objects-normal/arm64/SOCKSRequest.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-extras.build/Debug/NIOSOCKS-t.build/Objects-normal/arm64/SOCKSRequest.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-extras.build/Debug/NIOSOCKS-t.build/Objects-normal/arm64/SOCKSRequest.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-extras.build/Debug/NIOSOCKS-t.build/Objects-normal/arm64/SOCKSRequest.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-extras.build/Debug/NIOSOCKS-t.build/Objects-normal/arm64/SOCKSRequest~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio-extras/Sources/NIOSOCKS/Messages/SOCKSResponse.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-extras.build/Debug/NIOSOCKS-t.build/Objects-normal/arm64/SOCKSResponse.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-extras.build/Debug/NIOSOCKS-t.build/Objects-normal/arm64/SOCKSResponse.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-extras.build/Debug/NIOSOCKS-t.build/Objects-normal/arm64/SOCKSResponse.dia",
+    "index-unit-output-path" : "/swift-nio-extras.build/Debug/NIOSOCKS-t.build/Objects-normal/arm64/SOCKSResponse.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-extras.build/Debug/NIOSOCKS-t.build/Objects-normal/arm64/SOCKSResponse.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-extras.build/Debug/NIOSOCKS-t.build/Objects-normal/arm64/SOCKSResponse.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-extras.build/Debug/NIOSOCKS-t.build/Objects-normal/arm64/SOCKSResponse.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-extras.build/Debug/NIOSOCKS-t.build/Objects-normal/arm64/SOCKSResponse~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio-extras/Sources/NIOSOCKS/Messages/SelectedAuthenticationMethod.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-extras.build/Debug/NIOSOCKS-t.build/Objects-normal/arm64/SelectedAuthenticationMethod.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-extras.build/Debug/NIOSOCKS-t.build/Objects-normal/arm64/SelectedAuthenticationMethod.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-extras.build/Debug/NIOSOCKS-t.build/Objects-normal/arm64/SelectedAuthenticationMethod.dia",
+    "index-unit-output-path" : "/swift-nio-extras.build/Debug/NIOSOCKS-t.build/Objects-normal/arm64/SelectedAuthenticationMethod.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-extras.build/Debug/NIOSOCKS-t.build/Objects-normal/arm64/SelectedAuthenticationMethod.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-extras.build/Debug/NIOSOCKS-t.build/Objects-normal/arm64/SelectedAuthenticationMethod.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-extras.build/Debug/NIOSOCKS-t.build/Objects-normal/arm64/SelectedAuthenticationMethod.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-extras.build/Debug/NIOSOCKS-t.build/Objects-normal/arm64/SelectedAuthenticationMethod~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio-extras/Sources/NIOSOCKS/State/ClientStateMachine.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-extras.build/Debug/NIOSOCKS-t.build/Objects-normal/arm64/ClientStateMachine.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-extras.build/Debug/NIOSOCKS-t.build/Objects-normal/arm64/ClientStateMachine.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-extras.build/Debug/NIOSOCKS-t.build/Objects-normal/arm64/ClientStateMachine.dia",
+    "index-unit-output-path" : "/swift-nio-extras.build/Debug/NIOSOCKS-t.build/Objects-normal/arm64/ClientStateMachine.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-extras.build/Debug/NIOSOCKS-t.build/Objects-normal/arm64/ClientStateMachine.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-extras.build/Debug/NIOSOCKS-t.build/Objects-normal/arm64/ClientStateMachine.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-extras.build/Debug/NIOSOCKS-t.build/Objects-normal/arm64/ClientStateMachine.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-extras.build/Debug/NIOSOCKS-t.build/Objects-normal/arm64/ClientStateMachine~partial.swiftmodule"
+  },
+  "/Users/wl/Desktop/Agent-HUD/.build-dismiss/checkouts/swift-nio-extras/Sources/NIOSOCKS/State/ServerStateMachine.swift" : {
+    "const-values" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-extras.build/Debug/NIOSOCKS-t.build/Objects-normal/arm64/ServerStateMachine.swiftconstvalues",
+    "dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-extras.build/Debug/NIOSOCKS-t.build/Objects-normal/arm64/ServerStateMachine.d",
+    "diagnostics" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-extras.build/Debug/NIOSOCKS-t.build/Objects-normal/arm64/ServerStateMachine.dia",
+    "index-unit-output-path" : "/swift-nio-extras.build/Debug/NIOSOCKS-t.build/Objects-normal/arm64/ServerStateMachine.o",
+    "llvm-bc" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-extras.build/Debug/NIOSOCKS-t.build/Objects-normal/arm64/ServerStateMachine.bc",
+    "object" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-extras.build/Debug/NIOSOCKS-t.build/Objects-normal/arm64/ServerStateMachine.o",
+    "swift-dependencies" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-extras.build/Debug/NIOSOCKS-t.build/Objects-normal/arm64/ServerStateMachine.swiftdeps",
+    "swiftmodule" : "/Users/wl/Desktop/Agent-HUD/.build-dismiss/out/Intermediates.noindex/swift-nio-extras.build/Debug/NIOSOCKS-t.build/Objects-normal/arm64/ServerStateMachine~partial.swiftmodule"
+  }
+}

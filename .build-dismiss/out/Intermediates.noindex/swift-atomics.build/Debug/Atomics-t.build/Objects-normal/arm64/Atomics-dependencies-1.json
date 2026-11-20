@@ -1,0 +1,106 @@
+[
+  {
+    "isFramework" : false,
+    "moduleName" : "Swift",
+    "modulePath" : "\/Users\/wl\/Desktop\/Agent-HUD\/.build-dismiss\/out\/SDKExplicitPrecompiledModules\/Swift-2TRXHHFYV1ZML.swiftmodule"
+  },
+  {
+    "isFramework" : false,
+    "moduleName" : "SwiftOnoneSupport",
+    "modulePath" : "\/Users\/wl\/Desktop\/Agent-HUD\/.build-dismiss\/out\/SDKExplicitPrecompiledModules\/SwiftOnoneSupport-1K4K01FJB1H9Q.swiftmodule"
+  },
+  {
+    "isFramework" : false,
+    "moduleName" : "_Concurrency",
+    "modulePath" : "\/Users\/wl\/Desktop\/Agent-HUD\/.build-dismiss\/out\/SDKExplicitPrecompiledModules\/_Concurrency-1OB9ZUBATQ4JF.swiftmodule"
+  },
+  {
+    "isFramework" : false,
+    "moduleName" : "_StringProcessing",
+    "modulePath" : "\/Users\/wl\/Desktop\/Agent-HUD\/.build-dismiss\/out\/SDKExplicitPrecompiledModules\/_StringProcessing-2O0XYZL4ICT1C.swiftmodule"
+  },
+  {
+    "clangModuleMapPath" : "\/Library\/Developer\/CommandLineTools\/SDKs\/MacOSX27.0.sdk\/usr\/lib\/swift\/shims\/module.modulemap",
+    "clangModulePath" : "\/Users\/wl\/Desktop\/Agent-HUD\/.build-dismiss\/out\/SDKExplicitPrecompiledModules\/SwiftShims-5P69J7LBQT6INIJN22VEPVG4A.pcm",
+    "isBridgingHeaderDependency" : false,
+    "isFramework" : false,
+    "moduleName" : "SwiftShims"
+  },
+  {
+    "clangModuleMapPath" : "\/Users\/wl\/Desktop\/Agent-HUD\/.build-dismiss\/checkouts\/swift-atomics\/Sources\/_AtomicsShims\/include\/module.modulemap",
+    "clangModulePath" : "\/Users\/wl\/Desktop\/Agent-HUD\/.build-dismiss\/out\/Intermediates.noindex\/SwiftExplicitPrecompiledModules\/_AtomicsShims-2KY7DDZCVZEQZ719YGW19SZWL.pcm",
+    "isBridgingHeaderDependency" : false,
+    "isFramework" : false,
+    "moduleName" : "_AtomicsShims"
+  },
+  {
+    "clangModuleMapPath" : "\/Library\/Developer\/CommandLineTools\/SDKs\/MacOSX27.0.sdk\/usr\/include\/DarwinFoundation1.modulemap",
+    "clangModulePath" : "\/Users\/wl\/Desktop\/Agent-HUD\/.build-dismiss\/out\/SDKExplicitPrecompiledModules\/_AvailabilityInternal-2G5DH3LAV55ARVAXEMBDOHXOJ.pcm",
+    "isBridgingHeaderDependency" : false,
+    "isFramework" : false,
+    "moduleName" : "_AvailabilityInternal"
+  },
+  {
+    "clangModuleMapPath" : "\/Library\/Developer\/CommandLineTools\/usr\/lib\/clang\/21\/include\/module.modulemap",
+    "clangModulePath" : "\/Users\/wl\/Desktop\/Agent-HUD\/.build-dismiss\/out\/SDKExplicitPrecompiledModules\/_Builtin_float-9SRM98KTMHRX7II2SG8OCDREA.pcm",
+    "isBridgingHeaderDependency" : false,
+    "isFramework" : false,
+    "moduleName" : "_Builtin_float"
+  },
+  {
+    "clangModuleMapPath" : "\/Library\/Developer\/CommandLineTools\/usr\/lib\/clang\/21\/include\/module.modulemap",
+    "clangModulePath" : "\/Users\/wl\/Desktop\/Agent-HUD\/.build-dismiss\/out\/SDKExplicitPrecompiledModules\/_Builtin_stdarg-6V7C6IVERUC7ZFDHHVVG52M0X.pcm",
+    "isBridgingHeaderDependency" : false,
+    "isFramework" : false,
+    "moduleName" : "_Builtin_stdarg"
+  },
+  {
+    "clangModuleMapPath" : "\/Library\/Developer\/CommandLineTools\/usr\/lib\/clang\/21\/include\/module.modulemap",
+    "clangModulePath" : "\/Users\/wl\/Desktop\/Agent-HUD\/.build-dismiss\/out\/SDKExplicitPrecompiledModules\/_Builtin_stdbool-A3L3TOD4Y8A46DAVQXMUT7BN4.pcm",
+    "isBridgingHeaderDependency" : false,
+    "isFramework" : false,
+    "moduleName" : "_Builtin_stdbool"
+  },
+  {
+    "clangModuleMapPath" : "\/Library\/Developer\/CommandLineTools\/usr\/lib\/clang\/21\/include\/module.modulemap",
+    "clangModulePath" : "\/Users\/wl\/Desktop\/Agent-HUD\/.build-dismiss\/out\/SDKExplicitPrecompiledModules\/_Builtin_stddef-DGFKB7MNXYNUK4D605HEBF82B.pcm",
+    "isBridgingHeaderDependency" : false,
+    "isFramework" : false,
+    "moduleName" : "_Builtin_stddef"
+  },
+  {
+    "clangModuleMapPath" : "\/Library\/Developer\/CommandLineTools\/usr\/lib\/clang\/21\/include\/module.modulemap",
+    "clangModulePath" : "\/Users\/wl\/Desktop\/Agent-HUD\/.build-dismiss\/out\/SDKExplicitPrecompiledModules\/_Builtin_stdint-D92ITAHLALC3JTXSMYIRWD1B7.pcm",
+    "isBridgingHeaderDependency" : false,
+    "isFramework" : false,
+    "moduleName" : "_Builtin_stdint"
+  },
+  {
+    "clangModuleMapPath" : "\/Library\/Developer\/CommandLineTools\/SDKs\/MacOSX27.0.sdk\/usr\/include\/DarwinFoundation1.modulemap",
+    "clangModulePath" : "\/Users\/wl\/Desktop\/Agent-HUD\/.build-dismiss\/out\/SDKExplicitPrecompiledModules\/_DarwinFoundation1-D7NWHFICWW0DWYBWTW8YE6G7C.pcm",
+    "isBridgingHeaderDependency" : false,
+    "isFramework" : false,
+    "moduleName" : "_DarwinFoundation1"
+  },
+  {
+    "clangModuleMapPath" : "\/Library\/Developer\/CommandLineTools\/SDKs\/MacOSX27.0.sdk\/usr\/include\/DarwinFoundation2.modulemap",
+    "clangModulePath" : "\/Users\/wl\/Desktop\/Agent-HUD\/.build-dismiss\/out\/SDKExplicitPrecompiledModules\/_DarwinFoundation2-BAEGMSRVKZGV3FMHG8IQ41EYB.pcm",
+    "isBridgingHeaderDependency" : false,
+    "isFramework" : false,
+    "moduleName" : "_DarwinFoundation2"
+  },
+  {
+    "clangModuleMapPath" : "\/Library\/Developer\/CommandLineTools\/SDKs\/MacOSX27.0.sdk\/usr\/lib\/swift\/shims\/module.modulemap",
+    "clangModulePath" : "\/Users\/wl\/Desktop\/Agent-HUD\/.build-dismiss\/out\/SDKExplicitPrecompiledModules\/_SwiftConcurrencyShims-7AUJQX9N09AJ897D13LLWJI8N.pcm",
+    "isBridgingHeaderDependency" : false,
+    "isFramework" : false,
+    "moduleName" : "_SwiftConcurrencyShims"
+  },
+  {
+    "clangModuleMapPath" : "\/Library\/Developer\/CommandLineTools\/usr\/lib\/clang\/21\/include\/module.modulemap",
+    "clangModulePath" : "\/Users\/wl\/Desktop\/Agent-HUD\/.build-dismiss\/out\/SDKExplicitPrecompiledModules\/ptrcheck-3SYAO3M2W8T9WNWQQCYOHIPJK.pcm",
+    "isBridgingHeaderDependency" : false,
+    "isFramework" : false,
+    "moduleName" : "ptrcheck"
+  }
+]
