@@ -23,12 +23,22 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var isUpdatingPanelSize = false
     private var linkServer: LinkServer?
     private var linkSettingsWindowController: LinkSettingsWindowController?
+    private lazy var notificationCenter = SessionNotificationCenter()
     private lazy var aiSettingsWindowController = AISettingsWindowController(
         displayModel: model,
         onConfigurationChanged: { [weak self] in
             self?.model.reloadAIConfiguration()
         }
     )
+
+    func applicationWillFinishLaunching(_ notification: Notification) {
+        let bundleID = Bundle.main.bundleIdentifier ?? "com.agenthud.app"
+        let existing = NSRunningApplication.runningApplications(withBundleIdentifier: bundleID)
+            .filter { $0.processIdentifier != ProcessInfo.processInfo.processIdentifier }
+        guard let current = existing.first else { return }
+        current.activate(options: [.activateAllWindows])
+        NSApp.terminate(nil)
+    }
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         NSApp.setActivationPolicy(.accessory)
@@ -47,6 +57,29 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         }
         model.onOpenAISettings = { [weak self] in
             self?.showAISettings()
+        }
+        model.onSessionCompleted = { [weak self] session, important in
+            let privateMode = self?.model.privacyMode ?? false
+            self?.notificationCenter.notifyCompletion(
+                sessionID: session.id,
+                provider: session.provider.displayName,
+                title: privateMode ? "隐私模式已开启" : self?.model.displayTitle(for: session) ?? session.title,
+                summary: privateMode ? "任务已完成，请在 AgentHUD 中查看。" : self?.model.completionSummary(for: session) ?? "任务已完成",
+                isImportant: important
+            )
+        }
+        notificationCenter.onOpenSession = { [weak self] sessionID in
+            self?.showPanel(activate: true)
+            self?.model.isExpanded = true
+            if let session = self?.model.sessions.first(where: { $0.id == sessionID }) {
+                self?.model.select(session)
+            }
+        }
+        model.onNotificationAuthorizationRequested = { [weak self] in
+            self?.notificationCenter.requestAuthorization()
+        }
+        if model.importantNotificationsEnabled || model.ordinaryNotificationsEnabled {
+            notificationCenter.requestAuthorization()
         }
         model.start()
         do {
@@ -402,6 +435,10 @@ private struct AgentHUDStatusMenu: View {
 }
 
 extension AppDelegate: NSWindowDelegate {
+    func windowDidResignKey(_ notification: Notification) {
+        model.endImportantDrag()
+    }
+
     func windowDidResize(_ notification: Notification) {
         guard let panel,
               notification.object as? NSPanel === panel,

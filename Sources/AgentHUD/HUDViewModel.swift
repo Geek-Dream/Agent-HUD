@@ -96,6 +96,19 @@ final class HUDViewModel: ObservableObject, LinkSnapshotProviding {
     @Published private(set) var titleOverrides: [String: String] = [:]
     @Published private(set) var aiTitles: [String: String] = [:]
     @Published private(set) var importantSessionIDs: Set<String> = []
+    @Published private(set) var importantSessionOrder: [String] = []
+    @Published private(set) var unreadCompletionIDs: Set<String> = []
+    @Published private(set) var completionAttentionSessions: [String: AgentSession] = [:]
+    @Published private(set) var importantNotificationsEnabled: Bool {
+        didSet {
+            UserDefaults.standard.set(importantNotificationsEnabled, forKey: "hud.notifications.important")
+        }
+    }
+    @Published private(set) var ordinaryNotificationsEnabled: Bool {
+        didSet {
+            UserDefaults.standard.set(ordinaryNotificationsEnabled, forKey: "hud.notifications.ordinary")
+        }
+    }
     /// 当前扫描结果里仍处于「已删除」状态的会话。
     ///
     /// 只存已经算好的结果，不在每次渲染时逐条查 store：`records` 里的活动时间
@@ -104,6 +117,8 @@ final class HUDViewModel: ObservableObject, LinkSnapshotProviding {
     @Published var editingTitleSessionID: String?
     @Published var titleDraft = ""
     @Published private(set) var hoveredSessionID: String?
+    @Published private(set) var draggedImportantSessionID: String?
+    @Published private(set) var dragTargetSessionID: String?
     @Published private(set) var expandedUserPromptSessionID: String?
     @Published private(set) var suppressedRowOpenSessionID: String?
     @Published private(set) var departingCompletionSessionIDs: Set<String> = []
@@ -113,6 +128,8 @@ final class HUDViewModel: ObservableObject, LinkSnapshotProviding {
 
     var onHide: (() -> Void)?
     var onOpenAISettings: (() -> Void)?
+    var onSessionCompleted: ((AgentSession, Bool) -> Void)?
+    var onNotificationAuthorizationRequested: (() -> Void)?
 
     private let scanner = SessionScanner()
     private let titleStore = SessionTitleStore()
@@ -127,10 +144,19 @@ final class HUDViewModel: ObservableObject, LinkSnapshotProviding {
     )
     private var refreshLoop: Task<Void, Never>?
     private var refreshTask: Task<Void, Never>?
+    private var pendingEventRefresh = false
+    private var activityWatcher: SessionActivityWatcher?
     private var aiRefreshTask: Task<Void, Never>?
     private var aiTitleKeys: [String: String] = [:]
     private var isRefreshing = false
     private var monitoringRevision = 0
+    private var stableSessionOrder: [String] = [] {
+        didSet {
+            guard stableSessionOrder != oldValue else { return }
+            // Retain only known identities, not constantly changing timestamps.
+            UserDefaults.standard.set(Array(stableSessionOrder.suffix(500)), forKey: "hud.stableSessionOrder.v1")
+        }
+    }
     private var departingSessions: [String: AgentSession] = [:]
     private var completionTransitionTasks: [String: Task<Void, Never>] = [:]
 
@@ -182,6 +208,10 @@ final class HUDViewModel: ObservableObject, LinkSnapshotProviding {
         ) ?? .default
         titleOverrides = titleStore.titles
         importantSessionIDs = importanceStore.sessionIDs
+        importantSessionOrder = importanceStore.orderedSessionIDs
+        stableSessionOrder = UserDefaults.standard.stringArray(forKey: "hud.stableSessionOrder.v1") ?? []
+        importantNotificationsEnabled = UserDefaults.standard.bool(forKey: "hud.notifications.important")
+        ordinaryNotificationsEnabled = UserDefaults.standard.bool(forKey: "hud.notifications.ordinary")
     }
 
     deinit {
@@ -201,7 +231,8 @@ final class HUDViewModel: ObservableObject, LinkSnapshotProviding {
         SessionListPolicy.visible(
             filteredSessions,
             limit: sessionListLimit,
-            importantSessionIDs: importantSessionIDs
+            importantSessionIDs: importantSessionIDs,
+            importantSessionOrder: importantSessionOrder
         )
     }
 
@@ -241,7 +272,8 @@ final class HUDViewModel: ObservableObject, LinkSnapshotProviding {
         let ordered = SessionOrdering.sorted(
             currentRows + departingRows,
             importantSessionIDs: importantSessionIDs,
-            runningFirst: statusFilter == .all
+            importantSessionOrder: importantSessionOrder,
+            stableSessionOrder: stableSessionOrder
         )
 
         return ordered.map { session in
@@ -426,6 +458,8 @@ final class HUDViewModel: ObservableObject, LinkSnapshotProviding {
         }
         if isImportant(session) != important {
             toggleImportance(for: session)
+        } else {
+            importantSessionOrder = importanceStore.orderedSessionIDs
         }
         monitoringRevision += 1
         return true
@@ -591,8 +625,100 @@ final class HUDViewModel: ObservableObject, LinkSnapshotProviding {
     }
 
     func toggleImportance(for session: AgentSession) {
-        importanceStore.toggle(session.id)
+        let isImportant = importanceStore.toggle(session.id)
         importantSessionIDs = importanceStore.sessionIDs
+        importantSessionOrder = importanceStore.orderedSessionIDs
+        if isImportant, unreadCompletionIDs.contains(session.id),
+           let current = sessions.first(where: { $0.id == session.id }) {
+            completionAttentionSessions[session.id] = current
+        } else if !isImportant {
+            completionAttentionSessions.removeValue(forKey: session.id)
+        }
+        monitoringRevision += 1
+    }
+
+    func moveImportantSession(_ sessionID: String, before targetID: String) {
+        guard importanceStore.move(sessionID: sessionID, before: targetID) else {
+            return
+        }
+        importantSessionIDs = importanceStore.sessionIDs
+        importantSessionOrder = importanceStore.orderedSessionIDs
+        monitoringRevision += 1
+    }
+
+    func suppressNextRowOpenByID(_ sessionID: String) {
+        suppressedRowOpenSessionID = sessionID
+        Task { @MainActor [weak self] in
+            try? await Task.sleep(nanoseconds: 120_000_000)
+            guard self?.suppressedRowOpenSessionID == sessionID else { return }
+            self?.suppressedRowOpenSessionID = nil
+        }
+    }
+
+    func beginImportantDrag(_ sessionID: String) {
+        guard importantSessionIDs.contains(sessionID) else { return }
+        draggedImportantSessionID = sessionID
+        dragTargetSessionID = nil
+    }
+
+    func updateImportantDrag(targetID: String) {
+        guard let draggedImportantSessionID, importantSessionIDs.contains(targetID) else { return }
+        dragTargetSessionID = targetID
+        moveImportantSession(draggedImportantSessionID, before: targetID)
+    }
+
+    func endImportantDrag() {
+        draggedImportantSessionID = nil
+        dragTargetSessionID = nil
+    }
+
+    func hasUnreadCompletion(_ session: AgentSession) -> Bool {
+        unreadCompletionIDs.contains(session.id)
+    }
+
+    func completionAttention(for session: AgentSession) -> SessionCompletionAttention {
+        SessionCompletionAttentionPolicy.state(
+            status: session.status,
+            isImportant: isImportant(session),
+            hasUnreadCompletion: hasUnreadCompletion(session)
+        )
+    }
+
+    func providerAttention(_ filter: ProviderFilter) -> AgentSession? {
+        guard let provider = filter.provider, providerFilter != filter, selectedSessionID == nil else {
+            return nil
+        }
+        return completionAttentionSessions.values
+            .filter {
+                $0.provider == provider
+                    && SessionCompletionAttentionPolicy.shouldHighlightProvider(
+                        isImportant: importantSessionIDs.contains($0.id),
+                        hasUnreadCompletion: unreadCompletionIDs.contains($0.id),
+                        isSelected: false
+                    )
+            }
+            .max { ($0.completedAt ?? $0.lastActivityAt) < ($1.completedAt ?? $1.lastActivityAt) }
+    }
+
+    func selectProviderFilter(_ filter: ProviderFilter) {
+        providerFilter = filter
+    }
+
+    func completionSummary(for session: AgentSession) -> String {
+        if let summary = session.lastRun?.summary, !summary.isEmpty {
+            return TextTools.sentence(summary, limit: 180)
+        }
+        return session.currentAction.isEmpty ? "任务已完成，点击查看详情。" : TextTools.sentence(session.currentAction, limit: 180)
+    }
+
+    func setImportantNotificationsEnabled(_ enabled: Bool) {
+        importantNotificationsEnabled = enabled
+        if enabled { onNotificationAuthorizationRequested?() }
+    }
+
+    func setOrdinaryNotificationsEnabled(_ enabled: Bool) {
+        ordinaryNotificationsEnabled = enabled
+        if enabled { onNotificationAuthorizationRequested?() }
     }
 
     func resetAppearanceToDefaults() {
@@ -609,18 +735,38 @@ final class HUDViewModel: ObservableObject, LinkSnapshotProviding {
         guard refreshLoop == nil else {
             return
         }
+        let watcher = SessionActivityWatcher()
+        watcher.onChange = { [weak self] in
+            self?.handleActivityEvent()
+        }
+        watcher.start()
+        activityWatcher = watcher
 
         refreshLoop = Task { [weak self] in
             while !Task.isCancelled {
                 await self?.refresh()
-                try? await Task.sleep(nanoseconds: 3_000_000_000)
+                try? await Task.sleep(nanoseconds: 10_000_000_000)
             }
+        }
+    }
+
+    private func handleActivityEvent() {
+        guard refreshTask == nil, !isRefreshing else {
+            pendingEventRefresh = true
+            return
+        }
+        Task { [weak self] in
+            await self?.refresh()
         }
     }
 
     func stop() {
         refreshLoop?.cancel()
         refreshLoop = nil
+        refreshTask?.cancel()
+        refreshTask = nil
+        activityWatcher?.stop()
+        activityWatcher = nil
     }
 
     func refresh(waitForCurrent: Bool = false) async {
@@ -652,24 +798,67 @@ final class HUDViewModel: ObservableObject, LinkSnapshotProviding {
         }
 
         let scanner = self.scanner
+        if draggedImportantSessionID == nil {
+            importanceStore.reload()
+            importantSessionIDs = importanceStore.sessionIDs
+            importantSessionOrder = importanceStore.orderedSessionIDs
+        }
         let snapshot = await Task.detached(priority: .utility) {
             scanner.scan()
         }.value
 
         let previousSessions = sessions
+        let stableOrder = Self.stableOrder(
+            previous: previousSessions,
+            current: snapshot.sessions,
+            existing: stableSessionOrder
+        )
+        stableSessionOrder = stableOrder
+        let stablyOrderedSnapshot = SessionOrdering.sorted(
+            snapshot.sessions,
+            importantSessionIDs: importantSessionIDs,
+            importantSessionOrder: importantSessionOrder,
+            stableSessionOrder: stableSessionOrder
+        )
         let runningCompletionIDs = SessionTransitionDetector.runningCompletionIDs(
             previousSessions: previousSessions,
             currentSessions: snapshot.sessions
         )
-        // 先结算删除状态，再决定动画和提醒：被删除且还没新活动的会话不该
-        // 触发行滑出动画，也不该弹出「重要会话已完成」的提示。
-        dismissalStore.clearAwakened(in: snapshot.sessions)
-        let nextDismissedIDs = Self.dismissedIDs(from: dismissalStore, in: snapshot.sessions)
-
         let currentByID = Dictionary(
             snapshot.sessions.map { ($0.id, $0) },
             uniquingKeysWith: { _, latest in latest }
         )
+        unreadCompletionIDs.formIntersection(currentByID.keys)
+        for session in snapshot.sessions {
+            if session.status.isRunning {
+                unreadCompletionIDs.remove(session.id)
+                completionAttentionSessions.removeValue(forKey: session.id)
+            }
+        }
+        for sessionID in runningCompletionIDs {
+            guard let session = currentByID[sessionID] else { continue }
+            unreadCompletionIDs.insert(sessionID)
+            if importantSessionIDs.contains(sessionID) {
+                completionAttentionSessions[sessionID] = session
+            }
+        }
+        let newCompletionSessions = runningCompletionIDs.compactMap { currentByID[$0] }
+        // 先结算删除状态，再决定动画和提醒：被删除且还没新活动的会话不该
+        // 触发行滑出动画，也不该弹出「重要会话已完成」的提示。
+        dismissalStore.clearAwakened(in: snapshot.sessions)
+        let nextDismissedIDs = Self.dismissedIDs(from: dismissalStore, in: snapshot.sessions)
+        for session in newCompletionSessions where !nextDismissedIDs.contains(session.id) {
+            let important = importantSessionIDs.contains(session.id)
+            let setting = SessionNotificationSettings(
+                importantEnabled: importantNotificationsEnabled,
+                ordinaryEnabled: ordinaryNotificationsEnabled
+            )
+            if setting.shouldNotify(isImportant: important) {
+                onSessionCompleted?(session, important)
+            }
+        }
+        // Keep first-seen identity order across refreshes. Timestamp changes still
+        // update every field and timestamp, but never move equal-status rows.
         let animatedCompletionIDs = statusFilter == .all
             ? Set(runningCompletionIDs.filter { sessionID in
                 guard let session = currentByID[sessionID],
@@ -686,7 +875,7 @@ final class HUDViewModel: ObservableObject, LinkSnapshotProviding {
             )
         }
 
-        sessions = snapshot.sessions
+        sessions = stablyOrderedSnapshot
         dismissedSessionIDs = nextDismissedIDs
         monitoringRevision += 1
         presentImportantCompletionNoticeIfNeeded(
@@ -708,9 +897,30 @@ final class HUDViewModel: ObservableObject, LinkSnapshotProviding {
         }
 
         startAITitleEnrichment(for: displayableSessions)
+        if pendingEventRefresh {
+            pendingEventRefresh = false
+            Task { [weak self] in
+                await self?.refresh()
+            }
+        }
+    }
+
+    static func stableOrder(
+        previous: [AgentSession],
+        current: [AgentSession],
+        existing: [String]
+    ) -> [String] {
+        let currentIDs = Set(current.map(\.id))
+        let previousIDs = Set(previous.map(\.id))
+        var seen = Set<String>()
+        let result = (existing + previous.map(\.id)).filter {
+            currentIDs.contains($0) && previousIDs.contains($0) && seen.insert($0).inserted
+        }
+        return result + current.filter { seen.insert($0.id).inserted }.map(\.id)
     }
 
     func select(_ session: AgentSession) {
+        markCompletionSeen(session)
         cancelTitleEditing()
         expandedUserPromptSessionID = nil
         selectedSessionID = session.id
@@ -720,6 +930,14 @@ final class HUDViewModel: ObservableObject, LinkSnapshotProviding {
         cancelTitleEditing()
         expandedUserPromptSessionID = nil
         selectedSessionID = nil
+    }
+
+    private func markCompletionSeen(_ session: AgentSession) {
+        unreadCompletionIDs.remove(session.id)
+        completionAttentionSessions.removeValue(forKey: session.id)
+        if importantCompletionNotice?.sessionID == session.id {
+            importantCompletionNotice = nil
+        }
     }
 
     func revealImportantCompletionNotice() {

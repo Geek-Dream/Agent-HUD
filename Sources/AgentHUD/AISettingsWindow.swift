@@ -19,7 +19,7 @@ final class AISettingsWindowController: NSWindowController {
             backing: .buffered,
             defer: false
         )
-        window.title = "AI 标题与显示设置"
+        window.title = "通知、外观与 AI 标题设置"
         window.isReleasedWhenClosed = false
         window.center()
         window.contentView = NSHostingView(
@@ -320,20 +320,58 @@ private struct AISettingsView: View {
                         Text(theme.label).tag(theme)
                     }
                 }
-                .pickerStyle(.segmented)
+                .pickerStyle(.menu)
                 .labelsHidden()
+                Text("原生跟随系统浅色/深色；晨雾与青瓷为浅色，星光与霓虹为深色。")
+                    .font(.system(size: 10.5))
+                    .foregroundStyle(.secondary)
             }
 
             Toggle(isOn: $displayModel.advancedAnimations) {
                 VStack(alignment: .leading, spacing: 2) {
-                    Text("高级动画")
+                    Text("状态点脉冲")
                         .font(.system(size: 11.5))
-                    Text("运行中的会话状态点会脉冲闪烁。效果更醒目，会话较多时占用更高；关闭可降低开销。")
+                    Text("仅控制运行状态点；任务跑马灯与完成呼吸始终启用，并遵循系统减少动态效果。")
                         .font(.system(size: 10.5))
                         .foregroundStyle(.secondary)
                 }
             }
             .toggleStyle(.switch)
+
+            VStack(alignment: .leading, spacing: 9) {
+                Text("完成通知")
+                    .font(.system(size: 11, weight: .semibold))
+                    .foregroundStyle(.secondary)
+                Toggle(isOn: Binding(
+                    get: { displayModel.importantNotificationsEnabled },
+                    set: { displayModel.setImportantNotificationsEnabled($0) }
+                )) {
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("星标任务：macOS 横幅通知")
+                            .font(.system(size: 11.5))
+                        Text("完成时显示横幅和提示音，点击打开任务。")
+                            .font(.system(size: 10.5))
+                            .foregroundStyle(.secondary)
+                    }
+                }
+                .toggleStyle(.switch)
+                Toggle(isOn: Binding(
+                    get: { displayModel.ordinaryNotificationsEnabled },
+                    set: { displayModel.setOrdinaryNotificationsEnabled($0) }
+                )) {
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("非星标任务：仅通知中心")
+                            .font(.system(size: 11.5))
+                        Text("不弹横幅、不播放声音，完成后安静地留在 macOS 通知中心。")
+                            .font(.system(size: 10.5))
+                            .foregroundStyle(.secondary)
+                    }
+                }
+                .toggleStyle(.switch)
+                Text("首次启用需允许系统通知；若关闭系统横幅，以 macOS 通知设置为准。")
+                    .font(.system(size: 10.5))
+                    .foregroundStyle(.secondary)
+            }
 
             VStack(alignment: .leading, spacing: 6) {
                 Text("会话显示数量")

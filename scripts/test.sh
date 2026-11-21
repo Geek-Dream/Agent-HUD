@@ -17,6 +17,8 @@ swiftc \
     Sources/AgentHUD/SessionTitleStore.swift \
     Sources/AgentHUD/SessionImportanceStore.swift \
     Sources/AgentHUD/SessionDismissalStore.swift \
+    Sources/AgentHUD/SessionNotificationPolicy.swift \
+    Sources/AgentHUD/SessionActivityWatcher.swift \
     Sources/AgentHUD/CodexAdapter.swift \
     Sources/AgentHUD/ClaudeAdapter.swift \
     Sources/AgentHUD/OpenCodeAdapter.swift \

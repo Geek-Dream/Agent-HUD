@@ -77,7 +77,7 @@ struct HUDShell: View {
             .clipped()
             .contrast(model.panelContrast)
         }
-        .preferredColorScheme(nil)
+        .preferredColorScheme(model.visualTheme.appearance == "dark" ? .dark : model.visualTheme.appearance == "light" ? .light : nil)
         .ignoresSafeArea()
     }
 
@@ -99,6 +99,28 @@ struct HUDShell: View {
                 StarlightBackground(opacity: model.panelOpacity)
             case .classic:
                 classicBackground
+            case .morningMist, .celadon, .neon:
+                themedBackground
+            }
+        }
+    }
+
+    private var themedBackground: some View {
+        ZStack {
+            VisualEffectView(material: .popover, blendingMode: .behindWindow, opacity: 0.35)
+            if let palette = HUDThemePalette.palette(model.visualTheme.rawValue) {
+                LinearGradient(
+                    colors: [Color(palette.windowTop), Color(palette.windowMiddle), Color(palette.windowBottom)],
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                )
+                .opacity(model.panelOpacity)
+                RadialGradient(
+                    colors: [Color(palette.accent).opacity(model.visualTheme == .neon ? 0.22 : 0.10), .clear],
+                    center: UnitPoint(x: 0.85, y: 0.04),
+                    startRadius: 8,
+                    endRadius: 360
+                )
             }
         }
     }
@@ -299,7 +321,9 @@ private struct ExpandedHUDView: View {
                                     model: model,
                                     session: row.session,
                                     phase: row.phase,
-                                    arrivalVisible: row.arrivalVisible
+                                    arrivalVisible: row.arrivalVisible,
+                                    showsDropIndicator: model.dragTargetSessionID == row.session.id
+                                        && model.draggedImportantSessionID != row.session.id
                                 ) {
                                     withAnimation(HUDMetrics.pageAnimation) {
                                         model.select(row.session)
@@ -323,7 +347,7 @@ private struct ExpandedHUDView: View {
     }
 
     private var expandedHeader: some View {
-        HStack(spacing: 10) {
+        ZStack(alignment: .topTrailing) {
             HStack(spacing: 12) {
                 BrandToggleButton(isExpanded: true) {
                     model.collapse()
@@ -345,44 +369,50 @@ private struct ExpandedHUDView: View {
                 .allowsHitTesting(false)
             }
             .layoutPriority(1)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.leading, 16)
+            .padding(.trailing, 146)
+            .padding(.top, 30)
+            .padding(.bottom, 14)
 
-            Spacer()
-
-            if model.isLoading {
-                ProgressView()
-                    .controlSize(.small)
-                    .frame(width: 28, height: 28)
-            } else {
-                HUDIconButton(symbol: "arrow.clockwise", help: "立即刷新") {
-                    Task {
-                        await model.refresh()
+            HStack(spacing: 3) {
+                if model.isLoading {
+                    ProgressView()
+                        .controlSize(.small)
+                        .frame(width: 24, height: 24)
+                } else {
+                    HUDIconButton(symbol: "arrow.clockwise", help: "立即刷新", compact: true) {
+                        Task {
+                            await model.refresh()
+                        }
                     }
                 }
-            }
 
-            HUDIconButton(
-                symbol: model.positionLocked ? "pin.fill" : "pin",
-                help: model.positionLocked ? "解锁位置" : "锁定位置",
-                tint: model.positionLocked ? AgentStatus.waitingUser.color : HUDTheme.textSecondary
-            ) {
-                model.togglePositionLock()
-            }
+                HUDIconButton(
+                    symbol: model.positionLocked ? "pin.fill" : "pin",
+                    help: model.positionLocked ? "解锁位置" : "锁定位置",
+                    tint: model.positionLocked ? AgentStatus.waitingUser.color : HUDTheme.textSecondary,
+                    compact: true
+                ) {
+                    model.togglePositionLock()
+                }
 
-            HUDIconButton(
-                symbol: model.privacyMode ? "eye.slash.fill" : "eye",
-                help: model.privacyMode ? "关闭隐私模式" : "开启隐私模式",
-                tint: model.privacyMode ? AgentStatus.waitingUser.color : HUDTheme.textSecondary
-            ) {
-                model.togglePrivacy()
-            }
+                HUDIconButton(
+                    symbol: model.privacyMode ? "eye.slash.fill" : "eye",
+                    help: model.privacyMode ? "关闭隐私模式" : "开启隐私模式",
+                    tint: model.privacyMode ? AgentStatus.waitingUser.color : HUDTheme.textSecondary,
+                    compact: true
+                ) {
+                    model.togglePrivacy()
+                }
 
-            HUDIconButton(symbol: "xmark", help: "隐藏到菜单栏") {
-                model.hide()
+                HUDIconButton(symbol: "xmark", help: "隐藏到菜单栏", compact: true) {
+                    model.hide()
+                }
             }
+            .padding(.top, 19)
+            .padding(.trailing, 12)
         }
-        .padding(.horizontal, 16)
-        .padding(.top, 32)
-        .padding(.bottom, 14)
         .background {
             WindowDragHandle(isEnabled: !model.positionLocked)
         }
@@ -405,15 +435,11 @@ private struct ExpandedHUDView: View {
             )
 
             ProviderFilterStrip(
+                model: model,
                 selectedFilter: model.providerFilter,
                 highlightAll: model.shouldShowImportantCompletionNotice,
                 count: { filter in
                     model.providerCount(filter)
-                },
-                onSelect: { filter in
-                    withAnimation(HUDMetrics.filterAnimation) {
-                        model.providerFilter = filter
-                    }
                 }
             )
         }
@@ -581,16 +607,60 @@ private struct SessionDetailView: View {
     }
 
     private var detailHeader: some View {
-        HStack(spacing: 7) {
-            HUDDragHandle(positionLocked: model.positionLocked)
+        VStack(spacing: 0) {
+            HStack(spacing: 7) {
+                HUDDragHandle(positionLocked: model.positionLocked)
 
-            HUDIconButton(symbol: "chevron.left", help: "返回会话列表") {
-                withAnimation(HUDMetrics.pageAnimation) {
-                    model.showList()
+                HUDIconButton(symbol: "chevron.left", help: "返回会话列表", compact: true) {
+                    withAnimation(HUDMetrics.pageAnimation) {
+                        model.showList()
+                    }
+                }
+
+                Spacer()
+
+                HUDIconButton(
+                    symbol: model.isImportant(session) ? "star.fill" : "star",
+                    help: model.isImportant(session) ? "取消重要" : "标记为重要并置顶",
+                    tint: model.isImportant(session) ? importantTint : HUDTheme.textSecondary,
+                    compact: true
+                ) {
+                    withAnimation(HUDMetrics.filterAnimation) {
+                        model.toggleImportance(for: session)
+                    }
+                }
+
+                HUDIconButton(
+                    symbol: model.positionLocked ? "pin.fill" : "pin",
+                    help: model.positionLocked ? "解锁位置" : "锁定位置",
+                    tint: model.positionLocked ? AgentStatus.waitingUser.color : HUDTheme.textSecondary,
+                    compact: true
+                ) {
+                    model.togglePositionLock()
+                }
+
+                HUDIconButton(
+                    symbol: model.privacyMode ? "eye.slash.fill" : "eye",
+                    help: model.privacyMode ? "关闭隐私模式" : "开启隐私模式",
+                    tint: model.privacyMode ? AgentStatus.waitingUser.color : HUDTheme.textSecondary,
+                    compact: true
+                ) {
+                    model.togglePrivacy()
+                }
+
+                HUDIconButton(symbol: "chevron.up", help: "收起", compact: true) {
+                    model.collapse()
+                }
+
+                HUDIconButton(symbol: "xmark", help: "隐藏到菜单栏", compact: true) {
+                    model.hide()
                 }
             }
+            .padding(.horizontal, 12)
+            .padding(.top, 25)
+            .frame(height: 56)
 
-            HStack(spacing: 7) {
+            HStack(spacing: 8) {
                 ZStack {
                     RoundedRectangle(cornerRadius: HUDMetrics.Radius.control, style: .continuous)
                         .fill(session.provider.accentColor.opacity(0.13))
@@ -601,51 +671,16 @@ private struct SessionDetailView: View {
                 .frame(width: 27, height: 27)
 
                 Text(session.provider.displayName)
-                    .font(.system(size: 12, weight: .semibold))
+                    .font(.system(size: 13, weight: .semibold))
+                    .foregroundStyle(HUDTheme.textPrimary)
 
                 StatusBadge(status: session.status, confidence: session.confidence)
+                Spacer()
             }
             .allowsHitTesting(false)
-
-            Spacer()
-
-            HUDIconButton(
-                symbol: model.isImportant(session) ? "star.fill" : "star",
-                help: model.isImportant(session) ? "取消重要" : "标记为重要并置顶",
-                tint: model.isImportant(session) ? importantTint : HUDTheme.textSecondary
-            ) {
-                withAnimation(HUDMetrics.filterAnimation) {
-                    model.toggleImportance(for: session)
-                }
-            }
-
-            HUDIconButton(
-                symbol: model.positionLocked ? "pin.fill" : "pin",
-                help: model.positionLocked ? "解锁位置" : "锁定位置",
-                tint: model.positionLocked ? AgentStatus.waitingUser.color : HUDTheme.textSecondary
-            ) {
-                model.togglePositionLock()
-            }
-
-            HUDIconButton(
-                symbol: model.privacyMode ? "eye.slash.fill" : "eye",
-                help: model.privacyMode ? "关闭隐私模式" : "开启隐私模式",
-                tint: model.privacyMode ? AgentStatus.waitingUser.color : HUDTheme.textSecondary
-            ) {
-                model.togglePrivacy()
-            }
-
-            HUDIconButton(symbol: "chevron.up", help: "收起") {
-                model.collapse()
-            }
-
-            HUDIconButton(symbol: "xmark", help: "隐藏到菜单栏") {
-                model.hide()
-            }
+            .padding(.horizontal, 16)
+            .padding(.bottom, 10)
         }
-        .padding(.horizontal, 12)
-        .frame(height: 48)
-        .padding(.top, 30)
         .background {
             WindowDragHandle(isEnabled: !model.positionLocked)
         }
@@ -721,7 +756,7 @@ private struct SessionDetailView: View {
 
             HStack(spacing: 6) {
                 Image(systemName: "folder")
-                    .font(.system(size: 10.5))
+                    .font(.system(size: 12))
                 Text(model.privacyMode ? "项目路径已隐藏" : abbreviatedPath(session.projectPath))
                     .lineLimit(1)
                     .truncationMode(.middle)
@@ -737,7 +772,7 @@ private struct SessionDetailView: View {
                     .help("在 Finder 中打开项目")
                 }
             }
-            .font(.system(size: 10.5))
+            .font(.system(size: 12))
             .foregroundStyle(HUDTheme.textSecondary)
 
             HStack(spacing: 9) {
@@ -752,7 +787,7 @@ private struct SessionDetailView: View {
                     )
                     if git.insertions > 0 || git.deletions > 0 {
                         Text("+\(git.insertions) −\(git.deletions)")
-                            .font(.system(size: 10.5, weight: .medium, design: .monospaced))
+                            .font(.system(size: 11.5, weight: .medium, design: .monospaced))
                             .foregroundStyle(HUDTheme.textSecondary)
                     }
                 } else {
@@ -762,8 +797,8 @@ private struct SessionDetailView: View {
                 Spacer()
 
                 Text(session.lastActivityAt.relativeShort)
-                    .font(.system(size: 10.5))
-                        .foregroundStyle(HUDTheme.textTertiary)
+                    .font(.system(size: 11.5))
+                    .foregroundStyle(HUDTheme.textSecondary)
             }
         }
         .padding(.horizontal, 16)
@@ -812,14 +847,15 @@ private struct SessionDetailView: View {
                 SectionTitle(title: "当前进度", symbol: session.status.symbolName)
                 Spacer()
                 Text("\(session.duration.compactDuration) · \(session.confidence.label)")
-                    .font(.system(size: 10.5))
-                    .foregroundStyle(HUDTheme.textTertiary)
+                    .font(.system(size: 11.5))
+                    .foregroundStyle(HUDTheme.textSecondary)
             }
 
             Text(model.privacyMode ? "当前动作已隐藏" : session.currentAction)
-                .font(.system(size: 13.5, weight: .medium))
-                .foregroundStyle(.primary)
-                .lineLimit(3)
+                .font(.system(size: 15, weight: .medium))
+                .foregroundStyle(HUDTheme.textPrimary)
+                .lineSpacing(3)
+                .lineLimit(4)
 
             if !model.privacyMode, !session.currentFiles.isEmpty {
                 VStack(alignment: .leading, spacing: 6) {
@@ -831,7 +867,7 @@ private struct SessionDetailView: View {
                                 .lineLimit(1)
                                 .truncationMode(.middle)
                         }
-                        .font(.system(size: 10.5, design: .monospaced))
+                        .font(.system(size: 11.5, design: .monospaced))
                         .foregroundStyle(HUDTheme.textSecondary)
                     }
                 }
@@ -864,8 +900,8 @@ private struct SessionDetailView: View {
 
                     if let sentAt = prompt?.sentAt {
                         Text(sentAt.formatted(.dateTime.month().day().hour().minute()))
-                            .font(.system(size: 10))
-                            .foregroundStyle(HUDTheme.textTertiary)
+                            .font(.system(size: 11))
+                            .foregroundStyle(HUDTheme.textSecondary)
                             .monospacedDigit()
                     }
 
@@ -901,9 +937,9 @@ private struct SessionDetailView: View {
                         VStack(alignment: .leading, spacing: 11) {
                             if !prompt.text.isEmpty {
                                 Text(prompt.text)
-                                    .font(.system(size: 11.5))
-                                    .foregroundStyle(.primary)
-                                    .lineSpacing(2.5)
+                                    .font(.system(size: 13.5))
+                                    .foregroundStyle(HUDTheme.textPrimary)
+                                    .lineSpacing(4)
                                     .textSelection(.enabled)
                             } else {
                                 Text("这条消息只包含图片")
@@ -936,7 +972,7 @@ private struct SessionDetailView: View {
                 .transition(.opacity.combined(with: .move(edge: .top)))
             }
         }
-        .background(HUDTheme.surface.opacity(0.18))
+        .background(HUDTheme.surface.opacity(0.42))
     }
 
     private var summarySection: some View {
@@ -945,8 +981,8 @@ private struct SessionDetailView: View {
                 SectionTitle(title: "完成记录", symbol: "checklist")
                 Spacer()
                 Text("\(sortedRuns.count) 轮")
-                    .font(.system(size: 10.5))
-                    .foregroundStyle(HUDTheme.textTertiary)
+                    .font(.system(size: 11.5))
+                    .foregroundStyle(HUDTheme.textSecondary)
                     .monospacedDigit()
             }
             .padding(.horizontal, 16)
@@ -1069,6 +1105,7 @@ private struct AgentRowView: View {
     let session: AgentSession
     let phase: SessionRowPresentation.Phase
     let arrivalVisible: Bool
+    let showsDropIndicator: Bool
     let onOpen: () -> Void
 
     private var isEditingTitle: Bool {
@@ -1276,8 +1313,9 @@ private struct AgentRowView: View {
                         )
                     }
                     .buttonStyle(.plain)
-                    .help(isImportant ? "取消重要" : "标记为重要并置顶")
-                    .accessibilityLabel(isImportant ? "取消重要" : "标记为重要并置顶")
+                    .help(isImportant ? "取消星标；按住可拖动排序" : "标记为星标并置顶")
+                    .accessibilityLabel(isImportant ? "取消星标" : "标记为星标并置顶")
+                    .background(StarDragSource(isImportant: isImportant, sessionID: session.id, model: model))
 
                     StatusBadge(status: session.status, confidence: session.confidence)
                 }
@@ -1330,7 +1368,9 @@ private struct AgentRowView: View {
                 accent: rowAccent,
                 isImportant: isImportant,
                 hoverLocation: motion.hoverLocation,
-                animatesImportant: model.advancedAnimations
+                animatesImportant: model.advancedAnimations,
+                attention: model.completionAttention(for: session),
+                providerAccent: session.provider.accentColor
             )
         }
         .overlay(alignment: .leading) {
@@ -1357,6 +1397,24 @@ private struct AgentRowView: View {
                     .allowsHitTesting(false)
             }
         }
+        .overlay(alignment: .top) {
+            if showsDropIndicator {
+                Rectangle()
+                    .fill(importantTint)
+                    .frame(height: 2)
+                    .shadow(color: importantTint.opacity(0.65), radius: 4)
+                    .padding(.horizontal, 10)
+                    .offset(y: -4)
+            }
+        }
+        .onDrop(
+            of: [StarDragSource.typeIdentifier],
+            delegate: StarDropDelegate(
+                isImportant: isImportant,
+                sessionID: session.id,
+                model: model
+            )
+        )
         .shadow(
             color: isHovered
                 ? rowAccent.opacity(0.38)
@@ -1446,6 +1504,8 @@ struct SessionRowSurface: View {
     let isImportant: Bool
     let hoverLocation: CGPoint?
     let animatesImportant: Bool
+    let attention: SessionCompletionAttention
+    let providerAccent: Color
     @Environment(\.colorScheme) private var colorScheme
 
     var body: some View {
@@ -1499,6 +1559,19 @@ struct SessionRowSurface: View {
                         )
                 }
 
+                if attention.pulsesBackground {
+                    if HUDMetrics.reduceMotion {
+                        RoundedRectangle(cornerRadius: HUDMetrics.Radius.card, style: .continuous)
+                            .fill(providerAccent.opacity(colorScheme == .dark ? 0.18 : 0.11))
+                    } else {
+                        BreathingView(minimum: 0.20, duration: 1.35) {
+                            RoundedRectangle(cornerRadius: HUDMetrics.Radius.card, style: .continuous)
+                                .fill(providerAccent.opacity(colorScheme == .dark ? 0.20 : 0.13))
+                        }
+                        .allowsHitTesting(false)
+                    }
+                }
+
                 if isHovered, let hoverLocation {
                     RadialGradient(
                         colors: [
@@ -1518,10 +1591,33 @@ struct SessionRowSurface: View {
                     .transition(.opacity)
                 }
 
+                if attention.hasMarquee, !HUDMetrics.reduceMotion {
+                    MarqueeBorder(
+                        color: providerAccent,
+                        cornerRadius: HUDMetrics.Radius.card,
+                        duration: attention == .working ? 1.9 : 2.8
+                    )
+                    .allowsHitTesting(false)
+                }
+
+                if attention.pulsesBorder {
+                    if HUDMetrics.reduceMotion {
+                        RoundedRectangle(cornerRadius: HUDMetrics.Radius.card, style: .continuous)
+                            .strokeBorder(providerAccent.opacity(0.68), lineWidth: 1.1)
+                    } else {
+                        AttentionBorderLayer(
+                            color: providerAccent,
+                            cornerRadius: HUDMetrics.Radius.card,
+                            lineWidth: attention == .unreadOrdinary ? 1.4 : 1.0
+                        )
+                        .allowsHitTesting(false)
+                    }
+                }
+
                 if isImportant {
                     ImportantBorder(
                         isHovered: isHovered,
-                        animates: animatesImportant && !HUDMetrics.reduceMotion
+                        animates: attention == .none && isImportant && animatesImportant && !HUDMetrics.reduceMotion
                     )
                 } else if isHovered {
                     RoundedRectangle(cornerRadius: HUDMetrics.Radius.card, style: .continuous)
@@ -1814,9 +1910,9 @@ private struct TaskRunView: View {
                     .lineLimit(2)
 
                 Text(privacyMode ? "完成总结已隐藏" : run.summary)
-                    .font(.system(size: 11.5))
+                    .font(.system(size: 13))
                     .foregroundStyle(HUDTheme.textSecondary)
-                    .lineSpacing(2)
+                    .lineSpacing(3.5)
                     .lineLimit(7)
 
                 if !privacyMode, !run.actions.isEmpty {
@@ -1831,7 +1927,7 @@ private struct TaskRunView: View {
                                     .foregroundStyle(HUDTheme.textTertiary)
                                     .padding(.top, 2)
                                 Text(action)
-                                    .font(.system(size: 10.5, design: .monospaced))
+                                    .font(.system(size: 11.5, design: .monospaced))
                                     .foregroundStyle(HUDTheme.textSecondary)
                                     .lineLimit(1)
                                     .truncationMode(.middle)
@@ -1850,7 +1946,7 @@ private struct TaskRunView: View {
                                 Image(systemName: "doc.text")
                                     .font(.system(size: 9))
                                 Text(relativeFile(path, projectPath: projectPath))
-                                    .font(.system(size: 10, design: .monospaced))
+                                    .font(.system(size: 11, design: .monospaced))
                                     .lineLimit(1)
                                     .truncationMode(.middle)
                             }
@@ -2310,10 +2406,10 @@ private struct OverviewStrip: View {
 }
 
 private struct ProviderFilterStrip: View {
+    @ObservedObject var model: HUDViewModel
     let selectedFilter: ProviderFilter
     let highlightAll: Bool
     let count: (ProviderFilter) -> Int
-    let onSelect: (ProviderFilter) -> Void
     @Namespace private var selectionNamespace
     @Environment(\.colorScheme) private var colorScheme
     @StateObject private var hover = FilterHoverState()
@@ -2325,10 +2421,14 @@ private struct ProviderFilterStrip: View {
                     ForEach(ProviderFilter.allCases) { filter in
                 let selected = filter == selectedFilter
                 let hovered = hover.provider == filter
+                let attention = model.providerAttention(filter)
 
-                Button {
-                    onSelect(filter)
-                } label: {
+                ZStack(alignment: .leading) {
+                    Button {
+                        withAnimation(HUDMetrics.filterAnimation) {
+                            model.selectProviderFilter(filter)
+                        }
+                    } label: {
                     HStack(spacing: 5) {
                         Image(systemName: filter.symbolName)
                             .font(.system(size: 9.5, weight: .semibold))
@@ -2400,6 +2500,21 @@ private struct ProviderFilterStrip: View {
                     hover.provider = isHovered ? filter : nil
                 }
                 .overlay {
+                    if let attention {
+                        if HUDMetrics.reduceMotion {
+                            Capsule()
+                                .fill(attention.provider.accentColor.opacity(colorScheme == .dark ? 0.20 : 0.13))
+                            Capsule()
+                                .strokeBorder(attention.provider.accentColor, lineWidth: 1.2)
+                        } else {
+                            BreathingView(minimum: 0.24, duration: 1.25) {
+                                Capsule()
+                                    .fill(attention.provider.accentColor.opacity(colorScheme == .dark ? 0.25 : 0.16))
+                            }
+                            .allowsHitTesting(false)
+                            MarqueeBorder(color: attention.provider.accentColor, cornerRadius: 16, lineWidth: 1.4, duration: 2.4)
+                        }
+                    }
                     if filter == .all, highlightAll {
                         Capsule()
                             .strokeBorder(
@@ -2413,8 +2528,16 @@ private struct ProviderFilterStrip: View {
                             .allowsHitTesting(false)
                     }
                 }
-                .help("只显示 \(filter.label) 会话")
+                .background(
+                    ProviderPreviewAnchor(
+                        session: hovered ? attention : nil,
+                        title: model.privacyMode ? "隐私模式已开启" : attention.map { model.displayTitle(for: $0) } ?? "",
+                        summary: model.privacyMode ? "任务已完成，请在 HUD 中查看。" : attention.map { model.completionSummary(for: $0) } ?? ""
+                    )
+                )
+                .help(attention == nil ? "只显示 \(filter.label) 会话" : "星标任务已完成；悬停查看摘要，点击切换")
                 .accessibilityLabel("\(filter.label)，\(count(filter)) 个会话")
+                }
                     }
                 }
             }
@@ -2521,7 +2644,8 @@ private struct SectionTitle: View {
                 .font(.system(size: 10, weight: .semibold))
                 .foregroundStyle(HUDTheme.textSecondary)
             Text(title)
-                .font(HUDMetrics.Typography.label)
+                .font(.system(size: 12.5, weight: .semibold))
+                .foregroundStyle(HUDTheme.textPrimary)
         }
     }
 }
@@ -2537,7 +2661,7 @@ private struct DetailFact: View {
             Text(text)
                 .lineLimit(1)
         }
-        .font(HUDMetrics.Typography.caption)
+        .font(.system(size: 11.5, weight: .medium))
         .foregroundStyle(HUDTheme.textSecondary)
     }
 }
@@ -2650,23 +2774,24 @@ private struct HUDIconButton: View {
     let symbol: String
     let help: String
     var tint: Color = HUDTheme.textSecondary
+    var compact = false
     let action: () -> Void
 
     var body: some View {
         Button(action: action) {
             Image(systemName: symbol)
-                .font(.system(size: 12, weight: .medium))
+                .font(.system(size: compact ? 11 : 12, weight: .medium))
                 .foregroundStyle(tint)
-                .frame(width: 29, height: 29)
+                .frame(width: compact ? 23 : 29, height: compact ? 23 : 29)
                 .background(
                     HUDTheme.toolbarIdle,
-                    in: RoundedRectangle(cornerRadius: HUDMetrics.Radius.control, style: .continuous)
+                    in: RoundedRectangle(cornerRadius: compact ? 5 : HUDMetrics.Radius.control, style: .continuous)
                 )
                 .overlay {
-                    RoundedRectangle(cornerRadius: HUDMetrics.Radius.control, style: .continuous)
-                        .strokeBorder(HUDTheme.border.opacity(0.55), lineWidth: 0.6)
+                    RoundedRectangle(cornerRadius: compact ? 5 : HUDMetrics.Radius.control, style: .continuous)
+                        .strokeBorder(HUDTheme.border.opacity(compact ? 0.3 : 0.55), lineWidth: 0.6)
                 }
-                .contentShape(RoundedRectangle(cornerRadius: HUDMetrics.Radius.control, style: .continuous))
+                .contentShape(RoundedRectangle(cornerRadius: compact ? 5 : HUDMetrics.Radius.control, style: .continuous))
         }
         .buttonStyle(.plain)
         .help(help)

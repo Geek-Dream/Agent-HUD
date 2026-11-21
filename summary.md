@@ -1,4 +1,46 @@
-# Agent-HUD 会话筛选与续发任务 summary（2026-11-19）
+# macOS 排序、完成提醒与主题（2026-11-22）
+
+## 完成内容
+
+- 星标置顶与拖拽顺序持久化；普通会话工作/等待/完成/错误分组，同组使用持久化首次身份顺序，不再随 `lastActivityAt` 刷新跳动。最近 N 条仍先按活跃时间筛选，与显示排序分离。
+- 星标工作卡片激光边框、星标完成未读同色背景呼吸、非星标完成边框提示；已读清除强提醒。其他 Agent 星标完成胶囊提醒与左侧悬停任务/摘要浮窗。
+- Codex 蓝、Claude 黄、OpenCode 绿、Pi 紫；减少动态效果保留静态提示。边框动画使用 Core Animation，避免逐帧重建 HUD。
+- FSEvents 监听真实 Codex/Claude/OpenCode/Orca 路径，120ms 去抖立即刷新，扫描中合并待刷新，10 秒兜底。
+- 星标横幅/声音与非星标仅通知中心两种完成通知，默认关闭、独立开关；隐私模式不明文通知任务标题或摘要。
+- 原生系统浅/深色、晨雾、青瓷、星光、霓虹五种主题（六种外观）；Agent 配色统一；单实例保护。
+- 保留本轮开始前 `HUDShell.swift` / `HUDTheme.swift` 未提交的排版与文字可读性修改。
+
+## 验证结果
+
+| 命令 | 结果 |
+| --- | --- |
+| `./scripts/build-app.sh` | exit 0，Release 应用包已生成 |
+| 确定性 Swift 测试（仅临时排除实时 OpenCode DB 用例，随后恢复测试入口） | exit 0，36 tests passed |
+| 完整 `./scripts/test.sh` | **失败**：既有 `testOpenCodeCurrentDatabase` 没有读到当前 OpenCode 会话 |
+| `flutter analyze --no-fatal-infos --no-fatal-warnings` | exit 0，No issues found |
+| `flutter test` | exit 0，78 passed，2 环境跳过 |
+| `git diff --check` | exit 0 |
+
+新增测试实际覆盖：同状态跨刷新不换序、星标拖拽顺序与重载持久化、提醒状态、通知横幅/列表策略、主题外观映射、临时目录真实 FSEvents 回调。
+
+## 未验证项 / 阻塞
+
+- 真实工作→完成事件下的动画、系统通知横幅/通知中心、拖拽和胶囊悬停未做完整真机验收。
+- `screencapture -x` 返回黑图，未把它当作 UI 验证通过；不同主题尚未逐张有效截图核验。
+- 当前有旧/新多个 HUD 进程；强制结束需要安全门禁批准，未擅自绕过。新版本已加单实例保护，但不能自动回收此前已启动的实例。
+- 本机 OpenCode 新表 `session_message` / `session_v2` 与旧解析器不兼容仍属既有问题，本地归档没有现成修复记录。
+- Windows 和手机功能未修改；Flutter 测试时锁文件被工具回写，已恢复原 `mobile/pubspec.lock`。
+- 直接 `swift build` 缺少 C++ `memory` 头文件；使用项目脚本 SDK 兼容参数构建成功。
+
+## 工作方式记录
+
+- 直接源码探索与测试先行；CodeGraph 项目未初始化，无法使用索引。
+- 未调用在线外援；本机 AgentRelay 归档查询无 OpenCode 新表兼容命中。
+- 全局 `.scale/skills-registry.json` 与 MACHINE_CHECKS 四个脚本不存在，未运行，不宣称这些门控通过。
+
+---
+
+
 
 ## 完成内容
 

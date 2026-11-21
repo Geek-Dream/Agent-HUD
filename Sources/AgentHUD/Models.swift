@@ -88,20 +88,18 @@ enum AgentStatus: String, Codable, CaseIterable {
 
     var sortRank: Int {
         switch self {
-        case .waitingUser:
+        case .working, .starting:
             return 0
-        case .failed:
+        case .waitingUser:
             return 1
-        case .working:
-            return 2
-        case .starting:
-            return 3
         case .completed:
-            return 4
+            return 2
+        case .failed:
+            return 3
         case .idle:
-            return 5
+            return 4
         case .unknown:
-            return 6
+            return 5
         }
     }
 
@@ -271,11 +269,18 @@ enum SessionListLimit: Int, CaseIterable, Identifiable {
     }
 }
 
+enum SessionImportanceOrder {
+    static func ranks(_ ids: [String]) -> [String: Int] {
+        Dictionary(ids.enumerated().map { ($0.element, $0.offset) }, uniquingKeysWith: { first, _ in first })
+    }
+}
+
 enum SessionListPolicy {
     static func visible(
         _ sessions: [AgentSession],
         limit: SessionListLimit,
-        importantSessionIDs: Set<String>
+        importantSessionIDs: Set<String>,
+        importantSessionOrder: [String] = []
     ) -> [AgentSession] {
         let recentFirst = sessions.sorted {
             if $0.lastActivityAt != $1.lastActivityAt {
@@ -286,7 +291,21 @@ enum SessionListPolicy {
         guard let count = limit.count else {
             return recentFirst
         }
+        let ranks = SessionImportanceOrder.ranks(importantSessionOrder)
         let starred = recentFirst.filter { importantSessionIDs.contains($0.id) }
+            .enumerated()
+            .sorted { lhs, rhs in
+                let lhsRank = ranks[lhs.element.id] ?? Int.max
+                let rhsRank = ranks[rhs.element.id] ?? Int.max
+                if lhsRank != rhsRank {
+                    return lhsRank < rhsRank
+                }
+                if lhsRank == Int.max, lhs.element.startedAt != rhs.element.startedAt {
+                    return lhs.element.startedAt < rhs.element.startedAt
+                }
+                return lhs.offset < rhs.offset
+            }
+            .map(\.element)
         let ordinary = recentFirst.filter { !importantSessionIDs.contains($0.id) }
         return starred + ordinary.prefix(count)
     }
@@ -296,25 +315,35 @@ enum SessionOrdering {
     static func sorted(
         _ sessions: [AgentSession],
         importantSessionIDs: Set<String>,
-        runningFirst: Bool = false
+        importantSessionOrder: [String],
+        stableSessionOrder: [String] = []
     ) -> [AgentSession] {
-        sessions.sorted { lhs, rhs in
-            let lhsIsImportant = importantSessionIDs.contains(lhs.id)
-            let rhsIsImportant = importantSessionIDs.contains(rhs.id)
+        let ranks = SessionImportanceOrder.ranks(importantSessionOrder)
+        let stableRanks = SessionImportanceOrder.ranks(stableSessionOrder)
+        // Timestamp changes must not reshuffle equal-status rows. The explicit
+        // ordinal also preserves starred fallback order across data-source enumeration.
+        let indexed = sessions.enumerated().sorted { lhs, rhs in
+            let lhsIsImportant = importantSessionIDs.contains(lhs.element.id)
+            let rhsIsImportant = importantSessionIDs.contains(rhs.element.id)
             if lhsIsImportant != rhsIsImportant {
                 return lhsIsImportant
             }
-            if runningFirst, lhs.status.isRunning != rhs.status.isRunning {
-                return lhs.status.isRunning
+            if lhsIsImportant, rhsIsImportant {
+                let lhsRank = ranks[lhs.element.id] ?? Int.max
+                let rhsRank = ranks[rhs.element.id] ?? Int.max
+                if lhsRank != rhsRank {
+                    return lhsRank < rhsRank
+                }
+                return (ranks[lhs.element.id] ?? Int.max, lhs.offset)
+                    < (ranks[rhs.element.id] ?? Int.max, rhs.offset)
             }
-            if lhs.status.sortRank != rhs.status.sortRank {
-                return lhs.status.sortRank < rhs.status.sortRank
+            if lhs.element.status.sortRank != rhs.element.status.sortRank {
+                return lhs.element.status.sortRank < rhs.element.status.sortRank
             }
-            if lhs.lastActivityAt != rhs.lastActivityAt {
-                return lhs.lastActivityAt > rhs.lastActivityAt
-            }
-            return lhs.id < rhs.id
+            return (stableRanks[lhs.element.id] ?? Int.max, lhs.offset)
+                < (stableRanks[rhs.element.id] ?? Int.max, rhs.offset)
         }
+        return indexed.map(\.element)
     }
 }
 
@@ -403,6 +432,69 @@ enum SessionRowSurfacePolicy {
     }
 }
 
+enum SessionCompletionAttention: Equatable {
+    case none
+    case working
+    case unreadStarred
+    case readStarred
+    case unreadOrdinary
+    case readOrdinary
+
+    var pulsesBackground: Bool {
+        self == .unreadStarred
+    }
+
+    var hasUnreadCompletion: Bool {
+        self == .unreadStarred || self == .unreadOrdinary
+    }
+
+    var pulsesBorder: Bool {
+        switch self {
+        case .unreadStarred, .readStarred, .unreadOrdinary:
+            return true
+        case .none, .working, .readOrdinary:
+            return false
+        }
+    }
+
+    var hasMarquee: Bool {
+        self == .working
+    }
+}
+
+enum SessionCompletionAttentionPolicy {
+    static func state(
+        status: AgentStatus,
+        isImportant: Bool,
+        hasUnreadCompletion: Bool
+    ) -> SessionCompletionAttention {
+        if status.isRunning {
+            return isImportant ? .working : .none
+        }
+        guard status == .completed, isImportant || hasUnreadCompletion else {
+            return .none
+        }
+        switch (isImportant, hasUnreadCompletion) {
+        case (true, true):
+            return .unreadStarred
+        case (true, false):
+            return .readStarred
+        case (false, true):
+            return .unreadOrdinary
+        case (false, false):
+            return .readOrdinary
+        }
+    }
+
+    static func shouldHighlightProvider(
+        isImportant: Bool,
+        hasUnreadCompletion: Bool,
+        isSelected: Bool
+    ) -> Bool {
+        isImportant && hasUnreadCompletion && !isSelected
+    }
+}
+
 enum ExpandedPanelSize {
     static let defaultWidth = 520.0
     static let defaultHeight = 820.0
@@ -435,15 +527,35 @@ enum ExpandedPanelSize {
 enum HUDVisualTheme: String, CaseIterable, Identifiable {
     case classic
     case starlight
+    case morningMist
+    case celadon
+    case neon
 
     var id: String { rawValue }
 
     var label: String {
         switch self {
         case .classic:
-            return "经典"
+            return "原生"
         case .starlight:
             return "星光"
+        case .morningMist:
+            return "晨雾"
+        case .celadon:
+            return "青瓷"
+        case .neon:
+            return "霓虹"
+        }
+    }
+
+    var appearance: String? {
+        switch self {
+        case .classic:
+            return nil
+        case .starlight, .neon:
+            return "dark"
+        case .morningMist, .celadon:
+            return "light"
         }
     }
 }

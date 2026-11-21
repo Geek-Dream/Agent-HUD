@@ -496,7 +496,8 @@ func testImportantSessionOrdering() throws {
 
     let ordered = SessionOrdering.sorted(
         [working, completed, importantCompleted],
-        importantSessionIDs: [importantCompleted.id]
+        importantSessionIDs: [importantCompleted.id],
+        importantSessionOrder: [importantCompleted.id]
     )
     try expect(
         ordered.map(\.id) == [importantCompleted.id, working.id, completed.id],
@@ -535,17 +536,28 @@ func testRunningFirstOrderingAndCompletionTransition() throws {
     let ordered = SessionOrdering.sorted(
         [waiting, completed, starting, working, importantCompleted],
         importantSessionIDs: [importantCompleted.id],
-        runningFirst: true
+        importantSessionOrder: [importantCompleted.id]
     )
     try expect(
         ordered.map(\.id) == [
             importantCompleted.id,
-            working.id,
             starting.id,
+            working.id,
             waiting.id,
             completed.id
         ],
-        "All sessions should keep important rows first, then running rows, then the existing status order"
+        "Starred rows stay first, then working/starting, waiting, and completed; got \(ordered.map(\.id))"
+    )
+
+    let failed = makeTestSession(id: "pi:failed", status: .failed, lastActivityAt: now)
+    let statusOrdered = SessionOrdering.sorted(
+        [failed, completed, waiting, working],
+        importantSessionIDs: [],
+        importantSessionOrder: []
+    )
+    try expect(
+        statusOrdered.map(\.id) == [working.id, waiting.id, completed.id, failed.id],
+        "Ordinary status order must be working, waiting, completed, then failed"
     )
 
     let currentSessions = [
@@ -665,8 +677,95 @@ func testSessionRowSurfacePolicy() throws {
     )
 }
 
+func testStableOrderingAndStarredDragging() throws {
+    let now = Date()
+    let workingA = makeTestSession(id: "codex:a", status: .working, lastActivityAt: now)
+    let workingB = makeTestSession(id: "codex:b", status: .working, lastActivityAt: now)
+    let workingC = makeTestSession(id: "codex:c", status: .working, lastActivityAt: now)
+    let waiting = makeTestSession(id: "pi:waiting", status: .waitingUser, lastActivityAt: now)
+    let completed = makeTestSession(id: "claude:done", status: .completed, lastActivityAt: now)
+    let failed = makeTestSession(id: "opencode:error", status: .failed, lastActivityAt: now)
+    let ordered = SessionOrdering.sorted(
+        [completed, workingC, failed, workingB, waiting, workingA],
+        importantSessionIDs: [],
+        importantSessionOrder: []
+    )
+    try expect(
+        ordered.map(\.id) == [workingC.id, workingB.id, workingA.id, waiting.id, completed.id, failed.id],
+        "Working/waiting/completed/error groups must retain their relative order"
+    )
+    let refreshed = SessionOrdering.sorted(
+        [
+            makeTestSession(id: workingA.id, status: .working, lastActivityAt: now.addingTimeInterval(100)),
+            makeTestSession(id: workingB.id, status: .working, lastActivityAt: now.addingTimeInterval(5)),
+            makeTestSession(id: workingC.id, status: .working, lastActivityAt: now.addingTimeInterval(50)),
+            waiting, completed, failed
+        ],
+        importantSessionIDs: [],
+        importantSessionOrder: [],
+        stableSessionOrder: ordered.map(\.id)
+    )
+    try expect(
+        refreshed.prefix(3).map(\.id) == [workingC.id, workingB.id, workingA.id],
+        "Activity timestamps must not cause concurrent working rows to dance"
+    )
+
+    let suiteName = "AgentHUD.ImportanceOrderTests.\(UUID().uuidString)"
+    guard let defaults = UserDefaults(suiteName: suiteName) else {
+        throw SmokeFailure.failed("Could not create isolated importance ordering defaults")
+    }
+    defer { defaults.removePersistentDomain(forName: suiteName) }
+    let store = SessionImportanceStore(defaults: defaults)
+    for session in [workingA, workingB, workingC] {
+        _ = store.toggle(session.id)
+    }
+    try expect(store.orderedSessionIDs == [workingA.id, workingB.id, workingC.id], "Starring should append")
+    try expect(store.move(sessionID: workingB.id, before: workingA.id), "Dragging star two before star one should work")
+    try expect(store.orderedSessionIDs == [workingB.id, workingA.id, workingC.id], "Dragged order must update")
+    try expect(SessionImportanceStore(defaults: defaults).orderedSessionIDs == store.orderedSessionIDs, "Manual order must persist")
+    try expect(!store.move(sessionID: "missing", before: workingA.id), "Unknown sessions cannot be dragged")
+    defaults.set([workingC.id], forKey: "hud.importantSessions.v1")
+    defaults.set([workingC.id], forKey: "hud.importantSessionOrder.v2")
+    store.reload()
+    try expect(store.sessionIDs == [workingC.id] && store.orderedSessionIDs == [workingC.id], "A reload must honor starred changes from the mobile device")
+}
+
+func testCompletionAttentionPolicy() throws {
+    let state = SessionCompletionAttentionPolicy.state(
+        status: .working,
+        isImportant: true,
+        hasUnreadCompletion: true
+    )
+    try expect(state == .working, "A new run must replace stale completion attention")
+    let starred = SessionCompletionAttentionPolicy.state(
+        status: .completed,
+        isImportant: true,
+        hasUnreadCompletion: true
+    )
+    try expect(starred == .unreadStarred, "Starred completion needs a provider-colored background")
+    try expect(starred.pulsesBackground, "Unread starred completion must pulse its background")
+    try expect(SessionCompletionAttentionPolicy.state(status: .completed, isImportant: true, hasUnreadCompletion: false) == .readStarred, "Viewing removes the background alert but retains a border")
+    try expect(SessionCompletionAttentionPolicy.state(status: .completed, isImportant: false, hasUnreadCompletion: true) == .unreadOrdinary, "Unstarred completions only pulse their border")
+    try expect(!SessionCompletionAttentionPolicy.state(status: .completed, isImportant: false, hasUnreadCompletion: true).pulsesBackground, "Unstarred backgrounds must remain static")
+    try expect(SessionCompletionAttentionPolicy.shouldHighlightProvider(isImportant: true, hasUnreadCompletion: true, isSelected: false), "Another provider's starred completion must highlight its capsule")
+    try expect(!SessionCompletionAttentionPolicy.shouldHighlightProvider(isImportant: true, hasUnreadCompletion: true, isSelected: true), "Do not highlight an already selected provider")
+    try expect(!SessionCompletionAttentionPolicy.shouldHighlightProvider(isImportant: false, hasUnreadCompletion: true, isSelected: false), "Ordinary completions must not highlight provider capsules")
+    try expect(!SessionCompletionAttentionPolicy.state(status: .completed, isImportant: true, hasUnreadCompletion: false).hasUnreadCompletion, "A viewed starred row must stop the capsule's unread highlight")
+    try expect(!SessionCompletionAttentionPolicy.state(status: .completed, isImportant: true, hasUnreadCompletion: false).hasMarquee, "A completed card must stop the running laser")
+    try expect(SessionCompletionAttentionPolicy.state(status: .working, isImportant: true, hasUnreadCompletion: false).hasMarquee, "Starred running rows must use the laser without the advanced-animation switch")
+    try expect(SessionNotificationSettings(importantEnabled: true, ordinaryEnabled: false).shouldNotify(isImportant: true), "Starred completion notification must respect its independent switch")
+    try expect(!SessionNotificationSettings(importantEnabled: true, ordinaryEnabled: false).shouldNotify(isImportant: false), "Starred switch must not enable ordinary notifications")
+    try expect(SessionNotificationPresentation.options(isImportant: true).contains(.banner), "Important notifications should present a banner")
+    try expect(!SessionNotificationPresentation.options(isImportant: false).contains(.banner), "Ordinary notifications must not present a banner")
+    try expect(SessionNotificationPresentation.options(isImportant: false) == [.list], "Ordinary notifications must only enter Notification Center")
+    try expect(SessionNotificationPresentation.interruptionLevel(isImportant: false) == .passive, "Ordinary notifications should use passive interruption")
+}
+
 func testHUDPanelAppearancePolicy() throws {
-    try expect(HUDVisualTheme.classic.rawValue == "classic", "Classic theme raw value mismatch")
+    try expect(HUDVisualTheme.allCases.map(\.rawValue) == ["classic", "starlight", "morningMist", "celadon", "neon"], "Six skins across two appearances must be available")
+    try expect(HUDVisualTheme.classic.appearance == nil, "Classic must keep native light/dark system appearance")
+    try expect(HUDVisualTheme.starlight.appearance == "dark" && HUDVisualTheme.neon.appearance == "dark", "Two dark skins must use dark appearance")
+    try expect(HUDVisualTheme.morningMist.appearance == "light" && HUDVisualTheme.celadon.appearance == "light", "Two light skins must use light appearance")
     try expect(HUDVisualTheme.starlight.rawValue == "starlight", "Starlight theme raw value mismatch")
     try expect(HUDVisualTheme(rawValue: "starlight") == .starlight, "Starlight theme should decode from raw value")
     try expect(HUDVisualTheme(rawValue: "missing") == nil, "Unknown theme raw value should fail")
@@ -1885,6 +1984,29 @@ func testAIConfiguration() throws {
     )
 }
 
+func testActivityWatcherEmitsForTemporaryTranscript() async throws {
+    let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString, isDirectory: true)
+    try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+    defer { try? FileManager.default.removeItem(at: directory) }
+    let watcher = SessionActivityWatcher(roots: [directory])
+    let recorder = ActivityRecorder()
+    watcher.onChange = { recorder.record() }
+    watcher.start()
+    try await Task.sleep(nanoseconds: 200_000_000)
+    let file = directory.appendingPathComponent("session.jsonl")
+    try Data("{\"type\":\"event\"}\n".utf8).write(to: file)
+    try await Task.sleep(nanoseconds: 700_000_000)
+    try expect(recorder.count > 0, "A transcript file change must schedule a refresh without waiting ten seconds")
+    watcher.stop()
+}
+
+final class ActivityRecorder: @unchecked Sendable {
+    private let lock = NSLock()
+    private var value = 0
+    var count: Int { lock.lock(); defer { lock.unlock() }; return value }
+    func record() { lock.lock(); value += 1; lock.unlock() }
+}
+
 func testAISecretEnvironmentFallback() throws {
     let store = KeychainAISecretStore(
         service: "com.agenthud.tests.\(UUID().uuidString)",
@@ -1927,6 +2049,8 @@ do {
     try testDismissedSessionIDFiltering()
     try testImportantSessionOrdering()
     try testRunningFirstOrderingAndCompletionTransition()
+    try testStableOrderingAndStarredDragging()
+    try testCompletionAttentionPolicy()
     try testSessionOutlinePolicy()
     try testSessionRowSurfacePolicy()
     try testHUDPanelAppearancePolicy()
@@ -1953,6 +2077,7 @@ do {
     try await testAICacheAndFailureBackoff()
     try testAIConfiguration()
     try testAISecretEnvironmentFallback()
+    try await testActivityWatcherEmitsForTemporaryTranscript()
     try testLinkCertificateFingerprintAndStatusProtocol()
     try testLinkRemoteAddressDetection()
     try await testLinkPairing()

@@ -43,7 +43,7 @@ func testSessionListLimitKeepsStarredSessions() throws {
     )
     try expect(recent.count == 12, "Default ten ordinary sessions plus two starred rows expected")
     try expect(starred.isSubset(of: Set(recent.map(\.id))), "Old starred sessions must stay visible")
-    try expect(recent.prefix(2).map(\.id) == ["codex:session-5", "codex:session-0"], "Starred rows stay first, newest activity first")
+    try expect(recent.prefix(2).map(\.id) == ["codex:session-0", "codex:session-5"], "Starred rows stay first in explicit order")
     try expect(
         !recent.contains(where: { $0.id == "codex:session-10" }),
         "Ordinary sessions beyond the recent ten should be hidden"
