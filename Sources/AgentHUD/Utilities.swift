@@ -825,13 +825,18 @@ enum SessionAttachmentParser {
 }
 
 enum LogFileReader {
-    private struct PromptLineCache {
+    private struct TranscriptCache {
         let fileSize: UInt64
+        let headBytes: Int
+        let tailBytes: Int
         let lines: [String]
+        let records: [[String: Any]]
+        let promptLines: [String]
+        let hasCompleteTailLine: Bool
     }
 
-    private static let promptCacheLock = NSLock()
-    private static var promptLineCache: [String: PromptLineCache] = [:]
+    private static let cacheLock = NSLock()
+    private static var transcriptCache: [String: TranscriptCache] = [:]
 
     static func readJSONLines(
         from url: URL,
@@ -839,63 +844,100 @@ enum LogFileReader {
         tailBytes: Int = 768 * 1024
     ) throws -> [[String: Any]] {
         let size = try FileManager.default.attributesOfItem(atPath: url.path)[.size] as? NSNumber
-        let fileSize = size?.intValue ?? 0
+        let fileSize = UInt64(size?.intValue ?? 0)
+        let key = url.path
+        cacheLock.lock()
+        let cached = transcriptCache[key]
+        cacheLock.unlock()
+
+        if let cached,
+           cached.fileSize == fileSize,
+           cached.headBytes == headBytes,
+           cached.tailBytes == tailBytes {
+            return cached.records
+        }
+
+        if var cached,
+           cached.fileSize < fileSize,
+           cached.headBytes == headBytes,
+           cached.tailBytes == tailBytes,
+           cached.hasCompleteTailLine {
+            let appended = try readAppendedLines(from: url, startingAt: cached.fileSize)
+            let lines = cached.lines + appended
+            let promptLines = Array((cached.promptLines + appended.filter(isUserPromptLine)).suffix(8))
+            let records = parseRecords(lines + promptLines)
+            let hasCompleteTailLine = (try readLastByte(from: url)) == 0x0A
+            cached = TranscriptCache(
+                fileSize: fileSize,
+                headBytes: headBytes,
+                tailBytes: tailBytes,
+                lines: lines,
+                records: records,
+                promptLines: promptLines,
+                hasCompleteTailLine: hasCompleteTailLine
+            )
+            cacheLock.lock()
+            transcriptCache[key] = cached
+            cacheLock.unlock()
+            return records
+        }
 
         var chunks: [String] = []
-
-        if fileSize <= tailBytes {
+        if fileSize <= UInt64(tailBytes) {
             chunks.append(try readAll(url: url))
         } else {
             chunks.append(try readPrefix(url: url, maxBytes: headBytes))
             chunks.append(try readSuffix(url: url, maxBytes: tailBytes))
         }
-        chunks.append(try latestPromptLines(from: url, fileSize: UInt64(fileSize)).joined(separator: "\n"))
-
-        var seen = Set<String>()
-        var records: [[String: Any]] = []
-
-        for chunk in chunks {
-            for line in chunk.split(separator: "\n", omittingEmptySubsequences: true) {
-                let string = String(line)
-                guard seen.insert(string).inserted else { continue }
-                guard let data = string.data(using: .utf8),
-                      let object = try? JSONSerialization.jsonObject(with: data),
-                      let dictionary = object as? [String: Any] else {
-                    continue
-                }
-                records.append(dictionary)
-            }
-        }
-
+        let promptLines = try scanBackwardForPromptLines(from: url, fileSize: fileSize, limit: 8)
+        chunks.append(promptLines.joined(separator: "\n"))
+        let lines = chunks.flatMap { $0.split(separator: "\n", omittingEmptySubsequences: true).map(String.init) }
+        let records = parseRecords(lines)
+        let lastByte = try readLastByte(from: url)
+        let hasCompleteTailLine = fileSize == 0 || lastByte == 0x0A
+        cacheLock.lock()
+        transcriptCache[key] = TranscriptCache(
+            fileSize: fileSize,
+            headBytes: headBytes,
+            tailBytes: tailBytes,
+            lines: lines,
+            records: records,
+            promptLines: promptLines,
+            hasCompleteTailLine: hasCompleteTailLine
+        )
+        cacheLock.unlock()
         return records
     }
 
-    private static func latestPromptLines(from url: URL, fileSize: UInt64) throws -> [String] {
-        let key = url.path
-        promptCacheLock.lock()
-        let cached = promptLineCache[key]
-        promptCacheLock.unlock()
-
-        if let cached, cached.fileSize == fileSize {
-            return cached.lines
+    private static func parseRecords(_ lines: [String]) -> [[String: Any]] {
+        var seen = Set<String>()
+        return lines.compactMap { line in
+            guard seen.insert(line).inserted,
+                  let data = line.data(using: .utf8),
+                  let object = try? JSONSerialization.jsonObject(with: data),
+                  let dictionary = object as? [String: Any] else {
+                return nil
+            }
+            return dictionary
         }
+    }
 
-        let lines: [String]
-        if let cached, cached.fileSize < fileSize {
-            let appended = try readPromptLines(
-                from: url,
-                startingAt: cached.fileSize,
-                preservingFirstPartialLine: false
-            )
-            lines = Array((cached.lines + appended).suffix(8))
-        } else {
-            lines = try scanBackwardForPromptLines(from: url, fileSize: fileSize, limit: 8)
-        }
+    private static func readAppendedLines(from url: URL, startingAt offset: UInt64) throws -> [String] {
+        let handle = try FileHandle(forReadingFrom: url)
+        defer { try? handle.close() }
+        try handle.seek(toOffset: offset)
+        let data = try handle.readToEnd() ?? Data()
+        return data.split(separator: 0x0A, omittingEmptySubsequences: true)
+            .map { String(decoding: $0, as: UTF8.self) }
+    }
 
-        promptCacheLock.lock()
-        promptLineCache[key] = PromptLineCache(fileSize: fileSize, lines: lines)
-        promptCacheLock.unlock()
-        return lines
+    private static func readLastByte(from url: URL) throws -> UInt8? {
+        let handle = try FileHandle(forReadingFrom: url)
+        defer { try? handle.close() }
+        let end = try handle.seekToEnd()
+        guard end > 0 else { return nil }
+        try handle.seek(toOffset: end - 1)
+        return try handle.read(upToCount: 1)?.first
     }
 
     private static func scanBackwardForPromptLines(

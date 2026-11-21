@@ -11,7 +11,8 @@ enum BoundedProcess {
         executable: String,
         arguments: [String],
         timeout: TimeInterval = 3,
-        environment: [String: String]? = nil
+        environment: [String: String]? = nil,
+        workingDirectory: String? = nil
     ) -> CommandResult? {
         guard FileManager.default.isExecutableFile(atPath: executable) else {
             return nil
@@ -20,6 +21,10 @@ enum BoundedProcess {
         let process = Process()
         process.executableURL = URL(fileURLWithPath: executable)
         process.arguments = arguments
+        if let workingDirectory,
+           FileManager.default.fileExists(atPath: workingDirectory) {
+            process.currentDirectoryURL = URL(fileURLWithPath: workingDirectory, isDirectory: true)
+        }
         if let environment {
             process.environment = environment
         }

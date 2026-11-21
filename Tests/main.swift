@@ -1169,6 +1169,28 @@ func testOrcaCurrentTabs() throws {
         "The transcript's latest user input must outrank an older Orca status prompt"
     )
 
+    let staleWorkingStatus = json("""
+    {
+      "tabId":"transcript-tab",
+      "providerSession":{
+        "id":"transcript-title",
+        "cwd":"/tmp/title-sample",
+        "transcriptPath":"\(transcriptURL.path)"
+      },
+      "payload":{"state":"working","mainAgent":{"state":"working","stateStartedAt":1794379900000}},
+      "receivedAt":1794379900000
+    }
+    """)
+    let staleWorking = OrcaSessionSource.makeSessions(
+        workspacePayload: transcriptWorkspace,
+        statusEntries: [staleWorkingStatus],
+        now: now
+    )?.first
+    try expect(
+        staleWorking?.status == .completed,
+        "A stale Orca working hook must not hide a newer transcript completion"
+    )
+
     let waitingTranscriptURL = FileManager.default.temporaryDirectory
         .appendingPathComponent("AgentHUD-orca-waiting-\(UUID().uuidString).jsonl")
     defer {
@@ -1912,6 +1934,7 @@ do {
     try testSessionListLimitKeepsStarredSessions()
     try await testCompletedCodexCanAcceptInput()
     try await testCodexQueueArgumentsAndErrors()
+    try await testClaudeResumeInput()
     try testOpenCode()
     try testOpenCodeCurrentDatabase()
     try testLogReaderFindsRecentPromptBeyondTail()
@@ -1933,7 +1956,7 @@ do {
     try testLinkCertificateFingerprintAndStatusProtocol()
     try testLinkRemoteAddressDetection()
     try await testLinkPairing()
-    print("35 tests passed (adapter, OpenCode, AI title, session presentation, appearance and LAN protocol smoke tests)")
+    print("36 tests passed (adapter, OpenCode, AI title, session presentation, appearance and LAN protocol smoke tests)")
 } catch {
     fputs("Adapter smoke tests failed: \(error)\n", stderr)
     exit(1)

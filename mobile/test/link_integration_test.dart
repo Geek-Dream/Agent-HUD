@@ -29,7 +29,8 @@ void main() {
       final device = await api.completeQr(offer, 'Dart integration phone');
       expect(device.fingerprint, fingerprint);
       expect(device.addresses, isNotEmpty);
-      expect(device.baseUri(ipv6Address).toString(), startsWith('https://[::1]:'));
+      expect(
+          device.baseUri(ipv6Address).toString(), startsWith('https://[::1]:'));
 
       final localDevice = LinkedDevice(
         deviceId: device.deviceId,
@@ -65,6 +66,23 @@ void main() {
       expect(status.revision, 7);
       expect(status.privacyMode, isFalse);
       expect(status.supportsRefresh, isTrue);
+
+      final fallbackDevice = LinkedDevice(
+        deviceId: device.deviceId,
+        token: device.token,
+        instanceId: device.instanceId,
+        instanceName: device.instanceName,
+        fingerprint: device.fingerprint,
+        addresses: <String>['240e:ffff::1', address],
+        port: port,
+      );
+      final fallbackStopwatch = Stopwatch()..start();
+      expect(
+        await api.probe(fallbackDevice, timeout: const Duration(seconds: 2)),
+        isTrue,
+      );
+      expect(fallbackStopwatch.elapsed, lessThan(const Duration(seconds: 2)));
+      expect(await api.probe(fallbackDevice), isTrue);
 
       step = 'device health probe';
       expect(await api.probe(localDevice), isTrue);

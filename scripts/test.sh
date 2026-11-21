@@ -22,6 +22,7 @@ swiftc \
     Sources/AgentHUD/OpenCodeAdapter.swift \
     Sources/AgentHUD/OpenCodeSessionSource.swift \
     Sources/AgentHUD/OrcaSessionSource.swift \
+    Sources/AgentHUD/SessionTranscriptParser.swift \
     Sources/AgentHUD/LinkModels.swift \
     Sources/AgentHUD/LinkDeviceStore.swift \
     Sources/AgentHUD/LinkPairingManager.swift \
@@ -30,6 +31,7 @@ swiftc \
     Sources/AgentHUD/AgentRuntimeRegistry.swift \
     Sources/AgentHUD/DeliveryStore.swift \
     Sources/AgentHUD/CodexInputAdapter.swift \
+    Sources/AgentHUD/ClaudeInputAdapter.swift \
     Sources/AgentHUD/AgentInputDispatcher.swift \
     Tests/LinkTests.swift \
     Tests/SessionInteractionTests.swift \

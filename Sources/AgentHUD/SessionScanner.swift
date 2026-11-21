@@ -44,12 +44,9 @@ final class SessionScanner {
         var sessions: [AgentSession] = []
 
         for file in codexFiles {
-            guard let records = try? LogFileReader.readJSONLines(from: file) else {
-                continue
-            }
             let modifiedAt = modificationDate(file) ?? now
-            if let session = CodexAdapter.parse(
-                records: records,
+            if let session = SessionTranscriptParser.parse(
+                provider: .codex,
                 fileURL: file,
                 modifiedAt: modifiedAt,
                 providerIsRunning: processes.codex,
@@ -60,12 +57,9 @@ final class SessionScanner {
         }
 
         for file in claudeFiles {
-            guard let records = try? LogFileReader.readJSONLines(from: file) else {
-                continue
-            }
             let modifiedAt = modificationDate(file) ?? now
-            if let session = ClaudeAdapter.parse(
-                records: records,
+            if let session = SessionTranscriptParser.parse(
+                provider: .claude,
                 fileURL: file,
                 modifiedAt: modifiedAt,
                 providerIsRunning: processes.claude,

@@ -1,5 +1,30 @@
 import Foundation
 
+private final class InputTestRecorder: @unchecked Sendable {
+    private let lock = NSLock()
+    private var values: [String] = []
+    private var directory = ""
+
+    var arguments: [String] {
+        lock.lock()
+        defer { lock.unlock() }
+        return values
+    }
+
+    var workingDirectory: String {
+        lock.lock()
+        defer { lock.unlock() }
+        return directory
+    }
+
+    func record(arguments: [String], directory: String = "") {
+        lock.lock()
+        values = arguments
+        self.directory = directory
+        lock.unlock()
+    }
+}
+
 func testSessionListLimitKeepsStarredSessions() throws {
     let base = Date(timeIntervalSince1970: 1_800_000_000)
     let sessions = (0..<25).map { index in
@@ -72,18 +97,18 @@ func testCompletedCodexCanAcceptInput() async throws {
 
 @MainActor
 func testCodexQueueArgumentsAndErrors() async throws {
-    var arguments: [String] = []
+    let recorder = InputTestRecorder()
     let adapter = CodexInputAdapter(
         executable: "/bin/echo",
         runCommand: { _, received, _, _ in
-            arguments = received
+            recorder.record(arguments: received)
             return CommandResult(status: 0, stdout: "Queued message\n", stderr: "")
         }
     )
     let session = makeTestSession(id: "codex:arguments", status: .working, lastActivityAt: Date())
     _ = await adapter.deliver(text: "请继续，不要改标题", to: session)
     try expect(
-        arguments == ["queue", "--thread", "codex:arguments", "--message", "请继续，不要改标题", "--resume"],
+        recorder.arguments == ["queue", "--thread", "codex:arguments", "--message", "请继续，不要改标题", "--resume"],
         "Both running and completed sessions should use queue --resume"
     )
 
@@ -140,4 +165,80 @@ func testCodexQueueArgumentsAndErrors() async throws {
     )
     try expect(!dispatcher.capability(for: claude).enabled, "Other providers must remain unsupported")
     try expect(dispatcher.capability(for: session).enabled, "Dispatcher must not reject completed-capable Codex adapters")
+}
+
+@MainActor
+func testClaudeResumeInput() async throws {
+    let recorder = InputTestRecorder()
+    let adapter = ClaudeInputAdapter(
+        executable: "/bin/echo",
+        runCommand: { _, arguments, directory, _, _ in
+            recorder.record(arguments: arguments, directory: directory)
+            return CommandResult(status: 0, stdout: "backgrounded · test-id\n", stderr: "")
+        }
+    )
+    let completed = AgentSession(
+        id: "claude:resume-input",
+        provider: .claude,
+        providerSessionID: "7b8ac574-bb30-4ff7-850d-0668fdc258d9",
+        projectName: "Agent-HUD",
+        projectPath: "/tmp/Agent-HUD",
+        title: "Claude",
+        titleSource: .automatic,
+        status: .completed,
+        confidence: .high,
+        currentAction: "",
+        currentFiles: [],
+        startedAt: Date().addingTimeInterval(-120),
+        lastActivityAt: Date().addingTimeInterval(-60),
+        completedAt: Date().addingTimeInterval(-60),
+        runs: [],
+        latestUserPrompt: nil,
+        sourcePath: "",
+        isLive: true,
+        git: nil
+    )
+    try expect(adapter.canAcceptInput(for: completed).enabled, "Finished Claude turns must support background resume")
+    let result = await adapter.deliver(text: "继续修复同步", to: completed)
+    try expect(result.success && result.status == .delivered, "Accepted Claude background resume should be delivered")
+    try expect(
+        recorder.arguments == ["--bg", "--resume", completed.providerSessionID, "继续修复同步"],
+        "Claude must resume the selected session with the exact text"
+    )
+    try expect(recorder.workingDirectory == completed.projectPath, "Claude must resume from the session's project directory")
+
+    let busy = ClaudeInputAdapter(executable: "/bin/echo")
+    let running = AgentSession(
+        id: completed.id,
+        provider: .claude,
+        providerSessionID: completed.providerSessionID,
+        projectName: completed.projectName,
+        projectPath: completed.projectPath,
+        title: completed.title,
+        titleSource: .automatic,
+        status: .working,
+        confidence: .high,
+        currentAction: "",
+        currentFiles: [],
+        startedAt: completed.startedAt,
+        lastActivityAt: Date(),
+        completedAt: nil,
+        runs: [],
+        latestUserPrompt: nil,
+        sourcePath: "",
+        isLive: true,
+        git: nil
+    )
+    try expect(!busy.canAcceptInput(for: running).enabled, "Running Claude must not spawn a duplicate conversation")
+    let rejected = await busy.deliver(text: "不要另开会话", to: running)
+    try expect(!rejected.success && rejected.error == .agentBusy, "Busy Claude delivery must report agentBusy")
+
+    let missing = ClaudeInputAdapter(
+        executable: "/bin/echo",
+        runCommand: { _, _, _, _, _ in
+            CommandResult(status: 1, stdout: "", stderr: "No conversation found")
+        }
+    )
+    let offline = await missing.deliver(text: "继续", to: completed)
+    try expect(!offline.success && offline.error == .sessionOffline, "Unknown Claude sessions must remain offline errors")
 }

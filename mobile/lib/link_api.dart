@@ -379,11 +379,14 @@ class LinkApi implements MonitoringApi, SessionActionsApi, DeviceHealthApi {
     void Function(String host, int port, int index, int total)? onAttempt,
   }) async {
     Object? lastError;
-    final preferredKey = '${addresses.join(',')}|$port|${fingerprint ?? 'pairing'}';
-    final ordered = _orderedAddresses(addresses, preferredKey);
+    final preferredKey =
+        '${addresses.join(',')}|$port|${fingerprint ?? 'pairing'}';
+    final normalized = addresses.map(normalizeLinkAddress).toSet().toList();
+    final ordered = _orderedAddresses(normalized, preferredKey);
     final attempted = <String>[];
-    for (var index = 0; index < ordered.length; index += 1) {
-      final address = ordered[index];
+
+    Future<({T? value, bool succeeded})> attempt(
+        String address, int index) async {
       final key = '$address:$port:${fingerprint ?? 'pairing'}';
       final client =
           _clients.putIfAbsent(key, () => _pinnedClient(fingerprint));
@@ -391,11 +394,12 @@ class LinkApi implements MonitoringApi, SessionActionsApi, DeviceHealthApi {
       onAttempt?.call(address, port, index + 1, ordered.length);
       try {
         if (_closed) throw const LinkApiException('连接已关闭');
-        final result = await action(client,
-                Uri(scheme: 'https', host: address, port: port, path: path))
-            .timeout(timeout);
+        final result = await action(
+          client,
+          Uri(scheme: 'https', host: address, port: port, path: path),
+        ).timeout(timeout);
         _preferredAddress[preferredKey] = address;
-        return result;
+        return (value: result, succeeded: true);
       } on TimeoutException catch (error) {
         lastError = error;
       } on SocketException catch (error) {
@@ -408,11 +412,48 @@ class LinkApi implements MonitoringApi, SessionActionsApi, DeviceHealthApi {
         rethrow;
       }
       _clients.remove(key)?.close(force: true);
+      return (value: null, succeeded: false);
     }
-    throw LinkApiException(
+
+    final preferred = _preferredAddress[preferredKey];
+    if (preferred != null && normalized.contains(preferred)) {
+      final result = await attempt(preferred, ordered.indexOf(preferred));
+      if (result.succeeded) return result.value;
+      // 上次成功的地址失效后，必须让其他候选地址参与竞争，不能继续
+      // 按旧顺序把同一个不可达地址再等待一次。
+    }
+
+    final candidates =
+        ordered.where((address) => address != preferred).toList();
+    if (candidates.isEmpty) {
+      throw LinkApiException(
         '连不上电脑（已尝试 ${attempted.join('、')}）。'
         '请确认手机和电脑在同一个局域网，或改用电脑上显示的地址与端口重试。'
-        '${lastError == null ? '' : '\n$lastError'}');
+        '${lastError == null ? '' : '\n$lastError'}',
+      );
+    }
+
+    final completer = Completer<T?>();
+    var pending = candidates.length;
+    for (final address in candidates) {
+      attempt(address, ordered.indexOf(address)).then((result) {
+        if (result.succeeded && !completer.isCompleted) {
+          completer.complete(result.value);
+        }
+      }, onError: (Object error) {
+        if (!completer.isCompleted) completer.completeError(error);
+      }).whenComplete(() {
+        pending -= 1;
+        if (pending == 0 && !completer.isCompleted) {
+          completer.completeError(LinkApiException(
+            '连不上电脑（已尝试 ${attempted.join('、')}）。'
+            '请确认手机和电脑在同一个局域网，或改用电脑上显示的地址与端口重试。'
+            '${lastError == null ? '' : '\n$lastError'}',
+          ));
+        }
+      });
+    }
+    return completer.future;
   }
 
   List<String> _orderedAddresses(List<String> addresses, String preferredKey) {

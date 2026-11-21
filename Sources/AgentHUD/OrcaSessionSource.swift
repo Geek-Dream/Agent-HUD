@@ -168,9 +168,15 @@ enum OrcaSessionSource {
             ?? JSONTools.string(statusPayload["outcome"])
             ?? JSONTools.string(statusEntry?["turnEndDisposition"])
         let hookStatus = rawState.map { mapStatus($0, outcome: outcome) }
+        let receivedAt = DateParser.parse(statusEntry?["receivedAt"])
+            ?? DateParser.parse(statusEntry?["capturedAt"])
+            ?? DateParser.parse(statusEntry?["updatedAt"])
+        let sleepingAt = DateParser.parse(sleepingEntry?["updatedAt"])
+            ?? DateParser.parse(sleepingEntry?["capturedAt"])
         let status = effectiveStatus(
             hookStatus: hookStatus,
-            adapterSession: adapterSession
+            adapterSession: adapterSession,
+            hookActivityAt: receivedAt
         )
         let confidence: StatusConfidence
         if adapterSession?.status == .waitingUser, status == .waitingUser {
@@ -206,11 +212,6 @@ enum OrcaSessionSource {
         let stateStartedAt = DateParser.parse(mainAgent["stateStartedAt"])
             ?? DateParser.parse(statusEntry?["stateStartedAt"])
             ?? DateParser.parse(statusEntry?["turnStartedAt"])
-        let receivedAt = DateParser.parse(statusEntry?["receivedAt"])
-            ?? DateParser.parse(statusEntry?["capturedAt"])
-            ?? DateParser.parse(statusEntry?["updatedAt"])
-        let sleepingAt = DateParser.parse(sleepingEntry?["updatedAt"])
-            ?? DateParser.parse(sleepingEntry?["capturedAt"])
         let startedAt = [
             tabStartedAt,
             adapterSession?.startedAt,
@@ -405,7 +406,6 @@ enum OrcaSessionSource {
 
         let url = URL(fileURLWithPath: transcriptPath)
         guard FileManager.default.fileExists(atPath: url.path),
-              let records = try? LogFileReader.readJSONLines(from: url),
               let modifiedAt = try? url.resourceValues(
                 forKeys: [.contentModificationDateKey]
               ).contentModificationDate else {
@@ -413,17 +413,9 @@ enum OrcaSessionSource {
         }
 
         switch provider {
-        case .codex:
-            return CodexAdapter.parse(
-                records: records,
-                fileURL: url,
-                modifiedAt: modifiedAt,
-                providerIsRunning: true,
-                now: now
-            )
-        case .claude:
-            return ClaudeAdapter.parse(
-                records: records,
+        case .codex, .claude:
+            return SessionTranscriptParser.parse(
+                provider: provider,
                 fileURL: url,
                 modifiedAt: modifiedAt,
                 providerIsRunning: true,
@@ -515,7 +507,8 @@ enum OrcaSessionSource {
 
     private static func effectiveStatus(
         hookStatus: AgentStatus?,
-        adapterSession: AgentSession?
+        adapterSession: AgentSession?,
+        hookActivityAt: Date?
     ) -> AgentStatus {
         // Orca can keep reporting `working` (or emit `done`) while Claude is
         // actually blocked on AskUserQuestion/ExitPlanMode. The transcript has
@@ -523,6 +516,16 @@ enum OrcaSessionSource {
         // hook status.
         if adapterSession?.status == .waitingUser, hookStatus != .failed {
             return .waitingUser
+        }
+        // A stale working hook must not hide a newer terminal transcript event.
+        // Keep working only when its evidence is at least as recent as the log.
+        if hookStatus == .working,
+           let adapterStatus = adapterSession?.status,
+           adapterStatus == .completed || adapterStatus == .failed || adapterStatus == .idle {
+            if let hookActivityAt, hookActivityAt >= adapterSession?.lastActivityAt ?? .distantPast {
+                return .working
+            }
+            return adapterStatus
         }
         return hookStatus ?? adapterSession?.status ?? .unknown
     }

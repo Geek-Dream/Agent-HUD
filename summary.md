@@ -61,3 +61,24 @@ SHA-256：`e6afdeada4191bee1015f3e667f73d625498c9a71a782f8b4eea2c22c339f47c`
 - `git diff --cached --check`（排除原有构建产物）：exit 0；两个手机端冲突已解决。
 - 本轮未重新构建/安装 APK，未做真实设备验收；Mac 既有 OpenCode 实时数据库用例问题仍未修复。
 - 发布前复测：完整 `./scripts/test.sh` 仍失败于 `testOpenCodeCurrentDatabase`；使用临时测试入口仅排除该实时数据库用例，其余 34 项通过，有 1 个 Swift 6 测试闭包并发警告。
+
+## Mac 输入与同步修复（2026-11-20 后续）
+
+- 新部署 `build/AgentHUD.app`：同时注册 Codex 与 Claude 输入适配器；Claude 完成后使用 `claude --bg --resume <session-id> <text>`，并设置真实项目工作目录；运行中明确拒绝复制会话。
+- `LogFileReader` 共享日志窗口缓存；`SessionTranscriptParser` 在未变化且最多 1 秒内复用解析结果，避免时间驱动状态被缓存冻结。
+- Orca 旧 `working` 不再覆盖更新的日志完成/失败/空闲状态；状态时间使用原始 Hook 条目的时间。
+- 真实扫描基准：首轮约 14.1 秒建立缓存，第二次约 0.39 秒，第三次约 0.19 秒。
+- 除既有实时 OpenCode 数据库用例外，35 项确定性 Mac 测试通过；新增 Claude 测试有可修复的 Swift 6 测试闭包并发警告。
+- Release 构建使用项目现有 C++ 头文件兼容参数成功；已签名并启动新版，PID 61013，继续监听 47653，配对与对话授权数据保留。
+- 尚未完成最新构建的 Android 真机/模拟器验收；用户手动切换模拟器，未再自动重启模拟器，也未向真实 Agent 会话发送探测消息。
+- 当前 `mobile/lib/pages/sessions_page.dart` 有用户/其他会话的新 UI 改动，未纳入本轮修复、未覆盖。
+
+### 真机验证与 Link 回退
+
+- 真机 `A7EB6R6116001694` 已连接 Mac `192.168.0.43:47653`，新版 Mac 服务正常；13 个会话同步，最近 10 条加星标共显示 11 条。
+- 已完成 Codex、Claude 详情均显示可下发授权文本任务；Claude 输入框曾实测可编辑，未发送测试消息。
+- 手机多地址连接改为：先尝试最近成功地址，失败后并行尝试其他候选，首个有效响应胜出；仍保留证书指纹与授权错误处理。
+- 真实 HTTPS 单文件集成测试通过，包含不可达 IPv6 与可用 IPv4 回退；Flutter analyze 无问题，标准测试 78 通过、2 个集成用例按环境跳过。
+- 连续 3 次真机手动刷新成功；最终同步显示 13 个会话、4 个进行中，无多地址超时错误。
+- 本机 Debug APK 与手机签名不同，改用 Release 构建；安装后 Android 记录了新的 firstInstallTime，配对已重新创建，未删除 Mac 旧配对。
+- 真机安装包：`mobile/build/app/outputs/flutter-apk/app-release.apk`；本轮修复尚未提交或推送。

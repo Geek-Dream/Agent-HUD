@@ -123,7 +123,7 @@ final class HUDViewModel: ObservableObject, LinkSnapshotProviding {
     private let inputDispatcher = AgentInputDispatcher(
         registry: AgentRuntimeRegistry(),
         deliveryStore: DeliveryStore(),
-        adapters: [CodexInputAdapter()]
+        adapters: [CodexInputAdapter(), ClaudeInputAdapter()]
     )
     private var refreshLoop: Task<Void, Never>?
     private var refreshTask: Task<Void, Never>?

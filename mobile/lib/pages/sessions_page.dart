@@ -134,6 +134,23 @@ class _SessionsPageState extends State<SessionsPage>
     );
   }
 
+  Future<void> _openFilters() {
+    return showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: const Color(0xFF111823),
+      showDragHandle: true,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => _SessionFilterSheet(
+        controller: _controller,
+        deviceName: widget.device.instanceName,
+        onOpenSettings: _openSettings,
+      ),
+    );
+  }
+
   void _syncPulse() {
     if (!mounted) return;
     final bool active = _controller.sessions
@@ -181,77 +198,28 @@ class _SessionsPageState extends State<SessionsPage>
 
     return Scaffold(
       appBar: AppBar(
-        toolbarHeight: 70,
-        titleSpacing: HudSpacing.lg,
-        title: Row(
-          children: [
-            const _DeviceGlyph(),
-            const SizedBox(width: HudSpacing.lg),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    'AGENT HUD',
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: HudText.title.copyWith(
-                      fontSize: 17,
-                      fontWeight: FontWeight.w700,
-                      letterSpacing: 0,
-                    ),
-                  ),
-                  const SizedBox(height: 2),
-                  Row(
-                    children: [
-                      if (controller.sessions.any(
-                        (session) => HudColors.isActive(session.status),
-                      ))
-                        const Padding(
-                          padding: EdgeInsets.only(right: 5),
-                          child: HudStatusDot(
-                            color: HudColors.completed,
-                            pulsing: false,
-                            size: 5,
-                          ),
-                        ),
-                      Expanded(
-                        child: Text(
-                          '${widget.device.instanceName} · ${_subtitle(controller)}',
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: HudText.caption.copyWith(fontSize: 10.5),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ],
+        toolbarHeight: 58,
+        centerTitle: true,
+        titleSpacing: 0,
+        leadingWidth: 48,
+        leading: _HeaderAction(
+          tooltip: '返回',
+          icon: Icons.arrow_back_ios_new_rounded,
+          onPressed: () => Navigator.of(context).maybePop(),
+        ),
+        title: Text(
+          '项目任务',
+          style: HudText.title.copyWith(
+            fontSize: 17,
+            fontWeight: FontWeight.w600,
+            letterSpacing: 0,
+          ),
         ),
         actions: [
-          if (controller.status?.privacyMode == true)
-            const Tooltip(
-              message: '隐私模式已开启',
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: HudSpacing.sm),
-                child: Icon(
-                  Icons.visibility_off_outlined,
-                  size: 18,
-                  color: HudColors.waiting,
-                ),
-              ),
-            ),
-          _SessionLimitMenu(
-            controller: controller,
-            onOpenSettings: _openSettings,
-          ),
           _HeaderAction(
-            tooltip: '待办',
-            icon: Icons.checklist_rounded,
-            onPressed: _openTodos,
+            tooltip: '筛选与显示',
+            icon: Icons.filter_list_rounded,
+            onPressed: _openFilters,
           ),
           _HeaderAction(
             tooltip: '刷新',
@@ -259,170 +227,298 @@ class _SessionsPageState extends State<SessionsPage>
             busy: controller.isRefreshing,
             onPressed: () => controller.refresh(scan: true),
           ),
-          const SizedBox(width: HudSpacing.xl),
+          const SizedBox(width: HudSpacing.md),
         ],
       ),
       body: HudScaffoldBackground(
-        child: Column(
+        child: Stack(
           children: [
-            _Filters(controller: controller),
-            _DisplaySummary(
-              controller: controller,
-              onOpenSettings: _openSettings,
-            ),
-            _ErrorBanner(message: disconnected ? null : controller.error),
-            Expanded(
-              child: RefreshIndicator(
-                color: HudColors.textPrimary,
-                backgroundColor: HudColors.surfaceRaised,
-                onRefresh: () => controller.refresh(scan: true),
-                child: AnimatedSwitcher(
-                  duration: HudMotion.base,
-                  switchInCurve: HudMotion.easeOut,
-                  switchOutCurve: HudMotion.easeIn,
-                  transitionBuilder: (child, animation) {
-                    return FadeTransition(opacity: animation, child: child);
-                  },
-                  child: showSkeleton
-                      ? _SkeletonList(
-                          key: const ValueKey<String>('skeleton'),
-                          pulse: _pulse,
-                        )
-                      : disconnected
-                          ? _DisconnectedList(
-                              key: const ValueKey<String>('disconnected'),
-                              message: controller.error!,
-                              onRetry: () => controller.refresh(scan: true),
-                              onRePair: () => Navigator.of(context).pop(),
-                            )
-                          : sessions.isEmpty
-                              ? _EmptyList(
-                                  key: ValueKey<String>(
-                                    'empty-${controller.statusFilter}-${controller.providerFilter}',
-                                  ),
-                                )
-                              : ListView.builder(
-                                  key: ValueKey<String>(
-                                    'list-${controller.statusFilter}-${controller.providerFilter}',
-                                  ),
-                                  physics:
-                                      const AlwaysScrollableScrollPhysics(),
-                                  padding: const EdgeInsets.fromLTRB(
-                                    HudSpacing.xl,
-                                    HudSpacing.md,
-                                    HudSpacing.xl,
-                                    HudSpacing.xl,
-                                  ),
-                                  itemCount: sessions.length,
-                                  findChildIndexCallback: (Key key) {
-                                    if (key is! ValueKey<String>) return null;
-                                    final int index = sessions.indexWhere(
-                                        (session) => session.id == key.value);
-                                    return index == -1 ? null : index;
-                                  },
-                                  itemBuilder: (context, index) {
-                                    final AgentSession session =
-                                        sessions[index];
-                                    return _AnimatedSessionCard(
-                                      key: ValueKey<String>(session.id),
-                                      session: session,
-                                      index: index,
-                                      entrance: _entrance,
-                                      pulse: _pulse,
-                                      reduced: _reduceMotion,
-                                      canStar: controller.supportsActions,
-                                      onStar: () => _toggleImportant(session),
-                                      onOpen: () => _openSession(session),
-                                    );
-                                  },
-                                ),
-                ),
+            const Positioned.fill(
+              child: IgnorePointer(
+                child: CustomPaint(painter: _TaskArcPainter()),
               ),
             ),
-            _Footer(
-              lastUpdated: controller.lastUpdated,
-              isRefreshing: controller.isRefreshing,
-              supportsActions: controller.supportsActions,
+            Column(
+              children: [
+                _Filters(controller: controller),
+                _ErrorBanner(message: disconnected ? null : controller.error),
+                Expanded(
+                  child: RefreshIndicator(
+                    color: HudColors.textPrimary,
+                    backgroundColor: HudColors.surfaceRaised,
+                    onRefresh: () => controller.refresh(scan: true),
+                    child: AnimatedSwitcher(
+                      duration: HudMotion.base,
+                      switchInCurve: HudMotion.easeOut,
+                      switchOutCurve: HudMotion.easeIn,
+                      transitionBuilder: (child, animation) {
+                        return FadeTransition(opacity: animation, child: child);
+                      },
+                      child: showSkeleton
+                          ? _SkeletonList(
+                              key: const ValueKey<String>('skeleton'),
+                              pulse: _pulse,
+                            )
+                          : disconnected
+                              ? _DisconnectedList(
+                                  key: const ValueKey<String>('disconnected'),
+                                  message: controller.error!,
+                                  onRetry: () => controller.refresh(scan: true),
+                                  onRePair: () => Navigator.of(context).pop(),
+                                )
+                              : sessions.isEmpty
+                                  ? _EmptyList(
+                                      key: ValueKey<String>(
+                                        'empty-${controller.statusFilter}-${controller.providerFilter}',
+                                      ),
+                                    )
+                                  : ListView.builder(
+                                      key: ValueKey<String>(
+                                        'list-${controller.statusFilter}-${controller.providerFilter}',
+                                      ),
+                                      physics:
+                                          const AlwaysScrollableScrollPhysics(),
+                                      padding: const EdgeInsets.fromLTRB(
+                                        HudSpacing.xl,
+                                        HudSpacing.xs,
+                                        HudSpacing.xl,
+                                        104,
+                                      ),
+                                      itemCount: sessions.length,
+                                      findChildIndexCallback: (Key key) {
+                                        if (key is! ValueKey<String>) {
+                                          return null;
+                                        }
+                                        final int index = sessions.indexWhere(
+                                          (session) => session.id == key.value,
+                                        );
+                                        return index == -1 ? null : index;
+                                      },
+                                      itemBuilder: (context, index) {
+                                        final AgentSession session =
+                                            sessions[index];
+                                        return _AnimatedSessionCard(
+                                          key: ValueKey<String>(session.id),
+                                          session: session,
+                                          index: index,
+                                          entrance: _entrance,
+                                          pulse: _pulse,
+                                          reduced: _reduceMotion,
+                                          canStar: controller.supportsActions,
+                                          onStar: () =>
+                                              _toggleImportant(session),
+                                          onOpen: () => _openSession(session),
+                                        );
+                                      },
+                                    ),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ],
         ),
       ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: _openTodos,
+        backgroundColor: const Color(0xFFF2F5FA),
+        foregroundColor: const Color(0xFF151B26),
+        elevation: 5,
+        highlightElevation: 8,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        icon: const Icon(Icons.checklist_rounded, size: 18),
+        label: const Text(
+          '任务待办',
+          style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+        ),
+      ),
     );
-  }
-
-  static String _subtitle(SessionController controller) {
-    final int total = controller.totalCount;
-    final int active = controller.sessions
-        .where((session) => HudColors.isActive(session.status))
-        .length;
-    if (controller.lastUpdated == null) {
-      if (controller.error != null) return '连不上电脑';
-      return controller.isRefreshing ? '正在连接…' : '尚未连接';
-    }
-    if (active > 0) return '$active 个进行中 · 共 $total 个会话';
-    final int hidden = controller.hiddenSessionCount;
-    if (hidden > 0) {
-      return '显示 ${controller.sessions.length} 个 · $hidden 个未显示';
-    }
-    return '$total 个会话 · 已同步';
   }
 }
 
-class _SessionLimitMenu extends StatelessWidget {
-  const _SessionLimitMenu({
+class _SessionFilterSheet extends StatelessWidget {
+  const _SessionFilterSheet({
     required this.controller,
+    required this.deviceName,
     required this.onOpenSettings,
   });
 
   final SessionController controller;
+  final String deviceName;
   final VoidCallback onOpenSettings;
 
   @override
   Widget build(BuildContext context) {
-    return PopupMenuButton<SessionListLimit>(
-      tooltip: '会话显示设置',
-      icon: const Icon(Icons.tune_rounded, size: 20),
-      onSelected: controller.setListLimit,
-      itemBuilder: (context) => [
-        const PopupMenuItem<SessionListLimit>(
-          enabled: false,
-          child: Text('会话显示数量', style: HudText.label),
-        ),
-        for (final limit in SessionListLimit.values)
-          PopupMenuItem<SessionListLimit>(
-            value: limit,
-            child: Row(
+    return AnimatedBuilder(
+      animation: controller,
+      builder: (context, _) {
+        final bool filtered = controller.statusFilter != 'All' ||
+            controller.providerFilter != 'All';
+        return SafeArea(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.fromLTRB(20, 0, 20, 22),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
               children: [
-                Expanded(child: Text(limit.label)),
-                if (controller.listLimit == limit)
-                  const Icon(Icons.check_rounded, size: 17),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            '筛选与显示',
+                            style: HudText.title.copyWith(
+                              fontSize: 17,
+                              letterSpacing: 0,
+                            ),
+                          ),
+                          const SizedBox(height: 3),
+                          Text(
+                            deviceName,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: HudText.caption,
+                          ),
+                        ],
+                      ),
+                    ),
+                    if (controller.status?.privacyMode == true)
+                      const Tooltip(
+                        message: '隐私模式已开启',
+                        child: Icon(
+                          Icons.visibility_off_outlined,
+                          size: 19,
+                          color: HudColors.waiting,
+                        ),
+                      ),
+                    if (filtered)
+                      TextButton(
+                        onPressed: () {
+                          controller.setStatusFilter('All');
+                          controller.setProviderFilter('All');
+                        },
+                        child: const Text('重置'),
+                      ),
+                  ],
+                ),
+                const SizedBox(height: 22),
+                const Text('任务来源', style: HudText.label),
+                const SizedBox(height: 10),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: [
+                    for (final option in _providerOptions)
+                      _ProviderFilterChip(
+                        option: option,
+                        selected: controller.providerFilter == option.value,
+                        count: controller.countForProvider(option.value),
+                        onSelected: () =>
+                            controller.setProviderFilter(option.value),
+                      ),
+                  ],
+                ),
+                const SizedBox(height: 22),
+                const Text('显示范围', style: HudText.label),
+                const SizedBox(height: 10),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 14),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.035),
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(
+                      color: Colors.white.withValues(alpha: 0.07),
+                    ),
+                  ),
+                  child: DropdownButtonHideUnderline(
+                    child: DropdownButton<SessionListLimit>(
+                      value: controller.listLimit,
+                      isExpanded: true,
+                      dropdownColor: const Color(0xFF182231),
+                      borderRadius: BorderRadius.circular(10),
+                      items: [
+                        for (final limit in SessionListLimit.values)
+                          DropdownMenuItem<SessionListLimit>(
+                            value: limit,
+                            child: Text(limit.label),
+                          ),
+                      ],
+                      onChanged: (limit) {
+                        if (limit != null) controller.setListLimit(limit);
+                      },
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 9),
+                Text(
+                  '${controller.visibleSummary}，星标任务始终保留',
+                  style: HudText.caption.copyWith(fontSize: 11),
+                ),
+                const SizedBox(height: 8),
+                TextButton.icon(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    onOpenSettings();
+                  },
+                  style: TextButton.styleFrom(
+                    padding: EdgeInsets.zero,
+                    minimumSize: const Size(0, 40),
+                  ),
+                  icon: const Icon(Icons.settings_outlined, size: 17),
+                  label: const Text('更多显示设置'),
+                ),
               ],
             ),
           ),
-        const PopupMenuDivider(),
-        PopupMenuItem<SessionListLimit>(
-          enabled: false,
-          child: SizedBox(
-            width: 230,
-            child: Text(
-              '星标会话常驻显示，不占数量上限',
-              style: HudText.caption,
-              softWrap: true,
-            ),
-          ),
-        ),
-        PopupMenuItem<SessionListLimit>(
-          enabled: false,
-          child: TextButton.icon(
-            onPressed: () {
-              Navigator.of(context).pop();
-              onOpenSettings();
-            },
-            icon: const Icon(Icons.settings_outlined, size: 17),
-            label: const Text('查看完整设置'),
-          ),
-        ),
-      ],
+        );
+      },
+    );
+  }
+}
+
+class _ProviderFilterChip extends StatelessWidget {
+  const _ProviderFilterChip({
+    required this.option,
+    required this.selected,
+    required this.count,
+    required this.onSelected,
+  });
+
+  final _FilterOption option;
+  final bool selected;
+  final int count;
+  final VoidCallback onSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    return ChoiceChip(
+      selected: selected,
+      onSelected: (_) => onSelected(),
+      showCheckmark: false,
+      avatar: option.value == 'All'
+          ? const Icon(Icons.grid_view_rounded, size: 14)
+          : Icon(hudProviderIcon(option.value), size: 14),
+      label: Text('${option.label} $count'),
+      color: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.selected)) {
+          return option.color.withValues(alpha: 0.18);
+        }
+        return Colors.white.withValues(alpha: 0.035);
+      }),
+      side: BorderSide(
+        color: selected
+            ? option.color.withValues(alpha: 0.42)
+            : Colors.white.withValues(alpha: 0.07),
+      ),
+      labelStyle: TextStyle(
+        fontSize: 12,
+        color: selected ? HudColors.textPrimary : HudColors.textSecondary,
+      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(9)),
     );
   }
 }
@@ -458,68 +554,23 @@ class _Filters extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: HudSpacing.md),
-      child: Column(
-        children: [
-          _FilterRow(
-            options: _statusOptions,
-            selected: controller.statusFilter,
-            count: controller.countForStatus,
-            onSelected: controller.setStatusFilter,
-          ),
-          const SizedBox(height: HudSpacing.md),
-          _FilterRow(
-            options: _providerOptions,
-            selected: controller.providerFilter,
-            count: controller.countForProvider,
-            onSelected: controller.setProviderFilter,
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _FilterRow extends StatelessWidget {
-  const _FilterRow({
-    required this.options,
-    required this.selected,
-    required this.count,
-    required this.onSelected,
-  });
-
-  final List<_FilterOption> options;
-  final String selected;
-  final int Function(String) count;
-  final ValueChanged<String> onSelected;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 40,
-      margin: const EdgeInsets.symmetric(horizontal: HudSpacing.lg),
-      padding: const EdgeInsets.all(3),
-      decoration: BoxDecoration(
-        color: HudColors.surface.withValues(alpha: 0.64),
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: HudColors.border),
-      ),
-      child: Row(
-        children: [
-          for (var index = 0; index < options.length; index++) ...[
-            Expanded(
-              child: _FilterChip(
-                option: options[index],
-                selected: options[index].value == selected,
-                count: count(options[index].value),
-                onTap: () => onSelected(options[index].value),
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(12, 5, 12, 11),
+      child: SizedBox(
+        height: 38,
+        child: Row(
+          children: [
+            for (final option in _statusOptions)
+              Expanded(
+                child: _FilterChip(
+                  option: option,
+                  selected: controller.statusFilter == option.value,
+                  count: controller.countForStatus(option.value),
+                  onTap: () => controller.setStatusFilter(option.value),
+                ),
               ),
-            ),
-            if (index < options.length - 1)
-              Container(width: 1, height: 18, color: HudColors.divider),
           ],
-        ],
+        ),
       ),
     );
   }
@@ -540,7 +591,8 @@ class _FilterChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool isProvider = _providerOptions.contains(option);
+    final Color foreground =
+        selected ? const Color(0xFF1B2230) : HudColors.textSecondary;
     return Semantics(
       button: true,
       selected: selected,
@@ -548,40 +600,26 @@ class _FilterChip extends StatelessWidget {
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          borderRadius: BorderRadius.circular(6),
+          borderRadius: BorderRadius.circular(10),
           onTap: onTap,
           child: AnimatedContainer(
             duration: HudMotion.fast,
             curve: HudMotion.easeOut,
-            padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 7),
+            margin: const EdgeInsets.symmetric(horizontal: 2),
+            padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
             decoration: BoxDecoration(
-              color: selected
-                  ? HudColors.working.withValues(alpha: 0.25)
-                  : Colors.transparent,
-              borderRadius: BorderRadius.circular(6),
-              border: selected
-                  ? Border.all(color: HudColors.neon.withValues(alpha: 0.7))
-                  : null,
+              color: selected ? const Color(0xFFF0F3F8) : Colors.transparent,
+              borderRadius: BorderRadius.circular(10),
             ),
             child: FittedBox(
               fit: BoxFit.scaleDown,
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  if (option.value == 'All') ...[
-                    const Icon(
-                      Icons.grid_view_rounded,
-                      size: 12,
-                      color: HudColors.textSecondary,
-                    ),
-                    const SizedBox(width: 4),
-                  ] else if (isProvider) ...[
-                    HudProviderGlyph(provider: option.value, size: 14),
-                    const SizedBox(width: 4),
-                  ] else ...[
+                  if (option.value != 'All') ...[
                     Container(
-                      width: 4,
-                      height: 4,
+                      width: 5,
+                      height: 5,
                       decoration: BoxDecoration(
                         color: option.color,
                         shape: BoxShape.circle,
@@ -594,20 +632,20 @@ class _FilterChip extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 11.5,
                       fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
-                      color: selected
-                          ? HudColors.textPrimary
-                          : HudColors.textSecondary,
+                      color: foreground,
                     ),
                   ),
-                  const SizedBox(width: 4),
-                  Text(
-                    '$count',
-                    style: HudText.micro.copyWith(
-                      fontSize: 9.5,
-                      color: HudColors.textTertiary,
-                      fontFeatures: const [FontFeature.tabularFigures()],
+                  if (option.value == 'All') ...[
+                    const SizedBox(width: 5),
+                    Text(
+                      '$count',
+                      style: HudText.micro.copyWith(
+                        fontSize: 10,
+                        color: foreground,
+                        fontFeatures: const [FontFeature.tabularFigures()],
+                      ),
                     ),
-                  ),
+                  ],
                 ],
               ),
             ),
@@ -770,143 +808,290 @@ class _SessionCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final bool isWorking =
         session.status == 'Working' || session.status == 'Starting';
+    final bool isActive = HudColors.isActive(session.status);
     final bool needsUser = session.status == 'WaitingUser';
     final Color statusColor = HudColors.status(session.status);
+    final Color providerColor = HudColors.provider(session.provider);
+    final Color baseColor =
+        needsUser ? const Color(0xFF1B191B) : const Color(0xFF10161F);
     final String? meta = _metadata(session);
 
-    return Padding(
-      padding: EdgeInsets.zero,
-      child: HudSurfaceCard(
-        onTap: onOpen,
-        color: needsUser ? HudColors.surfaceRaised : HudColors.surface,
-        borderColor: needsUser
-            ? HudColors.waiting.withValues(alpha: 0.42)
-            : HudColors.border,
-        radius: 10,
-        accent: isWorking ? statusColor : null,
-        shadows: const <BoxShadow>[],
-        padding: const EdgeInsets.fromLTRB(12, 12, 12, 11),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(top: 1),
-                  child: HudProviderGlyph(
-                    provider: session.provider,
-                    size: 34,
-                  ),
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        session.title,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: HudText.title.copyWith(
-                          fontSize: 15,
-                          height: 1.24,
-                          letterSpacing: 0,
-                        ),
-                      ),
-                      if (meta != null) ...[
-                        const SizedBox(height: 6),
-                        Text(
-                          meta,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: HudText.caption.copyWith(
-                            fontSize: 10.5,
-                            height: 1.3,
-                            color: HudColors.textTertiary,
-                          ),
-                        ),
-                      ],
-                    ],
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Row(
-                  mainAxisSize: MainAxisSize.min,
+    return HudSurfaceCard(
+      onTap: onOpen,
+      color: baseColor,
+      gradient: LinearGradient(
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+        colors: [
+          Color.alphaBlend(
+            providerColor.withValues(alpha: isActive ? 0.065 : 0.045),
+            baseColor,
+          ),
+          Color.alphaBlend(
+            Colors.black.withValues(alpha: 0.12),
+            baseColor,
+          ),
+        ],
+      ),
+      borderColor: needsUser
+          ? HudColors.waiting.withValues(alpha: 0.22)
+          : isWorking
+              ? statusColor.withValues(alpha: 0.22)
+              : Colors.white.withValues(alpha: 0.075),
+      radius: 14,
+      shadows: <BoxShadow>[
+        BoxShadow(
+          color: Colors.black.withValues(alpha: 0.22),
+          blurRadius: 16,
+          offset: const Offset(0, 6),
+        ),
+        if (isWorking)
+          BoxShadow(
+            color: statusColor.withValues(alpha: 0.045),
+            blurRadius: 16,
+          ),
+      ],
+      padding: const EdgeInsets.fromLTRB(13, 13, 10, 10),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              _ProviderBadge(provider: session.provider),
+              const SizedBox(width: 11),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    if (canStar)
-                      _StarButton(session: session, onStar: onStar)
-                    else if (session.isImportant)
-                      const Icon(
-                        Icons.star_rounded,
-                        size: 17,
-                        color: HudColors.important,
+                    Text(
+                      session.title,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: HudText.title.copyWith(
+                        fontSize: 14.5,
+                        height: 1.25,
+                        letterSpacing: 0,
                       ),
-                    const SizedBox(width: 4),
-                    HudStatusPill(
-                      status: session.status,
-                      dense: true,
-                      pulsing: isWorking && !reduced,
                     ),
+                    if (meta != null) ...[
+                      const SizedBox(height: 5),
+                      Text(
+                        meta,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: HudText.caption.copyWith(
+                          fontSize: 10.5,
+                          height: 1.3,
+                          color: HudColors.textTertiary,
+                        ),
+                      ),
+                    ],
                   ],
                 ),
-              ],
+              ),
+              const SizedBox(width: 5),
+              Icon(
+                Icons.chevron_right_rounded,
+                size: 17,
+                color: HudColors.textTertiary.withValues(alpha: 0.72),
+              ),
+            ],
+          ),
+          if (isActive && session.currentAction.isNotEmpty) ...[
+            const SizedBox(height: 11),
+            _ActiveSessionAction(
+              action: session.currentAction,
+              status: session.status,
+              color: statusColor,
+              pulse: pulse,
+              animate: isWorking && !reduced,
             ),
-            const SizedBox(height: 10),
-            Row(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(top: 4),
-                  child: HudStatusDot(
-                    color: statusColor,
-                    pulsing: isWorking && !reduced,
-                    size: 5,
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    session.currentAction.isEmpty
-                        ? '查看会话详情'
-                        : session.currentAction,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: HudText.bodySecondary.copyWith(
-                      fontSize: 11.5,
-                      height: 1.4,
-                      color: HudColors.textSecondary.withValues(
-                        alpha: 0.9,
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Text(
+          ],
+          const SizedBox(height: 11),
+          Row(
+            children: [
+              _TaskStatusPill(
+                status: session.status,
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(
                   relativeTime(session.lastActivityAt),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: HudText.caption.copyWith(
                     fontSize: 10.5,
                     color: HudColors.textTertiary,
                   ),
                 ),
-              ],
-            ),
-          ],
-        ),
+              ),
+              if (canStar)
+                _StarButton(session: session, onStar: onStar)
+              else if (session.isImportant)
+                const Icon(
+                  Icons.star_rounded,
+                  size: 18,
+                  color: HudColors.important,
+                ),
+            ],
+          ),
+        ],
       ),
     );
   }
 
   /// Provider is implied by the glyph, so the meta line only carries context.
   static String? _metadata(AgentSession session) {
-    final List<String> parts = <String>[session.provider.toUpperCase()];
+    final List<String> parts = <String>[];
     if (session.projectName.isNotEmpty) parts.add(session.projectName);
     if (session.gitBranch != null && session.gitBranch!.isNotEmpty) {
       parts.add(session.gitBranch!);
     }
-    final int changes = session.gitChangedFiles ?? 0;
-    if (changes > 0) parts.add('$changes 个改动');
     if (parts.isEmpty) return null;
-    return parts.join('  ·  ');
+    return parts.join(' · ');
+  }
+}
+
+class _ProviderBadge extends StatelessWidget {
+  const _ProviderBadge({required this.provider});
+
+  final String provider;
+
+  @override
+  Widget build(BuildContext context) {
+    final Color color = HudColors.provider(provider);
+    return Container(
+      width: 38,
+      height: 38,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            color.withValues(alpha: 0.22),
+            color.withValues(alpha: 0.075),
+          ],
+        ),
+        borderRadius: BorderRadius.circular(11),
+        border: Border.all(color: color.withValues(alpha: 0.16)),
+      ),
+      child: Icon(hudProviderIcon(provider), size: 20, color: color),
+    );
+  }
+}
+
+class _TaskStatusPill extends StatelessWidget {
+  const _TaskStatusPill({required this.status});
+
+  final String status;
+
+  @override
+  Widget build(BuildContext context) {
+    final Color color = HudColors.status(status);
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(hudStatusIcon(status), size: 11, color: color),
+          const SizedBox(width: 4),
+          Text(
+            statusLabel(status),
+            style: TextStyle(
+              fontSize: 10.5,
+              fontWeight: FontWeight.w500,
+              color: color,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ActiveSessionAction extends StatelessWidget {
+  const _ActiveSessionAction({
+    required this.action,
+    required this.status,
+    required this.color,
+    required this.pulse,
+    required this.animate,
+  });
+
+  final String action;
+  final String status;
+  final Color color;
+  final Animation<double> pulse;
+  final bool animate;
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: pulse,
+      builder: (context, _) {
+        return Row(
+          children: [
+            Container(
+              width: 25,
+              height: 25,
+              decoration: BoxDecoration(
+                color: color.withValues(alpha: 0.09),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(hudStatusIcon(status), size: 13, color: color),
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                action,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: HudText.bodySecondary.copyWith(
+                  fontSize: 11.5,
+                  height: 1.35,
+                  color: HudColors.textSecondary.withValues(alpha: 0.86),
+                ),
+              ),
+            ),
+            if (animate) ...[
+              const SizedBox(width: 8),
+              SizedBox(
+                width: 18,
+                height: 15,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    for (var index = 0; index < 4; index++)
+                      Container(
+                        width: 2,
+                        height: 4 +
+                            8 *
+                                (0.5 +
+                                    0.5 *
+                                        math.sin(
+                                          (pulse.value + index * 0.17) *
+                                              math.pi *
+                                              2,
+                                        )),
+                        decoration: BoxDecoration(
+                          color: color.withValues(alpha: 0.72),
+                          borderRadius: BorderRadius.circular(2),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+            ],
+          ],
+        );
+      },
+    );
   }
 }
 
@@ -956,16 +1141,19 @@ class _StarButtonState extends State<_StarButton>
       child: InkResponse(
         onTap: widget.onStar,
         radius: 18,
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(6, 2, 0, 2),
-          child: Icon(
-            widget.session.isImportant
-                ? Icons.star_rounded
-                : Icons.star_outline_rounded,
-            size: 18,
-            color: widget.session.isImportant
-                ? HudColors.important
-                : HudColors.textTertiary,
+        child: SizedBox(
+          width: 30,
+          height: 28,
+          child: Center(
+            child: Icon(
+              widget.session.isImportant
+                  ? Icons.star_rounded
+                  : Icons.star_outline_rounded,
+              size: 19,
+              color: widget.session.isImportant
+                  ? HudColors.important
+                  : HudColors.textTertiary,
+            ),
           ),
         ),
       ),
@@ -1144,160 +1332,52 @@ class _DisconnectedList extends StatelessWidget {
   }
 }
 
-class _DisplaySummary extends StatelessWidget {
-  const _DisplaySummary({
-    required this.controller,
-    required this.onOpenSettings,
-  });
-
-  final SessionController controller;
-  final VoidCallback onOpenSettings;
+class _TaskArcPainter extends CustomPainter {
+  const _TaskArcPainter();
 
   @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(
-        HudSpacing.xl,
-        HudSpacing.sm,
-        HudSpacing.xl,
-        0,
-      ),
-      child: InkWell(
-        onTap: onOpenSettings,
-        borderRadius: BorderRadius.circular(8),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 4),
-          child: Row(
-            children: [
-              const Icon(
-                Icons.tune_rounded,
-                size: 13,
-                color: HudColors.textTertiary,
-              ),
-              const SizedBox(width: HudSpacing.sm),
-              Flexible(
-                child: Text(
-                  '${controller.visibleSummary} · ${controller.listLimit.label}',
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: HudText.caption.copyWith(fontSize: 10.5),
-                ),
-              ),
-              const SizedBox(width: HudSpacing.sm),
-              Text(
-                '共 ${controller.totalCount}',
-                style: HudText.caption.copyWith(fontSize: 10.5),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _Footer extends StatelessWidget {
-  const _Footer({
-    required this.lastUpdated,
-    required this.isRefreshing,
-    required this.supportsActions,
-  });
-
-  final DateTime? lastUpdated;
-  final bool isRefreshing;
-  final bool supportsActions;
-
-  @override
-  Widget build(BuildContext context) {
-    final String timeText = lastUpdated == null
-        ? (isRefreshing ? '正在连接…' : '尚未连接')
-        : '更新于 ${_time(lastUpdated!)}';
-    return Container(
-      padding: const EdgeInsets.fromLTRB(
-        HudSpacing.xl,
-        9,
-        HudSpacing.xl,
-        HudSpacing.lg,
-      ),
-      decoration: const BoxDecoration(
-        border: Border(top: BorderSide(color: HudColors.divider)),
-      ),
-      child: Row(
-        children: [
-          Icon(
-            supportsActions
-                ? Icons.verified_user_outlined
-                : Icons.visibility_outlined,
-            size: 12,
-            color: HudColors.textTertiary,
-          ),
-          const SizedBox(width: HudSpacing.sm),
-          Flexible(
-            child: Text(
-              supportsActions ? '局域网直连 · 可操作' : '只读监控',
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: HudText.caption.copyWith(fontSize: 11),
-            ),
-          ),
-          const SizedBox(width: HudSpacing.sm),
-          AnimatedSwitcher(
-            duration: HudMotion.fast,
-            layoutBuilder: (current, previous) => Stack(
-              alignment: Alignment.centerRight,
-              children: [
-                ...previous,
-                if (current != null) current,
-              ],
-            ),
-            child: Text(
-              timeText,
-              key: ValueKey<String>(timeText),
-              style: HudText.caption.copyWith(fontSize: 11),
-            ),
-          ),
+  void paint(Canvas canvas, Size size) {
+    final Rect bounds = Offset.zero & size;
+    final Paint arc = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1
+      ..shader = LinearGradient(
+        colors: [
+          Colors.transparent,
+          HudColors.working.withValues(alpha: 0.12),
+          HudColors.neon.withValues(alpha: 0.055),
+          Colors.transparent,
         ],
-      ),
-    );
-  }
+        stops: const [0, 0.38, 0.72, 1],
+      ).createShader(bounds);
 
-  static String _time(DateTime value) {
-    final DateTime local = value.toLocal();
-    return '${local.hour.toString().padLeft(2, '0')}:'
-        '${local.minute.toString().padLeft(2, '0')}:'
-        '${local.second.toString().padLeft(2, '0')}';
-  }
-}
+    final Path lower = Path()
+      ..moveTo(-size.width * 0.18, size.height * 0.79)
+      ..cubicTo(
+        size.width * 0.25,
+        size.height * 0.96,
+        size.width * 0.72,
+        size.height * 0.67,
+        size.width * 1.18,
+        size.height * 0.84,
+      );
+    canvas.drawPath(lower, arc);
 
-/// Small square glyph shown in the header, matching the desktop HUD.
-class _DeviceGlyph extends StatelessWidget {
-  const _DeviceGlyph();
+    final Path upper = Path()
+      ..moveTo(-size.width * 0.25, size.height * 0.2)
+      ..cubicTo(
+        size.width * 0.18,
+        size.height * 0.06,
+        size.width * 0.68,
+        size.height * 0.27,
+        size.width * 1.2,
+        size.height * 0.12,
+      );
+    canvas.drawPath(upper, arc..strokeWidth = 0.7);
+  }
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 34,
-      height: 34,
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            HudColors.working.withValues(alpha: 0.34),
-            HudColors.working.withValues(alpha: 0.08),
-          ],
-        ),
-        borderRadius: BorderRadius.circular(HudRadii.control),
-        border: Border.all(color: HudColors.neon.withValues(alpha: 0.75)),
-        boxShadow: HudElevation.glow(HudColors.working),
-      ),
-      child: const Icon(
-        Icons.grid_view_rounded,
-        size: 18,
-        color: HudColors.neon,
-      ),
-    );
-  }
+  bool shouldRepaint(covariant _TaskArcPainter oldDelegate) => false;
 }
 
 /// Quiet 36pt hit target for header actions with an inline busy state.

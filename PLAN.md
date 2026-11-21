@@ -2149,3 +2149,34 @@ git status --short
 - `pubspec.yaml` / `pubspec.lock` 与 `origin/main` 一致；本机 Flutter 自动降版已恢复，未夹带依赖变更。
 - 源码与文档 `git diff --cached --check` 排除原有构建产物后 exit 0。
 - 未提交、未推送、未重新构建 APK、未进行真实设备验收。
+
+---
+
+# 2026-11-20 Mac Codex/Claude 输入与同步修复
+
+## 已批准范围
+
+- Mac 同时支持 Codex 队列续发、Claude 完成后后台恢复；不复制正在运行的 Claude 会话。
+- 缓存近期日志窗口和解析结果，减少每 3 秒扫描的磁盘与 CPU 开销。
+- 修正 Orca 旧 working 状态覆盖新完成日志的问题。
+- 重新构建部署 Mac App，保留配对；不覆盖其他手机 UI 改动，不修改 Windows，不发送真实探测消息。
+
+## 验证与部署
+
+- `swift build -c release --skip-update -Xcxx -I<xcode-sdk>/usr/include/c++/v1`：exit 0。
+- 35 项确定性 Mac 测试通过；完整 `./scripts/test.sh` 仍被既有 OpenCode 实时数据库用例阻断。
+- 真实扫描：首次 14.1s，随后 0.39s / 0.19s；缓存复用限制为 1 秒，不冻结时间驱动状态。
+- 新 App 已签名启动，PID 61013，端口 47653，保留对话授权。
+- Android 最新构建端到端验证仍未完成；不自动重启用户正在切换的模拟器。
+
+---
+
+# 真机同步验证补充（2026-11-20）
+
+- 真机 ADB 已连接，Mac 服务 47653 正常。
+- Codex 与 Claude 已完成会话均显示可下发授权文本任务；未发送探测消息。
+- 手机多地址回退改为首个有效地址胜出，避免不可达 IPv6/虚拟机地址串行阻塞。
+- `./scripts/test-mobile-link.sh` exit 0，真实 HTTPS 集成含并行回退；`flutter analyze` 无问题，标准 Flutter 78 通过、2 个集成用例环境跳过。
+- 连续 3 次真机刷新成功，最终 13 会话、11 条可见、4 个进行中。
+- Release APK 已安装到真机；Android 重新记录 firstInstallTime，已重新配对，未删除 Mac 旧设备。
+- 修复尚未提交推送；保留用户手机 UI 改动。
